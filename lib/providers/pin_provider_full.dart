@@ -113,7 +113,8 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
 
       AppLogger.d(result.data);
 
-      if (result.data != false) {
+      // ignore: unnecessary_type_check
+      if (result.data is Map && (result.data as Map).isNotEmpty) {
         AppLogger.d('Recovery Key Encrypted: ${result.data}');
         state = state.copyWith(encryptedRecoveryKey: result.data as String);
         setIsWaitingRecoveryKey(true);
@@ -219,7 +220,8 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       );
       AppLogger.d(result.data);
 
-      if (result.data != false) {
+      // ignore: unnecessary_type_check
+      if (result.data is Map && (result.data as Map).isNotEmpty) {
         await Crypto.saveSaltKey();
         // TODO(Week 3D): Update Crypto.saveSpKey to accept UserNotifier/UserState
         AppLogger.w('Access code validation simplified - requires Crypto manager migration');
@@ -355,7 +357,10 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
           onPressedOk: () => Navigator.of(buildContext).pop(),
         );
       },
-    ).then((_) => setPinAndPop(context, popToId: popToId));
+    );
+
+    if (!context.mounted) return;
+    await setPinAndPop(context, popToId: popToId);
   }
 
   Future<void> authenticate() async {

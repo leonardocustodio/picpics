@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/providers/tabs_provider.dart';
@@ -22,7 +23,7 @@ void main() {
         iterations: 100,
       );
 
-      print(result.summary);
+      debugPrint(result.summary);
       expect(result.average.inMilliseconds, lessThan(10),
           reason: 'Provider initialization should be under 10ms');
     });
@@ -40,7 +41,7 @@ void main() {
         iterations: 100,
       );
 
-      print(result.summary);
+      debugPrint(result.summary);
       expect(result.average.inMilliseconds, lessThan(10));
     });
 
@@ -57,7 +58,7 @@ void main() {
         iterations: 100,
       );
 
-      print(result.summary);
+      debugPrint(result.summary);
       expect(result.average.inMilliseconds, lessThan(10));
     });
 
@@ -76,7 +77,7 @@ void main() {
         iterations: 1000,
       );
 
-      print(result.summary);
+      debugPrint(result.summary);
       expect(result.average.inMicroseconds, lessThan(1000),
           reason: 'Toggle should be under 1ms');
 
@@ -98,7 +99,7 @@ void main() {
         iterations: 1000,
       );
 
-      print(result.summary);
+      debugPrint(result.summary);
       expect(result.average.inMicroseconds, lessThan(500),
           reason: 'Selection should be under 0.5ms');
 
@@ -116,7 +117,7 @@ void main() {
         }
       });
 
-      print('Bulk selection (100 photos): ${duration.inMilliseconds}ms');
+      debugPrint('Bulk selection (100 photos): ${duration.inMilliseconds}ms');
       expect(duration.inMilliseconds, lessThan(100),
           reason: 'Selecting 100 photos should be under 100ms');
 
@@ -165,7 +166,7 @@ void main() {
       final tabsState = container.read(tabsProvider);
 
       final memoryUsage = PerformanceTestUtils.estimateMemoryUsage(tabsState.assetMap);
-      print('Empty state memory: $memoryUsage bytes');
+      debugPrint('Empty state memory: $memoryUsage bytes');
 
       expect(memoryUsage, lessThan(1000),
           reason: 'Empty state should use minimal memory');
@@ -187,7 +188,7 @@ void main() {
         taggedState.selectedMultiBarPics,
       );
 
-      print('100 selections memory: $memoryUsage bytes');
+      debugPrint('100 selections memory: $memoryUsage bytes');
       expect(memoryUsage, lessThan(50000),
           reason: '100 selections should use less than 50KB');
 
@@ -214,7 +215,7 @@ void main() {
       });
 
       final avgPerRead = duration.inMicroseconds / 1000;
-      print('Average state read: ${avgPerRead.toStringAsFixed(2)}μs');
+      debugPrint('Average state read: ${avgPerRead.toStringAsFixed(2)}μs');
 
       expect(avgPerRead, lessThan(1000),
           reason: 'State read should be under 1ms average');
@@ -228,7 +229,7 @@ void main() {
       });
 
       final avgPerRead = duration.inMicroseconds / 1000;
-      print('Average notifier access: ${avgPerRead.toStringAsFixed(2)}μs');
+      debugPrint('Average notifier access: ${avgPerRead.toStringAsFixed(2)}μs');
 
       expect(avgPerRead, lessThan(1000));
     });
@@ -243,7 +244,7 @@ void main() {
       });
 
       final avgPerUpdate = duration.inMicroseconds / 100;
-      print('Average state update: ${avgPerUpdate.toStringAsFixed(2)}μs');
+      debugPrint('Average state update: ${avgPerUpdate.toStringAsFixed(2)}μs');
 
       expect(avgPerUpdate, lessThan(5000),
           reason: 'State update should be under 5ms average');
@@ -275,9 +276,9 @@ void main() {
         container.dispose();
       });
 
-      print('\n=== Provider Creation Baseline ===');
+      debugPrint('\n=== Provider Creation Baseline ===');
       results.forEach((provider, duration) {
-        print('$provider: ${duration.inMicroseconds}μs');
+        debugPrint('$provider: ${duration.inMicroseconds}μs');
       });
 
       // All should be under 10ms
@@ -311,9 +312,9 @@ void main() {
         container.read(taggedProvider.notifier).clearSelectedMultiBarPics();
       });
 
-      print('\n=== Common Operations Baseline ===');
+      debugPrint('\n=== Common Operations Baseline ===');
       timings.forEach((operation, duration) {
-        print('$operation: ${duration.inMicroseconds}μs');
+        debugPrint('$operation: ${duration.inMicroseconds}μs');
       });
 
       container.dispose();

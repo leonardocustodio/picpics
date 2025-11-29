@@ -36,16 +36,16 @@
 /* AppLogger.d('### deleted pics from library!'); */
 //      for (var pic in deletedPics) {
 /* AppLogger.d('Pic deleted Id: ${pic['id']}'); */
-////        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-////        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
-////
-////        if (entity != null) {
-////          galleryStore.trashPic(picStore)
-////          DatabaseManager.instance.deletedPic(
-////            entity,
-////            removeFromDb: false,
-////          );
-////        }
+//        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
+//
+//        if (entity != null) {
+//          galleryStore.trashPic(picStore)
+//          DatabaseManager.instance.deletedPic(
+//            entity,
+//            removeFromDb: false,
+//          );
+//        }
 //      }
 //    }
 //

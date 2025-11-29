@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -60,10 +62,9 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: ListView(
               children: [
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Row(
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Row(
                       children: <Widget>[
                         GestureDetector(
                           onTap: () => Navigator.of(context).pop(),
@@ -82,9 +83,8 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: Container(
-                                    child: TextFormField(
-                                      controller: searchEditingController,
+                                  child: TextFormField(
+                                    controller: searchEditingController,
                                       focusNode: focusNode,
                                       onChanged: (text) {
                                         ref.read(allTagsProvider.notifier).setSearchedText(text);
@@ -118,7 +118,6 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                                       ),
                                     ),
                                   ),
-                                ),
                                 if (allTagsState.searchedText.isNotEmpty)
                                   GestureDetector(
                                     onTap: () {
@@ -138,7 +137,6 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       ],
                     ),
                   ),
-                ),
                 if (allTagsState.searchedText.isNotEmpty)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

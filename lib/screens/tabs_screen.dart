@@ -58,8 +58,16 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
     final height = MediaQuery.of(context).size.height;
 
-    return WillPopScope(
-      onWillPop: _shouldPopOut,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
+        if (!didPop) {
+          final shouldPop = await _shouldPopOut();
+          if (shouldPop && context.mounted) {
+            Navigator.of(context).pop();
+          }
+        }
+      },
       child: Stack(
         children: <Widget>[
           Scaffold(

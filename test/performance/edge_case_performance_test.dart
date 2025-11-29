@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/providers/tabs_provider.dart';
@@ -84,7 +85,7 @@ void main() {
         }
       });
 
-      print('Selecting 1000 photos: ${duration.inMilliseconds}ms');
+      debugPrint('Selecting 1000 photos: ${duration.inMilliseconds}ms');
       expect(duration.inMilliseconds, lessThan(1000),
           reason: 'Selecting 1000 photos should be under 1 second');
 
@@ -105,7 +106,7 @@ void main() {
         state.selectedMultiBarPics,
       );
 
-      print('1000 selections memory: ${memoryUsage / 1024}KB');
+      debugPrint('1000 selections memory: ${memoryUsage / 1024}KB');
       expect(memoryUsage, lessThan(500000),
           reason: '1000 selections should use less than 500KB');
     });
@@ -122,7 +123,7 @@ void main() {
         notifier.clearSelectedMultiBarPics();
       });
 
-      print('Clearing 1000 selections: ${duration.inMicroseconds}μs');
+      debugPrint('Clearing 1000 selections: ${duration.inMicroseconds}μs');
       expect(duration.inMilliseconds, lessThan(10),
           reason: 'Clearing should be under 10ms');
 
@@ -145,7 +146,7 @@ void main() {
         }
       });
 
-      print('Removing 100 from 1000: ${duration.inMilliseconds}ms');
+      debugPrint('Removing 100 from 1000: ${duration.inMilliseconds}ms');
       expect(duration.inMilliseconds, lessThan(100),
           reason: 'Removing 100 photos should be under 100ms');
 
@@ -175,7 +176,7 @@ void main() {
         );
       });
 
-      print('1000 rapid toggles: ${duration.inMilliseconds}ms');
+      debugPrint('1000 rapid toggles: ${duration.inMilliseconds}ms');
       expect(duration.inMilliseconds, lessThan(500),
           reason: '1000 toggles should be under 500ms');
     });
@@ -190,7 +191,7 @@ void main() {
         }
       });
 
-      print('500 add/remove cycles: ${duration.inMilliseconds}ms');
+      debugPrint('500 add/remove cycles: ${duration.inMilliseconds}ms');
       expect(duration.inMilliseconds, lessThan(250),
           reason: '500 cycles should be under 250ms');
 
@@ -207,7 +208,7 @@ void main() {
         }
       });
 
-      print('100 view switches: ${duration.inMilliseconds}ms');
+      debugPrint('100 view switches: ${duration.inMilliseconds}ms');
       expect(duration.inMilliseconds, lessThan(100),
           reason: '100 view switches should be under 100ms');
     });
@@ -237,7 +238,7 @@ void main() {
         ]);
       });
 
-      print('Concurrent operations: ${duration.inMilliseconds}ms');
+      debugPrint('Concurrent operations: ${duration.inMilliseconds}ms');
       expect(duration.inMilliseconds, lessThan(200),
           reason: 'Concurrent operations should complete quickly');
     });
@@ -331,7 +332,7 @@ void main() {
 
       subscription.close();
 
-      print('Rebuilds for 200 operations: $rebuildCount');
+      debugPrint('Rebuilds for 200 operations: $rebuildCount');
       expect(rebuildCount, equals(200),
           reason: 'Each state change should trigger exactly one rebuild');
     });
@@ -357,7 +358,7 @@ void main() {
         }
       });
 
-      print('Selecting 10,000 photos: ${duration.inMilliseconds}ms');
+      debugPrint('Selecting 10,000 photos: ${duration.inMilliseconds}ms');
 
       final state = container.read(taggedProvider);
       expect(state.selectedMultiBarPics.length, equals(10000));
@@ -378,7 +379,7 @@ void main() {
         );
       });
 
-      print('100 zero-delay changes: ${duration.inMilliseconds}ms');
+      debugPrint('100 zero-delay changes: ${duration.inMilliseconds}ms');
       expect(duration.inMilliseconds, lessThan(50),
           reason: 'Zero-delay changes should be very fast');
     });
@@ -396,7 +397,7 @@ void main() {
         }
       });
 
-      print('1000 alternating reads: ${duration.inMilliseconds}ms');
+      debugPrint('1000 alternating reads: ${duration.inMilliseconds}ms');
       expect(duration.inMilliseconds, lessThan(100),
           reason: 'Alternating provider reads should be fast');
     });

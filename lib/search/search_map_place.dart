@@ -1,5 +1,3 @@
-library search_map_place;
-
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';

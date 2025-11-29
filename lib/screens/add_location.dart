@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+
 import 'dart:async';
 
 import 'package:extended_image/extended_image.dart';
@@ -107,7 +109,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
 
     final destination = Marker(
       markerId: const MarkerId('user-destination'),
-      icon: await BitmapDescriptor.fromAssetImage(
+      icon: await BitmapDescriptor.asset(
         const ImageConfiguration(devicePixelRatio: 2.5),
         'lib/images/pin.png',
       ),
@@ -137,7 +139,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
     if (latLng != null && latLng != nullLocation) {
       final destination = Marker(
         markerId: const MarkerId('user-destination'),
-        icon: await BitmapDescriptor.fromAssetImage(
+        icon: await BitmapDescriptor.asset(
           const ImageConfiguration(devicePixelRatio: 2.5),
           'lib/images/pin.png',
         ),
@@ -298,7 +300,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
 
                     final destination = Marker(
                       markerId: const MarkerId('user-destination'),
-                      icon: await BitmapDescriptor.fromAssetImage(
+                      icon: await BitmapDescriptor.asset(
                         const ImageConfiguration(devicePixelRatio: 2.5),
                         'lib/images/pin.png',
                       ),

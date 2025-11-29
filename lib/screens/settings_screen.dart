@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -38,8 +40,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   }
 
   Future<void> _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     } else {
       AppLogger.d('Could not launch $url');
     }
@@ -50,7 +53,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       scheme: 'mailto',
       path: 'picpics@inovatso.com.br',
     );
-    launch(emailLaunchUri.toString());
+    launchUrl(emailLaunchUri);
   }
 
   final rateMyApp = RateMyApp(
@@ -65,18 +68,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
     Analytics.sendEvent(Event.shared_app);
   }
 
-  void rateDialog() {
-    rateMyApp.init().then((_) async {
-      if (Platform.isAndroid) {
-        await rateMyApp.launchStore();
-      } else {
-        await rateMyApp.showStarRateDialog(
-          context,
-          onDismissed: () =>
-              rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
-        );
-      }
-    });
+  Future<void> rateDialog() async {
+    final dialogContext = context;
+    await rateMyApp.init();
+
+    if (Platform.isAndroid) {
+      await rateMyApp.launchStore();
+    } else {
+      if (!mounted) return;
+      await rateMyApp.showStarRateDialog(
+        dialogContext,
+        onDismissed: () =>
+            rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
+      );
+    }
+
     Analytics.sendEvent(Event.rated_app);
   }
 
@@ -481,18 +487,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                             return Column(
                                               children: [
                                                 Expanded(
-                                                  child: Container(
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.symmetric(
-                                                          horizontal: 16),
-                                                      child: CupertinoButton(
-                                                        padding: const EdgeInsets.all(0),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 16),
+                                                    child: CupertinoButton(
+                                                      padding: const EdgeInsets.all(0),
                                                         onPressed: () {
                                                           if (userState.isBiometricActivated != true) {
                                                             // TODO: Set wantsToActivateBiometric
                                                             Navigator.of(context).push<void>(
                                                               MaterialPageRoute<void>(
-                                                                builder: (_) => PinScreen()
+                                                                builder: (_) => PinScreen(),
                                                               )
                                                             );
                                                             return;
@@ -516,7 +521,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                                                   // TODO: Set wantsToActivateBiometric
                                                                   await Navigator.of(context).push<dynamic>(
                                                                     MaterialPageRoute<dynamic>(
-                                                                      builder: (_) => PinScreen()
+                                                                      builder: (_) => PinScreen(),
                                                                     )
                                                                   );
                                                                   return;
@@ -529,7 +534,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                                       ),
                                                     ),
                                                   ),
-                                                ),
                                                 const Divider(
                                                   color: kLightGrayColor,
                                                   thickness: 1,

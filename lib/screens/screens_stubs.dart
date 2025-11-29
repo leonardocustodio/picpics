@@ -8,8 +8,8 @@ import 'package:picpics/model/pic.dart';
 class AllTagsScreen extends ConsumerWidget {
   static const id = 'all_tags_screen';
   final Pic? picStore;
-  
-  AllTagsScreen({super.key, this.picStore});
+
+  const AllTagsScreen({super.key, this.picStore});
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,8 +24,8 @@ class PhotoScreen extends ConsumerWidget {
   static const id = 'photo_screen';
   final String picId;
   final List<String> picIdList;
-  
-  PhotoScreen({
+
+  const PhotoScreen({
     super.key,
     required this.picId,
     required this.picIdList,
@@ -70,8 +70,8 @@ class AddLocationScreen extends ConsumerWidget {
 
 class PinScreen extends ConsumerWidget {
   static const id = 'pin_screen';
-  
-  PinScreen({super.key});
+
+  const PinScreen({super.key});
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -97,8 +97,8 @@ class EmailScreen extends ConsumerWidget {
 
 class AccessCodeScreen extends ConsumerWidget {
   static const id = 'access_code_screen';
-  
-  AccessCodeScreen({super.key});
+
+  const AccessCodeScreen({super.key});
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {

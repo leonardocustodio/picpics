@@ -179,6 +179,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               await ref.read(loginProvider.notifier).completeIntroduction();
                               ref.read(userProvider.notifier).setTutorialCompleted(true);
                               if (mounted) {
+                                // ignore: use_build_context_synchronously
                                 Navigator.of(context).pushNamedAndRemoveUntil(
                                   TabsScreen.id,
                                   (route) => false,

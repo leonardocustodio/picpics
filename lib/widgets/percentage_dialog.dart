@@ -17,9 +17,8 @@ class PercentageDialog extends ConsumerWidget {
     final percentage = state.progress;
     final textPercent = (percentage * 100).floor();
 
-    return Container(
-      child: Stack(
-        children: [
+    return Stack(
+      children: [
           Positioned.fill(
             child: Container(color: Colors.black.withValues(alpha: .7)),
           ),
@@ -64,7 +63,6 @@ class PercentageDialog extends ConsumerWidget {
               ),
             ),
         ],
-      ),
     );
   }
 }

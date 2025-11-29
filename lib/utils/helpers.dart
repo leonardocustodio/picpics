@@ -65,8 +65,8 @@ class Helpers {
   }
 }
 
-LinearGradient getGradient(int _) {
-  switch (_) {
+LinearGradient getGradient(int index) {
+  switch (index) {
     case 0:
       return kPrimaryGradient;
     case 1:

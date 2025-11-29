@@ -1,4 +1,4 @@
-part of search_map_place;
+part of '../search_map_place.dart';
 
 class Geolocation {
   Geolocation(this._coordinates, this._bounds);
