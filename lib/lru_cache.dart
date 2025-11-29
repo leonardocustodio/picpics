@@ -1,7 +1,7 @@
 /* import 'dart:collection';
 import 'dart:typed_data';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 
 class ImageLruCache {
   static final LRUMap<_ImageCacheEntity, Uint8List> _map = LRUMap(500);

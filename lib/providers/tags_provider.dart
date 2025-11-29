@@ -147,7 +147,6 @@ class TagsNotifier extends StateNotifier<TagsState> {
       }
     } else {
       // Search for matching tags
-      final listOfLetters = text.toLowerCase().split('');
       for (final tag in tagsList) {
         final tagKey = tag.key;
         if (state.selectedFilteringTagsKeys.containsKey(tagKey)) {
@@ -199,6 +198,10 @@ class TagsNotifier extends StateNotifier<TagsState> {
 
   void clearMultiPicTags() {
     state = state.copyWith(multiPicTags: {});
+  }
+
+  void clear() {
+    clearMultiPicTags();
   }
 
   Future<String> createTag(String title) async {
@@ -278,7 +281,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
   }) async {
     // TODO: Implement removing a tag from a specific picture
     AppLogger.d('Removing tag $tagKey from pic $picId (stub implementation)');
-    await Future.delayed(Duration.zero);
+    await Future<void>.delayed(Duration.zero);
   }
 
   Future<void> addTagsToSelectedPics() async {

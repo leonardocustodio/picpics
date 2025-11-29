@@ -19,8 +19,7 @@ import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/all_tags_screen.dart';
 import 'package:picpics/screens/photo_screen.dart';
-import 'package:picpics/stores/pic_store.dart';
-import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
 import 'package:picpics/utils/functions.dart';
@@ -35,7 +34,7 @@ class PhotoCard extends ConsumerStatefulWidget {
     super.key,
   });
 
-  final PicStore picStore;
+  final PicStoreNotifier picStore;
   final PicSource picsInThumbnails;
   final int picsInThumbnailIndex;
 
@@ -46,7 +45,7 @@ class PhotoCard extends ConsumerStatefulWidget {
 class _PhotoCardState extends ConsumerState<PhotoCard> {
   final GlobalKey _photoSpaceKey = GlobalKey();
 
-  PicStore get picStore => widget.picStore;
+  PicStoreNotifier get picStore => widget.picStore;
 
   BoxFit boxFit = BoxFit.cover;
 
@@ -61,17 +60,17 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
   Future<List<String>> reverseGeocoding(BuildContext context) async {
     final s = ref.read(sProvider);
 
-    if (picStore.specificLocation.value != null &&
-        picStore.generalLocation.value != null) {
+    if (picStore.state.specificLocation != null &&
+        picStore.state.generalLocation != null) {
       return [
-        picStore.specificLocation.value!,
-        '  ${picStore.generalLocation.value}',
+        picStore.state.specificLocation!,
+        '  ${picStore.state.generalLocation}',
       ];
     }
 
-    if ((picStore.originalLatitude == null ||
-            picStore.originalLongitude == null) ||
-        (picStore.originalLatitude == 0 && picStore.originalLongitude == 0)) {
+    if ((picStore.state.originalLatitude == null ||
+            picStore.state.originalLongitude == null) ||
+        (picStore.state.originalLatitude == 0 && picStore.state.originalLongitude == 0)) {
       return [
         s.photo_location,
         '  ${s.country}',
@@ -79,7 +78,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
     }
 
     final placemark = await placemarkFromCoordinates(
-        picStore.originalLatitude!, picStore.originalLongitude!,);
+        picStore.state.originalLatitude!, picStore.state.originalLongitude!,);
 
     AppLogger.d('Placemark: ${placemark.length}');
     for (final place in placemark) {
@@ -89,8 +88,8 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
     if (placemark.isNotEmpty) {
       AppLogger.d('Saving pic!!!');
       await picStore.saveLocation(
-        lat: picStore.originalLatitude!,
-        long: picStore.originalLongitude!,
+        lat: picStore.state.originalLatitude!,
+        long: picStore.state.originalLongitude!,
         specific: placemark[0].locality,
         general: placemark[0].country,
       );
@@ -120,7 +119,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final blurHashState = ref.read(blurHashProvider);
-      hash = blurHashState.blurHash[picStore.photoId.value];
+      hash = blurHashState.blurHash[picStore.state.photoId];
       if (mounted) {
         setState(() {});
       }
@@ -144,7 +143,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
     final s = ref.watch(sProvider);
     final blurHashState = ref.watch(blurHashProvider);
 
-    hash ??= blurHashState.blurHash[picStore.photoId.value];
+    hash ??= blurHashState.blurHash[picStore.state.photoId];
 
     final imageProvider = AssetEntityImageProvider(picStore,
         thumbSize: kDefaultPhotoSize, isOriginal: false,);
@@ -254,16 +253,16 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                       color: kWarningColor,
                       iconSize: 19.2,
                       onTap: () {
-                        TabsController.to
-                            .removePicFromUI(picStore.photoId.value);
-                        TabsController.to.trashPic(picStore.photoId.value);
+                        ref.read(tabsProvider.notifier)
+                            .removePicFromUI(picStore.state.photoId);
+                        ref.read(tabsProvider.notifier).trashPic(picStore.state.photoId);
                       },
                     ),
                     CircularMenuItem(
-                      image: picStore.isPrivate.value == true
+                      image: picStore.state.isPrivate == true
                           ? Image.asset('lib/images/openlockmenu.png')
                           : Image.asset('lib/images/lockmenu.png'),
-                      color: picStore.isPrivate.value == true
+                      color: picStore.state.isPrivate == true
                           ? const Color(0xFFF5FAFA)
                           : kYellowColor,
                       iconSize: 19.2,
@@ -288,11 +287,11 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                           MaterialPageRoute<void>(
                             builder: (_) => PhotoScreen(
                               picIdList: const [],
-                              picId: picStore.photoId.value,
+                              picId: picStore.state.photoId,
                             ),
                           ),
                         );
-                        refreshEverything();
+                        refreshEverything(ref);
                       },
                     ),
                   ],
@@ -314,7 +313,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                       onPressed: null,
                       padding: const EdgeInsets.all(0),
                       child: Text(
-                        dateFormat(picStore.createdAt),
+                        dateFormat(picStore.state.createdAt),
                         textScaler: const TextScaler.linear(1),
                         style: const TextStyle(
                           fontFamily: 'Lato',
@@ -330,7 +329,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                 ),
                 TagsList(
                   tagStyle: TagStyle.multiColored,
-                  tagsKeyList: taggedState.picWiseTags[picStore.photoId.value]
+                  tagsKeyList: taggedState.picWiseTags[picStore.state.photoId]
                           ?.keys
                           .toList() ??
                       <String>[],
@@ -355,7 +354,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                   },
                   onPanEnd: (String selectedTagKey) async {
                     await ref.read(tagsProvider.notifier).removeTagFromPic(
-                        picId: picStore.photoId.value,
+                        picId: picStore.state.photoId,
                         tagKey: selectedTagKey,);
 
                     await picStore.tagsSuggestionsCalculate();
@@ -389,8 +388,8 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                     builder: (context) {
                       String suggestionsTitle;
 
-                      if (picStore.aiTags.value) {
-                        if (picStore.aiTagsLoaded.value == false) {
+                      if (picStore.state.aiTags) {
+                        if (picStore.state.aiTagsLoaded == false) {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -421,14 +420,14 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                         }
 
                         suggestionsTitle = s.suggestions;
-                      } else if (picStore.searchText.value != '') {
+                      } else if (picStore.state.searchText != '') {
                         suggestionsTitle = s.search_results;
                       } else {
                         suggestionsTitle = s.recent_tags;
                       }
 
                       AppLogger.d(
-                          '$suggestionsTitle : ${picStore.aiTags} : suggestionsTitle',);
+                          '$suggestionsTitle : ${picStore.state.aiTags} : suggestionsTitle',);
 
                       return TagsList(
                         title: suggestionsTitle,
@@ -437,10 +436,10 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                             .toList()
                             .where((tagKey) {
                           if (taggedState.picWiseTags[
-                                      picStore.photoId.value] !=
+                                      picStore.state.photoId] !=
                                   null &&
                               taggedState.picWiseTags[
-                                          picStore.photoId.value]
+                                          picStore.state.photoId]
                                       ?[tagKey] !=
                                   null) {
                             return false;

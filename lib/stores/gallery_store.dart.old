@@ -8,7 +8,7 @@ import 'package:picpics/database/app_database.dart';
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/managers/crypto_manager.dart';
 import 'package:picpics/model/tag_model.dart';
-import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/stores/private_photos_controller.dart';
 import 'package:picpics/stores/tagged_date_pics_store.dart';
 import 'package:picpics/stores/tagged_grid_pic_store.dart';

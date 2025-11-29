@@ -9,7 +9,6 @@ import 'package:picpics/model/pic.dart';
 import 'package:picpics/model/secret.dart';
 import 'package:picpics/model/user.dart';
 import 'package:picpics/model/user_key.dart';
-import 'package:picpics/stores/database_controller.dart';
 import 'package:uuid/uuid.dart';
 
 part 'app_database.g.dart';
@@ -386,7 +385,30 @@ class AppDatabase extends _$AppDatabase {
   Future<MoorUser?> getSingleMoorUser({bool createIfNotExist = true}) async {
     final moorUserReturn = await select(moorUsers).getSingleOrNull();
     if (createIfNotExist && moorUserReturn == null) {
-      await createMoorUser(getDefaultMoorUser());
+      // Create default user with basic settings
+      final defaultUser = MoorUser(
+        customPrimaryKey: 0,
+        id: const Uuid().v4(),
+        notification: false,
+        dailyChallenges: false,
+        goal: 20,
+        hourOfDay: 20,
+        minuteOfDay: 0,
+        recentTags: [],
+        tutorialCompleted: false,
+        picsTaggedToday: 0,
+        lastTaggedPicDate: DateTime.now(),
+        appLanguage: 'en',
+        hasGalleryPermission: false,
+        loggedIn: false,
+        secretPhotos: false,
+        isPinRegistered: false,
+        keepAskingToDelete: true,
+        tourCompleted: false,
+        isBiometricActivated: false,
+        shouldDeleteOnPrivate: true,
+      );
+      await createMoorUser(defaultUser);
       return select(moorUsers).getSingle();
     } else {
       return moorUserReturn;

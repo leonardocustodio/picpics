@@ -244,16 +244,22 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   }
 
   Future<bool> isPinValid() async {
-    final valid = await Crypto.checkIsPinValid(state.pinTemp);
-    return valid;
+    final userState = ref.read(userProvider);
+    final encryptionKey = await Crypto.checkIsPinValid(state.pinTemp, userState.email ?? '');
+    return encryptionKey != null;
   }
 
   Future<void> activateBiometric() async {
-    await Crypto.saveEncryptedPin(state.pinTemp);
+    final secretKey = await Crypto.saveEncryptedPin(state.pinTemp);
+    if (secretKey != null) {
+      // Store the secret key if needed
+      // TODO: Store secretKey in user provider or secure storage
+    }
   }
 
   Future<bool> isBiometricValidated() async {
-    final pin = await Crypto.getEncryptedPin();
+    // TODO: Get secretString from secure storage or user provider
+    final pin = await Crypto.getEncryptedPin(null);
     if (pin == null) {
       return false;
     }
@@ -308,7 +314,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   Future<void> recoverPin() async {
     state = state.copyWith(isLoading: true);
     final userState = ref.read(userProvider);
-    final request = await requestRecoveryKey(userState.email ?? state.email);
+    await requestRecoveryKey(userState.email ?? state.email);
     state = state.copyWith(isLoading: false);
   }
 

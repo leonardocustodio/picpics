@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,11 +7,7 @@ import 'package:picpics/generated/l10n.dart' as language;
 import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
-import 'package:picpics/utils/app_logger.dart';
-import 'package:picpics/utils/enum.dart';
 import 'package:picpics/utils/functions.dart';
-import 'package:picpics/utils/helpers.dart';
-import 'package:picpics/widgets/tags_list.dart';
 
 class TabsScreenBottomNavigatioBar extends ConsumerStatefulWidget {
   const TabsScreenBottomNavigatioBar({super.key});

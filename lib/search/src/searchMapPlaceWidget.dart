@@ -182,7 +182,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
           children: <Widget>[
             CupertinoButton(
               padding: const EdgeInsets.only(left: 5, right: 10),
-              onPressed: () => Get.back<void>(),
+              onPressed: () => Navigator.of(context).pop(),
               child: Image.asset('lib/images/backarrowgray.png'),
             ),
             Image.asset('lib/images/searchico.png'),

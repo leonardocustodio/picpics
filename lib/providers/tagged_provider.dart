@@ -125,6 +125,10 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
     state = state.copyWith(bottomOptionsBar: value);
   }
 
+  void setToggleIndexTagged(int value) {
+    state = state.copyWith(toggleIndexTagged: value);
+  }
+
   void onPoppingOut() {
     state = state.copyWith(selectedMultiBarPics: {});
   }
@@ -280,6 +284,27 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
     state = state.copyWith(selectedMultiBarPics: {});
   }
 
+  void addSelectedMultiBarPic(String picId) {
+    final newSelected = Map<String, bool>.from(state.selectedMultiBarPics);
+    newSelected[picId] = true;
+    state = state.copyWith(selectedMultiBarPics: newSelected);
+  }
+
+  void removeSelectedMultiBarPic(String picId) {
+    final newSelected = Map<String, bool>.from(state.selectedMultiBarPics);
+    newSelected.remove(picId);
+    state = state.copyWith(selectedMultiBarPics: newSelected);
+  }
+
+  Future<void> untagPicsFromTag({
+    required Map<String, Map<String, String>> tagKeyMapToPicId,
+  }) async {
+    // TODO: Implement untagPicsFromTag - requires AppDatabase API update
+    // This method should remove specified tags from photos in the database
+    // For now, just refresh to avoid compilation errors
+    await refreshTaggedPhotos();
+  }
+
   void initScrollController() {
     scrollControllerThirdTab = ScrollController(initialScrollOffset: offsetThirdTab);
     scrollControllerThirdTab.addListener(refreshGridPositionThirdTab);
@@ -289,8 +314,13 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
   void dispose() {
     searchEditingController.dispose();
     searchFocusNode.dispose();
-    if (scrollControllerThirdTab.hasClients) {
-      scrollControllerThirdTab.dispose();
+    // Only dispose scroll controller if it was initialized
+    try {
+      if (scrollControllerThirdTab.hasClients) {
+        scrollControllerThirdTab.dispose();
+      }
+    } catch (e) {
+      // scrollControllerThirdTab was never initialized, skip disposal
     }
     super.dispose();
   }

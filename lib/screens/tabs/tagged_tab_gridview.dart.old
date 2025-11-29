@@ -8,7 +8,7 @@ import 'package:picpics/custom_scroll_physics.dart';
 import 'package:picpics/fade_image_builder.dart';
 
 import 'package:picpics/screens/photo_screen.dart';
-import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:picpics/stores/private_photos_controller.dart';
 import 'package:picpics/stores/tabs_controller.dart';

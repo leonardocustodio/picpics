@@ -1,91 +1,106 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
+import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key_grid.dart';
 import 'package:picpics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_option_bar.dart';
-import 'package:picpics/stores/language_controller.dart';
-import 'package:picpics/stores/tabs_controller.dart';
-import 'package:picpics/stores/tagged_controller.dart';
-import 'package:picpics/stores/tags_controller.dart';
 import 'package:picpics/widgets/device_no_pics.dart';
 import 'package:picpics/widgets/percentage_dialog.dart';
 import 'package:picpics/widgets/select_all_widget.dart';
 
 // ignore: must_be_immutable
-class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
+class TaggedTabSelectiveTagKey extends ConsumerWidget {
   const TaggedTabSelectiveTagKey(this.tagKey, {super.key});
   final String tagKey;
 
   @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => controller.shouldPopOut(),
-      child: Obx(
-        () => Scaffold(
-          bottomNavigationBar: TaggedTabSelectiveTagOptionBar(tagKey: tagKey),
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            foregroundColor: Colors.black,
-            actions: [
-              if (controller.multiPicBar.value &&
-                  controller.selectedMultiBarPics.isNotEmpty)
-                CupertinoButton(
-                  padding: const EdgeInsets.only(right: 10),
-                  onPressed: () async {
-                    await controller.untagPicsFromTag(
-                        tagKeyMapToPicId: <String, Map<String, String>>{
-                          tagKey: controller.selectedMultiBarPics
-                              .map((key, _) => MapEntry(key, '')),
-                        },);
-                  },
-                  child: const Text('Untag'),
-                ),
-            ],
-            leading: GestureDetector(
-              onTap: () async {
-                if (await controller.shouldPopOut()) {
-                  Get.back<void>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final taggedState = ref.watch(taggedProvider);
+    final tagsState = ref.watch(tagsProvider);
+    final tabsState = ref.watch(tabsProvider);
+    final s = ref.watch(sProvider);
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
+        if (!didPop) {
+          final shouldPop = await ref.read(taggedProvider.notifier).shouldPopOut();
+          if (shouldPop && context.mounted) {
+            Navigator.of(context).pop();
+          }
+        }
+      },
+      child: Scaffold(
+        bottomNavigationBar: TaggedTabSelectiveTagOptionBar(tagKey: tagKey),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          foregroundColor: Colors.black,
+          actions: [
+            if (taggedState.multiPicBar &&
+                taggedState.selectedMultiBarPics.isNotEmpty)
+              CupertinoButton(
+                padding: const EdgeInsets.only(right: 10),
+                onPressed: () async {
+                  await ref.read(taggedProvider.notifier).untagPicsFromTag(
+                      tagKeyMapToPicId: <String, Map<String, String>>{
+                        tagKey: taggedState.selectedMultiBarPics
+                            .map((key, _) => MapEntry(key, '')),
+                      },);
+                },
+                child: const Text('Untag'),
+              ),
+          ],
+          leading: GestureDetector(
+            onTap: () async {
+              if (await ref.read(taggedProvider.notifier).shouldPopOut()) {
+                if (context.mounted) {
+                  Navigator.of(context).pop();
                 }
-              },
-              child: Icon(
-                Icons.arrow_back_ios_rounded,
-                color: Colors.black.withValues(alpha: .5),
-                size: 24,
-              ),
-            ),
-            titleSpacing: -8,
-            title: Text(
-              '${TagsController.to.allTags[tagKey]?.value.title ?? ''} (${controller.taggedPicId[tagKey]?.keys.length ?? 0})',
-              style: TextStyle(
-                color: Colors.black.withValues(alpha: .5),
-              ),
+              }
+            },
+            child: Icon(
+              Icons.arrow_back_ios_rounded,
+              color: Colors.black.withValues(alpha: .5),
+              size: 24,
             ),
           ),
-          body: ColoredBox(
-            //constraints: BoxConstraints.expand(),
-            color: kWhiteColor,
-            child: SafeArea(
-              child: Obx(() {
-                if (controller.isTaggedPicsLoaded.value == false) {
+          titleSpacing: -8,
+          title: Text(
+            '${tagsState.allTags[tagKey]?.title ?? ''} (${taggedState.taggedPicId[tagKey]?.keys.length ?? 0})',
+            style: TextStyle(
+              color: Colors.black.withValues(alpha: .5),
+            ),
+          ),
+        ),
+        body: ColoredBox(
+          //constraints: BoxConstraints.expand(),
+          color: kWhiteColor,
+          child: SafeArea(
+            child: Builder(
+              builder: (context) {
+                if (taggedState.isTaggedPicsLoaded == false) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (TabsController.to.assetEntityList.isNotEmpty) {
+                if (tabsState.assetEntityList.isNotEmpty) {
                   ///
                   /// Device has pics
                   ///
                   final hasTaggedPics =
-                      controller.taggedPicId[tagKey]?.isNotEmpty ?? false;
+                      taggedState.taggedPicId[tagKey]?.isNotEmpty ?? false;
                   if (hasTaggedPics) {
                     ///
                     /// Tagged Pics are available
                     ///
                     var isSelected = true;
-                    if (controller.multiPicBar.value) {
-                      for (final picId in controller.taggedPicId[tagKey]!.keys) {
-                        if (controller.selectedMultiBarPics[picId] == null) {
+                    if (taggedState.multiPicBar) {
+                      for (final picId in taggedState.taggedPicId[tagKey]!.keys) {
+                        if (taggedState.selectedMultiBarPics[picId] == null) {
                           isSelected = false;
                           break;
                         }
@@ -97,21 +112,19 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
                         Positioned.fill(
                           child: Column(
                             children: [
-                              if (controller.multiPicBar.value)
+                              if (taggedState.multiPicBar)
                                 GestureDetector(
                                     onTap: () {
+                                      final taggedNotifier = ref.read(taggedProvider.notifier);
                                       if (isSelected) {
-                                        for (final picId in controller
+                                        for (final picId in taggedState
                                             .taggedPicId[tagKey]!.keys) {
-                                          controller.selectedMultiBarPics
-                                              .remove(picId);
+                                          taggedNotifier.removeSelectedMultiBarPic(picId);
                                         }
                                       } else {
-                                        for (final picId in controller
+                                        for (final picId in taggedState
                                             .taggedPicId[tagKey]!.keys) {
-                                          controller
-                                                  .selectedMultiBarPics[picId] =
-                                              true;
+                                          taggedNotifier.addSelectedMultiBarPic(picId);
                                         }
                                       }
                                     },
@@ -130,18 +143,14 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
                   ///
                   /// No Pics Tagged
                   ///
-                  return Obx(
-                    () => DeviceHasNoPics(
-                        message: LangControl.to.S.value.no_photos_were_tagged,),
-                  );
+                  return DeviceHasNoPics(
+                      message: s.no_photos_were_tagged,);
                 }
 
                 /// Device has no Pics
-                return Obx(
-                  () => DeviceHasNoPics(
-                      message: LangControl.to.S.value.device_has_no_pics,),
-                );
-              }),
+                return DeviceHasNoPics(
+                    message: s.device_has_no_pics,);
+              },
             ),
           ),
         ),

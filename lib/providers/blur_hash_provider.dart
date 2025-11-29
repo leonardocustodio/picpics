@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter_riverpod/legacy.dart';
 
 class BlurHashState {
@@ -42,6 +43,12 @@ class BlurHashNotifier extends StateNotifier<BlurHashState> {
 
   void setEnabled(bool enabled) {
     state = state.copyWith(isEnabled: enabled);
+  }
+
+  Future<void> createBlurHash(String imageId, Uint8List imageData) async {
+    // TODO: Implement actual blur hash generation
+    // For now, just add a placeholder
+    addBlurHash(imageId, 'placeholder_blur_hash');
   }
 }
 

@@ -56,7 +56,6 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     final myLocale = Localizations.localeOf(context);
     AppLogger.d('Language Code: ${myLocale.languageCode}');
 
-    final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     final height = MediaQuery.of(context).size.height;
 
     return WillPopScope(
@@ -134,9 +133,9 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                   CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.push<void>(
                         context,
-                        MaterialPageRoute(
+                        MaterialPageRoute<void>(
                           builder: (context) => const SettingsScreen(),
                         ),
                       );

@@ -1,160 +1,172 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:get/get.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/providers/blur_hash_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
+import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/screens/photo_screen.dart';
-import 'package:picpics/stores/blur_hash_controller.dart';
-import 'package:picpics/stores/tabs_controller.dart';
-import 'package:picpics/utils/refresh_everything.dart';
 import 'package:picpics/widgets/date_header.dart';
 import 'package:picpics/widgets/photo_widget.dart';
 
-class UntaggedTabMonth extends GetWidget<TabsController> {
+class UntaggedTabMonth extends ConsumerWidget {
   const UntaggedTabMonth({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Obx(
-      () => StaggeredGridView.countBuilder(
-          shrinkWrap: true,
-          key: const Key('Month'),
-          controller: controller.untaggedScrollControllerMonth,
-          padding: const EdgeInsets.only(top: 2),
-          crossAxisCount: 4,
-          itemCount: controller.allUnTaggedPicsMonth.length,
-          staggeredTileBuilder: (int index) {
-            if (controller.allUnTaggedPicsMonth[index] is DateTime) {
-              if (index + 1 < controller.allUnTaggedPicsMonth.length &&
-                  controller.allUnTaggedPicsMonth[index + 1] is DateTime) {
-                return const StaggeredTile.extent(4, 0);
-              }
-              return const StaggeredTile.extent(4, 40);
-            }
-            return const StaggeredTile.count(1, 1);
-          },
-          itemBuilder: (_, int index) {
-            return Obx(
-              () {
-                final object = controller.allUnTaggedPicsMonth[index];
-                if (object is DateTime) {
-                  var isSelected = false;
-                  if (controller.multiPicBar.value) {
-                    var i = index + 1;
-                    isSelected = true;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tabsState = ref.watch(tabsProvider);
+    final tabsNotifier = ref.read(tabsProvider.notifier);
+    final taggedState = ref.watch(taggedProvider);
+    final taggedNotifier = ref.read(taggedProvider.notifier);
+    final blurHashState = ref.watch(blurHashProvider);
 
-                    while (i < controller.allUnTaggedPicsMonth.length &&
-                        controller.allUnTaggedPicsMonth[i] is String) {
-                      if (controller.selectedMultiBarPics[
-                              controller.allUnTaggedPicsMonth[i]] ==
-                          null) {
-                        isSelected = false;
-                        break;
+    return StaggeredGridView.countBuilder(
+      shrinkWrap: true,
+      controller: tabsNotifier.untaggedScrollControllerMonth,
+      key: const Key('Month'),
+      padding: const EdgeInsets.only(top: 2),
+      itemCount: tabsState.allUnTaggedPicsMonth.length,
+      crossAxisCount: 4,
+      staggeredTileBuilder: (int index) {
+        if (tabsState.allUnTaggedPicsMonth[index] is DateTime) {
+          if (index + 1 < tabsState.allUnTaggedPicsMonth.length &&
+              tabsState.allUnTaggedPicsMonth[index + 1] is DateTime) {
+            return const StaggeredTile.extent(4, 0);
+          }
+          return const StaggeredTile.extent(4, 40);
+        }
+        return const StaggeredTile.count(1, 1);
+      },
+      itemBuilder: (_, int index) {
+        return Builder(
+          builder: (context) {
+            final object = tabsState.allUnTaggedPicsMonth[index];
+            if (object is DateTime) {
+              var isSelected = false;
+              if (tabsState.multiPicBar) {
+                var i = index + 1;
+                isSelected = true;
+
+                while (i < tabsState.allUnTaggedPicsMonth.length &&
+                    tabsState.allUnTaggedPicsMonth[i] is String) {
+                  if (taggedState
+                          .selectedMultiBarPics[tabsState.allUnTaggedPicsMonth[i]] ==
+                      null) {
+                    isSelected = false;
+                    break;
+                  }
+                  i++;
+                }
+              }
+              return GestureDetector(
+                onTap: () {
+                  if (tabsState.multiPicBar) {
+                    var i = index + 1;
+                    if (isSelected) {
+                      while (i < tabsState.allUnTaggedPicsMonth.length &&
+                          tabsState.allUnTaggedPicsMonth[i] is String) {
+                        taggedNotifier.removeSelectedMultiBarPic(
+                          tabsState.allUnTaggedPicsMonth[i] as String,
+                        );
+                        i++;
                       }
-                      i++;
+                    } else {
+                      while (i < tabsState.allUnTaggedPicsMonth.length &&
+                          tabsState.allUnTaggedPicsMonth[i] is String) {
+                        taggedNotifier.addSelectedMultiBarPic(
+                          tabsState.allUnTaggedPicsMonth[i] as String,
+                        );
+                        i++;
+                      }
                     }
                   }
-                  return GestureDetector(
-                      onTap: () {
-                        if (controller.multiPicBar.value) {
-                          var i = index + 1;
-                          if (isSelected) {
-                            while (i < controller.allUnTaggedPicsMonth.length &&
-                                controller.allUnTaggedPicsMonth[i] is String) {
-                              controller.selectedMultiBarPics
-                                  .remove(controller.allUnTaggedPicsMonth[i]);
-                              i++;
-                            }
-                          } else {
-                            while (i < controller.allUnTaggedPicsMonth.length &&
-                                controller.allUnTaggedPicsMonth[i] is String) {
-                              controller.selectedMultiBarPics[
-                                  controller.allUnTaggedPicsMonth[i] as String] = true;
-                              i++;
-                            }
-                          }
-                        }
-                      },
-                      child: DateHeaderWidget(
-                          date: object,
-                          isSelected: isSelected,
-                          isMonth: controller.toggleIndexUntagged.value == 0,),);
-                }
-                final blurHash = BlurHashController.to.blurHash[object];
-                final picStore = controller.picStoreMap[object]?.value;
-                return Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: CupertinoButton(
-                      padding: const EdgeInsets.all(0),
-                      onPressed: () async {
-                        if (controller.multiPicBar.value) {
-                          if (controller.selectedMultiBarPics[object] == null) {
-                            controller.selectedMultiBarPics[object as String] = true;
-                          } else {
-                            controller.selectedMultiBarPics.remove(object);
-                          }
-                          return;
-                        }
-                        await Get.to<dynamic>(() => PhotoScreen(
-                            picId: object as String,
-                            picIdList:
-                                controller.allUnTaggedPics.keys.toList(),),);
-
-                        await refreshEverything();
-                      },
-                      child: GestureDetector(
-                        onLongPress: () {
-                          if (controller.multiPicBar.value == false) {
-                            controller.setMultiPicBar(true);
-                          }
-                          controller.selectedMultiBarPics[object as String] = true;
-                        },
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: PhotoWidget(
-                                picStore: picStore,
-                                hash: blurHash,
-                              ),
-                            ),
-                            if (controller.multiPicBar.value &&
-                                controller.selectedMultiBarPics[object] !=
-                                    null) ...[
-                              Container(
-                                constraints: const BoxConstraints.expand(),
-                                decoration: BoxDecoration(
-                                  color: kSecondaryColor.withValues(alpha: 0.3),
-                                  border: Border.all(
-                                    color: kSecondaryColor,
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 8,
-                                top: 6,
-                                child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                    gradient: kSecondaryGradient,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Image.asset(
-                                      'lib/images/checkwhiteico.png',),
-                                ),
-                              ),
-                            ],
-                          ],
+                },
+                child: DateHeaderWidget(
+                  date: object,
+                  isSelected: isSelected,
+                  isMonth: tabsState.toggleIndexUntagged == 0,
+                ),
+              );
+            }
+            final blurHash = blurHashState.blurHash[object];
+            final picStore = tabsState.picStoreMap[object];
+            return Padding(
+              padding: const EdgeInsets.all(4),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: CupertinoButton(
+                  padding: const EdgeInsets.all(0),
+                  onPressed: () async {
+                    if (tabsState.multiPicBar) {
+                      if (taggedState.selectedMultiBarPics[object] == null) {
+                        taggedNotifier.addSelectedMultiBarPic(object as String);
+                      } else {
+                        taggedNotifier.removeSelectedMultiBarPic(object as String);
+                      }
+                      return;
+                    }
+                    await Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (context) => PhotoScreen(
+                          picId: object as String,
+                          picIdList: tabsState.allUnTaggedPics.keys.toList(),
                         ),
                       ),
+                    );
+                  },
+                  child: GestureDetector(
+                    onLongPress: () {
+                      if (tabsState.multiPicBar == false) {
+                        tabsNotifier.setMultiPicBar(true);
+                      }
+                      taggedNotifier.addSelectedMultiBarPic(object as String);
+                    },
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: PhotoWidget(
+                            picStore: picStore,
+                            hash: blurHash,
+                          ),
+                        ),
+                        if (tabsState.multiPicBar &&
+                            taggedState.selectedMultiBarPics[object] !=
+                                null) ...[
+                          Container(
+                            constraints: const BoxConstraints.expand(),
+                            decoration: BoxDecoration(
+                              color: kSecondaryColor.withValues(alpha: 0.3),
+                              border: Border.all(
+                                color: kSecondaryColor,
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            left: 8,
+                            top: 6,
+                            child: Container(
+                              height: 20,
+                              width: 20,
+                              decoration: BoxDecoration(
+                                gradient: kSecondaryGradient,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child:
+                                  Image.asset('lib/images/checkwhiteico.png'),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
-                );
-              },
+                ),
+              ),
             );
-          },),
+          },
+        );
+      },
     );
   }
 }

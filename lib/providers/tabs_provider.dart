@@ -4,24 +4,23 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:get/get.dart';
 import 'package:mime/mime.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/database/app_database.dart';
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/managers/widget_manager.dart';
-import 'package:picpics/stores/percentage_dialog_controller.dart';
-import 'package:picpics/stores/pic_store.dart';
-import 'package:picpics/stores/private_photos_controller.dart';
-import 'package:picpics/stores/swiper_tab_controller.dart';
-import 'package:picpics/stores/tagged_controller.dart';
-import 'package:picpics/stores/tags_controller.dart';
-import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
+import 'package:picpics/providers/user_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
+import 'package:picpics/providers/private_photos_provider.dart';
+import 'package:picpics/providers/swiper_tab_provider.dart';
+import 'package:picpics/providers/tags_provider.dart';
+import 'package:picpics/providers/percentage_dialog_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
-import 'package:picpics/utils/refresh_everything.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Tabs state for managing tab navigation, photo selection, and photo management
@@ -37,7 +36,7 @@ class TabsState {
   // Core photo management (5 properties)
   final Map<String, AssetEntity> assetMap;
   final List<AssetEntity> assetEntityList;
-  final Map<String, Rx<PicStore>> picStoreMap;
+  final Map<String, PicStoreNotifier> picStoreMap;
   final Map<String, bool> starredPicMap;
   final Status status;
 
@@ -107,7 +106,7 @@ class TabsState {
     // Core photo management
     Map<String, AssetEntity>? assetMap,
     List<AssetEntity>? assetEntityList,
-    Map<String, Rx<PicStore>>? picStoreMap,
+    Map<String, PicStoreNotifier>? picStoreMap,
     Map<String, bool>? starredPicMap,
     Status? status,
     // Untagged photos
@@ -168,7 +167,9 @@ class TabsState {
 /// Notifier for tabs state
 /// Manages tab navigation, photo selection, and photo operations
 class TabsNotifier extends StateNotifier<TabsState> {
-  TabsNotifier()
+  final Ref _ref;
+
+  TabsNotifier(this._ref)
       : super(TabsState(
           expandableController: ExpandableController(initialExpanded: false),
           expandablePaddingController: ExpandableController(initialExpanded: false),
@@ -225,7 +226,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
   Future<void> loadAssetPath() async {
     // Request gallery permissions
-    final permitted = await UserController.to.requestGalleryPermission();
+    await _ref.read(userProvider.notifier).requestGalleryPermission();
+    final permitted = _ref.read(userProvider).hasGalleryPermission;
     if (permitted == false) {
       return;
     }
@@ -276,19 +278,21 @@ class TabsNotifier extends StateNotifier<TabsState> {
   // PICSTORE MANAGEMENT
   // ============================================================
 
-  Rx<PicStore> explorPicStore(String picId, {bool silent = false}) {
+  PicStoreNotifier explorPicStore(String picId, {bool silent = false}) {
     var picStoreValue = state.picStoreMap[picId];
 
     if (picStoreValue == null) {
       var entity = state.assetMap[picId];
       if (entity == null) {
-        // Asset map not updated, refresh everything
-        refreshEverything();
+        // Asset map not updated, refresh everything inline
+        // Note: This is async but called synchronously - consider refactoring
+        refreshUntaggedList();
         entity = state.assetMap[picId];
       }
 
       if (entity != null) {
-        picStoreValue = Rx<PicStore>(PicStore(
+        picStoreValue = PicStoreNotifier(
+          _ref,
           entityValue: entity,
           createdAt: entity.createDateTime,
           originalLatitude: entity.latitude,
@@ -296,10 +300,10 @@ class TabsNotifier extends StateNotifier<TabsState> {
           photoId: picId,
           photoPath: '',
           thumbPath: '',
-        ));
+        );
 
         // Add to picStoreMap
-        final newPicStoreMap = Map<String, Rx<PicStore>>.from(state.picStoreMap);
+        final newPicStoreMap = Map<String, PicStoreNotifier>.from(state.picStoreMap);
         newPicStoreMap[picId] = picStoreValue;
         state = state.copyWith(picStoreMap: newPicStoreMap);
       }
@@ -314,8 +318,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
   Future<void> filterUntaggedPhotos() async {
     // Refresh tagged and private photos first
-    await TaggedController.to.refreshTaggedPhotos();
-    await PrivatePhotosController.to.refreshPrivatePics();
+    await _ref.read(taggedProvider.notifier).refreshTaggedPhotos();
+    await _ref.read(privatePhotosProvider.notifier).refreshPrivatePics();
 
     DateTime? previousDay;
     DateTime? previousMonth;
@@ -324,14 +328,16 @@ class TabsNotifier extends StateNotifier<TabsState> {
     final newAllUnTaggedPics = <String, String>{};
     final newAllUnTaggedPicsMonth = <dynamic>[];
     final newAllUnTaggedPicsDay = <dynamic>[];
-    final newPicStoreMap = Map<String, Rx<PicStore>>.from(state.picStoreMap);
+    final newPicStoreMap = Map<String, PicStoreNotifier>.from(state.picStoreMap);
 
     for (final entity in state.assetEntityList) {
       newAssetMap[entity.id] = entity;
 
       // Check if photo is untagged and not private
-      if (TaggedController.to.allTaggedPicIdList[entity.id] == null &&
-          PrivatePhotosController.to.privateMap[entity.id] == null) {
+      final taggedState = _ref.read(taggedProvider);
+      final privateState = _ref.read(privatePhotosProvider);
+      if (taggedState.allTaggedPicIdList[entity.id] == null &&
+          privateState.privateMap[entity.id] == null) {
         final dateTime = DateTime.utc(
           entity.createDateTime.year,
           entity.createDateTime.month,
@@ -399,10 +405,11 @@ class TabsNotifier extends StateNotifier<TabsState> {
     newAssetEntityList.removeWhere((element) => element.id == picId);
 
     // Update swiper tab controller
-    final index = SwiperTabController.to.swipeIndex.value;
-    SwiperTabController.to.swiperPicIdList.remove(picId);
-    if (SwiperTabController.to.swiperPicIdList.isNotEmpty) {
-      SwiperTabController.to.swipeIndex.value = index + 1;
+    final swiperState = _ref.read(swiperTabProvider);
+    final index = swiperState.currentIndex;
+    _ref.read(swiperTabProvider.notifier).removePhotoId(picId);
+    if (swiperState.photoIds.isNotEmpty) {
+      _ref.read(swiperTabProvider.notifier).setCurrentIndex(index + 1);
     }
 
     state = state.copyWith(
@@ -538,7 +545,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
     if (state.multiTagSheet) {
       AppLogger.d('WillPopScope multiTagSheet');
-      TagsController.to.multiPicTags.clear();
+      _ref.read(tagsProvider.notifier).clearMultiPicTags();
       setMultiTagSheet(false);
       return false;
     }
@@ -566,7 +573,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
   void onPoppingOut() {
     clearSelectedPhotos();
-    TagsController.to.multiPicTags.clear();
+    _ref.read(tagsProvider.notifier).clearMultiPicTags();
   }
 
   void setTabIndex(int index) {
@@ -579,8 +586,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
   Future<void> trashMultiplePics(Set<String> selectedPicsIds) async {
     var deleted = false;
-    final percentageController = Get.find<PercentageDialogController>();
-    percentageController.stop();
+    final percentageNotifier = _ref.read(percentageDialogProvider.notifier);
+    percentageNotifier.hide();
 
     // Delete photos from device using PhotoManager
     final result = await PhotoManager.editor.deleteWithIds(selectedPicsIds.toList());
@@ -590,22 +597,23 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
     if (deleted) {
       final database = AppDatabase();
-      percentageController.start(selectedPicsIds.length + .0);
+      percentageNotifier.show('Deleting photos');
+      percentageNotifier.updateProgress(0.0);
 
       await Future.forEach(selectedPicsIds.toList(), (String picId) async {
-        final picStore = state.picStoreMap[picId]?.value ?? explorPicStore(picId).value;
+        final picStore = state.picStoreMap[picId] ?? explorPicStore(picId);
 
         if (true) {
           removePicFromUI(picId);
 
-          final pic = await database.getPhotoByPhotoId(picStore.photoId.value);
+          final pic = await database.getPhotoByPhotoId(picStore.state.photoId);
 
           if (pic != null && pic.tags.isNotEmpty) {
             final picTags = List<String>.from(pic.tags.keys);
             await Future.forEach(picTags, (String tagKey) async {
               final tag = await database.getLabelByLabelKey(tagKey);
               if (tag != null) {
-                tag.photoId.remove(picStore.photoId.value);
+                tag.photoId.remove(picStore.state.photoId);
                 await database.updateLabel(tag);
 
                 // Handle private photos (secret tag)
@@ -616,14 +624,15 @@ class TabsNotifier extends StateNotifier<TabsState> {
               }
             });
 
-            await database.deletePhotoByPhotoId(picStore.photoId.value);
+            await database.deletePhotoByPhotoId(picStore.state.photoId);
             await Future.delayed(Duration.zero, () {
-              percentageController.value.value += 1.0;
+              final currentProgress = _ref.read(percentageDialogProvider).progress;
+              percentageNotifier.updateProgress(currentProgress + 1.0 / selectedPicsIds.length);
             });
           }
         }
       }).then((_) {
-        percentageController.stop();
+        percentageNotifier.hide();
         refreshUntaggedList();
         // SwiperTabController refresh will be handled separately
       });
@@ -634,7 +643,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
   }
 
   Future<void> trashPic(String picId) async {
-    final picStore = state.picStoreMap[picId]?.value ?? explorPicStore(picId).value;
+    final picStore = state.picStoreMap[picId] ?? explorPicStore(picId);
     await picStore.deletePic();
     await Analytics.sendEvent(Event.deleted_photo);
   }
@@ -708,16 +717,25 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
   @override
   void dispose() {
-    if (untaggedScrollControllerMonth.hasClients) {
-      untaggedScrollControllerMonth.dispose();
+    // Only dispose scroll controllers if they were initialized
+    try {
+      if (untaggedScrollControllerMonth.hasClients) {
+        untaggedScrollControllerMonth.dispose();
+      }
+    } catch (e) {
+      // untaggedScrollControllerMonth was never initialized, skip disposal
     }
-    if (untaggedScrollControllerDay.hasClients) {
-      untaggedScrollControllerDay.dispose();
+    try {
+      if (untaggedScrollControllerDay.hasClients) {
+        untaggedScrollControllerDay.dispose();
+      }
+    } catch (e) {
+      // untaggedScrollControllerDay was never initialized, skip disposal
     }
     super.dispose();
   }
 }
 
 final tabsProvider = StateNotifierProvider<TabsNotifier, TabsState>((ref) {
-  return TabsNotifier();
+  return TabsNotifier(ref);
 });

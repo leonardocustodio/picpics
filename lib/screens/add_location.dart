@@ -14,7 +14,7 @@ import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/search/search_map_place.dart';
-import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
@@ -24,14 +24,14 @@ final searchScaffoldKey = GlobalKey<ScaffoldState>();
 class AddLocationScreen extends ConsumerStatefulWidget {
   const AddLocationScreen(this.currentPic, {super.key});
   static const id = 'add_location_screen';
-  final PicStore? currentPic;
+  final PicStoreNotifier? currentPic;
 
   @override
   ConsumerState<AddLocationScreen> createState() => _AddLocationScreenState();
 }
 
 class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
-  PicStore get picStore => widget.currentPic!;
+  PicStoreNotifier get picStore => widget.currentPic!;
 
   final _mapController = Completer<GoogleMapController>();
   final _markers = <Marker>{};
@@ -127,11 +127,11 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
   Future<void> findInitialCamera() async {
     LatLng? latLng;
 
-    if (picStore.latitude.value != null && picStore.longitude.value != null) {
-      latLng = LatLng(picStore.latitude.value!, picStore.longitude.value!);
-    } else if (picStore.originalLatitude != null &&
-        picStore.originalLongitude != null) {
-      latLng = LatLng(picStore.originalLatitude!, picStore.originalLongitude!);
+    if (picStore.state.latitude != null && picStore.state.longitude != null) {
+      latLng = LatLng(picStore.state.latitude!, picStore.state.longitude!);
+    } else if (picStore.state.originalLatitude != null &&
+        picStore.state.originalLongitude != null) {
+      latLng = LatLng(picStore.state.originalLatitude!, picStore.state.originalLongitude!);
     }
 
     if (latLng != null && latLng != nullLocation) {

@@ -1,67 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:picpics/providers/private_photos_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/pin_screen.dart';
-import 'package:picpics/stores/pic_store.dart';
-import 'package:picpics/stores/tabs_controller.dart';
-import 'package:picpics/stores/tags_controller.dart';
-import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/delete_secret_modal.dart';
 import 'package:picpics/widgets/unhide_secret_modal.dart';
 
-// GetX-compatible version (no parameters - uses Get.find)
-Future<void> showDeleteSecretModalForMultiPic([BuildContext? context, WidgetRef? ref]) async {
-  // If ref is provided, use Riverpod version
-  if (ref != null && context != null) {
-    return _showDeleteSecretModalForMultiPicRiverpod(context, ref);
-  }
-
-  // Otherwise use GetX version
-  final userController = UserController.to;
-
-  if (userController.keepAskingToDelete.value == false) {
-    TabsController.to.setMultiTagSheet(false);
-    TabsController.to.setMultiPicBar(false);
-    await TagsController.to.addTagsToSelectedPics();
-    return;
-  }
-
-  AppLogger.d('showModal');
-  final ctx = context ?? Get.context!;
-
-  await showDialog<void>(
-    context: ctx,
-    builder: (BuildContext buildContext) {
-      return DeleteSecretModal(
-        onPressedClose: () async {
-          Navigator.of(buildContext).pop();
-        },
-        onPressedDelete: () async {
-          userController.setShouldDeleteOnPrivate(false);
-          TabsController.to.setMultiTagSheet(false);
-          TabsController.to.setMultiPicBar(false);
-          await TagsController.to.addTagsToSelectedPics();
-          Navigator.of(buildContext).pop();
-        },
-        onPressedOk: () async {
-          userController.setShouldDeleteOnPrivate(true);
-          TabsController.to.setMultiTagSheet(false);
-          TabsController.to.setMultiPicBar(false);
-          await TagsController.to.addTagsToSelectedPics();
-          Navigator.of(buildContext).pop();
-        },
-      );
-    },
-  );
-}
-
-// Riverpod version (internal)
-Future<void> _showDeleteSecretModalForMultiPicRiverpod(BuildContext context, WidgetRef ref) async {
+Future<void> showDeleteSecretModalForMultiPic(
+    BuildContext context, WidgetRef ref) async {
   final userState = ref.read(userProvider);
 
   if (userState.keepAskingToDelete == false) {
@@ -101,7 +51,10 @@ Future<void> _showDeleteSecretModalForMultiPicRiverpod(BuildContext context, Wid
 }
 
 Future<void> showDeleteSecretModal(
-    BuildContext context, WidgetRef ref, PicStore picStore,) async {
+  BuildContext context,
+  WidgetRef ref,
+  PicStoreNotifier picStore,
+) async {
   final privatePhotosState = ref.read(privatePhotosProvider);
 
   if (privatePhotosState.showPrivate != true) {
@@ -116,7 +69,7 @@ Future<void> showDeleteSecretModal(
 
   final userState = ref.read(userProvider);
   if (userState.keepAskingToDelete == false &&
-      picStore.isPrivate.value == false) {
+      picStore.state.isPrivate == false) {
     //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
     return;
   }
@@ -127,7 +80,7 @@ Future<void> showDeleteSecretModal(
   await showDialog<void>(
     context: context,
     builder: (BuildContext buildContext) {
-      if (picStore.isPrivate.value == true) {
+      if (picStore.state.isPrivate == true) {
         return UnhideSecretModal(
           onPressedDelete: () {
             Navigator.of(buildContext).pop();
