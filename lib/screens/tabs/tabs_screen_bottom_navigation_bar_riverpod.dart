@@ -180,19 +180,22 @@ class _TabsScreenBottomNavigatioBarState
             _buildTabButton(
               index: 0,
               isSelected: tabsState.currentIndex == 0,
-              icon: 'lib/images/untagged_tab',
+              activeIcon: 'lib/images/untaggedtabactive.png',
+              inactiveIcon: 'lib/images/untaggedtabinactive.png',
               label: 'Recent', // TODO: Use localization when available
             ),
             _buildTabButton(
               index: 1,
               isSelected: tabsState.currentIndex == 1,
-              icon: 'lib/images/pics_tab',
+              activeIcon: 'lib/images/pictabactive.png',
+              inactiveIcon: 'lib/images/pictabinactive.png',
               label: 'Photos', // TODO: Use localization when available
             ),
             _buildTabButton(
               index: 2,
               isSelected: tabsState.currentIndex == 2,
-              icon: 'lib/images/tagged_tab',
+              activeIcon: 'lib/images/taggedtabactive.png',
+              inactiveIcon: 'lib/images/taggedtabinactive.png',
               label: 'Tags', // TODO: Use localization when available
             ),
           ],
@@ -204,11 +207,12 @@ class _TabsScreenBottomNavigatioBarState
   Widget _buildTabButton({
     required int index,
     required bool isSelected,
-    required String icon,
+    required String activeIcon,
+    required String inactiveIcon,
     required String label,
   }) {
     final color = isSelected ? kPrimaryColor : const Color(0xffc1c2c3);
-    final iconPath = isSelected ? '${icon}_selected.png' : '$icon.png';
+    final iconPath = isSelected ? activeIcon : inactiveIcon;
 
     return CupertinoButton(
       padding: const EdgeInsets.all(0),

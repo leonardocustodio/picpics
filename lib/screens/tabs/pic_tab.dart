@@ -31,6 +31,16 @@ class _PicTabState extends ConsumerState<PicTab> {
     final picStore = ref.read(tabsProvider).picStoreMap[picId] ??
         ref.read(tabsProvider.notifier).explorPicStore(picId);
 
+    if (picStore == null) {
+      return Padding(
+        padding: const EdgeInsets.all(6),
+        child: Container(
+          color: Colors.grey[300],
+          child: const Center(child: Text('Photo not available')),
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.all(6),
       child: PhotoCard(
@@ -112,10 +122,6 @@ class _PicTabState extends ConsumerState<PicTab> {
                       itemCount: swiperState.photoIds.length,
                       carouselController: carouselController,
                       itemBuilder: (BuildContext context, int index, int _) {
-                        /* if (index < controller.swipeCutOff) {
-                          return Container();
-                        } */
-                        AppLogger.d('calling index $index');
                         return _buildPhotoSlider(index);
                       },
                       options: CarouselOptions(

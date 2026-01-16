@@ -178,8 +178,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
         ));
 
   // Scroll controllers (instance variables, not state)
-  late ScrollController untaggedScrollControllerMonth;
-  late ScrollController untaggedScrollControllerDay;
+  ScrollController untaggedScrollControllerMonth = ScrollController();
+  ScrollController untaggedScrollControllerDay = ScrollController();
 
   // ============================================================
   // INITIALIZATION & LIFECYCLE
@@ -227,41 +227,67 @@ class TabsNotifier extends StateNotifier<TabsState> {
   // ============================================================
 
   Future<void> loadAssetPath() async {
+    AppLogger.d('[TabsProvider] Starting loadAssetPath');
+
     // Request gallery permissions
     await _ref.read(userProvider.notifier).requestGalleryPermission();
     final permitted = _ref.read(userProvider).hasGalleryPermission;
+    AppLogger.d('[TabsProvider] Gallery permission: $permitted');
+
     if (permitted == false) {
+      AppLogger.w('[TabsProvider] No gallery permission, aborting load');
+      setIsUntaggedPicsLoaded(true);
       return;
     }
 
     setIsUntaggedPicsLoaded(false);
 
-    final filterOptionGroup = FilterOptionGroup()
-      ..addOrderOption(
-        const OrderOption(
-          type: OrderOptionType.createDate,
-          asc: false,
-        ),
+    try {
+      final filterOptionGroup = FilterOptionGroup()
+        ..addOrderOption(
+          const OrderOption(
+            type: OrderOptionType.createDate,
+            asc: false,
+          ),
+        );
+
+      AppLogger.d('[TabsProvider] Fetching asset paths from PhotoManager...');
+      final assets = await PhotoManager.getAssetPathList(
+        type: RequestType.image,
+        onlyAll: true,
+        filterOption: filterOptionGroup,
       );
+      AppLogger.d('[TabsProvider] Got ${assets.length} asset paths');
 
-    final assets = await PhotoManager.getAssetPathList(
-      type: RequestType.image,
-      onlyAll: true,
-      filterOption: filterOptionGroup,
-    );
-
-    await loadEntities(assets);
+      await loadEntities(assets);
+    } catch (e, stackTrace) {
+      AppLogger.e('[TabsProvider] Error in loadAssetPath: $e');
+      AppLogger.e('[TabsProvider] Stack trace: $stackTrace');
+      setIsUntaggedPicsLoaded(true);
+    }
   }
 
   Future<void> loadEntities(List<AssetPathEntity> assetsPath) async {
     if (assetsPath.isEmpty) {
+      AppLogger.w('[TabsProvider] No asset paths found - device has no photos');
       state = state.copyWith(status: Status.deviceHasNoPics);
+      setIsUntaggedPicsLoaded(true);
       return;
     }
 
     final assetPathEntity = assetsPath[0];
     final assetCount = await assetPathEntity.assetCountAsync;
+    AppLogger.d('[TabsProvider] Found $assetCount assets in path');
+
+    if (assetCount == 0) {
+      AppLogger.w('[TabsProvider] Asset count is 0 - device has no photos');
+      state = state.copyWith(status: Status.deviceHasNoPics);
+      setIsUntaggedPicsLoaded(true);
+      return;
+    }
+
     final assets = await assetPathEntity.getAssetListRange(start: 0, end: assetCount);
+    AppLogger.d('[TabsProvider] Loaded ${assets.length} asset entities');
 
     state = state.copyWith(assetEntityList: List<AssetEntity>.from(assets));
     await refreshUntaggedList();
@@ -280,17 +306,11 @@ class TabsNotifier extends StateNotifier<TabsState> {
   // PICSTORE MANAGEMENT
   // ============================================================
 
-  PicStoreNotifier explorPicStore(String picId, {bool silent = false}) {
+  PicStoreNotifier? explorPicStore(String picId, {bool silent = false}) {
     var picStoreValue = state.picStoreMap[picId];
 
     if (picStoreValue == null) {
-      var entity = state.assetMap[picId];
-      if (entity == null) {
-        // Asset map not updated, refresh everything inline
-        // Note: This is async but called synchronously - consider refactoring
-        refreshUntaggedList();
-        entity = state.assetMap[picId];
-      }
+      final entity = state.assetMap[picId];
 
       if (entity != null) {
         picStoreValue = PicStoreNotifier(
@@ -308,10 +328,12 @@ class TabsNotifier extends StateNotifier<TabsState> {
         final newPicStoreMap = Map<String, PicStoreNotifier>.from(state.picStoreMap);
         newPicStoreMap[picId] = picStoreValue;
         state = state.copyWith(picStoreMap: newPicStoreMap);
+      } else if (!silent) {
+        AppLogger.w('[TabsProvider] explorPicStore: Entity not found for picId: $picId');
       }
     }
 
-    return picStoreValue!;
+    return picStoreValue;
   }
 
   // ============================================================
@@ -319,9 +341,24 @@ class TabsNotifier extends StateNotifier<TabsState> {
   // ============================================================
 
   Future<void> filterUntaggedPhotos() async {
+    AppLogger.d('[TabsProvider] Starting filterUntaggedPhotos');
+
     // Refresh tagged and private photos first
-    await _ref.read(taggedProvider.notifier).refreshTaggedPhotos();
-    await _ref.read(privatePhotosProvider.notifier).refreshPrivatePics();
+    try {
+      AppLogger.d('[TabsProvider] Refreshing tagged photos...');
+      await _ref.read(taggedProvider.notifier).refreshTaggedPhotos();
+      AppLogger.d('[TabsProvider] Tagged photos refreshed');
+    } catch (e) {
+      AppLogger.e('[TabsProvider] Error refreshing tagged photos: $e');
+    }
+
+    try {
+      AppLogger.d('[TabsProvider] Refreshing private photos...');
+      await _ref.read(privatePhotosProvider.notifier).refreshPrivatePics();
+      AppLogger.d('[TabsProvider] Private photos refreshed');
+    } catch (e) {
+      AppLogger.e('[TabsProvider] Error refreshing private photos: $e');
+    }
 
     DateTime? previousDay;
     DateTime? previousMonth;
@@ -371,9 +408,18 @@ class TabsNotifier extends StateNotifier<TabsState> {
         newAllUnTaggedPics[entity.id] = '';
       }
 
-      // Ensure picStore exists for this entity
+      // Ensure picStore exists for this entity - create directly since we have the entity
       if (newPicStoreMap[entity.id] == null) {
-        newPicStoreMap[entity.id] = explorPicStore(entity.id);
+        newPicStoreMap[entity.id] = PicStoreNotifier(
+          _ref,
+          entityValue: entity,
+          createdAt: entity.createDateTime,
+          originalLatitude: entity.latitude,
+          originalLongitude: entity.longitude,
+          photoId: entity.id,
+          photoPath: '',
+          thumbPath: '',
+        );
       }
     }
 
@@ -384,13 +430,29 @@ class TabsNotifier extends StateNotifier<TabsState> {
       allUnTaggedPicsDay: newAllUnTaggedPicsDay,
       picStoreMap: newPicStoreMap,
     );
+
+    // Update swiper tab with untagged photo IDs
+    final photoIds = newAllUnTaggedPics.keys.toList();
+    AppLogger.d('[TabsProvider] Updating swiper with ${photoIds.length} photos');
+    _ref.read(swiperTabProvider.notifier).setPhotoIds(photoIds);
   }
 
   Future<void> refreshUntaggedList() async {
+    AppLogger.d('[TabsProvider] Starting refreshUntaggedList');
     setIsUntaggedPicsLoaded(false);
-    sortAssetEntityList();
-    await filterUntaggedPhotos();
-    setIsUntaggedPicsLoaded(true);
+    _ref.read(swiperTabProvider.notifier).setLoaded(false);
+    try {
+      sortAssetEntityList();
+      await filterUntaggedPhotos();
+      AppLogger.d('[TabsProvider] refreshUntaggedList completed successfully');
+    } catch (e, stackTrace) {
+      AppLogger.e('[TabsProvider] Error in refreshUntaggedList: $e');
+      AppLogger.e('[TabsProvider] Stack trace: $stackTrace');
+    } finally {
+      // Always set loaded to true to stop the loading indicator
+      setIsUntaggedPicsLoaded(true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(true);
+    }
   }
 
   void removePicFromUI(String picId) {
@@ -605,33 +667,36 @@ class TabsNotifier extends StateNotifier<TabsState> {
       await Future.forEach(selectedPicsIds.toList(), (String picId) async {
         final picStore = state.picStoreMap[picId] ?? explorPicStore(picId);
 
-        if (true) {
-          removePicFromUI(picId);
+        if (picStore == null) {
+          AppLogger.w('[TabsProvider] PicStore not found for picId: $picId, skipping');
+          return;
+        }
 
-          final pic = await database.getPhotoByPhotoId(picStore.state.photoId);
+        removePicFromUI(picId);
 
-          if (pic != null && pic.tags.isNotEmpty) {
-            final picTags = List<String>.from(pic.tags.keys);
-            await Future.forEach(picTags, (String tagKey) async {
-              final tag = await database.getLabelByLabelKey(tagKey);
-              if (tag != null) {
-                tag.photoId.remove(picStore.state.photoId);
-                await database.updateLabel(tag);
+        final pic = await database.getPhotoByPhotoId(picStore.state.photoId);
 
-                // Handle private photos (secret tag)
-                if (tagKey == kSecretTagKey) {
-                  await picStore.removePrivatePath();
-                  await picStore.deleteEncryptedPic();
-                }
+        if (pic != null && pic.tags.isNotEmpty) {
+          final picTags = List<String>.from(pic.tags.keys);
+          await Future.forEach(picTags, (String tagKey) async {
+            final tag = await database.getLabelByLabelKey(tagKey);
+            if (tag != null) {
+              tag.photoId.remove(picStore.state.photoId);
+              await database.updateLabel(tag);
+
+              // Handle private photos (secret tag)
+              if (tagKey == kSecretTagKey) {
+                await picStore.removePrivatePath();
+                await picStore.deleteEncryptedPic();
               }
-            });
+            }
+          });
 
-            await database.deletePhotoByPhotoId(picStore.state.photoId);
-            await Future.delayed(Duration.zero, () {
-              final currentProgress = _ref.read(percentageDialogProvider).progress;
-              percentageNotifier.updateProgress(currentProgress + 1.0 / selectedPicsIds.length);
-            });
-          }
+          await database.deletePhotoByPhotoId(picStore.state.photoId);
+          await Future.delayed(Duration.zero, () {
+            final currentProgress = _ref.read(percentageDialogProvider).progress;
+            percentageNotifier.updateProgress(currentProgress + 1.0 / selectedPicsIds.length);
+          });
         }
       }).then((_) {
         percentageNotifier.hide();
@@ -646,6 +711,10 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
   Future<void> trashPic(String picId) async {
     final picStore = state.picStoreMap[picId] ?? explorPicStore(picId);
+    if (picStore == null) {
+      AppLogger.w('[TabsProvider] Cannot trash pic - PicStore not found for picId: $picId');
+      return;
+    }
     await picStore.deletePic();
     await Analytics.sendEvent(Event.deleted_photo);
   }
@@ -713,27 +782,20 @@ class TabsNotifier extends StateNotifier<TabsState> {
   // ============================================================
 
   void initScrollControllers() {
-    untaggedScrollControllerMonth = ScrollController();
-    untaggedScrollControllerDay = ScrollController();
+    // Controllers are already initialized at declaration, this method
+    // can be used to reset them if needed
+    if (!untaggedScrollControllerMonth.hasClients) {
+      untaggedScrollControllerMonth = ScrollController();
+    }
+    if (!untaggedScrollControllerDay.hasClients) {
+      untaggedScrollControllerDay = ScrollController();
+    }
   }
 
   @override
   void dispose() {
-    // Only dispose scroll controllers if they were initialized
-    try {
-      if (untaggedScrollControllerMonth.hasClients) {
-        untaggedScrollControllerMonth.dispose();
-      }
-    } catch (e) {
-      // untaggedScrollControllerMonth was never initialized, skip disposal
-    }
-    try {
-      if (untaggedScrollControllerDay.hasClients) {
-        untaggedScrollControllerDay.dispose();
-      }
-    } catch (e) {
-      // untaggedScrollControllerDay was never initialized, skip disposal
-    }
+    untaggedScrollControllerMonth.dispose();
+    untaggedScrollControllerDay.dispose();
     super.dispose();
   }
 }

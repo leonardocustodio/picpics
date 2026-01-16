@@ -71,7 +71,7 @@ class _TagsListState extends ConsumerState<TagsList> {
     final privatePhotosState = ref.watch(privatePhotosProvider);
     final s = ref.watch(sProvider);
 
-    AppLogger.d('Tags in TagsList: $tags');
+    // Removed verbose log to prevent log spam
 
     if (tags.isEmpty && widget.tagStyle == TagStyle.grayOutlined) {
       tagsWidgets.add(

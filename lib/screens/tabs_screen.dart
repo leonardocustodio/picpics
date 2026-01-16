@@ -53,9 +53,6 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     final userState = ref.watch(userProvider);
     final s = ref.watch(sProvider);
     
-    final myLocale = Localizations.localeOf(context);
-    AppLogger.d('Language Code: ${myLocale.languageCode}');
-
     final height = MediaQuery.of(context).size.height;
 
     return PopScope(
@@ -100,9 +97,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     language.S s,
     double height,
   ) {
-    AppLogger.i('[TabsScreen] Building with UserState:');
-    AppLogger.d('  - hasGalleryPermission: ${userState.hasGalleryPermission}');
-    AppLogger.d('  - tutorialCompleted: ${userState.tutorialCompleted}');
+    // Removed verbose build logs to prevent log spam
 
     if (!userState.hasGalleryPermission) {
       AppLogger.i('[TabsScreen] Showing permission request screen');

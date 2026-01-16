@@ -157,8 +157,14 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     final picIdValue = getPicIdList()[index];
-    var picStore = ref.read(tabsProvider).picStoreMap[picIdValue];
-    picStore ??= ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
+    final picStore = ref.read(tabsProvider).picStoreMap[picIdValue] ??
+        ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
+
+    if (picStore == null) {
+      return PhotoViewGalleryPageOptions.customChild(
+        child: const Center(child: Text('Photo not available', style: TextStyle(color: Colors.white))),
+      );
+    }
 
     final imageProvider = AssetEntityImageProvider(picStore);
 
@@ -218,8 +224,18 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
 
   Widget _buildThumbnails(BuildContext context, int index) {
     final picIdValue = getPicIdList()[index];
-    var picStore = ref.read(tabsProvider).picStoreMap[picIdValue];
-    picStore ??= ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
+    final picStore = ref.read(tabsProvider).picStoreMap[picIdValue] ??
+        ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
+
+    if (picStore == null) {
+      return Container(
+        height: 98,
+        width: 98,
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        color: Colors.grey[300],
+      );
+    }
+
     final imageProvider = AssetEntityImageProvider(picStore);
 
     return CupertinoButton(
@@ -347,10 +363,9 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                                   onPressed: () {
                                     final picIdValue = getPicIdList().toList()[
                                         photoScreenState.selectedIndex];
-                                    var shareAblePicStore = ref.read(tabsProvider).picStoreMap[picIdValue];
-                                    shareAblePicStore ??= ref.read(tabsProvider.notifier)
-                                        .explorPicStore(picIdValue);
-                                    shareAblePicStore.sharePic();
+                                    final shareAblePicStore = ref.read(tabsProvider).picStoreMap[picIdValue] ??
+                                        ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
+                                    shareAblePicStore?.sharePic();
                                   },
                                   child: Image.asset(
                                       'lib/images/sharebuttonwithdropshadow.png',),

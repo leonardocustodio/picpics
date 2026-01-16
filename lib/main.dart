@@ -136,8 +136,7 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp>
 
     final userState = ref.watch(userProvider);
 
-    AppLogger.d('Main Build!!!');
-    AppLogger.d('lang: ${userState.appLocale}');
+    // Removed verbose build logs to prevent log spam
 
     return MaterialApp(
       navigatorKey: NavigationService.navigatorKey,

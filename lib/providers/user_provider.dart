@@ -340,7 +340,10 @@ class UserNotifier extends StateNotifier<UserState> {
   }
 
   void setPhotoHeightInCardWidget(double height) {
-    state = state.copyWith(photoHeightInCardWidget: height);
+    // Only update if the value has actually changed to prevent infinite rebuild loops
+    if (state.photoHeightInCardWidget != height) {
+      state = state.copyWith(photoHeightInCardWidget: height);
+    }
   }
 
   void switchIsMenuExpanded() {

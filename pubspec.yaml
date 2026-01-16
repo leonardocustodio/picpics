@@ -20,13 +20,13 @@ dependencies:
   firebase_remote_config: ^6.0.0
   cloud_functions: ^6.0.0
   flutter_riverpod: ^3.0.0-dev.17
-  riverpod_annotation: ^3.0.0-dev.17
+  riverpod_annotation: ^4.0.0
   supercharged: ^2.1.1
   simple_animations: ^5.2.0
   flutter_swiper_view: ^1.1.8
   cryptography: ^2.7.0
   photo_manager: ^3.7.1
-  package_info_plus: ^8.3.1
+  package_info_plus: ^9.0.0
   local_auth: ^3.0.0
   #date_utils: ^0.2.0
   devicelocale: ^0.8.1
@@ -40,8 +40,8 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.39
   image: ^4.5.4
 #  facebook_app_events: ^0.19.0
-  flutter_secure_storage: ^9.2.4
-  home_widget: ^0.8.0
+  flutter_secure_storage: ^10.0.0
+  home_widget: ^0.9.0
   flutter_local_notifications: ^19.4.0
   timezone: ^0.10.1
   google_maps_flutter: ^2.12.3
@@ -80,7 +80,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   drift_dev: ^2.28.1
   build_runner: ^2.7.0
-  riverpod_generator: ^3.0.0-dev.17
+  riverpod_generator: ^4.0.0+1
   riverpod_lint: ^3.0.0-dev.17
   riverpod: ^3.0.0-dev.17
 

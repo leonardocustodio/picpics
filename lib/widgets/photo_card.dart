@@ -109,7 +109,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
   void getSizeAndPosition() {
     final cardBox =
         _photoSpaceKey.currentContext!.findRenderObject()! as RenderBox;
-    AppLogger.d('Card Box Size: ${cardBox.size.height}');
+    // Note: setPhotoHeightInCardWidget now only updates state if value changed
     ref.read(userProvider.notifier).setPhotoHeightInCardWidget(cardBox.size.height);
   }
 
@@ -428,8 +428,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                         suggestionsTitle = s.recent_tags;
                       }
 
-                      AppLogger.d(
-                          '$suggestionsTitle : ${picStore.state.aiTags} : suggestionsTitle',);
+                      // Removed verbose log to prevent log spam
 
                       return TagsList(
                         title: suggestionsTitle,
