@@ -165,7 +165,7 @@ class BlurHash {
 
 /// Deprecated. Please use [BlurHash.decode] and [BlurHash.toImage] instead.
 /// Decode a BlurHash to raw pixels in RGBA32 format
-@deprecated
+@Deprecated('Use BlurHash.decode and BlurHash.toImage instead')
 Uint8List decodeBlurHash(
   String blurHash,
   int width,
@@ -178,7 +178,7 @@ Uint8List decodeBlurHash(
 
 /// Deprecated. Please use [BlurHash.encode] instead.
 /// Encodes an image to a BlurHash string
-@deprecated
+@Deprecated('Use BlurHash.encode instead')
 String encodeBlurHash(
   Uint8List data,
   int width,

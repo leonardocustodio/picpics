@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/model/tag_model.dart';
-import 'package:picpics/stores/language_controller.dart';
-import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/utils/helpers.dart';
 import 'package:picpics/utils/show_edit_label_dialog.dart';
 
 typedef OnTap = void Function(
-    String tagId, String tagName, int counter, DateTime lastUsedAt,);
+    String tagId, String tagName, int counter, DateTime? lastUsedAt,);
 
 // ignore: must_be_immutable
-class CustomisedTagsList extends StatelessWidget {
+class CustomisedTagsList extends ConsumerWidget {
 
   CustomisedTagsList({
     required this.tagsKeyList, required this.selectedTags, required this.onTap, required this.onDoubleTap, super.key,
@@ -28,7 +28,10 @@ class CustomisedTagsList extends StatelessWidget {
   final Function? onDoubleTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tagsState = ref.watch(tagsProvider);
+    final s = ref.watch(sProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -55,17 +58,15 @@ class CustomisedTagsList extends StatelessWidget {
               ? [
                   Container(
                     padding: const EdgeInsets.all(10),
-                    child: Obx(
-                      () => Text(
-                        LangControl.to.S.value.no_tags_found,
-                        style: const TextStyle(
-                          fontFamily: 'Lato',
-                          color: Color(0xff979a9b),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                          letterSpacing: -0.4099999964237213,
-                        ),
+                    child: Text(
+                      s.no_tags_found,
+                      style: const TextStyle(
+                        fontFamily: 'Lato',
+                        color: Color(0xff979a9b),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        fontStyle: FontStyle.normal,
+                        letterSpacing: -0.4099999964237213,
                       ),
                     ),
                   ),
@@ -74,15 +75,15 @@ class CustomisedTagsList extends StatelessWidget {
                   maxLength != null
                       ? tagsKeyList.length.clamp(0, maxLength!)
                       : tagsKeyList.length,
-                  _buildItem,
+                  (index) => _buildItem(context, ref, index, tagsState),
                 ),
         ),
       ],
     );
   }
 
-  Widget _buildItem(int index) {
-    final tag = TagsController.to.allTags[tagsKeyList[index]]!.value;
+  Widget _buildItem(BuildContext context, WidgetRef ref, int index, TagsState tagsState) {
+    final tag = tagsState.allTags[tagsKeyList[index]]!;
     final isColorFull = selectedTags[tag.key] != null;
     return GestureDetector(
       onTap: () {
@@ -97,7 +98,7 @@ class CustomisedTagsList extends StatelessWidget {
       },
       onLongPress: () {
         /* DatabaseManager.instance.selectedTagKey = tag.key; */
-        showEditTagModal(tag.key);
+        showEditTagModal(tag.key, context, ref);
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),

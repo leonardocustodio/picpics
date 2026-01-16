@@ -3,31 +3,49 @@ import 'dart:io';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
-import 'package:picpics/stores/language_controller.dart';
-import 'package:picpics/stores/tagged_controller.dart';
-import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
+import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
 import 'package:picpics/utils/functions.dart';
 import 'package:picpics/utils/helpers.dart';
-import 'package:picpics/utils/refresh_everything.dart';
 import 'package:picpics/widgets/tags_list.dart';
 
-class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
-  TaggedTabSelectiveTagOptionBar({required this.tagKey, super.key});
+class TaggedTabSelectiveTagOptionBar extends ConsumerStatefulWidget {
+  const TaggedTabSelectiveTagOptionBar({required this.tagKey, super.key});
   final String tagKey;
 
+  @override
+  ConsumerState<TaggedTabSelectiveTagOptionBar> createState() =>
+      _TaggedTabSelectiveTagOptionBarState();
+}
+
+class _TaggedTabSelectiveTagOptionBarState
+    extends ConsumerState<TaggedTabSelectiveTagOptionBar> {
   final bottomTagsEditingController = TextEditingController();
-  final tagsController = Get.find<TagsController>();
+
+  @override
+  void dispose() {
+    bottomTagsEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      if (controller.multiTagSheet.value) {
+    final taggedState = ref.watch(taggedProvider);
+    final taggedNotifier = ref.read(taggedProvider.notifier);
+    final tagsState = ref.watch(tagsProvider);
+    final tagsNotifier = ref.read(tagsProvider.notifier);
+    final s = ref.watch(sProvider);
+
+    return Builder(builder: (context) {
+      if (taggedState.multiTagSheet) {
         return ExpandableNotifier(
-          controller: controller.expandableController.value,
+          controller: taggedState.expandableController,
           child: ColoredBox(
             color: const Color(0x0ff1f3f5),
             child: Column(
@@ -36,11 +54,11 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                 CupertinoButton(
                   padding: const EdgeInsets.all(0),
                   onPressed: () {
-                    controller.expandableController.value.expanded =
-                        !controller.expandableController.value.expanded;
+                    taggedState.expandableController.expanded =
+                        !taggedState.expandableController.expanded;
                   },
                   child: SafeArea(
-                    bottom: !controller.expandableController.value.expanded,
+                    bottom: !taggedState.expandableController.expanded,
                     child: ColoredBox(
                       color: const Color(0xFFF1F3F5),
                       child: Row(
@@ -48,20 +66,18 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                         children: <Widget>[
                           CupertinoButton(
                             onPressed: () {
-                              controller.setMultiTagSheet(false);
+                              taggedNotifier.setMultiTagSheet(false);
                             },
                             child: SizedBox(
                               width: 80,
-                              child: Obx(
-                                () => Text(
-                                  LangControl.to.S.value.cancel,
-                                  textScaler: const TextScaler.linear(1),
-                                  style: const TextStyle(
-                                    color: Color(0xff707070),
-                                    fontSize: 16,
-                                    fontFamily: 'Lato',
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              child: Text(
+                                s.cancel,
+                                textScaler: const TextScaler.linear(1),
+                                style: const TextStyle(
+                                  color: Color(0xff707070),
+                                  fontSize: 16,
+                                  fontFamily: 'Lato',
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),
@@ -74,33 +90,30 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                               //   return;
                               // }
 
-                              if (tagsController.multiPicTags[kSecretTagKey] !=
+                              if (tagsState.multiPicTags[kSecretTagKey] !=
                                   null) {
-                                showDeleteSecretModalForMultiPic();
+                                showDeleteSecretModalForMultiPic(context, ref);
                                 return;
                               }
 
-                              controller.setMultiTagSheet(false);
-                              controller.setMultiPicBar(false);
-                              await tagsController.addTagsToSelectedPics(
-                                  selectedPicIds: controller
-                                      .selectedMultiBarPics.keys
-                                      .toList(),);
-                              await refreshEverything();
+                              taggedNotifier.setMultiTagSheet(false);
+                              taggedNotifier.setMultiPicBar(false);
+                              await tagsNotifier.addTagsToSelectedPics();
+                              await ref.read(tabsProvider.notifier).refreshUntaggedList();
+                              await tagsNotifier.tagsSuggestionsCalculate();
+                              tagsNotifier.clear();
                             },
                             child: SizedBox(
                               width: 80,
-                              child: Obx(
-                                () => Text(
-                                  LangControl.to.S.value.ok,
-                                  textScaler: const TextScaler.linear(1),
-                                  textAlign: TextAlign.end,
-                                  style: const TextStyle(
-                                    color: Color(0xff707070),
-                                    fontSize: 16,
-                                    fontFamily: 'Lato',
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              child: Text(
+                                s.ok,
+                                textScaler: const TextScaler.linear(1),
+                                textAlign: TextAlign.end,
+                                style: const TextStyle(
+                                  color: Color(0xff707070),
+                                  fontSize: 16,
+                                  fontFamily: 'Lato',
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),
@@ -111,7 +124,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                   ),
                 ),
                 Expandable(
-                  controller: controller.expandableController.value,
+                  controller: taggedState.expandableController,
                   expanded: Container(
                     padding: const EdgeInsets.all(24),
 
@@ -122,112 +135,108 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           TagsList(
-                              tagStyle: TagStyle.multiColored,
-                              tagsKeyList:
-                                  tagsController.multiPicTags.keys.toList(),
-                              addTagField: true,
-                              textEditingController:
-                                  bottomTagsEditingController,
+                            tagStyle: TagStyle.multiColored,
+                            tagsKeyList: tagsState.multiPicTags.keys.toList(),
+                            addTagField: true,
+                            textEditingController: bottomTagsEditingController,
+                            onTap: (String tagKey) {
+                              ///  if (!UserController.to.isPremium) {
+                              ///    Get.to<void>(() =>   PremiumScreen);
+                              ///    return;
+                              ///  }
+                              AppLogger.d('do nothing');
+                            },
+                            onPanEnd: (String tagKey) {
+                              // if (!UserController.to.isPremium) {
+                              //   Get.to<void>(() =>   PremiumScreen);
+                              //   return;
+                              // }
+                              tagsNotifier.removeMultiPicTag(tagKey);
+                              tagsNotifier.tagsSuggestionsCalculate();
+                              //GalleryStore.to.removeFromMultiPicTags(tagKey);
+                            },
+                            onDoubleTap: (String tagKey) {
+                              // if (!UserController.to.isPremium) {
+                              //   Get.to<void>(() =>   PremiumScreen);
+                              //   return;
+                              // }
+                              AppLogger.d('do nothing');
+                            },
+                            onChanged: (text) {
+                              tagsNotifier.setSearchText(text);
+                              tagsNotifier.tagsSuggestionsCalculate();
+                              //GalleryStore.to.setSearchText(text);
+                            },
+                            onSubmitted: (text) {
+                              // if (!UserController.to.isPremium) {
+                              //   Get.to<void>(() =>   PremiumScreen);
+                              //   return;
+                              // }
+                              if (text != '') {
+                                bottomTagsEditingController.clear();
+                                tagsNotifier.setSearchText(text);
+                                tagsNotifier.tagsSuggestionsCalculate();
+                                final tagKey = Helpers.encryptTag(text);
+
+                                if (tagsState.multiPicTags[tagKey] == null) {
+                                  if (tagsState.allTags[tagKey] == null) {
+                                    AppLogger.d(
+                                      'tag does not exist! creating it!',
+                                    );
+                                    tagsNotifier.createTag(text);
+                                  }
+                                  tagsNotifier.addMultiPicTag(tagKey);
+                                  tagsNotifier.setSearchText('');
+                                }
+                              }
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: TagsList(
+                              title: tagsState.searchText != ''
+                                  ? s.search_results
+                                  : s.recent_tags,
+                              tagsKeyList: tagsState.searchTagsResults
+                                  .where(
+                                    (tag) =>
+                                        tag.key != widget.tagKey &&
+                                        tagsState.multiPicTags[tag.key] == null,
+                                  )
+                                  .toList()
+                                  .map((e) => e.key)
+                                  .toList(),
+                              tagStyle: TagStyle.grayOutlined,
                               onTap: (String tagKey) {
-                                ///  if (!UserController.to.isPremium) {
-                                ///    Get.to<void>(() =>   PremiumScreen);
-                                ///    return;
-                                ///  }
+                                /* if (!UserController
+                                                      .to.isPremium.value) {
+                                                    Get.to<void>(() => PremiumScreen);
+                                                    return;
+                                                  } */
+
+                                bottomTagsEditingController.clear();
+                                tagsNotifier.setSearchText('');
+                                //GalleryStore.to.setSearchText('');
+                                tagsNotifier.addMultiPicTag(tagKey);
+                                tagsNotifier.tagsSuggestionsCalculate();
+                                //GalleryStore.to.addToMultiPicTags(tagKey);
+                              },
+                              onDoubleTap: (String tagKey) {
+                                /* if (!UserController
+                                                      .to.isPremium.value) {
+                                                    Get.to<void>(() => PremiumScreen);
+                                                    return;
+                                                  } */
                                 AppLogger.d('do nothing');
                               },
                               onPanEnd: (String tagKey) {
-                                // if (!UserController.to.isPremium) {
-                                //   Get.to<void>(() =>   PremiumScreen);
-                                //   return;
-                                // }
-                                tagsController.multiPicTags.remove(tagKey);
-                                tagsController.tagsSuggestionsCalculate();
-                                //GalleryStore.to.removeFromMultiPicTags(tagKey);
-                              },
-                              onDoubleTap: (String tagKey) {
-                                // if (!UserController.to.isPremium) {
-                                //   Get.to<void>(() =>   PremiumScreen);
-                                //   return;
-                                // }
+                                /* if (!UserController
+                                                      .to.isPremium.value) {
+                                                    Get.to<void>(() => PremiumScreen);
+                                                    return;
+                                                  } */
                                 AppLogger.d('do nothing');
                               },
-                              onChanged: (text) {
-                                tagsController.searchText.value = text;
-                                tagsController.tagsSuggestionsCalculate();
-                                //GalleryStore.to.setSearchText(text);
-                              },
-                              onSubmitted: (text) {
-                                // if (!UserController.to.isPremium) {
-                                //   Get.to<void>(() =>   PremiumScreen);
-                                //   return;
-                                // }
-                                if (text != '') {
-                                  bottomTagsEditingController.clear();
-                                  tagsController.searchText.value = text;
-                                  tagsController.tagsSuggestionsCalculate();
-                                  final tagKey = Helpers.encryptTag(text);
-
-                                  if (tagsController.multiPicTags[tagKey] ==
-                                      null) {
-                                    if (tagsController.allTags[tagKey] ==
-                                        null) {
-                                      AppLogger.d(
-                                          'tag does not exist! creating it!',);
-                                      tagsController.createTag(text);
-                                    }
-                                    tagsController.multiPicTags[tagKey] = '';
-                                    tagsController.searchText.value = '';
-                                  }
-                                }
-                              },),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Obx(
-                              () => TagsList(
-                                title: tagsController.searchText.value != ''
-                                    ? LangControl.to.S.value.search_results
-                                    : LangControl.to.S.value.recent_tags,
-                                tagsKeyList: tagsController
-                                    .searchTagsResults
-                                    .where((tag) =>
-                                        tag.key != tagKey &&
-                                        tagsController.multiPicTags[tag.key] ==
-                                            null,)
-                                    .toList()
-                                    .map((e) => e.key)
-                                    .toList(),
-                                tagStyle: TagStyle.grayOutlined,
-                                onTap: (String tagKey) {
-                                  /* if (!UserController
-                                                      .to.isPremium.value) {
-                                                    Get.to<void>(() => PremiumScreen);
-                                                    return;
-                                                  } */
-
-                                  bottomTagsEditingController.clear();
-                                  tagsController.searchText.value = '';
-                                  //GalleryStore.to.setSearchText('');
-                                  tagsController.multiPicTags[tagKey] = '';
-                                  tagsController.tagsSuggestionsCalculate();
-                                  //GalleryStore.to.addToMultiPicTags(tagKey);
-                                },
-                                onDoubleTap: (String tagKey) {
-                                  /* if (!UserController
-                                                      .to.isPremium.value) {
-                                                    Get.to<void>(() => PremiumScreen);
-                                                    return;
-                                                  } */
-                                  AppLogger.d('do nothing');
-                                },
-                                onPanEnd: (String tagKey) {
-                                  /* if (!UserController
-                                                      .to.isPremium.value) {
-                                                    Get.to<void>(() => PremiumScreen);
-                                                    return;
-                                                  } */
-                                  AppLogger.d('do nothing');
-                                },
-                              ),
                             ),
                           ),
                         ],
@@ -238,7 +247,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                 ),
                 Expandable(
                   collapsed: Container(),
-                  controller: controller.expandablePaddingController.value,
+                  controller: taggedState.expandablePaddingController,
                   expanded: Container(
                     height: MediaQuery.of(context).viewInsets.bottom,
                   ),
@@ -248,7 +257,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
           ),
         );
       }
-      if (!controller.multiPicBar.value) {
+      if (!taggedState.multiPicBar) {
         return const SizedBox(
           width: 0,
           height: 0,
@@ -262,44 +271,50 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
         BottomNavigationBarItem(
           label: 'Tag',
           icon: AnimatedOpacity(
-              duration: const Duration(milliseconds: 500),
-              opacity: controller.selectedMultiBarPics.isEmpty ? 0.2 : 1,
-              child: Image.asset('lib/images/tagtabbutton.png'),),
+            duration: const Duration(milliseconds: 500),
+            opacity: taggedState.selectedMultiBarPics.isEmpty ? 0.2 : 1,
+            child: Image.asset('lib/images/tagtabbutton.png'),
+          ),
         ),
         BottomNavigationBarItem(
           label: 'Share',
           icon: AnimatedOpacity(
-              duration: const Duration(milliseconds: 500),
-              opacity: controller.selectedMultiBarPics.isEmpty ? 0.2 : 1,
-              child: Image.asset('lib/images/sharetabbutton.png'),),
+            duration: const Duration(milliseconds: 500),
+            opacity: taggedState.selectedMultiBarPics.isEmpty ? 0.2 : 1,
+            child: Image.asset('lib/images/sharetabbutton.png'),
+          ),
         ),
         BottomNavigationBarItem(
-            label: 'Trash',
-            icon: AnimatedOpacity(
-              duration: const Duration(milliseconds: 500),
-              opacity: controller.selectedMultiBarPics.isEmpty ? 0.2 : 1,
-              child: Image.asset('lib/images/trashtabbutton.png'),
-            ),),
+          label: 'Trash',
+          icon: AnimatedOpacity(
+            duration: const Duration(milliseconds: 500),
+            opacity: taggedState.selectedMultiBarPics.isEmpty ? 0.2 : 1,
+            child: Image.asset('lib/images/trashtabbutton.png'),
+          ),
+        ),
       ];
       return Platform.isIOS
           ? CupertinoTabBar(
               onTap: (index) {
-                controller.setTabIndexParticularTagKey(index, tagKey);
+                taggedNotifier.setBottomOptionsBar(index);
               },
               iconSize: 24,
               border: const Border(
-                  top: BorderSide(color: Color(0xFFE2E4E5)),),
-              items: listOfBottomNavigationItems,)
+                top: BorderSide(color: Color(0xFFE2E4E5)),
+              ),
+              items: listOfBottomNavigationItems,
+            )
           : SizedBox(
               height: 64,
               child: BottomNavigationBar(
-                  onTap: (index) {
-                    controller.setTabIndexParticularTagKey(index, tagKey);
-                  },
-                  type: BottomNavigationBarType.fixed,
-                  showSelectedLabels: false,
-                  showUnselectedLabels: false,
-                  items: listOfBottomNavigationItems,),
+                onTap: (index) {
+                  taggedNotifier.setBottomOptionsBar(index);
+                },
+                type: BottomNavigationBarType.fixed,
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
+                items: listOfBottomNavigationItems,
+              ),
             );
     });
   }

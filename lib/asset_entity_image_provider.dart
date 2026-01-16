@@ -1,11 +1,12 @@
+// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picpics/constants.dart';
-import 'package:picpics/stores/blur_hash_controller.dart';
-import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 @immutable
@@ -18,7 +19,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     this.isOriginal = true,
   }) : assert(isOriginal || thumbSize.length == 2,
             'thumbSize must contain and only contain two integers when it\'s not original',);
-  final PicStore picStore;
+  final PicStoreNotifier picStore;
 
   /// Scale for image provider.
   /// 缩放
@@ -71,28 +72,27 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
     if (isOriginal) {
       AppLogger.d('Loading original...');
-      data = picStore.isPrivate.value
+      data = picStore.state.isPrivate
           ? await key.picStore.assetOriginBytes
-          : await key.picStore.entity.value?.originBytes;
+          : await key.picStore.state.entity?.originBytes;
     } else {
       AppLogger.d('Loading thumbnail...');
-      if (picStore.entity.value == null) {
-        AppLogger.d('Entity is null & isPrivate: ${picStore.isPrivate}');
+      if (picStore.state.entity == null) {
+        AppLogger.d('Entity is null & isPrivate: ${picStore.state.isPrivate}');
       }
-      data = picStore.isPrivate.value
+      data = picStore.state.isPrivate
           ? await key.picStore.assetThumbBytes
-          : await key.picStore.entity.value?.thumbnailDataWithSize(
+          : await key.picStore.state.entity?.thumbnailDataWithSize(
               ThumbnailSize(thumbSize[0], thumbSize[1]),);
 
-      if (BlurHashController.to.blurHash[picStore.photoId.value] == null) {
-        if (data != null) {
-          await BlurHashController.to
-              .createBlurHash(picStore.photoId.value, data);
-        }
-      }
+      // TODO: Blur hash generation needs to be moved to a provider-aware context
+      // Cannot access Riverpod provider from ImageProvider
+      // if (data != null) {
+      //   await createBlurHash(picStore.photoId.value, data);
+      // }
     }
 
-    // if (picStore.isPrivate == true) {
+    // if (picStore.state.isPrivate == true) {
     AppLogger.d('entity is null!!!');
     //   data = await key.picStore.assetOriginBytes;
     //   return decode(data);
@@ -100,12 +100,12 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     //
     // if (isOriginal ?? false) {
     //   if (imageFileType == ImageFileType.heic) {
-    //     data = await (await key.picStore.entity.file).readAsBytes();
+    //     data = await (await key.picStore.state.entity.file).readAsBytes();
     //   } else {
-    //     data = await key.picStore.entity.originBytes;
+    //     data = await key.picStore.state.entity.originBytes;
     //   }
     // } else {
-    //   data = await key.picStore.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
+    //   data = await key.picStore.state.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
     // }
     final buffer = await ui.ImmutableBuffer.fromUint8List(data!);
     return decode(buffer);
@@ -120,9 +120,9 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   ImageFileType _getType() {
     late ImageFileType type;
 
-    final extension = picStore.entity.value == null
-        ? picStore.photoPath.split('.').last
-        : picStore.entity.value?.title?.split('.').last;
+    final extension = picStore.state.entity == null
+        ? picStore.state.photoPath.split('.').last
+        : picStore.state.entity?.title?.split('.').last;
     AppLogger.d('Extension: $extension');
     if (extension != null) {
       switch (extension.toLowerCase()) {
@@ -158,18 +158,18 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     }
     final typedOther = other as AssetEntityImageProvider;
 
-    if (picStore.entity.value == null) {
-      return picStore.photoPath == typedOther.picStore.photoPath;
+    if (picStore.state.entity == null) {
+      return picStore.state.photoPath == typedOther.picStore.state.photoPath;
     }
 
-    return picStore.entity == typedOther.picStore.entity &&
+    return picStore.state.entity == typedOther.picStore.state.entity &&
         scale == typedOther.scale &&
         thumbSize == typedOther.thumbSize &&
         isOriginal == typedOther.isOriginal;
   }
 
   @override
-  int get hashCode => Object.hash(picStore.entity, scale, isOriginal);
+  int get hashCode => Object.hash(picStore.state.entity, scale, isOriginal);
 }
 
 enum ImageFileType { jpg, png, gif, tiff, heic, other }

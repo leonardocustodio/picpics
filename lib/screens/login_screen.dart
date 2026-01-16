@@ -1,31 +1,40 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
-import 'package:get/get.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/login_provider.dart';
+import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/tabs_screen.dart';
-import 'package:picpics/stores/language_controller.dart';
-import 'package:picpics/stores/login_store.dart';
-import 'package:picpics/stores/user_controller.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/color_animated_background.dart';
 
-class LoginScreen extends StatefulWidget {
-
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
   static const id = 'login_screen';
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   SwiperController swiperController = SwiperController();
 
   @override
+  void initState() {
+    super.initState();
+    // Initialize login screens on first load
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(loginProvider.notifier).initializeScreens();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final loginStore = LoginStore();
+    final loginState = ref.watch(loginProvider);
+    final s = ref.watch(sProvider);
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -37,14 +46,13 @@ class _LoginScreenState extends State<LoginScreen> {
               blurFilter: false,
             ),
             SafeArea(
-              child: Obx(() {
-                return Center(
+              child: Center(
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 16, top: 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        if (loginStore.slideIndex.value != 0)
+                        if (loginState.slideIndex != 0)
                           Image.asset('lib/images/picpics_small.png'),
                         Expanded(
                           child: Swiper(
@@ -67,20 +75,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                       const Spacer(
                                         
                                       ),
-                                      Obx(
-                                        () => Text(
-                                          LangControl.to.S.value.welcome,
-                                          textScaler: const TextScaler.linear(1),
-                                          style: kLoginDescriptionTextStyle,
-                                        ),
+                                      Text(
+                                        s.welcome,
+                                        textScaler: const TextScaler.linear(1),
+                                        style: kLoginDescriptionTextStyle,
                                       ),
-                                      Obx(
-                                        () => Text(
-                                          LangControl.to.S.value
-                                              .photos_always_organized,
-                                          textScaler: const TextScaler.linear(1),
-                                          style: kLoginDescriptionTextStyle,
-                                        ),
+                                      Text(
+                                        s.photos_always_organized,
+                                        textScaler: const TextScaler.linear(1),
+                                        style: kLoginDescriptionTextStyle,
                                       ),
                                       const Spacer(
                                         flex: 2,
@@ -98,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Container(
                                     constraints: BoxConstraints(
                                         maxHeight: height / 3 - 20,),
-                                    child: loginStore.getImage(index),
+                                    child: loginState.getImage(index - 1) ?? const SizedBox(),
                                   ),
                                   const Spacer(
                                     flex: 2,
@@ -110,8 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       bottom: 48,
                                     ),
                                     child: Text(
-                                      loginStore.getDescription(
-                                              context, index,) ??
+                                      loginState.getDescription(index - 1) ??
                                           '',
                                       textScaler: const TextScaler.linear(1),
                                       textAlign: TextAlign.center,
@@ -127,16 +129,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               );
                             },
-                            itemCount: loginStore.totalSlides,
+                            itemCount: loginState.totalSlides,
                             controller: swiperController,
-                            onIndexChanged: loginStore.setSlideIndex,
+                            onIndexChanged: (index) {
+                              ref.read(loginProvider.notifier).setSlideIndex(index);
+                            },
                             pagination: SwiperCustomPagination(
                               builder: (BuildContext context,
                                   SwiperPluginConfig? config,) {
                                 final navIndicators = <Widget>[];
 
                                 for (var x = 0;
-                                    x < loginStore.totalSlides;
+                                    x < loginState.totalSlides;
                                     x++) {
                                   navIndicators.add(
                                     Container(
@@ -170,12 +174,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 64),
                         CupertinoButton(
                           onPressed: () async {
-                            if (loginStore.slideIndex.value ==
-                                loginStore.totalSlides - 1) {
-                              await UserController.to
-                                  .setTutorialCompleted(true);
-                              await Get.offNamedUntil<void>(
-                                  TabsScreen.id, (route) => false,);
+                            if (loginState.slideIndex ==
+                                loginState.totalSlides - 1) {
+                              await ref.read(loginProvider.notifier).completeIntroduction();
+                              ref.read(userProvider.notifier).setTutorialCompleted(true);
+                              if (mounted) {
+                                // ignore: use_build_context_synchronously
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  TabsScreen.id,
+                                  (route) => false,
+                                );
+                              }
                               return;
                             }
                             AppLogger.d('next');
@@ -191,12 +200,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             alignment: Alignment.center,
-                            child: Obx(
-                              () => Text(
-                                loginStore.slideIndex.value ==
-                                        loginStore.totalSlides - 1
-                                    ? LangControl.to.S.value.start.toUpperCase()
-                                    : LangControl.to.S.value.next.toUpperCase(),
+                            child: Text(
+                              loginState.slideIndex ==
+                                      loginState.totalSlides - 1
+                                  ? s.start.toUpperCase()
+                                  : s.next.toUpperCase(),
                                 textScaler: const TextScaler.linear(1),
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
@@ -207,16 +215,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   fontStyle: FontStyle.normal,
                                   letterSpacing: -0.4099999964237213,
                                 ),
-                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                );
-              }),
-            ),
+                ),
+              ),
           ],
         ),
       ),

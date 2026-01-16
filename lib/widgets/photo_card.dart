@@ -1,58 +1,53 @@
+// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:picpics/asset_entity_image_provider.dart';
 import 'package:picpics/components/circular_menu.dart';
 import 'package:picpics/components/circular_menu_item.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/fade_image_builder.dart';
+import 'package:picpics/providers/blur_hash_provider.dart';
+import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
+import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tags_provider.dart';
+import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/all_tags_screen.dart';
 import 'package:picpics/screens/photo_screen.dart';
-import 'package:picpics/stores/blur_hash_controller.dart';
-import 'package:picpics/stores/language_controller.dart';
-import 'package:picpics/stores/pic_store.dart';
-import 'package:picpics/stores/tabs_controller.dart';
-import 'package:picpics/stores/tagged_controller.dart';
-import 'package:picpics/stores/tags_controller.dart';
-import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
 import 'package:picpics/utils/functions.dart';
 import 'package:picpics/utils/refresh_everything.dart';
 import 'package:picpics/widgets/tags_list.dart';
 
-//typedef EditTagModalTypeDef = dynamic Function(String tagKey);
-
-class PhotoCard extends StatefulWidget {
-
+class PhotoCard extends ConsumerStatefulWidget {
   const PhotoCard({
-    required this.picStore, //this.showEditTagModal,
-    //this.showDeleteSecretModal,
-    required this.picsInThumbnails, required this.picsInThumbnailIndex, super.key,
+    required this.picStore,
+    required this.picsInThumbnails,
+    required this.picsInThumbnailIndex,
+    super.key,
   });
-  final PicStore picStore;
 
-  //final EditTagModalTypeDef showEditTagModal;
-  //final Function showDeleteSecretModal;
+  final PicStoreNotifier picStore;
   final PicSource picsInThumbnails;
   final int picsInThumbnailIndex;
 
   @override
-  PhotoCardState createState() => PhotoCardState();
+  ConsumerState<PhotoCard> createState() => _PhotoCardState();
 }
 
-class PhotoCardState extends State<PhotoCard> {
+class _PhotoCardState extends ConsumerState<PhotoCard> {
   final GlobalKey _photoSpaceKey = GlobalKey();
 
-  //TabsController tabsStore;
-  PicStore get picStore => widget.picStore;
-
-  //List<int> photoSize;
+  PicStoreNotifier get picStore => widget.picStore;
 
   BoxFit boxFit = BoxFit.cover;
 
@@ -65,25 +60,27 @@ class PhotoCardState extends State<PhotoCard> {
   }
 
   Future<List<String>> reverseGeocoding(BuildContext context) async {
-    if (picStore.specificLocation.value != null &&
-        picStore.generalLocation.value != null) {
+    final s = ref.read(sProvider);
+
+    if (picStore.state.specificLocation != null &&
+        picStore.state.generalLocation != null) {
       return [
-        picStore.specificLocation.value!,
-        '  ${picStore.generalLocation.value}',
+        picStore.state.specificLocation!,
+        '  ${picStore.state.generalLocation}',
       ];
     }
 
-    if ((picStore.originalLatitude == null ||
-            picStore.originalLongitude == null) ||
-        (picStore.originalLatitude == 0 && picStore.originalLongitude == 0)) {
+    if ((picStore.state.originalLatitude == null ||
+            picStore.state.originalLongitude == null) ||
+        (picStore.state.originalLatitude == 0 && picStore.state.originalLongitude == 0)) {
       return [
-        LangControl.to.S.value.photo_location,
-        '  ${LangControl.to.S.value.country}',
+        s.photo_location,
+        '  ${s.country}',
       ];
     }
 
     final placemark = await placemarkFromCoordinates(
-        picStore.originalLatitude!, picStore.originalLongitude!,);
+        picStore.state.originalLatitude!, picStore.state.originalLongitude!,);
 
     AppLogger.d('Placemark: ${placemark.length}');
     for (final place in placemark) {
@@ -93,8 +90,8 @@ class PhotoCardState extends State<PhotoCard> {
     if (placemark.isNotEmpty) {
       AppLogger.d('Saving pic!!!');
       await picStore.saveLocation(
-        lat: picStore.originalLatitude!,
-        long: picStore.originalLongitude!,
+        lat: picStore.state.originalLatitude!,
+        long: picStore.state.originalLongitude!,
         specific: placemark[0].locality,
         general: placemark[0].country,
       );
@@ -102,8 +99,8 @@ class PhotoCardState extends State<PhotoCard> {
     }
 
     return [
-      LangControl.to.S.value.photo_location,
-      '  ${LangControl.to.S.value.country}',
+      s.photo_location,
+      '  ${s.country}',
     ];
   }
 
@@ -112,8 +109,8 @@ class PhotoCardState extends State<PhotoCard> {
   void getSizeAndPosition() {
     final cardBox =
         _photoSpaceKey.currentContext!.findRenderObject()! as RenderBox;
-    AppLogger.d('Card Box Size: ${cardBox.size.height}');
-    UserController.to.setPhotoHeightInCardWidget(cardBox.size.height);
+    // Note: setPhotoHeightInCardWidget now only updates state if value changed
+    ref.read(userProvider.notifier).setPhotoHeightInCardWidget(cardBox.size.height);
   }
 
   String? hash;
@@ -122,40 +119,37 @@ class PhotoCardState extends State<PhotoCard> {
   void initState() {
     super.initState();
 
-    hash = BlurHashController.to.blurHash[picStore.photoId.value];
-    tagsFocusNode = FocusNode();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final blurHashState = ref.read(blurHashProvider);
+      hash = blurHashState.blurHash[picStore.state.photoId];
+      if (mounted) {
+        setState(() {});
+      }
+    });
 
-    /* if (KeyboardVisibility.isVisible) {
-      AppLogger.d('#### keyboard is visible!!!!');
-      tagsFocusNode.requestFocus();
-    } */
+    tagsFocusNode = FocusNode();
   }
 
-/*   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    UserController.to = Provider.of<UserController>(context);
-    tabsStore = Provider.of<TabsStore>(context);
-    GalleryStore.to = Provider.of<GalleryStore>(context);
-    // GalleryStore.to.setCurrentPic(widget.picStore);
-
-    int height = MediaQuery.of(context).size.height * 2 ~/ 3;
-    photoSize = <int>[height, height];
-
-    AppLogger.d('Did Change Dep!!!');
-  } */
+  @override
+  void dispose() {
+    tagsEditingController.dispose();
+    tagsFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-/*     final height = MediaQuery.of(context).size.height;
- */
-    AppLogger.d('Pic Store Photo Id: ${picStore.photoId}');
-    AppLogger.d('Other info: ${picStore.photoPath}');
-    // var secretBox = Hive.box('secrets');
-    // Secret secret = secretBox.get(picStore.photoId);
-    /* AppLogger.d('In secret db: ${secret.photoId} - ${secret.photoPath}'); */
+    final userState = ref.watch(userProvider);
+    final taggedState = ref.watch(taggedProvider);
+    final tagsState = ref.watch(tagsProvider);
+    final s = ref.watch(sProvider);
+    final blurHashState = ref.watch(blurHashProvider);
+
+    hash ??= blurHashState.blurHash[picStore.state.photoId];
+
     final imageProvider = AssetEntityImageProvider(picStore,
         thumbSize: kDefaultPhotoSize, isOriginal: false,);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
       decoration: BoxDecoration(
@@ -235,16 +229,15 @@ class PhotoCardState extends State<PhotoCard> {
                   ),
                 ),
                 CircularMenu(
-                  // UserController.to: UserController.to,
-                  isExpanded: UserController.to.isMenuExpanded.value,
+                  isExpanded: userState.isMenuExpanded,
                   useInHorizontal:
-                      UserController.to.photoHeightInCardWidget < 280
+                      userState.photoHeightInCardWidget < 280
                           ? true
                           : false,
                   alignment: Alignment.bottomRight,
                   radius: 52,
                   toggleButtonOnPressed: () {
-                    UserController.to.switchIsMenuExpanded();
+                    ref.read(userProvider.notifier).switchIsMenuExpanded();
                   },
                   toggleButtonColor:
                       const Color(0xFF979A9B).withValues(alpha: 0.5),
@@ -262,22 +255,21 @@ class PhotoCardState extends State<PhotoCard> {
                       color: kWarningColor,
                       iconSize: 19.2,
                       onTap: () {
-                        //GalleryStore.to.trashPic(picStore);
-                        TabsController.to
-                            .removePicFromUI(picStore.photoId.value);
-                        TabsController.to.trashPic(picStore.photoId.value);
+                        ref.read(tabsProvider.notifier)
+                            .removePicFromUI(picStore.state.photoId);
+                        ref.read(tabsProvider.notifier).trashPic(picStore.state.photoId);
                       },
                     ),
                     CircularMenuItem(
-                      image: picStore.isPrivate.value == true
+                      image: picStore.state.isPrivate == true
                           ? Image.asset('lib/images/openlockmenu.png')
                           : Image.asset('lib/images/lockmenu.png'),
-                      color: picStore.isPrivate.value == true
+                      color: picStore.state.isPrivate == true
                           ? const Color(0xFFF5FAFA)
                           : kYellowColor,
                       iconSize: 19.2,
                       onTap: () {
-                        showDeleteSecretModal(picStore);
+                        showDeleteSecretModal(context, ref, picStore);
                       },
                     ),
                     CircularMenuItem(
@@ -292,15 +284,16 @@ class PhotoCardState extends State<PhotoCard> {
                       image: Image.asset('lib/images/expandmenu.png'),
                       color: kSecondaryColor,
                       iconSize: 19.2,
-                      onTap: () {
-                        /* GalleryStore.to
-                                .setInitialSelectedThumbnail(picStore); */
-                        final result = Get.to<dynamic>(() => PhotoScreen(
-                            picIdList: const [],
-                            picId: picStore.photoId.value,),);
-                        if (null == result) {
-                          refreshEverything();
-                        }
+                      onTap: () async {
+                        await Navigator.of(context).push<void>(
+                          MaterialPageRoute<void>(
+                            builder: (_) => PhotoScreen(
+                              picIdList: const [],
+                              picId: picStore.state.photoId,
+                            ),
+                          ),
+                        );
+                        refreshEverything(ref);
                       },
                     ),
                   ],
@@ -318,51 +311,11 @@ class PhotoCardState extends State<PhotoCard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    // CupertinoButton(
-                    //   padding: const EdgeInsets.all(0),
-                    //   onPressed: () {
-                    //     Get.to<void>(() => AddLocationScreen(picStore));
-                    //   },
-                    //   child: Obx(() {
-                    //     return RichText(
-                    //       textScaler: TextScaler.linear(1.0),
-                    //       text: TextSpan(
-                    //         children: [
-                    //           TextSpan(
-                    //             text: picStore.specificLocation.value
-                    //                     ?.toString() ??
-                    //                 LangControl.to.S.value.photo_location,
-                    //             style: const TextStyle(
-                    //               fontFamily: 'Lato',
-                    //               color: Color(0xff606566),
-                    //               fontSize: 18,
-                    //               fontWeight: FontWeight.w400,
-                    //               fontStyle: FontStyle.normal,
-                    //               letterSpacing: -0.4099999964237213,
-                    //             ),
-                    //           ),
-                    //           TextSpan(
-                    //             text:
-                    //                 '  ${picStore.generalLocation.value ?? LangControl.to.S.value.country}',
-                    //             style: const TextStyle(
-                    //               fontFamily: 'Lato',
-                    //               color: Color(0xff606566),
-                    //               fontSize: 12,
-                    //               fontWeight: FontWeight.w300,
-                    //               fontStyle: FontStyle.normal,
-                    //               letterSpacing: -0.4099999964237213,
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //     );
-                    //   }),
-                    // ),
                     CupertinoButton(
                       onPressed: null,
                       padding: const EdgeInsets.all(0),
                       child: Text(
-                        dateFormat(picStore.createdAt),
+                        dateFormat(picStore.state.createdAt),
                         textScaler: const TextScaler.linear(1),
                         style: const TextStyle(
                           fontFamily: 'Lato',
@@ -376,129 +329,118 @@ class PhotoCardState extends State<PhotoCard> {
                     ),
                   ],
                 ),
-                Obx(() {
-                  return TagsList(
-                    tagStyle: TagStyle.multiColored,
-                    tagsKeyList: TaggedController
-                            .to
-                            .picWiseTags[picStore.photoId.value]
-                            ?.keys
-                            .toList() ??
-                        <String>[],
-                    addTagField: true,
-                    textEditingController: tagsEditingController,
-                    textFocusNode: tagsFocusNode,
-                    //showEditTagModal: widget.showEditTagModal,
-                    shouldChangeToSwipeMode: true,
-                    aiButtonTitle: LangControl.to.S.value.allTags,
-                    onAiButtonTap: () {
-                      Get.to<void>(() => AllTagsScreen(picStore: picStore));
-                      AppLogger.d('ai button tapped');
-                      // picStore.switchAiTags(context);
-                    },
-                    onTap: (String key) {
-                      AppLogger.d('do nothing');
-                    },
-                    onDoubleTap: (String value) {
-                      AppLogger.d('do nothing');
-                    },
-                    onPanEnd: (String selectedTagKey) async {
-                      await TagsController.to.removeTagFromPic(
-                          picId: picStore.photoId.value,
-                          tagKey: selectedTagKey,);
+                TagsList(
+                  tagStyle: TagStyle.multiColored,
+                  tagsKeyList: taggedState.picWiseTags[picStore.state.photoId]
+                          ?.keys
+                          .toList() ??
+                      <String>[],
+                  addTagField: true,
+                  textEditingController: tagsEditingController,
+                  textFocusNode: tagsFocusNode,
+                  shouldChangeToSwipeMode: true,
+                  aiButtonTitle: s.allTags,
+                  onAiButtonTap: () async {
+                    await Navigator.of(context).push<void>(
+                      MaterialPageRoute<void>(
+                        builder: (_) => AllTagsScreen(picStore: picStore),
+                      ),
+                    );
+                    AppLogger.d('ai button tapped');
+                  },
+                  onTap: (String key) {
+                    AppLogger.d('do nothing');
+                  },
+                  onDoubleTap: (String value) {
+                    AppLogger.d('do nothing');
+                  },
+                  onPanEnd: (String selectedTagKey) async {
+                    await ref.read(tagsProvider.notifier).removeTagFromPic(
+                        picId: picStore.state.photoId,
+                        tagKey: selectedTagKey,);
 
-                      /* await GalleryStore.to.removeTagFromPic(
-                          picStore: picStore, tagKey: selectedTagKey); */
+                    await picStore.tagsSuggestionsCalculate();
+                    await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
+                    await ref.read(tabsProvider.notifier).loadAssetPath();
+                  },
+                  onChanged: (text) async {
+                    ref.read(tagsProvider.notifier).setSearchText(text);
+                    await ref.read(tagsProvider.notifier).tagsSuggestionsCalculate();
+                  },
+                  onSubmitted: (text) async {
+                    AppLogger.d('return');
 
-                      await picStore.tagsSuggestionsCalculate();
-                      await TaggedController.to.refreshTaggedPhotos();
-                      await TabsController.to.refreshUntaggedList();
-                    },
-                    onChanged: (text) async {
-                      TagsController.to.searchText.value = text;
-                      await TagsController.to.tagsSuggestionsCalculate();
-                    },
-                    onSubmitted: (text) async {
-                      AppLogger.d('return');
+                    if (text != '') {
+                      final tagKey = await ref.read(tagsProvider.notifier).createTag(text);
+                      await picStore.addMultipleTagsToPic(
+                          acceptedTagKeys: {tagKey: ''},);
 
-                      if (text != '') {
-                        final tagKey = await TagsController.to.createTag(text);
-                        await picStore.addMultipleTagsToPic(
-                            acceptedTagKeys: {tagKey: ''},);
-
-                        HapticFeedback.lightImpact();
-                        tagsEditingController.clear();
-                        TagsController.to.searchText.value = '';
-                        await TagsController.to.tagsSuggestionsCalculate();
-                        await TaggedController.to.refreshTaggedPhotos();
-                        await TabsController.to.refreshUntaggedList();
-                      }
-                    },
-                  );
-                }),
+                      HapticFeedback.lightImpact();
+                      tagsEditingController.clear();
+                      ref.read(tagsProvider.notifier).setSearchText('');
+                      await ref.read(tagsProvider.notifier).tagsSuggestionsCalculate();
+                      await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
+                      await ref.read(tabsProvider.notifier).loadAssetPath();
+                    }
+                  },
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
-                  child: Obx(() {
-                    String suggestionsTitle;
+                  child: Builder(
+                    builder: (context) {
+                      String suggestionsTitle;
 
-                    if (picStore.aiTags.value) {
-                      if (picStore.aiTagsLoaded.value == false) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              LangControl.to.S.value.suggestions,
-                              textScaler: const TextScaler.linear(1),
-                              style: const TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff979a9b),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
-                              ),
-                            ),
-                            const Center(
-                              child: Padding(
-                                padding:
-                                    EdgeInsets.only(top: 32, bottom: 32),
-                                child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      kSecondaryColor,),
+                      if (picStore.state.aiTags) {
+                        if (picStore.state.aiTagsLoaded == false) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                s.suggestions,
+                                textScaler: const TextScaler.linear(1),
+                                style: const TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff979a9b),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
                                 ),
                               ),
-                            ),
-                          ],
-                        );
+                              const Center(
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.only(top: 32, bottom: 32),
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        kSecondaryColor,),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+
+                        suggestionsTitle = s.suggestions;
+                      } else if (picStore.state.searchText != '') {
+                        suggestionsTitle = s.search_results;
+                      } else {
+                        suggestionsTitle = s.recent_tags;
                       }
 
-                      suggestionsTitle = LangControl.to.S.value.suggestions;
-                    } else if (picStore.searchText.value != '') {
-                      suggestionsTitle = LangControl.to.S.value.search_results;
-                    } else {
-                      suggestionsTitle = LangControl.to.S.value.recent_tags;
-                    }
+                      // Removed verbose log to prevent log spam
 
-                    AppLogger.d(
-                        '$suggestionsTitle : ${picStore.aiTags} : suggestionsTitle',);
-                    TagsController.to.tagsSuggestionsCalculate();
-                    return Obx(
-                      () => TagsList(
+                      return TagsList(
                         title: suggestionsTitle,
-                        tagsKeyList:
-                            /* 
-                            picStore.aiTags.value
-                            ? picStore.aiSuggestions.value
-                            : */
-                            TagsController.to.searchTagsResults
-                                .map((e) => e.key)
-                                .toList()
-                                .where((tagKey) {
-                          if (TaggedController.to.picWiseTags[
-                                      picStore.photoId.value] !=
+                        tagsKeyList: tagsState.searchTagsResults
+                            .map((e) => e.key)
+                            .toList()
+                            .where((tagKey) {
+                          if (taggedState.picWiseTags[
+                                      picStore.state.photoId] !=
                                   null &&
-                              TaggedController.to.picWiseTags[
-                                          picStore.photoId.value]
+                              taggedState.picWiseTags[
+                                          picStore.state.photoId]
                                       ?[tagKey] !=
                                   null) {
                             return false;
@@ -507,42 +449,13 @@ class PhotoCardState extends State<PhotoCard> {
                           return true;
                         }).toList(),
                         tagStyle: TagStyle.grayOutlined,
-                        //showEditTagModal: widget.showEditTagModal,
                         onTap: (tagKey) async {
                           await picStore.addMultipleTagsToPic(
                               acceptedTagKeys: {tagKey: ''},);
-                          await TagsController.to
-                              .tagsSuggestionsCalculate()
-                              .then((value) async {
-                            await TaggedController.to.refreshTaggedPhotos();
-                            final newList = value.where((element) {
-                              if (TaggedController.to.picWiseTags[
-                                          picStore.photoId.value] !=
-                                      null &&
-                                  TaggedController.to.picWiseTags[
-                                              picStore.photoId.value]
-                                          ?[element.key] ==
-                                      null) {
-                                return true;
-                              }
-                              return false;
-                            }).toList();
-                            if (TagsController.to.searchText.value != '' &&
-                                newList.isEmpty) {
-                              TagsController.to.searchText.value = '';
-                              await TagsController.to
-                                  .tagsSuggestionsCalculate();
-                            }
-                          });
-                          await TaggedController.to.refreshTaggedPhotos();
-                          await TabsController.to.refreshUntaggedList();
-                          /* 
-                          await GalleryStore.to.addTagToPic(
-                              picStore: picStore,
-                              tagName: TagsController
-                                  .to.allTags[tagKey].value.title); */
-                          /* tagsEditingController.clear();
-                          picStore.setSearchText(''); */
+                          await ref.read(tagsProvider.notifier)
+                              .tagsSuggestionsCalculate();
+                          await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
+                          await ref.read(tabsProvider.notifier).loadAssetPath();
                         },
                         onDoubleTap: (tagKey) {
                           AppLogger.d('do nothing');
@@ -550,9 +463,9 @@ class PhotoCardState extends State<PhotoCard> {
                         onPanEnd: (tagKey) {
                           AppLogger.d('do nothing');
                         },
-                      ),
-                    );
-                  }),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),

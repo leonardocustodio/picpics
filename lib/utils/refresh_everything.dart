@@ -1,8 +1,9 @@
-import 'package:picpics/stores/tabs_controller.dart';
-import 'package:picpics/stores/tags_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tags_provider.dart';
 
-Future<void> refreshEverything() async {
-  await TabsController.to.refreshUntaggedList();
-  await TagsController.to.tagsSuggestionsCalculate();
-  TagsController.to.multiPicTags.clear();
+Future<void> refreshEverything(WidgetRef ref) async {
+  await ref.read(tabsProvider.notifier).refreshUntaggedList();
+  await ref.read(tagsProvider.notifier).tagsSuggestionsCalculate();
+  ref.read(tagsProvider.notifier).clear();
 }

@@ -3,7 +3,7 @@
 // import 'package:picpics/lru_cache.dart';
 // import 'dart:typed_data';
 //
-// import 'package:picpics/stores/pic_store.dart';
+// import 'package:picpics/providers/pic_store_provider.dart';
 //
 // class FullImageItem extends StatelessWidget {
 //   final PicStore picStore;

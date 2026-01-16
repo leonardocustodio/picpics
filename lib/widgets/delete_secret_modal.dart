@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
-import 'package:picpics/stores/language_controller.dart';
-import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
-class DeleteSecretModal extends StatefulWidget {
+class DeleteSecretModal extends ConsumerStatefulWidget {
 
   const DeleteSecretModal({
     required this.onPressedClose, required this.onPressedDelete, required this.onPressedOk, super.key,
@@ -16,14 +16,15 @@ class DeleteSecretModal extends StatefulWidget {
   final void Function() onPressedOk;
 
   @override
-  DeleteSecretModalState createState() => DeleteSecretModalState();
+  ConsumerState<DeleteSecretModal> createState() => _DeleteSecretModalState();
 }
 
-class DeleteSecretModalState extends State<DeleteSecretModal> {
+class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
   bool keepAsking = true;
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final s = ref.watch(sProvider);
     AppLogger.d('Width: $width');
 
     return Dialog(
@@ -57,17 +58,15 @@ class DeleteSecretModalState extends State<DeleteSecretModal> {
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),
                   ),
-                  Obx(
-                    () => Text(
-                      LangControl.to.S.value.secret_photos,
-                      style: const TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color(0xff979a9b),
-                        fontSize: 24,
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        letterSpacing: -0.4099999964237213,
-                      ),
+                  Text(
+                    s.secret_photos,
+                    style: const TextStyle(
+                      fontFamily: 'Lato',
+                      color: Color(0xff979a9b),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.normal,
+                      letterSpacing: -0.4099999964237213,
                     ),
                   ),
                   CupertinoButton(
@@ -80,17 +79,15 @@ class DeleteSecretModalState extends State<DeleteSecretModal> {
                 padding: const EdgeInsets.symmetric(vertical: 44),
                 child: Image.asset('lib/images/lockmodalico.png'),
               ),
-              Obx(
-                () => Text(
-                  LangControl.to.S.value.keep_safe,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontFamily: 'Lato',
-                    color: Color(0xff707070),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                  ),
+              Text(
+                s.keep_safe,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontFamily: 'Lato',
+                  color: Color(0xff707070),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
                 ),
               ),
               Padding(
@@ -134,16 +131,14 @@ class DeleteSecretModalState extends State<DeleteSecretModal> {
                                 ? Image.asset('lib/images/checkwhiteico.png')
                                 : null,
                           ),
-                          Obx(
-                            () => Text(
-                              LangControl.to.S.value.keep_asking,
-                              style: const TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff707070),
-                                fontSize: 11,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                              ),
+                          Text(
+                            s.keep_asking,
+                            style: const TextStyle(
+                              fontFamily: 'Lato',
+                              color: Color(0xff707070),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
                             ),
                           ),
                         ],
@@ -188,16 +183,14 @@ class DeleteSecretModalState extends State<DeleteSecretModal> {
                                 ? Image.asset('lib/images/checkwhiteico.png')
                                 : null,
                           ),
-                          Obx(
-                            () => Text(
-                              LangControl.to.S.value.dont_ask_again,
-                              style: const TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff707070),
-                                fontSize: 11,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                              ),
+                          Text(
+                            s.dont_ask_again,
+                            style: const TextStyle(
+                              fontFamily: 'Lato',
+                              color: Color(0xff707070),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
                             ),
                           ),
                         ],
@@ -216,7 +209,7 @@ class DeleteSecretModalState extends State<DeleteSecretModal> {
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
                           if (keepAsking == false) {
-                            UserController.to.setKeepAskingToDelete(false);
+                            ref.read(userProvider.notifier).setKeepAskingToDelete(false);
                           }
                           widget.onPressedDelete();
                         },
@@ -228,17 +221,15 @@ class DeleteSecretModalState extends State<DeleteSecretModal> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
-                            child: Obx(
-                              () => Text(
-                                LangControl.to.S.value.no,
-                                textScaler: const TextScaler.linear(1),
-                                style: const TextStyle(
-                                  color: kSecondaryColor,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: 'Lato',
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 16,
-                                ),
+                            child: Text(
+                              s.no,
+                              textScaler: const TextScaler.linear(1),
+                              style: const TextStyle(
+                                color: kSecondaryColor,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'Lato',
+                                fontStyle: FontStyle.normal,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -253,7 +244,7 @@ class DeleteSecretModalState extends State<DeleteSecretModal> {
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
                           if (keepAsking == false) {
-                            UserController.to.setKeepAskingToDelete(false);
+                            ref.read(userProvider.notifier).setKeepAskingToDelete(false);
                           }
                           widget.onPressedOk();
                         },
@@ -264,12 +255,10 @@ class DeleteSecretModalState extends State<DeleteSecretModal> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
-                            child: Obx(
-                              () => Text(
-                                LangControl.to.S.value.yes,
-                                textScaler: const TextScaler.linear(1),
-                                style: kLoginButtonTextStyle,
-                              ),
+                            child: Text(
+                              s.yes,
+                              textScaler: const TextScaler.linear(1),
+                              style: kLoginButtonTextStyle,
                             ),
                           ),
                         ),
@@ -278,17 +267,15 @@ class DeleteSecretModalState extends State<DeleteSecretModal> {
                   ],
                 ),
               ),
-              Obx(
-                () => Text(
-                  LangControl.to.S.value.view_hidden_photos,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontFamily: 'Lato',
-                    color: Color(0xff707070),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                  ),
+              Text(
+                s.view_hidden_photos,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontFamily: 'Lato',
+                  color: Color(0xff707070),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
                 ),
               ),
             ],

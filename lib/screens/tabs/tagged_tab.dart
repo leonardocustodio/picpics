@@ -1,52 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
+import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/screens/tabs/tagged/no_tagged_pics_in_device.dart';
 import 'package:picpics/screens/tabs/tagged/tagged_pics_with_search_option.dart';
-import 'package:picpics/stores/language_controller.dart';
-import 'package:picpics/stores/tabs_controller.dart';
-import 'package:picpics/stores/tagged_controller.dart';
-import 'package:picpics/stores/tags_controller.dart';
-import 'package:picpics/stores/user_controller.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/device_no_pics.dart';
 import 'package:picpics/widgets/toggle_bar.dart';
 
-// ignore_for_file: must_be_immutable, unused_field
-class TaggedTab extends GetView<TaggedController> {
-  TaggedTab({super.key});
+class TaggedTab extends ConsumerWidget {
+  const TaggedTab({super.key});
   static const id = 'tagged_tab';
 
-  final _ = Get.find<UserController>();
-  final tagsController = Get.find<TagsController>();
-  final tabsController = Get.find<TabsController>();
-
   @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        AppLogger.d('WillPopScope  taggedTab');
-        if (tabsController.multiTagSheet.value) {
-          AppLogger.d('WillPopScope  multiTagSheet');
-          tabsController.multiTagSheet.value = false;
-          return false;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final taggedState = ref.watch(taggedProvider);
+    final taggedNotifier = ref.read(taggedProvider.notifier);
+    final tagsState = ref.watch(tagsProvider);
+    final tagsNotifier = ref.read(tagsProvider.notifier);
+    final tabsState = ref.watch(tabsProvider);
+    final tabsNotifier = ref.read(tabsProvider.notifier);
+    final s = ref.watch(sProvider);
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
+        if (!didPop) {
+          AppLogger.d('PopScope taggedTab');
+          if (taggedState.multiTagSheet) {
+            AppLogger.d('PopScope multiTagSheet');
+            taggedNotifier.setMultiTagSheet(false);
+            return;
+          }
+          if (taggedState.multiPicBar) {
+            AppLogger.d('PopScope multiPicBar');
+            taggedNotifier.setMultiPicBar(false);
+            return;
+          }
+          if (tagsState.isSearching) {
+            AppLogger.d('PopScope isSearching');
+            tagsNotifier.setIsSearching(false);
+            return;
+          }
+          AppLogger.d('PopScope currentTab = 0');
+          tabsNotifier.setCurrentTab(0);
         }
-        if (tabsController.multiPicBar.value) {
-          AppLogger.d('WillPopScope  multiPicBar');
-          tabsController.multiPicBar.value = false;
-          return false;
-        }
-        if (tagsController.isSearching.value) {
-          AppLogger.d('WillPopScope  isSearching');
-          tagsController.isSearching.value = false;
-          return false;
-        }
-        /* if (tabsController.currentTab.value != 0) {
-          AppLogger.d('WillPopScope  currentTab');
-          return false;
-        } */
-        AppLogger.d('WillPopScope  currentTab = 0');
-        tabsController.currentTab.value = 0;
-        return false;
       },
       child: Scaffold(
         body: SafeArea(
@@ -55,91 +55,94 @@ class TaggedTab extends GetView<TaggedController> {
             child: Stack(
               children: <Widget>[
                 Positioned.fill(
-                  child: Obx(() {
-                    if (tabsController.deviceHasPics) {
-                      ///
-                      /// Device has pics
-                      ///
-                      if (controller.allTaggedPicIdList.isEmpty) {
+                  child: Builder(
+                    builder: (context) {
+                      if (tabsState.assetMap.isNotEmpty) {
                         ///
-                        /// Device has pics but no tagged pics
+                        /// Device has pics
                         ///
-                        return const NoTaggedPicsInDevice();
+                        if (taggedState.allTaggedPicIdList.isEmpty) {
+                          ///
+                          /// Device has pics but no tagged pics
+                          ///
+                          return const NoTaggedPicsInDevice();
+                        } else {
+                          ///
+                          /// Device has pics with tagged Pics
+                          ///
+                          return const TaggedPicsInDeviceWithSearchOption();
+                        }
                       } else {
                         ///
-                        /// Device has pics with tagged Pics
+                        /// Device has no pics
                         ///
-                        return const TaggedPicsInDeviceWithSearchOption();
+                        return DeviceHasNoPics(message: s.device_has_no_pics);
                       }
-                    } else {
-                      ///
-                      /// Device has no pics
-                      ///
-                      return DeviceHasNoPics(
-                          message: LangControl.to.S.value.device_has_no_pics,);
-                    }
-                  }),
+                    },
+                  ),
                 ),
                 Positioned.fill(
-                  child: Obx(() {
-                    if (tabsController.deviceHasPics &&
-                        controller.allTaggedPicIdList.isNotEmpty) {
-                      return NotificationListener<ScrollNotification>(
-                        onNotification: (scrollNotification) {
-                          if (scrollNotification is ScrollStartNotification) {
-                            AppLogger.d('Start scrolling');
-                            TaggedController.to.setIsScrolling(true);
-                            return true;
-                          } else if (scrollNotification
-                              is ScrollEndNotification) {
-                            AppLogger.d('End scrolling');
-                            TaggedController.to.setIsScrolling(false);
-                          }
-                          return false;
-                        },
-                        child: Container(),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  }),
-                ),
-                Obx(() {
-                  return AnimatedOpacity(
-                    opacity: controller.isScrolling.value
-                        ? 0.0
-                        : (controller.searchFocusNode.hasFocus ||
-                                TaggedController.to.allTaggedPicIdList.isEmpty)
-                            ? 0.0
-                            : 1.0,
-                    duration: Duration(
-                        milliseconds:
-                            controller.searchFocusNode.hasFocus ? 0 : 300,),
-                    onEnd: () {
-                      tabsController.setIsToggleBarVisible(
-                          controller.isScrolling.value ? false : true,);
+                  child: Builder(
+                    builder: (context) {
+                      if (tabsState.assetMap.isNotEmpty &&
+                          taggedState.allTaggedPicIdList.isNotEmpty) {
+                        return NotificationListener<ScrollNotification>(
+                          onNotification: (scrollNotification) {
+                            if (scrollNotification is ScrollStartNotification) {
+                              AppLogger.d('Start scrolling');
+                              taggedNotifier.setIsScrolling(true);
+                              return true;
+                            } else if (scrollNotification
+                                is ScrollEndNotification) {
+                              AppLogger.d('End scrolling');
+                              taggedNotifier.setIsScrolling(false);
+                            }
+                            return false;
+                          },
+                          child: Container(),
+                        );
+                      } else {
+                        return Container();
+                      }
                     },
-                    child: Visibility(
-                      visible: controller.isScrolling.value
-                          ? tabsController.isToggleBarVisible.value
-                          : true,
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: ToggleBar(
-                            titleLeft: LangControl.to.S.value.toggle_date,
-                            titleRight: LangControl.to.S.value.toggle_tags,
-                            activeToggle: controller.toggleIndexTagged.value,
-                            onToggle: (int index) {
-                              controller.toggleIndexTagged.value = index;
-                            },
-                          ),
+                  ),
+                ),
+                AnimatedOpacity(
+                  opacity: taggedState.isScrolling
+                      ? 0.0
+                      : (taggedNotifier.searchFocusNode.hasFocus ||
+                              taggedState.allTaggedPicIdList.isEmpty)
+                          ? 0.0
+                          : 1.0,
+                  duration: Duration(
+                    milliseconds:
+                        taggedNotifier.searchFocusNode.hasFocus ? 0 : 300,
+                  ),
+                  onEnd: () {
+                    tabsNotifier.setIsToggleBarVisible(
+                      taggedState.isScrolling ? false : true,
+                    );
+                  },
+                  child: Visibility(
+                    visible: taggedState.isScrolling
+                        ? tabsState.isToggleBarVisible
+                        : true,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: ToggleBar(
+                          titleLeft: s.toggle_date,
+                          titleRight: s.toggle_tags,
+                          activeToggle: taggedState.toggleIndexTagged,
+                          onToggle: (int index) {
+                            taggedNotifier.setToggleIndexTagged(index);
+                          },
                         ),
                       ),
                     ),
-                  );
-                }),
+                  ),
+                ),
               ],
             ),
           ),

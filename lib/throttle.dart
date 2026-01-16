@@ -19,7 +19,7 @@ class Throttle {
 
   Timer? _timer;
 
-  void call(call) {
+  void call(Function call) {
     if (!_isRunning) {
       _startTimer();
       onCall?.call();

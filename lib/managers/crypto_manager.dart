@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -9,8 +11,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picpics/stores/pic_store.dart';
-import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:uuid/uuid.dart';
 
@@ -41,34 +42,29 @@ class Crypto {
   }
 
   static Future<void> reSaveSpKey(
-      String userPin, UserController appStore,) async {
+      String userPin, String email, String tempEncryptionKey, cryptography.SecretKey encryptionKey,) async {
     const storage = FlutterSecureStorage();
 
     // final ppkey = await storage.read(key: 'ppkey') ?? '';
     final stringToBase64 = utf8.fuse(base64);
 
-    AppLogger.d('Decrypted spKey is: ${appStore.tempEncryptionKey}');
+    AppLogger.d('Decrypted spKey is: $tempEncryptionKey');
 
     /// preparing the algorithm
     final algorithm = cryptography.AesCtr.with256bits(
         macAlgorithm: cryptography.Hmac.sha256(),);
 
-    final encryptionKey = await algorithm
-        .newSecretKeyFromBytes(utf8.encode(appStore.tempEncryptionKey!));
-
-    appStore.setEncryptionKey(encryptionKey);
-
     final picKey = await _retrieveSecretKey(
         algorithm,); //await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
 
     final ivString =
-        stringToBase64.encode('$userPin${appStore.email}').substring(0, 16);
+        stringToBase64.encode('$userPin$email').substring(0, 16);
 
     AppLogger.d('New generated IV for encryption: $ivString');
     final ivKey = utf8.encode(ivString);
 
     final encryptedData = await algorithm.encrypt(
-      utf8.encode(appStore.tempEncryptionKey!),
+      utf8.encode(tempEncryptionKey),
       secretKey: picKey,
       nonce: ivKey,
     );
@@ -79,8 +75,8 @@ class Crypto {
     AppLogger.d('New key saved to storage!');
   }
 
-  static Future<bool> checkRecoveryKey(String encryptedRecoveryKey,
-      String recoveryCode, String randomIv, UserController appStore,) async {
+  static Future<String?> checkRecoveryKey(String encryptedRecoveryKey,
+      String recoveryCode, String randomIv,) async {
     try {
       const storage = FlutterSecureStorage();
       final hpkey = await storage.read(key: 'hpkey');
@@ -149,25 +145,22 @@ class Crypto {
       AppLogger.d('Final key hash');
       if (hpkey == null) {
         await storage.write(key: 'hpkey', value: digest);
-        appStore.setTempEncryptionKey(decryptedData);
-        return true;
+        return decryptedData;
       }
 
       if (digest == hpkey) {
-        appStore.setTempEncryptionKey(decryptedData);
-        return true;
+        return decryptedData;
       }
 
       AppLogger.d('Not the real key');
-      return false;
+      return null;
     } catch (error) {
       AppLogger.d('Not the real key: $error');
-      return false;
+      return null;
     }
   }
 
-  static Future<bool> checkIsPinValid(String userPin) async {
-    final userController = UserController.to;
+  static Future<cryptography.SecretKey?> checkIsPinValid(String userPin, String email) async {
     const storage = FlutterSecureStorage();
     final ppkey = await storage.read(key: 'ppkey') ?? '';
     final hpkey = await storage.read(key: 'hpkey');
@@ -176,7 +169,7 @@ class Crypto {
     final stringToBase64 = utf8.fuse(base64);
 
     final ivString = stringToBase64
-        .encode('$userPin${userController.email}')
+        .encode('$userPin$email')
         .substring(0, 16);
 
     /// preparing the algorithm
@@ -214,27 +207,24 @@ class Crypto {
         AppLogger.d('The key is valid!');
         AppLogger.d('ppkey: $ppkey - nonce: ${utf8.encode(ppkey)}');
         AppLogger.d('Decrypted Key: $decryptedData');
-        userController.setEncryptionKey(
-            await algorithm.newSecretKeyFromBytes(decryptedData),);
-        return true;
+        return await algorithm.newSecretKeyFromBytes(decryptedData);
       }
 
       AppLogger.d('The key is invalid');
-      return false;
+      return null;
     } catch (error) {
       AppLogger.d('Failed to decrypt key invalid padblock!: $error');
-      return false;
+      return null;
     }
   }
 
-  static Future<String?> getEncryptedPin() async {
+  static Future<String?> getEncryptedPin(String? secretString) async {
     try {
-      const storage = FlutterSecureStorage();
-
-      final secretString = await UserController.to.getSecretKey();
       if (secretString == null) {
         return null;
       }
+
+      const storage = FlutterSecureStorage();
       final nounceString = (await storage.read(key: 'npkey')) ?? '';
       final encryptedPin = (await storage.read(key: 'epkey')) ?? '';
 
@@ -271,7 +261,7 @@ class Crypto {
     await storage.delete(key: 'npkey');
   }
 
-  static Future<bool> saveEncryptedPin(String userPin) async {
+  static Future<String?> saveEncryptedPin(String userPin) async {
     const storage = FlutterSecureStorage();
 
     /// preparing the algorithm
@@ -292,14 +282,13 @@ class Crypto {
     final b = await secretKey.extractBytes();
     final bytes = hex.encode(b);
 
-    await UserController.to.saveSecretKey(bytes);
     await storage.write(key: 'epkey', value: encrypted);
 
     /// hex.encode is necessary here.
     final svingIvKey = hex.encode(ivKey);
     await storage.write(key: 'npkey', value: svingIvKey);
 
-    return true;
+    return bytes;
 
     /// Let's decrypt
     ///
@@ -334,8 +323,8 @@ class Crypto {
     AppLogger.d('Secret salt: $secretSalt');
   }
 
-  static Future<void> saveSpKey(String accessKey, String spKey, String userPin,
-      String userEmail, UserController appStore,) async {
+  static Future<cryptography.SecretKey> saveSpKey(String accessKey, String spKey, String userPin,
+      String userEmail,) async {
     const storage = FlutterSecureStorage();
     // final ppkey = await storage.read(key: 'ppkey');
     final stringToBase64 = utf8.fuse(base64);
@@ -369,8 +358,7 @@ class Crypto {
     final hexData = hex.encode(decryptedKey);
 
     AppLogger.d('Decrypted spKey is: $hexData');
-    appStore
-        .setEncryptionKey(await algorithm.newSecretKeyFromBytes(decryptedKey));
+    final encryptionKey = await algorithm.newSecretKeyFromBytes(decryptedKey);
 
     AppLogger.d('Before digest....');
     final digest =
@@ -395,6 +383,8 @@ class Crypto {
 
     await storage.write(key: 'spkey', value: encryptedData);
     AppLogger.d('key saved to storage!');
+
+    return encryptionKey;
   }
 
   ///
@@ -411,18 +401,18 @@ class Crypto {
   }
 
   static Future<void> encryptImage(
-      PicStore picStore, cryptography.SecretKey secretKey,) async {
+      PicStoreNotifier picStore, cryptography.SecretKey secretKey,) async {
     AppLogger.d('Going to encrypt image with encryption key');
 
-    final assetData = await picStore.entity.value?.originBytes;
-    final thumbData = await picStore.entity.value
+    final assetData = await picStore.state.entity?.originBytes;
+    final thumbData = await picStore.state.entity
         ?.thumbnailDataWithSize(const ThumbnailSize.square(150), quality: 90);
 
     final title = Platform.isAndroid
-        ? picStore.entity.value?.title
-        : await picStore.entity.value?.titleAsync;
+        ? picStore.state.entity?.title
+        : await picStore.state.entity?.titleAsync;
 
-    AppLogger.d('Asset Name: ${picStore.entity.value?.id}');
+    AppLogger.d('Asset Name: ${picStore.state.entity?.id}');
     AppLogger.d('Origin file: $title');
 
     if (assetData == null || thumbData == null) {

@@ -31,6 +31,7 @@ class CircularMenu extends StatefulWidget {
         super(key: key);
   /// use global key to control animation anywhere in the code
   @override
+  // ignore: overridden_fields
   final GlobalKey<CircularMenuState>? key;
 
   /// list of CircularMenuItem contains at least two items.

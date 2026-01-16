@@ -1,4 +1,4 @@
-part of search_map_place;
+part of '../search_map_place.dart';
 
 class Geocoding {
   Geocoding({required this.apiKey, this.language = 'en'});

@@ -3,43 +3,41 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:get/get.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/pin_provider_full.dart';
+import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/pin_screen.dart';
-import 'package:picpics/stores/language_controller.dart';
-import 'package:picpics/stores/pin_controller.dart';
-import 'package:picpics/stores/user_controller.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/color_animated_background.dart';
 
-class EmailStore extends GetxController {
-  final isLoading = false.obs;
-}
-
-class EmailScreen extends StatefulWidget {
+class EmailScreen extends ConsumerStatefulWidget {
   const EmailScreen({super.key});
   static const String id = 'email_screen';
 
   @override
-  _EmailScreenState createState() => _EmailScreenState();
+  ConsumerState<EmailScreen> createState() => _EmailScreenState();
 }
 
-class _EmailScreenState extends State<EmailScreen> {
+class _EmailScreenState extends ConsumerState<EmailScreen> {
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-//    Analytics.sendCurrentScreen(Screen.login_screen);
   }
 
   Future<void> startRegistration() async {
-    final isValid = EmailValidator.validate(PinController.to.email.value);
+    final pinState = ref.read<PinFullState>(pinFullProvider);
+    final isValid = EmailValidator.validate(pinState.email);
 
     if (!isValid) {
-      PinController.to
-          .showErrorModal('Please type a valid e-mail address to proceed.');
+      await ref.read<PinFullNotifier>(pinFullProvider.notifier).showErrorModal(
+        context,
+        'Please type a valid e-mail address to proceed.',
+      );
       return;
     }
 
@@ -47,25 +45,35 @@ class _EmailScreenState extends State<EmailScreen> {
       isLoading = true;
     });
 
-    final result = await PinController.to.register();
+    final result = await ref.read<PinFullNotifier>(pinFullProvider.notifier).register();
 
     setState(() {
       isLoading = false;
     });
 
     if (result['success'] == true) {
-      UserController.to.setWaitingAccessCode(true);
-      await Get.toNamed<void>(PinScreen.id);
+      ref.read<UserNotifier>(userProvider.notifier).setWaitingAccessCode(true);
+      if (mounted) {
+        await Navigator.of(context).pushNamed(PinScreen.id);
+      }
     } else {
       AppLogger.d('Result: $result');
       if ((result['errorCode'] as FirebaseAuthException).code ==
           'email-already-in-use') {
-        PinController.to.showErrorModal(
-            'This e-mail is already in use by another account.',);
+        if (mounted) {
+          await ref.read<PinFullNotifier>(pinFullProvider.notifier).showErrorModal(
+            context,
+            'This e-mail is already in use by another account.',
+          );
+        }
         AppLogger.d('Error !!!');
       } else {
-        PinController.to
-            .showErrorModal('An error has occured. Please try again!');
+        if (mounted) {
+          await ref.read<PinFullNotifier>(pinFullProvider.notifier).showErrorModal(
+            context,
+            'An error has occured. Please try again!',
+          );
+        }
         AppLogger.d('Error !!!');
       }
     }
@@ -74,6 +82,7 @@ class _EmailScreenState extends State<EmailScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final s = ref.watch(sProvider);
     AppLogger.d('Height: ${size.height} - Width: ${size.width}');
 
     return Scaffold(
@@ -95,13 +104,14 @@ class _EmailScreenState extends State<EmailScreen> {
                     children: <Widget>[
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 10,),
+                          horizontal: 5,
+                          vertical: 10,
+                        ),
                         onPressed: () {
-                          UserController.to.setWaitingAccessCode(false);
-                          Get.back<void>();
+                          ref.read(userProvider.notifier).setWaitingAccessCode(false);
+                          Navigator.of(context).pop();
                         },
-                        child: Image.asset(
-                            'lib/images/backarrowwithdropshadow.png',),
+                        child: Image.asset('lib/images/backarrowwithdropshadow.png'),
                       ),
                     ],
                   ),
@@ -113,22 +123,22 @@ class _EmailScreenState extends State<EmailScreen> {
                       ),
                       child: Column(
                         children: <Widget>[
-                          Obx(
-                            () => Text(
-                              LangControl.to.S.value.confirm_email,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: kWhiteColor,
-                                fontSize: size.width < 400 ? 22.0 : 28.0,
-                                fontWeight: FontWeight.w700,
-                                fontStyle: FontStyle.normal,
-                              ),
+                          Text(
+                            s.confirm_email,
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              color: kWhiteColor,
+                              fontSize: size.width < 400 ? 22.0 : 28.0,
+                              fontWeight: FontWeight.w700,
+                              fontStyle: FontStyle.normal,
                             ),
                           ),
                           const Spacer(),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 32,),
+                              horizontal: 24,
+                              vertical: 32,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
@@ -136,27 +146,29 @@ class _EmailScreenState extends State<EmailScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Obx(
-                                  () => Text(
-                                    LangControl.to.S.value.email,
-                                    style: const TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: Color(0xff606566),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w300,
-                                      fontStyle: FontStyle.normal,
-                                      letterSpacing: -0.4099999964237213,
-                                    ),
+                                Text(
+                                  s.email,
+                                  style: const TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff606566),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w300,
+                                    fontStyle: FontStyle.normal,
+                                    letterSpacing: -0.4099999964237213,
                                   ),
                                 ),
                                 Container(
                                   height: 42,
                                   margin: const EdgeInsets.only(top: 6),
                                   child: TextField(
-                                    onChanged: PinController.to.setEmail,
+                                    onChanged: (value) {
+                                      ref.read<PinFullNotifier>(pinFullProvider.notifier).setEmail(value);
+                                    },
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.only(
-                                          left: 10, right: 5,),
+                                        left: 10,
+                                        right: 5,
+                                      ),
                                       fillColor: const Color(0xFFF1F3F5)
                                           .withValues(alpha: 0.3),
                                       filled: true,
@@ -164,22 +176,19 @@ class _EmailScreenState extends State<EmailScreen> {
                                         borderSide: const BorderSide(
                                           color: Color(0xFFE2E4E5),
                                         ),
-                                        borderRadius:
-                                            BorderRadius.circular(8),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: const BorderSide(
                                           color: Color(0xFFE2E4E5),
                                         ),
-                                        borderRadius:
-                                            BorderRadius.circular(8),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: const BorderSide(
                                           color: Color(0xFFE2E4E5),
                                         ),
-                                        borderRadius:
-                                            BorderRadius.circular(8),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
                                   ),
@@ -187,9 +196,7 @@ class _EmailScreenState extends State<EmailScreen> {
                               ],
                             ),
                           ),
-                          const Spacer(
-                            flex: 2,
-                          ),
+                          const Spacer(flex: 2),
                           CupertinoButton(
                             padding: const EdgeInsets.all(0),
                             onPressed: startRegistration,
@@ -200,19 +207,15 @@ class _EmailScreenState extends State<EmailScreen> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Center(
-                                child: Obx(
-                                  () => Text(
-                                    LangControl.to.S.value.continue_string,
-                                    textScaler: const TextScaler.linear(1),
-                                    style: kLoginButtonTextStyle,
-                                  ),
+                                child: Text(
+                                  s.continue_string,
+                                  textScaler: const TextScaler.linear(1),
+                                  style: kLoginButtonTextStyle,
                                 ),
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 40,
-                          ),
+                          const SizedBox(height: 40),
                         ],
                       ),
                     ),

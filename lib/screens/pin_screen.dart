@@ -3,59 +3,51 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animator/flutter_animator.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/pin_provider_full.dart';
+import 'package:picpics/providers/private_photos_provider.dart';
+import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/email_screen.dart';
-import 'package:picpics/stores/language_controller.dart';
-import 'package:picpics/stores/pin_controller.dart';
-import 'package:picpics/stores/private_photos_controller.dart';
-import 'package:picpics/stores/user_controller.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/helpers.dart';
 import 'package:picpics/widgets/color_animated_background.dart';
 
-// ignore_for_file: must_be_immutable
-class PinScreen extends GetWidget<PinController> {
-
-  PinScreen({super.key});
+class PinScreen extends ConsumerStatefulWidget {
+  const PinScreen({super.key});
   static const String id = 'pin_screen';
 
-  CarouselSliderController carouselController = CarouselSliderController();
-  // late GlobalKey<AnimatorWidgetState> animatorKey;
+  @override
+  ConsumerState<PinScreen> createState() => _PinScreenState();
+}
 
+class _PinScreenState extends ConsumerState<PinScreen> {
+  final CarouselSliderController carouselController = CarouselSliderController();
   int carouselPage = 0;
-
-/*   @override
-  void initState() {
-    super.initState();
-//    Analytics.sendCurrentScreen(Screen.login_screen);
-  } */
 
   Widget _buildPinPad(BuildContext context, int index) {
     AppLogger.d('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
 
+    final pinState = ref.watch<PinFullState>(pinFullProvider);
+    final s = ref.watch(sProvider);
     String title;
 
-    if (controller.isWaitingRecoveryKey.value == true) {
+    if (pinState.isWaitingRecoveryKey == true) {
       if (index == 0) {
         title = 'Recovery Code';
-        // animatorKey = controller.shakeRecovery;
       } else if (index == 1) {
-        title = LangControl.to.S.value.new_secret_key;
-        // animatorKey = controller.shakeKey;
+        title = s.new_secret_key;
       } else {
-        title = LangControl.to.S.value.confirm_secret_key;
-        // animatorKey = controller.shakeKeyConfirm;
+        title = s.confirm_secret_key;
       }
     } else {
       if (index == 0) {
-        title = LangControl.to.S.value.new_secret_key;
-        // animatorKey = controller.shakeKey;
+        title = s.new_secret_key;
       } else {
-        title = LangControl.to.S.value.confirm_secret_key;
-        // animatorKey = controller.shakeKeyConfirm;
+        title = s.confirm_secret_key;
       }
     }
 
@@ -82,25 +74,24 @@ class PinScreen extends GetWidget<PinController> {
             flex: 2,
           ),
           Shake(
-            key: key,
             preferences:
                 const AnimationPreferences(autoPlay: AnimationPlayStates.None),
-            child: Obx(() {
-              int filledPositions;
+            child: Builder(builder: (context) {
+              int filledPositions = 0;
 
-              if (controller.isWaitingRecoveryKey.value == true) {
+              if (pinState.isWaitingRecoveryKey == true) {
                 if (index == 0) {
-                  filledPositions = controller.recoveryCode.value.length;
+                  filledPositions = pinState.recoveryCode.length;
                 } else if (index == 1) {
-                  filledPositions = controller.pinTemp.value.length;
+                  filledPositions = pinState.pinTemp.length;
                 } else {
-                  filledPositions = controller.confirmPinTemp.value.length;
+                  filledPositions = pinState.confirmPinTemp.length;
                 }
               } else {
                 if (index == 0) {
-                  filledPositions = controller.pinTemp.value.length;
+                  filledPositions = pinState.pinTemp.length;
                 } else {
-                  filledPositions = controller.confirmPinTemp.value.length;
+                  filledPositions = pinState.confirmPinTemp.length;
                 }
               }
 
@@ -114,14 +105,15 @@ class PinScreen extends GetWidget<PinController> {
             onPinTapped: pinTapped,
           ),
           const Spacer(),
-          if (controller.isWaitingRecoveryKey.value != true) ...[
+          if (pinState.isWaitingRecoveryKey != true) ...[
             CupertinoButton(
               onPressed: () {
-                if (UserController.to.email == null) {
-                  controller.askEmail();
+                final userState = ref.read(userProvider);
+                if (userState.email == null) {
+                  ref.read<PinFullNotifier>(pinFullProvider.notifier).askEmail(context);
                   return;
                 }
-                controller.recoverPin();
+                ref.read<PinFullNotifier>(pinFullProvider.notifier).recoverPin();
               },
               child: const Text(
                 'Already have an account?',
@@ -144,42 +136,48 @@ class PinScreen extends GetWidget<PinController> {
   }
 
   Future<void> pinTapped(String value, bool backspace) async {
-    AppLogger.d('Value: ${controller.recoveryCode}$value');
-    if (controller.isWaitingRecoveryKey.value == true) {
+    final pinNotifier = ref.read<PinFullNotifier>(pinFullProvider.notifier);
+    final pinState = ref.read<PinFullState>(pinFullProvider);
+    final userState = ref.read(userProvider);
+
+    AppLogger.d('Value: ${pinState.recoveryCode}$value');
+    if (pinState.isWaitingRecoveryKey == true) {
       if (carouselPage == 0) {
         if (backspace) {
-          controller.setRecoveryCode(
-              Helpers.removeLastCharacter(controller.recoveryCode.value),);
+          pinNotifier.setRecoveryCode(
+            Helpers.removeLastCharacter(pinState.recoveryCode),
+          );
           return;
         }
-        controller.setRecoveryCode('${controller.recoveryCode.value}$value');
+        pinNotifier.setRecoveryCode('${pinState.recoveryCode}$value');
 
-        if (controller.recoveryCode.value.length == 6) {
+        if (pinState.recoveryCode.length == 6) {
           // set true
-          final valid = await controller.isRecoveryCodeValid(UserController.to);
+          final valid = await pinNotifier.isRecoveryCodeValid();
 
           if (valid) {
             await carouselController.nextPage();
             carouselPage = 1;
-            controller.setRecoveryCode('');
+            pinNotifier.setRecoveryCode('');
             return;
           }
 
-          controller.shakeRecovery.currentState?.forward();
-          controller.setRecoveryCode('');
+          pinNotifier.shakeRecovery.currentState?.forward();
+          pinNotifier.setRecoveryCode('');
         }
         return;
       }
 
       if (carouselPage == 1) {
         if (backspace) {
-          controller.setPinTemp(
-              Helpers.removeLastCharacter(controller.pinTemp.value),);
+          pinNotifier.setPinTemp(
+            Helpers.removeLastCharacter(pinState.pinTemp),
+          );
           return;
         }
-        controller.setPinTemp('${controller.pinTemp.value}$value');
+        pinNotifier.setPinTemp('${pinState.pinTemp}$value');
 
-        if (controller.pinTemp.value.length == 6) {
+        if (pinState.pinTemp.length == 6) {
           carouselPage = 2;
           await carouselController.nextPage();
         }
@@ -187,37 +185,39 @@ class PinScreen extends GetWidget<PinController> {
       }
 
       if (backspace) {
-        controller.setConfirmPinTemp(
-            Helpers.removeLastCharacter(controller.confirmPinTemp.value),);
+        pinNotifier.setConfirmPinTemp(
+          Helpers.removeLastCharacter(pinState.confirmPinTemp),
+        );
         return;
       }
-      controller.setConfirmPinTemp('${controller.confirmPinTemp.value}$value');
+      pinNotifier.setConfirmPinTemp('${pinState.confirmPinTemp}$value');
 
-      if (controller.confirmPinTemp.value.length == 6) {
-        if (controller.pinTemp.value == controller.confirmPinTemp.value) {
+      if (pinState.confirmPinTemp.length == 6) {
+        if (pinState.pinTemp == pinState.confirmPinTemp) {
           AppLogger.d('Setting new pin!!!!!');
           carouselPage = 0;
-          controller.pin = controller.pinTemp.value;
-          await UserController.to.setEmail(controller.email
-              .value,); // Tem que deixar antes pois é utilizado quando salva o pin
+          pinNotifier.setPin(pinState.pinTemp);
 
-          await controller.saveNewPin(UserController.to);
+          // Set email before saving pin (used when saving the pin)
+          ref.read<UserNotifier>(userProvider.notifier).setEmail(pinState.email);
+          await pinNotifier.saveNewPin();
+          ref.read<UserNotifier>(userProvider.notifier).setIsPinRegistered(true);
+          ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
-          await UserController.to.setIsPinRegistered(true);
-          await PrivatePhotosController.to.switchSecretPhotos();
-          //GalleryStore.to.checkIsLibraryUpdated();
-          controller.setPinTemp('');
-          controller.setConfirmPinTemp('');
-          UserController.to.setWaitingAccessCode(false);
+          pinNotifier.setPinTemp('');
+          pinNotifier.setConfirmPinTemp('');
+          ref.read<UserNotifier>(userProvider.notifier).setWaitingAccessCode(false);
           await carouselController.animateToPage(0);
 
-          Get.back<void>();
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
         } else {
-          controller.shakeKeyConfirm.currentState?.forward();
+          pinNotifier.shakeKeyConfirm.currentState?.forward();
           Future.delayed(const Duration(seconds: 1, milliseconds: 300), () {
             carouselPage = 1;
-            controller.setPinTemp('');
-            controller.setConfirmPinTemp('');
+            pinNotifier.setPinTemp('');
+            pinNotifier.setConfirmPinTemp('');
             carouselController.animateToPage(1);
           });
         }
@@ -226,68 +226,61 @@ class PinScreen extends GetWidget<PinController> {
       return;
     }
 
-    if (UserController.to.isPinRegistered.value == true) {
+    if (userState.isPinRegistered == true) {
       if (backspace) {
-        controller
-            .setPinTemp(Helpers.removeLastCharacter(controller.pinTemp.value));
+        pinNotifier.setPinTemp(Helpers.removeLastCharacter(pinState.pinTemp));
         return;
       }
-      controller.setPinTemp('${controller.pinTemp.value}$value');
+      pinNotifier.setPinTemp('${pinState.pinTemp}$value');
 
-      if (controller.pinTemp.value.length == 6) {
+      if (pinState.pinTemp.length == 6) {
         // set true
-        final valid = await controller.isPinValid();
+        final valid = await pinNotifier.isPinValid();
 
         if (valid) {
-          if (UserController.to.wantsToActivateBiometric) {
-            await controller.activateBiometric();
-            await UserController.to.setIsBiometricActivated(true);
+          await pinNotifier.activateBiometric();
+          ref.read<UserNotifier>(userProvider.notifier).setIsBiometricActivated(true);
 
-            controller.setPinTemp('');
-            controller.setConfirmPinTemp('');
-            Get.back<void>();
-            return;
+          ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
+
+          pinNotifier.setPinTemp('');
+          pinNotifier.setConfirmPinTemp('');
+          if (mounted) {
+            Navigator.of(context).pop();
           }
-
-          await PrivatePhotosController.to.switchSecretPhotos();
-          //GalleryStore.to.checkIsLibraryUpdated();
-
-          controller.setPinTemp('');
-          controller.setConfirmPinTemp('');
-          Get.back<void>();
           return;
         }
 
-        controller.shakeKey.currentState?.forward();
-        controller.setPinTemp('');
-        controller.setConfirmPinTemp('');
+        pinNotifier.shakeKey.currentState?.forward();
+        pinNotifier.setPinTemp('');
+        pinNotifier.setConfirmPinTemp('');
       }
       return;
     }
 
-    if (UserController.to.waitingAccessCode.value == true) {
+    if (userState.waitingAccessCode == true) {
       if (backspace) {
-        controller.setAccessCode(
-            Helpers.removeLastCharacter(controller.accessCode.value),);
+        pinNotifier.setAccessCode(
+          Helpers.removeLastCharacter(pinState.accessCode),
+        );
         return;
       }
-      controller.setAccessCode('${controller.accessCode.value}$value');
+      pinNotifier.setAccessCode('${pinState.accessCode}$value');
 
-      if (controller.accessCode.value.length == 6) {
-        await controller.validateAccessCode();
+      if (pinState.accessCode.length == 6) {
+        await pinNotifier.validateAccessCode();
       }
       return;
     }
 
     if (carouselPage == 0) {
       if (backspace) {
-        controller
-            .setPinTemp(Helpers.removeLastCharacter(controller.pinTemp.value));
+        pinNotifier.setPinTemp(Helpers.removeLastCharacter(pinState.pinTemp));
         return;
       }
-      controller.setPinTemp('${controller.pinTemp.value}$value');
+      pinNotifier.setPinTemp('${pinState.pinTemp}$value');
 
-      if (controller.pinTemp.value.length == 6) {
+      if (pinState.pinTemp.length == 6) {
         carouselPage = 1;
         await carouselController.nextPage();
       }
@@ -295,27 +288,30 @@ class PinScreen extends GetWidget<PinController> {
     }
 
     if (backspace) {
-      controller.setConfirmPinTemp(
-          Helpers.removeLastCharacter(controller.confirmPinTemp.value),);
+      pinNotifier.setConfirmPinTemp(
+        Helpers.removeLastCharacter(pinState.confirmPinTemp),
+      );
       return;
     }
 
-    controller.setConfirmPinTemp('${controller.confirmPinTemp.value}$value');
+    pinNotifier.setConfirmPinTemp('${pinState.confirmPinTemp}$value');
 
-    if (controller.confirmPinTemp.value.length == 6) {
-      if (controller.pinTemp.value == controller.confirmPinTemp.value) {
+    if (pinState.confirmPinTemp.length == 6) {
+      if (pinState.pinTemp == pinState.confirmPinTemp) {
         carouselPage = 0;
-        controller.pin = controller.pinTemp.value;
-        controller.setPinTemp('');
-        controller.setConfirmPinTemp('');
+        pinNotifier.setPin(pinState.pinTemp);
+        pinNotifier.setPinTemp('');
+        pinNotifier.setConfirmPinTemp('');
         await carouselController.animateToPage(0);
-        await Get.toNamed<void>(EmailScreen.id);
+        if (mounted) {
+          await Navigator.of(context).pushNamed(EmailScreen.id);
+        }
       } else {
-        controller.shakeKeyConfirm.currentState?.forward();
+        pinNotifier.shakeKeyConfirm.currentState?.forward();
         Future.delayed(const Duration(seconds: 1, milliseconds: 300), () {
           carouselPage = 0;
-          controller.setPinTemp('');
-          controller.setConfirmPinTemp('');
+          pinNotifier.setPinTemp('');
+          pinNotifier.setConfirmPinTemp('');
           carouselController.animateToPage(0);
         });
       }
@@ -324,260 +320,104 @@ class PinScreen extends GetWidget<PinController> {
 
   @override
   Widget build(BuildContext context) {
+    final pinState = ref.watch<PinFullState>(pinFullProvider);
+    final pinNotifier = ref.read<PinFullNotifier>(pinFullProvider.notifier);
+    final userState = ref.watch<UserState>(userProvider);
+    final s = ref.watch(sProvider);
+
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
-        child: Obx(
-          () => Stack(
-            children: <Widget>[
-              const ColorAnimatedBackground(
-                moveByX: 60,
-                moveByY: 40,
-              ),
-              SafeArea(
-                bottom: false,
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        CupertinoButton(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 10,),
-                          onPressed: () {
-                            if (controller.isWaitingRecoveryKey.value == true) {
-                              controller.setIsWaitingRecoveryKey(false);
-                            }
-                            Get.back<void>();
-                          },
-                          child: Image.asset(
-                              'lib/images/backarrowwithdropshadow.png',),
+        child: Stack(
+          children: <Widget>[
+            const ColorAnimatedBackground(
+              moveByX: 60,
+              moveByY: 40,
+            ),
+            SafeArea(
+              bottom: false,
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      CupertinoButton(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 5,
+                          vertical: 10,
                         ),
-                        /*  CupertinoButton(
-                            onPressed: () {
-                                restorePurchase();
-                            },
-                            child: Text(
-                              LangControl.to.S.value.restore_purchase,
-                              textScaler: TextScaler.linear(1.0),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xff979a9b),
-                                decoration: TextDecoration.underline,
-                                fontFamily: "Lato",
-                                fontStyle: FontStyle.normal,
-                                fontSize: 14.0,
-                                letterSpacing: -0.4099999964237213,
-                              ),
-                            ),
-                          ), */
-                      ],
-                    ),
-                    Expanded(
-                      child: Obx(() {
-                        if (controller.isWaitingRecoveryKey.value == true) {
-                          return CarouselSlider.builder(
-                            carouselController: carouselController,
-                            itemCount: 3,
-                            itemBuilder:
-                                (BuildContext context, int index, int _) {
-                              return _buildPinPad(context, index);
-                            },
-                            options: CarouselOptions(
-                              enableInfiniteScroll: false,
-                              height: double.maxFinite,
-                              viewportFraction: 1,
-                              scrollPhysics:
-                                  const NeverScrollableScrollPhysics(),
-                            ),
-                          );
-
-                          // return Column(
-                          //   children: [
-                          //     Spacer(),
-                          //     Text(
-                          //       'Recovery Code',
-                          //       style: TextStyle(
-                          //         fontFamily: 'Lato',
-                          //         color: kSecondaryColor,
-                          //         fontSize: 24.0,
-                          //         fontWeight: FontWeight.w400,
-                          //         fontStyle: FontStyle.normal,
-                          //         letterSpacing: -0.4099999964237213,
-                          //       ),
-                          //     ),
-                          //     Spacer(),
-                          //     Shake(
-                          //       key: controller.shakeRecovery,
-                          //       preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
-                          //       child: Observer(builder: (_) {
-                          //         return PinPlaceholder(
-                          //           filledPositions: controller.recoveryCode.length,
-                          //           totalPositions: 6,
-                          //         );
-                          //       }),
-                          //     ),
-                          //     Spacer(),
-                          //     NumberPad(
-                          //       onPinTapped: pinTapped,
-                          //     ),
-                          //     Spacer(),
-                          //   ],
-                          // );
-                        }
-
-                        if (UserController.to.isPinRegistered.value == true) {
-                          String? assetImage;
-
-                          if (UserController.to.isBiometricActivated.value ==
-                              true) {
-                            if (UserController.to.availableBiometrics
-                                .contains(BiometricType.face)) {
-                              assetImage = 'lib/images/faceidwhiteico.png';
-                            } else if (UserController.to.availableBiometrics
-                                .contains(BiometricType.iris)) {
-                              assetImage = 'lib/images/irisscannerwhiteico.png';
-                            } else if (UserController.to.availableBiometrics
-                                .contains(BiometricType.fingerprint)) {
-                              assetImage = 'lib/images/fingerprintwhiteico.png';
-                            }
+                        onPressed: () {
+                          if (pinState.isWaitingRecoveryKey == true) {
+                            pinNotifier.setIsWaitingRecoveryKey(false);
                           }
+                          Navigator.of(context).pop();
+                        },
+                        child: Image.asset(
+                          'lib/images/backarrowwithdropshadow.png',
+                        ),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: Builder(builder: (context) {
+                      if (pinState.isWaitingRecoveryKey == true) {
+                        return CarouselSlider.builder(
+                          carouselController: carouselController,
+                          itemCount: 3,
+                          itemBuilder:
+                              (BuildContext context, int index, int _) {
+                            return _buildPinPad(context, index);
+                          },
+                          options: CarouselOptions(
+                            enableInfiniteScroll: false,
+                            height: double.maxFinite,
+                            viewportFraction: 1,
+                            scrollPhysics:
+                                const NeverScrollableScrollPhysics(),
+                          ),
+                        );
+                      }
 
-                          return Column(
-                            children: [
-                              const Spacer(),
-                              Obx(
-                                () => Text(
-                                  LangControl.to.S.value.your_secret_key,
-                                  style: const TextStyle(
-                                    fontFamily: 'Lato',
-                                    color: kSecondaryColor,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w400,
-                                    fontStyle: FontStyle.normal,
-                                    letterSpacing: -0.4099999964237213,
-                                  ),
-                                ),
-                              ),
-                              const Spacer(
-                                flex: 2,
-                              ),
-                              Shake(
-                                key: controller.shakeKey,
-                                preferences: const AnimationPreferences(
-                                    autoPlay: AnimationPlayStates.None,),
-                                child: Obx(() {
-                                  return PinPlaceholder(
-                                    filledPositions:
-                                        controller.pinTemp.value.length,
-                                  );
-                                }),
-                              ),
-                              const Spacer(),
-                              NumberPad(
-                                onPinTapped: pinTapped,
-                              ),
-                              const Spacer(),
-                              if (assetImage != null)
-                                CupertinoButton(
-                                  onPressed: () {
-                                    controller.authenticate();
-                                  },
-                                  child: Image.asset(assetImage),
-                                ),
-                              if (UserController.to.wantsToActivateBiometric !=
-                                  true)
-                                CupertinoButton(
-                                  onPressed: () {
-                                    controller.recoverPin();
-                                  },
-                                  child: Obx(
-                                    () => Text(
-                                      LangControl.to.S.value.forgot_secret_key,
-                                      style: const TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: kWhiteColor,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              const Spacer(
-                                flex: 2,
-                              ),
-                            ],
-                          );
+                      if (userState.isPinRegistered == true) {
+                        String? assetImage;
+
+                        if (userState.isBiometricActivated == true) {
+                          if (userState.availableBiometrics
+                              .contains(BiometricType.face)) {
+                            assetImage = 'lib/images/faceidwhiteico.png';
+                          } else if (userState.availableBiometrics
+                              .contains(BiometricType.iris)) {
+                            assetImage = 'lib/images/irisscannerwhiteico.png';
+                          } else if (userState.availableBiometrics
+                              .contains(BiometricType.fingerprint)) {
+                            assetImage = 'lib/images/fingerprintwhiteico.png';
+                          }
                         }
 
-                        if (UserController.to.waitingAccessCode.value ==
-                            false) {
-                          return CarouselSlider.builder(
-                            carouselController: carouselController,
-                            itemCount: 2,
-                            itemBuilder:
-                                (BuildContext context, int index, int _) {
-                              return _buildPinPad(context, index);
-                            },
-                            options: CarouselOptions(
-                              enableInfiniteScroll: false,
-                              height: double.maxFinite,
-                              viewportFraction: 1,
-                              scrollPhysics:
-                                  const NeverScrollableScrollPhysics(),
-                            ),
-                          );
-                        }
                         return Column(
                           children: [
                             const Spacer(),
-                            Obx(
-                              () => Text(
-                                controller.invalidAccessCode.value
-                                    ? 'Invalid Access Code'
-                                    : LangControl.to.S.value.access_code,
-                                style: const TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: kSecondaryColor,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w400,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
+                            Text(
+                              s.your_secret_key,
+                              style: const TextStyle(
+                                fontFamily: 'Lato',
+                                color: kSecondaryColor,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 16),
-                              child: Obx(
-                                () => Text(
-                                  LangControl.to.S.value.access_code_sent(
-                                      controller.email.value.isEmpty
-                                          ? 'user@email.com'
-                                          : controller.email.value,),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontFamily: 'Lato',
-                                    color: kWhiteColor,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    fontStyle: FontStyle.normal,
-                                  ),
-                                ),
-                              ),
+                            const Spacer(
+                              flex: 2,
                             ),
-                            const Spacer(),
                             Shake(
-                              key: controller.shakeKey,
+                              key: pinNotifier.shakeKey,
                               preferences: const AnimationPreferences(
-                                  autoPlay: AnimationPlayStates.None,),
-                              child: Obx(
-                                () {
-                                  return PinPlaceholder(
-                                    filledPositions:
-                                        controller.accessCode.value.length,
-                                  );
-                                },
+                                autoPlay: AnimationPlayStates.None,
+                              ),
+                              child: PinPlaceholder(
+                                filledPositions: pinState.pinTemp.length,
                               ),
                             ),
                             const Spacer(),
@@ -585,25 +425,120 @@ class PinScreen extends GetWidget<PinController> {
                               onPinTapped: pinTapped,
                             ),
                             const Spacer(),
+                            if (assetImage != null)
+                              CupertinoButton(
+                                onPressed: () {
+                                  pinNotifier.authenticate();
+                                },
+                                child: Image.asset(assetImage),
+                              ),
+                            const SizedBox(height: 16),
+                            CupertinoButton(
+                              onPressed: () {
+                                pinNotifier.recoverPin();
+                              },
+                              child: Text(
+                                s.forgot_secret_key,
+                                style: const TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: kWhiteColor,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
+                                ),
+                              ),
+                            ),
+                            const Spacer(
+                              flex: 2,
+                            ),
                           ],
                         );
-                      }),
-                    ),
-                  ],
-                ),
+                      }
+
+                      if (userState.waitingAccessCode == false) {
+                        return CarouselSlider.builder(
+                          carouselController: carouselController,
+                          itemCount: 2,
+                          itemBuilder:
+                              (BuildContext context, int index, int _) {
+                            return _buildPinPad(context, index);
+                          },
+                          options: CarouselOptions(
+                            enableInfiniteScroll: false,
+                            height: double.maxFinite,
+                            viewportFraction: 1,
+                            scrollPhysics:
+                                const NeverScrollableScrollPhysics(),
+                          ),
+                        );
+                      }
+                      return Column(
+                        children: [
+                          const Spacer(),
+                          Text(
+                            (pinState.invalidAccessCode == true)
+                                ? 'Invalid Access Code'
+                                : s.access_code,
+                            style: const TextStyle(
+                              fontFamily: 'Lato',
+                              color: kSecondaryColor,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              letterSpacing: -0.4099999964237213,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Text(
+                              s.access_code_sent(
+                                pinState.email.isEmpty
+                                    ? 'user@email.com'
+                                    : pinState.email,
+                              ),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontFamily: 'Lato',
+                                color: kWhiteColor,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          Shake(
+                            key: pinNotifier.shakeKey,
+                            preferences: const AnimationPreferences(
+                              autoPlay: AnimationPlayStates.None,
+                            ),
+                            child: PinPlaceholder(
+                              filledPositions: pinState.accessCode.length,
+                            ),
+                          ),
+                          const Spacer(),
+                          NumberPad(
+                            onPinTapped: pinTapped,
+                          ),
+                          const Spacer(),
+                        ],
+                      );
+                    }),
+                  ),
+                ],
               ),
-              if (controller.isLoading.value)
-                ColoredBox(
-                  color: Colors.black.withValues(alpha: 0.7),
-                  child: const Center(
-                    child: SpinKitChasingDots(
-                      color: kPrimaryColor,
-                      size: 80,
-                    ),
+            ),
+            if (pinState.isLoading == true)
+              ColoredBox(
+                color: Colors.black.withValues(alpha: 0.7),
+                child: const Center(
+                  child: SpinKitChasingDots(
+                    color: kPrimaryColor,
+                    size: 80,
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );
@@ -611,7 +546,6 @@ class PinScreen extends GetWidget<PinController> {
 }
 
 class PinPlaceholder extends StatelessWidget {
-
   const PinPlaceholder({
     super.key,
     this.totalPositions = 6,
@@ -653,11 +587,11 @@ class PinPlaceholder extends StatelessWidget {
 }
 
 class NumberPad extends StatelessWidget {
-
   const NumberPad({
-    required this.onPinTapped, super.key,
+    required this.onPinTapped,
+    super.key,
   });
-  final void Function(String, bool) onPinTapped;
+  final Future<void> Function(String, bool) onPinTapped;
 
   List<Widget> _buildPinNumbers() {
     final items = <Widget>[];
@@ -684,9 +618,10 @@ class NumberPad extends StatelessWidget {
         }
         if (pin == 12) {
           number.add(Expanded(
-              child: Container(
-            margin: const EdgeInsets.all(2),
-          ),),);
+            child: Container(
+              margin: const EdgeInsets.all(2),
+            ),
+          ),);
           continue;
         }
         number.add(
@@ -700,7 +635,6 @@ class NumberPad extends StatelessWidget {
                 margin: const EdgeInsets.all(2),
                 height: double.infinity,
                 alignment: Alignment.center,
-                // color: Colors.white.withOpacity(0.1),
                 child: Text(
                   '${pin == 11 ? '0' : pin}',
                   style: const TextStyle(

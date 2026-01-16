@@ -1,20 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/private_photos_provider.dart';
+import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/screens/settings_screen.dart';
-import 'package:picpics/stores/language_controller.dart';
-import 'package:picpics/stores/private_photos_controller.dart';
-import 'package:picpics/stores/tags_controller.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/secret_switch.dart';
 
 typedef OnUntag = void Function();
 
-class TopBar extends StatelessWidget {
-
+class TopBar extends ConsumerWidget {
   const TopBar({
-    required this.children, super.key,
+    required this.children,
+    super.key,
     this.searchEditingController,
     this.showUntag = false,
     this.searchFocusNode,
@@ -23,8 +23,8 @@ class TopBar extends StatelessWidget {
     this.onChanged,
   }) : assert((searchEditingController == null
             ? (onChanged == null && onSubmitted == null)
-            : (onChanged != null && onSubmitted != null)),);
-  /* final GalleryStore galleryStore; */
+            : (onChanged != null && onSubmitted != null)));
+
   final FocusNode? searchFocusNode;
   final bool showUntag;
   final OnUntag? onUntag;
@@ -34,7 +34,11 @@ class TopBar extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tagsState = ref.watch(tagsProvider);
+    final privatePhotosState = ref.watch(privatePhotosProvider);
+    final s = ref.watch(sProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -49,66 +53,53 @@ class TopBar extends StatelessWidget {
                     child: Focus(
                       onFocusChange: (focus) {
                         AppLogger.d('hasFocus: $focus');
-                        /* if (TagsController.to.isSearching.value == false) {
-                          TagsController.to.setIsSearching(true);
-                          TagsController.to.tagsSuggestionsCalculate();
-                        } else {
-                          TagsController.to.selectedFilteringTagsKeys.clear();
-                          TagsController.to.setIsSearching(false);
-                          searchFocusNode?.unfocus();
-                        } */
                       },
                       child: GestureDetector(
                         onTap: () {
-                          if (TagsController.to.isSearching.value == false) {
-                            TagsController.to.setIsSearching(true);
-                            TagsController.to.tagsSuggestionsCalculate();
+                          if (!tagsState.isSearching) {
+                            ref.read(tagsProvider.notifier).setIsSearching(true);
+                            ref.read(tagsProvider.notifier).tagsSuggestionsCalculate();
                           }
                         },
-                        child: Obx(
-                          () => TextField(
-                            controller: searchEditingController,
-                            focusNode: searchFocusNode,
-                            onChanged: (text) {
-                              AppLogger.d('searching: $text');
-                              onChanged?.call(text);
-                              /* TagsController.to.searchText.value = text; */
-                            },
-                            onSubmitted: (text) {
-                              AppLogger.d('return');
-                              onSubmitted?.call(text);
-                              searchEditingController?.clear();
-                              /* TagsController.to.searchTagsResults.clear(); */
-                              //                          DatabaseManager.instance.searchResults = null;
-                            },
-                            keyboardType: TextInputType.text,
-                            style: const TextStyle(
+                        child: TextField(
+                          controller: searchEditingController,
+                          focusNode: searchFocusNode,
+                          onChanged: (text) {
+                            AppLogger.d('searching: $text');
+                            onChanged?.call(text);
+                          },
+                          onSubmitted: (text) {
+                            AppLogger.d('return');
+                            onSubmitted?.call(text);
+                            searchEditingController?.clear();
+                          },
+                          keyboardType: TextInputType.text,
+                          style: const TextStyle(
+                            fontFamily: 'Lato',
+                            color: Color(0xff606566),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            letterSpacing: -0.4099999964237213,
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.only(right: 2),
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide.none),
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide.none),
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide.none),
+                            prefixIcon:
+                                Image.asset('lib/images/searchico.png'),
+                            hintText: s.search,
+                            hintStyle: const TextStyle(
                               fontFamily: 'Lato',
-                              color: Color(0xff606566),
+                              color: kGrayColor,
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.normal,
                               letterSpacing: -0.4099999964237213,
-                            ),
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.only(right: 2),
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide.none,),
-                              focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide.none,),
-                              border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none,),
-                              prefixIcon:
-                                  Image.asset('lib/images/searchico.png'),
-                              hintText: LangControl.to.S.value.search,
-                              hintStyle: const TextStyle(
-                                fontFamily: 'Lato',
-                                color: kGrayColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
-                              ),
                             ),
                           ),
                         ),
@@ -116,30 +107,36 @@ class TopBar extends StatelessWidget {
                     ),
                   ),
                 ),
-              GetX<PrivatePhotosController>(builder: (privateController) {
-                return privateController.showPrivate.value
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: SecretSwitch(
-                            value: privateController.showPrivate.value,
-                            onChanged: (value) {
-                              AppLogger.d('turn off');
-                              privateController.switchSecretPhotos();
-                            },),
+              if (privatePhotosState.showPrivate)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: SecretSwitch(
+                    value: privatePhotosState.showPrivate,
+                    onChanged: (value) {
+                      AppLogger.d('turn off');
+                      ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
+                    },
+                  ),
+                ),
+              if (showUntag)
+                GestureDetector(
+                  onTap: () {
+                    onUntag?.call();
+                  },
+                  child: const Text('Untag'),
+                )
+              else
+                CupertinoButton(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  onPressed: () {
+                    Navigator.of(context).push<void>(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const SettingsScreen()
                       )
-                    : Container();
-              },),
-              if (showUntag) GestureDetector(
-                      onTap: () {
-                        onUntag?.call();
-                      },
-                      child: const Text('Untag'),) else CupertinoButton(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      onPressed: () {
-                        Get.to<void>(() => const SettingsScreen());
-                      },
-                      child: Image.asset('lib/images/settings.png'),
-                    ),
+                    );
+                  },
+                  child: Image.asset('lib/images/settings.png'),
+                ),
             ],
           ),
         ),

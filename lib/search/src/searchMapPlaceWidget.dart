@@ -1,4 +1,4 @@
-part of search_map_place;
+part of '../search_map_place.dart';
 
 class SearchMapPlaceWidget extends StatefulWidget {
 
@@ -20,7 +20,9 @@ class SearchMapPlaceWidget extends StatefulWidget {
   })  : assert((location == null && radius == null) ||
             (location != null && radius != null),),
         super(key: key);
+  // ignore: library_private_types_in_public_api
   @override
+  // ignore: overridden_fields
   final Key? key;
 
   /// API Key of the Google Maps API.
@@ -74,6 +76,7 @@ class SearchMapPlaceWidget extends StatefulWidget {
   final bool darkMode;
 
   @override
+  // ignore: library_private_types_in_public_api
   _SearchMapPlaceWidgetState createState() => _SearchMapPlaceWidgetState();
 }
 
@@ -174,15 +177,14 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   }
 
   Widget _searchInput(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             CupertinoButton(
               padding: const EdgeInsets.only(left: 5, right: 10),
-              onPressed: () => Get.back<void>(),
+              onPressed: () => Navigator.of(context).pop(),
               child: Image.asset('lib/images/backarrowgray.png'),
             ),
             Image.asset('lib/images/searchico.png'),
@@ -242,8 +244,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
             if (!widget.hasClearButton) Container(),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget _placeOption(Place prediction) {

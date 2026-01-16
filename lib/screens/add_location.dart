@@ -1,37 +1,39 @@
+// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+
 import 'dart:async';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:picpics/asset_entity_image_provider.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/fade_image_builder.dart';
 import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/search/search_map_place.dart';
-import 'package:picpics/stores/language_controller.dart';
-import 'package:picpics/stores/pic_store.dart';
-import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
 final searchScaffoldKey = GlobalKey<ScaffoldState>();
 
-class AddLocationScreen extends StatefulWidget {
+class AddLocationScreen extends ConsumerStatefulWidget {
   const AddLocationScreen(this.currentPic, {super.key});
   static const id = 'add_location_screen';
-  final PicStore? currentPic;
+  final PicStoreNotifier? currentPic;
 
   @override
-  _AddLocationScreenState createState() => _AddLocationScreenState();
+  ConsumerState<AddLocationScreen> createState() => _AddLocationScreenState();
 }
 
-class _AddLocationScreenState extends State<AddLocationScreen> {
-  PicStore get picStore => widget.currentPic!;
+class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
+  PicStoreNotifier get picStore => widget.currentPic!;
 
   final _mapController = Completer<GoogleMapController>();
   final _markers = <Marker>{};
@@ -46,11 +48,8 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 
   void saveLocation(BuildContext context) {
     if (selectedGeolocation != null) {
-      //AppLogger.d(selectedGeolocation.fullJSON.toString());
-
       String? location;
       String? city;
-      // String? state;
       String? country;
 
       for (final components
@@ -66,13 +65,12 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
           continue;
         } else if (types.contains('administrative_area_level_2')) {
           AppLogger.d(
-              'find administrative_area_level_2: ${components["long_name"]}',);
+              'find administrative_area_level_2: ${components["long_name"]}');
           city = components['long_name'] as String?;
           continue;
         } else if (types.contains('administrative_area_level_1')) {
           AppLogger.d(
-              'find administrative_area_level_1: ${components["long_name"]}',);
-          // state = components['long_name'] as String?;
+              'find administrative_area_level_1: ${components["long_name"]}');
           continue;
         } else if (types.contains('country')) {
           AppLogger.d('country: ${components["long_name"]}');
@@ -100,22 +98,19 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
       }
     }
 
-    Get.back<void>();
+    Navigator.of(context).pop();
   }
 
   Future<void> getUserPosition() async {
     AppLogger.d('getting current location');
 
     final position = await Geolocator.getCurrentPosition();
-
     final geolocation = LatLng(position.latitude, position.longitude);
 
     final destination = Marker(
       markerId: const MarkerId('user-destination'),
-      icon: await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(
-          devicePixelRatio: 2.5,
-        ),
+      icon: await BitmapDescriptor.asset(
+        const ImageConfiguration(devicePixelRatio: 2.5),
         'lib/images/pin.png',
       ),
       position: geolocation,
@@ -128,27 +123,24 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
     });
 
     await controller.animateCamera(CameraUpdate.newLatLng(geolocation));
-
     AppLogger.d('finished');
   }
 
   Future<void> findInitialCamera() async {
     LatLng? latLng;
 
-    if (picStore.latitude.value != null && picStore.longitude.value != null) {
-      latLng = LatLng(picStore.latitude.value!, picStore.longitude.value!);
-    } else if (picStore.originalLatitude != null &&
-        picStore.originalLongitude != null) {
-      latLng = LatLng(picStore.originalLatitude!, picStore.originalLongitude!);
+    if (picStore.state.latitude != null && picStore.state.longitude != null) {
+      latLng = LatLng(picStore.state.latitude!, picStore.state.longitude!);
+    } else if (picStore.state.originalLatitude != null &&
+        picStore.state.originalLongitude != null) {
+      latLng = LatLng(picStore.state.originalLatitude!, picStore.state.originalLongitude!);
     }
 
     if (latLng != null && latLng != nullLocation) {
       final destination = Marker(
         markerId: const MarkerId('user-destination'),
-        icon: await BitmapDescriptor.fromAssetImage(
-          const ImageConfiguration(
-            devicePixelRatio: 2.5,
-          ),
+        icon: await BitmapDescriptor.asset(
+          const ImageConfiguration(devicePixelRatio: 2.5),
           'lib/images/pin.png',
         ),
         position: latLng,
@@ -186,6 +178,9 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final imageProvider = AssetEntityImageProvider(picStore);
+    final s = ref.watch(sProvider);
+    final userState = ref.watch(userProvider);
+
     return Scaffold(
       key: homeScaffoldKey,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -204,7 +199,10 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
               top: false,
               child: Padding(
                 padding: const EdgeInsets.only(
-                    left: 16, right: 16, bottom: 16,),
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -215,7 +213,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                       children: <Widget>[
                         CupertinoButton(
                           padding: const EdgeInsets.all(0),
-                          onPressed: () => Get.back<void>(),
+                          onPressed: () => Navigator.of(context).pop(),
                           child: SizedBox(
                             width: height * 0.17,
                             height: height * 0.17,
@@ -229,15 +227,14 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                   switch (state.extendedImageLoadState) {
                                     case LoadState.loading:
                                       loader = const ColoredBox(
-                                          color: kGreyPlaceholder,);
+                                        color: kGreyPlaceholder,
+                                      );
                                       break;
                                     case LoadState.completed:
                                       loader = FadeImageBuilder(
-                                        child: () {
-                                          return RepaintBoundary(
-                                            child: state.completedWidget,
-                                          );
-                                        }(),
+                                        child: RepaintBoundary(
+                                          child: state.completedWidget,
+                                        ),
                                       );
                                       break;
                                     case LoadState.failed:
@@ -247,21 +244,13 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                   return loader;
                                 },
                               ),
-
-                              // Container(),
-                              // ImageItem(
-                              //   entity: picStore.entity,
-                              //   size: 140,
-                              // ),
                             ),
                           ),
                         ),
                         CupertinoButton(
-                          padding: const EdgeInsets.only(
-                              left: 14, top: 14,),
+                          padding: const EdgeInsets.only(left: 14, top: 14),
                           onPressed: getUserPosition,
-                          child: Image.asset(
-                              'lib/images/getcurrentlocationico.png',),
+                          child: Image.asset('lib/images/getcurrentlocationico.png'),
                         ),
                       ],
                     ),
@@ -279,18 +268,16 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                         ),
                         height: 44,
                         child: Center(
-                          child: Obx(
-                            () => Text(
-                              LangControl.to.S.value.save_location,
-                              textScaler: const TextScaler.linear(1),
-                              style: const TextStyle(
-                                fontFamily: 'Lato',
-                                color: kWhiteColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
-                              ),
+                          child: Text(
+                            s.save_location,
+                            textScaler: const TextScaler.linear(1),
+                            style: const TextStyle(
+                              fontFamily: 'Lato',
+                              color: kWhiteColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              fontStyle: FontStyle.normal,
+                              letterSpacing: -0.4099999964237213,
                             ),
                           ),
                         ),
@@ -303,39 +290,39 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
             ColoredBox(
               color: kWhiteColor,
               child: SafeArea(
-                child: Obx(
-                  () => SearchMapPlaceWidget(
-                    apiKey: kGoogleApiKey,
-                    placeholder: LangControl.to.S.value.search,
-                    language: UserController.to.appLanguage.value
-                        .split('_')[0], // arrumar isso
-                    onSelected: (place) async {
-                      final geolocation = await place.geolocation;
-                      selectedGeolocation = geolocation;
+                child: SearchMapPlaceWidget(
+                  apiKey: kGoogleApiKey,
+                  placeholder: s.search,
+                  language: userState.appLanguage.split('_')[0],
+                  onSelected: (place) async {
+                    final geolocation = await place.geolocation;
+                    selectedGeolocation = geolocation;
 
-                      final destination = Marker(
-                        markerId: const MarkerId('user-destination'),
-                        icon: await BitmapDescriptor.fromAssetImage(
-                          const ImageConfiguration(
-                            devicePixelRatio: 2.5,
-                          ),
-                          'lib/images/pin.png',
-                        ),
-                        position: geolocation.coordinates as LatLng,
-                      );
+                    final destination = Marker(
+                      markerId: const MarkerId('user-destination'),
+                      icon: await BitmapDescriptor.asset(
+                        const ImageConfiguration(devicePixelRatio: 2.5),
+                        'lib/images/pin.png',
+                      ),
+                      position: geolocation.coordinates as LatLng,
+                    );
 
-                      final controller = await _mapController.future;
-                      _markers.clear();
-                      setState(() {
-                        _markers.add(destination);
-                      });
+                    final controller = await _mapController.future;
+                    _markers.clear();
+                    setState(() {
+                      _markers.add(destination);
+                    });
 
-                      await controller.animateCamera(
-                          CameraUpdate.newLatLng(geolocation.coordinates as LatLng),);
-                      await controller.animateCamera(
-                          CameraUpdate.newLatLngBounds(geolocation.bounds as LatLngBounds, 0),);
-                    },
-                  ),
+                    await controller.animateCamera(
+                      CameraUpdate.newLatLng(geolocation.coordinates as LatLng),
+                    );
+                    await controller.animateCamera(
+                      CameraUpdate.newLatLngBounds(
+                        geolocation.bounds as LatLngBounds,
+                        0,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

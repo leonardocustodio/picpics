@@ -4,11 +4,11 @@ import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:picpics/asset_entity_image_provider.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/fade_image_builder.dart';
-import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 
 class PhotoWidget extends StatelessWidget {
   const PhotoWidget({required this.picStore, this.hash, super.key});
-  final PicStore? picStore;
+  final PicStoreNotifier? picStore;
   final String? hash;
 
   @override

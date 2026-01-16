@@ -1,11 +1,11 @@
 import 'package:home_widget/home_widget.dart';
 import 'package:picpics/database/app_database.dart';
-import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 
 class WidgetManager {
   static AppDatabase appDatabase = AppDatabase();
   static Future<void> saveData(
-      {List<PicStore> picsStores = const <PicStore>[],}) async {
+      {List<PicStoreNotifier> picsStores = const <PicStoreNotifier>[],}) async {
     for (final store in picsStores) {
       await store.switchIsStarred();
     }

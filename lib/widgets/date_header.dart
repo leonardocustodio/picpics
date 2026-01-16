@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
-import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/utils/helpers.dart';
 
-class DateHeaderWidget extends StatelessWidget {
+class DateHeaderWidget extends ConsumerWidget {
   const DateHeaderWidget(
       {required this.date,
       required this.isSelected,
@@ -14,13 +15,14 @@ class DateHeaderWidget extends StatelessWidget {
   final bool isMonth;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final multiPicBar = ref.watch(tabsProvider).multiPicBar;
     return Container(
       padding: const EdgeInsets.only(left: 8, right: 8),
       height: 40,
       child: Row(
         children: [
-          if (TabsController.to.multiPicBar.value)
+          if (multiPicBar)
             Container(
               width: 20,
               height: 20,

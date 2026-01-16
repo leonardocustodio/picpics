@@ -1,10 +1,12 @@
+// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+
 import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -14,52 +16,99 @@ import 'package:picpics/fade_image_builder.dart';
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/screens/all_tags_screen.dart';
 /* import 'package:picpics/stores/gallery_store.dart'; */
-import 'package:picpics/stores/tabs_controller.dart';
-/* import 'package:picpics/stores/tabs_controller.dart'; */
-import 'package:picpics/stores/tagged_controller.dart';
+/* import 'package:picpics/stores/tagged_controller.dart'; */
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
 import 'package:picpics/widgets/tags_list.dart';
 
-class PhotoScreenController extends GetxController {
-  final overlay = true.obs;
-  final showSlideshow = false.obs;
-  final selectedIndex = 0.obs;
-  static PhotoScreenController get to => Get.find();
-  @override
-  void onReady() {
-    super.onReady();
+class PhotoScreenState {
+  final bool overlay;
+  final bool showSlideshow;
+  final int selectedIndex;
 
-    Analytics.sendCurrentScreen(Screen.photo_screen);
+  PhotoScreenState({
+    this.overlay = true,
+    this.showSlideshow = false,
+    this.selectedIndex = 0,
+  });
+
+  PhotoScreenState copyWith({
+    bool? overlay,
+    bool? showSlideshow,
+    int? selectedIndex,
+  }) {
+    return PhotoScreenState(
+      overlay: overlay ?? this.overlay,
+      showSlideshow: showSlideshow ?? this.showSlideshow,
+      selectedIndex: selectedIndex ?? this.selectedIndex,
+    );
   }
 }
 
-// ignore_for_file: must_be_immutable,prefer_final_fields, unused_field
-class PhotoScreen extends GetWidget<PhotoScreenController> {
+class PhotoScreenNotifier extends StateNotifier<PhotoScreenState> {
+  PhotoScreenNotifier() : super(PhotoScreenState());
 
-  PhotoScreen({required this.picId, required this.picIdList, super.key}) {
-    if (picIdList.isNotEmpty) {
-      idList.addAll(picIdList);
-    }
-    final index = getPicIdList().indexOf(picId);
-    if (index != -1) {
-      PhotoScreenController.to.selectedIndex.value = index;
-    }
-    galleryPageController = PageController(
-        initialPage: PhotoScreenController.to.selectedIndex
-            .value, /* GalleryStore.to.selectedThumbnail.value */);
+  void setOverlay(bool value) {
+    state = state.copyWith(overlay: value);
   }
-  static const id = 'photo_screen';
+
+  void setShowSlideshow(bool value) {
+    state = state.copyWith(showSlideshow: value);
+  }
+
+  void setSelectedIndex(int value) {
+    state = state.copyWith(selectedIndex: value);
+  }
+}
+
+final photoScreenProvider = StateNotifierProvider.autoDispose<PhotoScreenNotifier, PhotoScreenState>((ref) {
+  return PhotoScreenNotifier();
+});
+
+// ignore_for_file: must_be_immutable,prefer_final_fields, unused_field
+class PhotoScreen extends ConsumerStatefulWidget {
+  const PhotoScreen({required this.picId, required this.picIdList, super.key});
 
   final String picId;
-  late PageController galleryPageController;
-  //List<String> photoScreenSwiper = TabsController_.to.picStoreMap.keys.toList();
-
-  final idList = <String>[];
-
   final List<String> picIdList;
 
-  final _ = Get.put(PhotoScreenController());
+  @override
+  ConsumerState<PhotoScreen> createState() => _PhotoScreenState();
+}
+
+class _PhotoScreenState extends ConsumerState<PhotoScreen> {
+  late PageController galleryPageController;
+  final idList = <String>[];
+
+  @override
+  void initState() {
+    super.initState();
+
+    Analytics.sendCurrentScreen(Screen.photo_screen);
+
+    if (widget.picIdList.isNotEmpty) {
+      idList.addAll(widget.picIdList);
+    }
+    final index = getPicIdList().indexOf(widget.picId);
+    if (index != -1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(photoScreenProvider.notifier).setSelectedIndex(index);
+      });
+    }
+    galleryPageController = PageController(initialPage: index != -1 ? index : 0);
+  }
+
+  @override
+  void dispose() {
+    galleryPageController.dispose();
+    super.dispose();
+  }
+
+  static const id = 'photo_screen';
 
   /*  @override
   void initState() {
@@ -78,22 +127,23 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
     if (idList.isNotEmpty) {
       return idList;
     }
-    return TabsController.to.assetMap.keys.toList();
+    return ref.read(tabsProvider).assetMap.keys.toList();
   }
 
   void changeOverlay() {
-    if (!controller.overlay.value) {
-      controller.overlay.value = true;
-      /* setState(() {
-      }); */
+    final photoScreenNotifier = ref.read(photoScreenProvider.notifier);
+    final photoScreenState = ref.read(photoScreenProvider);
+
+    if (!photoScreenState.overlay) {
+      photoScreenNotifier.setOverlay(true);
       // TODO: Removing this to compile
       // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     } else {
-      if (!controller.showSlideshow.value) {
-        controller.showSlideshow.value = true;
+      if (!photoScreenState.showSlideshow) {
+        photoScreenNotifier.setShowSlideshow(true);
       } else {
-        controller.showSlideshow.value = false;
-        controller.overlay.value = false;
+        photoScreenNotifier.setShowSlideshow(false);
+        photoScreenNotifier.setOverlay(false);
         // TODO: Removing this to compile
         // SystemChrome.setEnabledSystemUIOverlays([]);
       }
@@ -107,14 +157,15 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     final picIdValue = getPicIdList()[index];
-    var picStore = TabsController.to.picStoreMap[picIdValue]?.value;
-    picStore ??= TabsController.to.explorPicStore(picIdValue).value;
+    final picStore = ref.read(tabsProvider).picStoreMap[picIdValue] ??
+        ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
 
     if (picStore == null) {
       return PhotoViewGalleryPageOptions.customChild(
-        child: const ColoredBox(color: kGreyPlaceholder),
+        child: const Center(child: Text('Photo not available', style: TextStyle(color: Colors.white))),
       );
     }
+
     final imageProvider = AssetEntityImageProvider(picStore);
 
     return PhotoViewGalleryPageOptions.customChild(
@@ -173,17 +224,24 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
   Widget _buildThumbnails(BuildContext context, int index) {
     final picIdValue = getPicIdList()[index];
-    var picStore = TabsController.to.picStoreMap[picIdValue]?.value;
-    picStore ??= TabsController.to.explorPicStore(picIdValue).value;
+    final picStore = ref.read(tabsProvider).picStoreMap[picIdValue] ??
+        ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
+
     if (picStore == null) {
-      return const ColoredBox(color: kGreyPlaceholder);
+      return Container(
+        height: 98,
+        width: 98,
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        color: Colors.grey[300],
+      );
     }
+
     final imageProvider = AssetEntityImageProvider(picStore);
 
     return CupertinoButton(
       padding: const EdgeInsets.all(0),
       onPressed: () {
-        controller.selectedIndex.value = index;
+        ref.read(photoScreenProvider.notifier).setSelectedIndex(index);
         galleryPageController.jumpToPage(index);
       },
       child: Container(
@@ -228,8 +286,9 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Scaffold(
+    final photoScreenState = ref.watch(photoScreenProvider);
+
+    return Scaffold(
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.light,
           child: Stack(
@@ -258,12 +317,12 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                   ),
                   pageController: galleryPageController,
                   onPageChanged: (index) {
-                    controller.selectedIndex.value = index;
+                    ref.read(photoScreenProvider.notifier).setSelectedIndex(index);
                     //GalleryStore.to.setSelectedThumbnail(index);
                   },
                 ),
               ),
-              if (controller.overlay.value)
+              if (photoScreenState.overlay)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -294,7 +353,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                 CupertinoButton(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 5, vertical: 10,),
-                                  onPressed: () => Get.back<void>(),
+                                  onPressed: () => Navigator.of(context).pop(),
                                   child: Image.asset(
                                       'lib/images/backarrowwithdropshadow.png',),
                                 ),
@@ -303,12 +362,9 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                       horizontal: 5, vertical: 10,),
                                   onPressed: () {
                                     final picIdValue = getPicIdList().toList()[
-                                        controller.selectedIndex.value];
-                                    var shareAblePicStore = TabsController
-                                        .to.picStoreMap[picIdValue]?.value;
-                                    shareAblePicStore ??= TabsController.to
-                                        .explorPicStore(picIdValue)
-                                        .value;
+                                        photoScreenState.selectedIndex];
+                                    final shareAblePicStore = ref.read(tabsProvider).picStoreMap[picIdValue] ??
+                                        ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
                                     shareAblePicStore?.sharePic();
                                   },
                                   child: Image.asset(
@@ -321,7 +377,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                       ),
                     ),
                     const Spacer(),
-                    if (!controller.showSlideshow.value)
+                    if (!photoScreenState.showSlideshow)
                       ClipRect(
                         child: BackdropFilter(
                           filter: ImageFilter.blur(
@@ -390,7 +446,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                         //           )),
                                         //       TextSpan(
                                         //         text:
-                                        //             '  ${TabsController.to.picStoreMap[getPicIdList()[controller.selectedIndex.value]]?.value.generalLocation.value ?? LangControl.to.S.value.country}',
+                                        //             '  ${TabsController.to.picStoreMap[getPicIdList()[ref.read(photoScreenProvider).selectedIndex]]?.value.generalLocation.value ?? LangControl.to.S.value.country}',
                                         //         style: const TextStyle(
                                         //           fontFamily: 'NotoSans',
                                         //           color: kWhiteColor,
@@ -405,15 +461,11 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                         //   ),
                                         // ),
                                         Text(
-                                          dateFormat(TabsController
-                                                  .to
+                                          dateFormat(ref.read(tabsProvider)
                                                   .picStoreMap[
                                                       getPicIdList().toList()[
-                                                          controller
-                                                              .selectedIndex
-                                                              .value]]
-                                                  ?.value
-                                                  .createdAt ??
+                                                          photoScreenState.selectedIndex]]
+                                                  ?.state.createdAt ??
                                               DateTime.now(),),
                                           textScaler: const TextScaler.linear(1),
                                           style: const TextStyle(
@@ -429,7 +481,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                     ),
                                     BottomTabsListWidget(
                                         picId: getPicIdList().toList()[
-                                            controller.selectedIndex.value],),
+                                            photoScreenState.selectedIndex],),
                                   ],
                                 ),
                               ),
@@ -437,7 +489,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                           ),
                         ),
                       ),
-                    if (controller.showSlideshow.value)
+                    if (photoScreenState.showSlideshow)
                       ClipRect(
                         child: DecoratedBox(
                           decoration: BoxDecoration(
@@ -479,93 +531,86 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
             ],
           ),
         ),
-      ),
     );
   }
 }
 
-class BottomTabsListWidget extends GetWidget<TaggedController> {
+class BottomTabsListWidget extends ConsumerWidget {
   const BottomTabsListWidget({required this.picId, super.key});
   final String picId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final picWiseTags = ref.watch(taggedProvider).picWiseTags;
+
     return Padding(
       padding: const EdgeInsets.only(top: 16),
-      child: Obx(
-        () => (controller.picWiseTags[picId]?.keys.toList().isEmpty ?? true)
-            ? TagsList(
-                tagsKeyList: const <String>[],
-                tagStyle: TagStyle.multiColored,
-                addTagButton: () async {
-                  final picStore = TabsController.to.picStoreMap[picId]?.value;
+      child: (picWiseTags[picId]?.keys.toList().isEmpty ?? true)
+          ? TagsList(
+              tagsKeyList: const <String>[],
+              tagStyle: TagStyle.multiColored,
+              addTagButton: () async {
+                final picStore = ref.read(tabsProvider).picStoreMap[picId];
 
-                  if (picStore != null) {
-                    final result =
-                        Get.to<void>(() => AllTagsScreen(picStore: picStore));
-                    if (result == null) {
-                      await TaggedController.to.refreshTaggedPhotos();
-                      await TabsController.to.refreshUntaggedList();
-                    }
-                    return;
-                  }
+                if (picStore != null) {
+                  await Navigator.of(context).push<Object?>(MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)));
+                  await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
+                  await ref.read(tabsProvider.notifier).refreshUntaggedList();
+                  return;
+                }
 
-                  Get.back<void>();
-                },
-                onTap: (String tagKey) {
-                  AppLogger.d('ignore click');
-                },
-                onDoubleTap: (String tagKey) {
+                Navigator.of(context).pop();
+              },
+              onTap: (String tagKey) {
+                AppLogger.d('ignore click');
+              },
+              onDoubleTap: (String tagKey) {
 //                                        TabsController_.to.picStoreMap[picId]
 //                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
-                },
-                onPanEnd: (String tagKey) {
-                  AppLogger.d('teste');
-                },
-                /* showEditTagModal: () =>
-                                                    showEditTagModal(context, false), */
-              )
-            : TagsList(
-                tagsKeyList:
-                    controller.picWiseTags[picId]?.keys.toList() ?? <String>[],
-                tagStyle: TagStyle.multiColored,
-                addTagButton: () async {
-                  /* GalleryStore.to.setCurrentPic(
-                                                      TabsController_
-                                                          .to.picStoreMap[picId].value); */
+              },
+              onPanEnd: (String tagKey) {
+                AppLogger.d('teste');
+              },
+              /* showEditTagModal: () =>
+                                                  showEditTagModal(context, false), */
+            )
+          : TagsList(
+              tagsKeyList:
+                  picWiseTags[picId]?.keys.toList() ?? <String>[],
+              tagStyle: TagStyle.multiColored,
+              addTagButton: () async {
+                /* GalleryStore.to.setCurrentPic(
+                                                    TabsController_
+                                                        .to.picStoreMap[picId].value); */
 
-                  /* if (!controller.modalCard.value) {
-                                                    controller.setModalCard(true);
-                                                  } */
+                /* if (!controller.modalCard.value) {
+                                                  controller.setModalCard(true);
+                                                } */
 
-                  final picStore = TabsController.to.picStoreMap[picId]?.value;
+                final picStore = ref.read(tabsProvider).picStoreMap[picId];
 
-                  if (picStore != null) {
-                    final result =
-                        Get.to<void>(() => AllTagsScreen(picStore: picStore));
-                    if (result == null) {
-                      await TaggedController.to.refreshTaggedPhotos();
-                      await TabsController.to.refreshUntaggedList();
-                    }
-                    return;
-                  }
+                if (picStore != null) {
+                  await Navigator.of(context).push<Object?>(MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)));
+                  await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
+                  await ref.read(tabsProvider.notifier).refreshUntaggedList();
+                  return;
+                }
 
-                  Get.back<void>();
-                },
-                onTap: (String tagKey) {
-                  AppLogger.d('ignore click');
-                },
-                onDoubleTap: (String tagKey) {
+                Navigator.of(context).pop();
+              },
+              onTap: (String tagKey) {
+                AppLogger.d('ignore click');
+              },
+              onDoubleTap: (String tagKey) {
 //                                        TabsController_.to.picStoreMap[picId]
 //                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
-                },
-                onPanEnd: (String tagKey) {
-                  AppLogger.d('teste');
-                },
-                /* showEditTagModal: () =>
-                                                    showEditTagModal(context, false), */
-              ),
-      ),
+              },
+              onPanEnd: (String tagKey) {
+                AppLogger.d('teste');
+              },
+              /* showEditTagModal: () =>
+                                                  showEditTagModal(context, false), */
+            ),
     );
   }
 }

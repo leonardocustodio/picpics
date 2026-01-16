@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
-import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/providers/language_provider.dart';
 
-class GeneralModal extends StatelessWidget {
+class GeneralModal extends ConsumerWidget {
 
   const GeneralModal({
     required this.message, required this.onPressedDelete, required this.onPressedOk, super.key,
@@ -14,7 +14,9 @@ class GeneralModal extends StatelessWidget {
   final void Function() onPressedOk;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final s = ref.watch(sProvider);
+
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
@@ -72,12 +74,10 @@ class GeneralModal extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(
-                    child: Obx(
-                      () => Text(
-                        LangControl.to.S.value.continue_string,
-                        textScaler: const TextScaler.linear(1),
-                        style: kLoginButtonTextStyle,
-                      ),
+                    child: Text(
+                      s.continue_string,
+                      textScaler: const TextScaler.linear(1),
+                      style: kLoginButtonTextStyle,
                     ),
                   ),
                 ),

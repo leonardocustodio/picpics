@@ -1,53 +1,58 @@
-// import 'package:extended_image/extended_image.dart'; // Unused import
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_blurhash/flutter_blurhash.dart'; // Unused import
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-// import 'package:picpics/asset_entity_image_provider.dart'; // Unused import
 import 'package:picpics/constants.dart';
-// import 'package:picpics/fade_image_builder.dart'; // Unused import
-// import 'package:picpics/screens/photo_screen.dart'; // Unused import
+import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
+import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/screens/settings_screen.dart';
 import 'package:picpics/screens/tabs/untagged_tabs/untagged_day.dart';
 import 'package:picpics/screens/tabs/untagged_tabs/untagged_month.dart';
-import 'package:picpics/stores/language_controller.dart';
-// import 'package:picpics/stores/pic_store.dart'; // Unused import
-import 'package:picpics/stores/tabs_controller.dart';
 import 'package:picpics/utils/app_logger.dart';
-// import 'package:picpics/utils/refresh_everything.dart'; // Unused import
 import 'package:picpics/widgets/device_no_pics.dart';
 import 'package:picpics/widgets/toggle_bar.dart';
 
-// ignore: must_be_immutable
-class UntaggedTab extends GetWidget<TabsController> {
-
-  UntaggedTab({super.key});
+class UntaggedTab extends ConsumerStatefulWidget {
+  const UntaggedTab({super.key});
   static const id = 'untagged_tab';
 
-  //ScrollController scrollControllerFirstTab;
-  TextEditingController tagsEditingController = TextEditingController();
+  @override
+  ConsumerState<UntaggedTab> createState() => _UntaggedTabState();
+}
+
+class _UntaggedTabState extends ConsumerState<UntaggedTab> {
+  final tagsEditingController = TextEditingController();
+
+  @override
+  void dispose() {
+    tagsEditingController.dispose();
+    super.dispose();
+  }
 
   Widget _buildGridView(BuildContext context) {
+    final tabsState = ref.watch(tabsProvider);
+    final tabsNotifier = ref.read(tabsProvider.notifier);
+
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         /// Hiding Months on days from here by listening to the scrollNotification
         if (scrollNotification is ScrollStartNotification) {
           AppLogger.d('Start scrolling');
-          controller.setIsScrolling(true);
+          tabsNotifier.setIsScrolling(true);
           return false;
         } else if (scrollNotification is ScrollEndNotification) {
           AppLogger.d('End scrolling');
-          controller.setIsScrolling(false);
+          tabsNotifier.setIsScrolling(false);
           return true;
         }
         return true;
       },
-      child: Obx(
-        () {
-          final isMonth = controller.toggleIndexUntagged.value == 0;
+      child: Builder(
+        builder: (context) {
+          final isMonth = tabsState.toggleIndexUntagged == 0;
           if (isMonth) {
-            if (controller.allUnTaggedPicsMonth.isEmpty) {
+            if (tabsState.allUnTaggedPicsMonth.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }
             return const UntaggedTabMonth();
@@ -336,7 +341,7 @@ class UntaggedTab extends GetWidget<TabsController> {
     AppLogger.d('Date Time Formatting: $dateTime');
 
     /// More Optimized code
-    if (controller.toggleIndexUntagged.value == 0) {
+    if (ref.read(tabsProvider).toggleIndexUntagged == 0) {
       formatter = DateFormat.yMMMM();
     } else {
       formatter = dateTime.year == DateTime.now().year
@@ -347,12 +352,14 @@ class UntaggedTab extends GetWidget<TabsController> {
   }
 
   Widget buildDateHeader(DateTime date, bool isSelected) {
+    final tabsState = ref.watch(tabsProvider);
+
     return Container(
       padding: const EdgeInsets.only(left: 8, right: 8),
       height: 40,
       child: Row(
         children: [
-          if (TabsController.to.multiPicBar.value)
+          if (tabsState.multiPicBar)
             Container(
               width: 20,
               height: 20,
@@ -364,7 +371,8 @@ class UntaggedTab extends GetWidget<TabsController> {
                     )
                   : BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey),),
+                      border: Border.all(color: Colors.grey),
+                    ),
               child: isSelected
                   ? Image.asset('lib/images/checkwhiteico.png')
                   : null,
@@ -388,14 +396,19 @@ class UntaggedTab extends GetWidget<TabsController> {
 
   @override
   Widget build(BuildContext context) {
+    final tabsState = ref.watch(tabsProvider);
+    final tabsNotifier = ref.read(tabsProvider.notifier);
+    final taggedState = ref.watch(taggedProvider);
+    final s = ref.watch(sProvider);
+
     return ColoredBox(
       //constraints: BoxConstraints.expand(),
       color: kWhiteColor,
       child: SafeArea(
-        child: Obx(() {
-          final hasPics = controller.allUnTaggedPicsMonth.isNotEmpty ||
-              controller.allUnTaggedPicsDay.isNotEmpty;
-          if (controller.isUntaggedPicsLoaded.value == false) {
+        child: Builder(builder: (context) {
+          final hasPics = tabsState.allUnTaggedPicsMonth.isNotEmpty ||
+              tabsState.allUnTaggedPicsDay.isNotEmpty;
+          if (tabsState.isUntaggedPicsLoaded == false) {
             return const Center(
               child: CircularProgressIndicator(
                   // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
@@ -412,7 +425,11 @@ class UntaggedTab extends GetWidget<TabsController> {
                     children: <Widget>[
                       CupertinoButton(
                         onPressed: () {
-                          Get.to<void>(() => const SettingsScreen());
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (context) => const SettingsScreen(),
+                            ),
+                          );
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -420,11 +437,11 @@ class UntaggedTab extends GetWidget<TabsController> {
                   ),
                 ),
                 DeviceHasNoPics(
-                  message: LangControl.to.S.value.device_has_no_pics,
+                  message: s.device_has_no_pics,
                 ),
               ],
             );
-          } else if (controller.isUntaggedPicsLoaded.value && !hasPics) {
+          } else if (tabsState.isUntaggedPicsLoaded && !hasPics) {
             return Stack(
               children: <Widget>[
                 Container(
@@ -436,7 +453,11 @@ class UntaggedTab extends GetWidget<TabsController> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         onPressed: () {
-                          Get.to<void>(() => const SettingsScreen());
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (context) => const SettingsScreen(),
+                            ),
+                          );
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -444,11 +465,11 @@ class UntaggedTab extends GetWidget<TabsController> {
                   ),
                 ),
                 DeviceHasNoPics(
-                  message: LangControl.to.S.value.no_photos_were_tagged,
+                  message: s.no_photos_were_tagged,
                 ),
               ],
             );
-          } else if (controller.isUntaggedPicsLoaded.value && hasPics) {
+          } else if (tabsState.isUntaggedPicsLoaded && hasPics) {
             return Stack(
               children: <Widget>[
                 Padding(
@@ -471,7 +492,11 @@ class UntaggedTab extends GetWidget<TabsController> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         onPressed: () {
-                          Get.to<void>(() => const SettingsScreen());
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (context) => const SettingsScreen(),
+                            ),
+                          );
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -485,10 +510,11 @@ class UntaggedTab extends GetWidget<TabsController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        controller.multiPicBar.value
-                            ? LangControl.to.S.value.photo_gallery_count(
-                                controller.selectedMultiBarPics.length,)
-                            : LangControl.to.S.value.photo_gallery_description,
+                        tabsState.multiPicBar
+                            ? s.photo_gallery_count(
+                                taggedState.selectedMultiBarPics.length,
+                              )
+                            : s.photo_gallery_description,
                         textScaler: const TextScaler.linear(1),
                         style: const TextStyle(
                           fontFamily: 'Lato',
@@ -502,26 +528,27 @@ class UntaggedTab extends GetWidget<TabsController> {
                   ),
                 ),
                 AnimatedOpacity(
-                  opacity: controller.isScrolling.value ? 0.0 : 1.0,
+                  opacity: tabsState.isScrolling ? 0.0 : 1.0,
                   duration: const Duration(milliseconds: 300),
                   onEnd: () {
-                    controller.setIsToggleBarVisible(
-                        controller.isScrolling.value ? false : true,);
+                    tabsNotifier.setIsToggleBarVisible(
+                      tabsState.isScrolling ? false : true,
+                    );
                   },
                   child: Visibility(
-                    visible: controller.isScrolling.value
-                        ? controller.isToggleBarVisible.value
+                    visible: tabsState.isScrolling
+                        ? tabsState.isToggleBarVisible
                         : true,
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: ToggleBar(
-                          titleLeft: LangControl.to.S.value.toggle_months,
-                          titleRight: LangControl.to.S.value.toggle_days,
-                          activeToggle: controller.toggleIndexUntagged.value,
+                          titleLeft: s.toggle_months,
+                          titleRight: s.toggle_days,
+                          activeToggle: tabsState.toggleIndexUntagged,
                           onToggle: (int index) {
-                            controller.setToggleIndexUntagged(index);
+                            tabsNotifier.setToggleIndexUntagged(index);
                           },
                         ),
                       ),
