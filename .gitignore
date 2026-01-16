@@ -91,6 +91,7 @@ coordination/orchestration/*
 *.sqlite
 *.sqlite-journal
 *.sqlite-wal
+.claude
 claude-flow
 claude-flow.bat
 claude-flow.ps1
