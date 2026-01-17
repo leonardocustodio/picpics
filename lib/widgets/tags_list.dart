@@ -98,8 +98,7 @@ class _TagsListState extends ConsumerState<TagsList> {
       /// We'll have to avoid the tags whose tag name is null and
       /// also if the tags is [kSecretTagKey] and showPrivate is False
       if (tagsState.allTags[tagKey]?.title == null ||
-          (privatePhotosState.showPrivate == false &&
-              tagKey == kSecretTagKey)) {
+          (privatePhotosState.showPrivate == false && tagKey == kSecretTagKey)) {
         continue;
       }
 
@@ -109,8 +108,7 @@ class _TagsListState extends ConsumerState<TagsList> {
             if (widget.shouldChangeToSwipeMode) {
               setState(() {
                 if (showSwiperInIndex == null) {
-                  showSwiperInIndex =
-                      tags.indexWhere((element) => element == tagKey);
+                  showSwiperInIndex = tags.indexWhere((element) => element == tagKey);
                 } else {
                   showSwiperInIndex = null;
                 }
@@ -166,9 +164,7 @@ class _TagsListState extends ConsumerState<TagsList> {
                         child: Text(
                           tagsState.allTags[tagKey]?.title ?? '',
                           textScaler: const TextScaler.linear(1),
-                          style: widget.tagStyle == TagStyle.multiColored
-                              ? kWhiteTextStyle
-                              : kGrayTextStyle,
+                          style: widget.tagStyle == TagStyle.multiColored ? kWhiteTextStyle : kGrayTextStyle,
                         ),
                       )
                     : Padding(
@@ -238,9 +234,7 @@ class _TagsListState extends ConsumerState<TagsList> {
                               child: Text(
                                 tagsState.allTags[tagKey]?.title ?? '',
                                 textScaler: const TextScaler.linear(1),
-                                style: widget.tagStyle == TagStyle.multiColored
-                                    ? kWhiteTextStyle
-                                    : kGrayTextStyle,
+                                style: widget.tagStyle == TagStyle.multiColored ? kWhiteTextStyle : kGrayTextStyle,
                               ),
                             ),
                           ),
@@ -264,9 +258,7 @@ class _TagsListState extends ConsumerState<TagsList> {
                             child: Text(
                               s.delete,
                               textScaler: const TextScaler.linear(1),
-                              style: widget.tagStyle == TagStyle.multiColored
-                                  ? kWhiteTextStyle
-                                  : kGrayTextStyle,
+                              style: widget.tagStyle == TagStyle.multiColored ? kWhiteTextStyle : kGrayTextStyle,
                             ),
                           ),
                         ],

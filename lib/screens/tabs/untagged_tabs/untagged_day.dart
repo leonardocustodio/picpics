@@ -30,8 +30,7 @@ class UntaggedTabDay extends ConsumerWidget {
       crossAxisCount: 3,
       staggeredTileBuilder: (int index) {
         if (tabsState.allUnTaggedPicsDay[index] is DateTime) {
-          if (index + 1 < tabsState.allUnTaggedPicsDay.length &&
-              tabsState.allUnTaggedPicsDay[index + 1] is DateTime) {
+          if (index + 1 < tabsState.allUnTaggedPicsDay.length && tabsState.allUnTaggedPicsDay[index + 1] is DateTime) {
             return const StaggeredTile.extent(3, 0);
           }
           return const StaggeredTile.extent(3, 40);
@@ -48,11 +47,8 @@ class UntaggedTabDay extends ConsumerWidget {
                 var i = index + 1;
                 isSelected = true;
 
-                while (i < tabsState.allUnTaggedPicsDay.length &&
-                    tabsState.allUnTaggedPicsDay[i] is String) {
-                  if (taggedState.selectedMultiBarPics[
-                          tabsState.allUnTaggedPicsDay[i]] ==
-                      null) {
+                while (i < tabsState.allUnTaggedPicsDay.length && tabsState.allUnTaggedPicsDay[i] is String) {
+                  if (taggedState.selectedMultiBarPics[tabsState.allUnTaggedPicsDay[i]] == null) {
                     isSelected = false;
                     break;
                   }
@@ -64,16 +60,14 @@ class UntaggedTabDay extends ConsumerWidget {
                   if (tabsState.multiPicBar) {
                     var i = index + 1;
                     if (isSelected) {
-                      while (i < tabsState.allUnTaggedPicsDay.length &&
-                          tabsState.allUnTaggedPicsDay[i] is String) {
+                      while (i < tabsState.allUnTaggedPicsDay.length && tabsState.allUnTaggedPicsDay[i] is String) {
                         taggedNotifier.removeSelectedMultiBarPic(
                           tabsState.allUnTaggedPicsDay[i] as String,
                         );
                         i++;
                       }
                     } else {
-                      while (i < tabsState.allUnTaggedPicsDay.length &&
-                          tabsState.allUnTaggedPicsDay[i] is String) {
+                      while (i < tabsState.allUnTaggedPicsDay.length && tabsState.allUnTaggedPicsDay[i] is String) {
                         taggedNotifier.addSelectedMultiBarPic(
                           tabsState.allUnTaggedPicsDay[i] as String,
                         );
@@ -102,8 +96,7 @@ class UntaggedTabDay extends ConsumerWidget {
                       if (taggedState.selectedMultiBarPics[object] == null) {
                         taggedNotifier.addSelectedMultiBarPic(object as String);
                       } else {
-                        taggedNotifier
-                            .removeSelectedMultiBarPic(object as String);
+                        taggedNotifier.removeSelectedMultiBarPic(object as String);
                       }
                       return;
                     }
@@ -131,9 +124,7 @@ class UntaggedTabDay extends ConsumerWidget {
                             hash: blurHash,
                           ),
                         ),
-                        if (tabsState.multiPicBar &&
-                            taggedState.selectedMultiBarPics[object] !=
-                                null) ...[
+                        if (tabsState.multiPicBar && taggedState.selectedMultiBarPics[object] != null) ...[
                           Container(
                             constraints: const BoxConstraints.expand(),
                             decoration: BoxDecoration(
@@ -154,8 +145,7 @@ class UntaggedTabDay extends ConsumerWidget {
                                 gradient: kSecondaryGradient,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child:
-                                  Image.asset('lib/images/checkwhiteico.png'),
+                              child: Image.asset('lib/images/checkwhiteico.png'),
                             ),
                           ),
                         ],

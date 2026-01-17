@@ -82,7 +82,6 @@ class PhotoScreenNotifier extends StateNotifier<PhotoScreenState> {
   }
 }
 
-final photoScreenProvider =
-    StateNotifierProvider<PhotoScreenNotifier, PhotoScreenState>((ref) {
+final photoScreenProvider = StateNotifierProvider<PhotoScreenNotifier, PhotoScreenState>((ref) {
   return PhotoScreenNotifier();
 });

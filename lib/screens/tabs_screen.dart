@@ -177,32 +177,22 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                     padding: const EdgeInsets.all(0),
                     onPressed: () async {
                       AppLogger.i('[TabsScreen] User tapped permission button');
-                      await ref
-                          .read(userProvider.notifier)
-                          .requestGalleryPermission();
+                      await ref.read(userProvider.notifier).requestGalleryPermission();
 
                       AppLogger.i('[TabsScreen] Permission request completed');
 
                       // Check if permission was granted by reading the updated state
-                      final hasPermission =
-                          ref.read(userProvider).hasGalleryPermission;
+                      final hasPermission = ref.read(userProvider).hasGalleryPermission;
 
                       if (hasPermission) {
                         // Request notification permission
-                        await ref
-                            .read(userProvider.notifier)
-                            .requestNotificationPermission();
+                        await ref.read(userProvider.notifier).requestNotificationPermission();
 
                         // Check notification permission
-                        await ref
-                            .read(userProvider.notifier)
-                            .checkNotificationPermission(
-                                firstPermissionCheck: true);
+                        await ref.read(userProvider.notifier).checkNotificationPermission(firstPermissionCheck: true);
 
                         // Mark tutorial as completed
-                        await ref
-                            .read(userProvider.notifier)
-                            .setTutorialCompleted(true);
+                        await ref.read(userProvider.notifier).setTutorialCompleted(true);
 
                         // Load assets after permission is granted
                         await ref.read(tabsProvider.notifier).loadAssetPath();

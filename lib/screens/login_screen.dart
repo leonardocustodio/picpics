@@ -52,8 +52,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      if (loginState.slideIndex != 0)
-                        Image.asset('lib/images/picpics_small.png'),
+                      if (loginState.slideIndex != 0) Image.asset('lib/images/picpics_small.png'),
                       Expanded(
                         child: Swiper(
                           loop: false,
@@ -98,8 +97,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   constraints: BoxConstraints(
                                     maxHeight: height / 3 - 20,
                                   ),
-                                  child: loginState.getImage(index - 1) ??
-                                      const SizedBox(),
+                                  child: loginState.getImage(index - 1) ?? const SizedBox(),
                                 ),
                                 const Spacer(
                                   flex: 2,
@@ -129,9 +127,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           itemCount: loginState.totalSlides,
                           controller: swiperController,
                           onIndexChanged: (index) {
-                            ref
-                                .read(loginProvider.notifier)
-                                .setSlideIndex(index);
+                            ref.read(loginProvider.notifier).setSlideIndex(index);
                           },
                           pagination: SwiperCustomPagination(
                             builder: (
@@ -149,9 +145,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       horizontal: 7,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: config?.activeIndex == x
-                                          ? kWhiteColor
-                                          : kGrayColor,
+                                      color: config?.activeIndex == x ? kWhiteColor : kGrayColor,
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                   ),
@@ -172,14 +166,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const SizedBox(height: 64),
                       CupertinoButton(
                         onPressed: () async {
-                          if (loginState.slideIndex ==
-                              loginState.totalSlides - 1) {
-                            await ref
-                                .read(loginProvider.notifier)
-                                .completeIntroduction();
-                            ref
-                                .read(userProvider.notifier)
-                                .setTutorialCompleted(true);
+                          if (loginState.slideIndex == loginState.totalSlides - 1) {
+                            await ref.read(loginProvider.notifier).completeIntroduction();
+                            ref.read(userProvider.notifier).setTutorialCompleted(true);
                             if (mounted) {
                               // ignore: use_build_context_synchronously
                               Navigator.of(context).pushNamedAndRemoveUntil(

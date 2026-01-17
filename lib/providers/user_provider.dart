@@ -104,8 +104,7 @@ class UserState {
       dailyChallenges: dailyChallenges ?? this.dailyChallenges,
       isPinRegistered: isPinRegistered ?? this.isPinRegistered,
       keepAskingToDelete: keepAskingToDelete ?? this.keepAskingToDelete,
-      shouldDeleteOnPrivate:
-          shouldDeleteOnPrivate ?? this.shouldDeleteOnPrivate,
+      shouldDeleteOnPrivate: shouldDeleteOnPrivate ?? this.shouldDeleteOnPrivate,
       picsTaggedToday: picsTaggedToday ?? this.picsTaggedToday,
       lastTaggedPicDate: lastTaggedPicDate ?? this.lastTaggedPicDate,
       loggedIn: loggedIn ?? this.loggedIn,
@@ -118,8 +117,7 @@ class UserState {
       requireSecret: requireSecret ?? this.requireSecret,
       hourOfDay: hourOfDay ?? this.hourOfDay,
       minutesOfDay: minutesOfDay ?? this.minutesOfDay,
-      photoHeightInCardWidget:
-          photoHeightInCardWidget ?? this.photoHeightInCardWidget,
+      photoHeightInCardWidget: photoHeightInCardWidget ?? this.photoHeightInCardWidget,
       appLanguage: appLanguage ?? this.appLanguage,
       currentLanguage: currentLanguage ?? this.currentLanguage,
       recentTags: recentTags ?? this.recentTags,
@@ -157,8 +155,7 @@ class UserNotifier extends StateNotifier<UserState> {
 
     AppLogger.i('[UserNotifier] User loaded from database:');
     AppLogger.d('  - tutorialCompleted: ${user.tutorialCompleted}');
-    AppLogger.d(
-        '  - hasGalleryPermission (from DB): ${user.hasGalleryPermission}');
+    AppLogger.d('  - hasGalleryPermission (from DB): ${user.hasGalleryPermission}');
     AppLogger.d('  - isPinRegistered: ${user.isPinRegistered}');
     AppLogger.d('  - appLanguage: ${user.appLanguage}');
 
@@ -205,19 +202,16 @@ class UserNotifier extends StateNotifier<UserState> {
     AppLogger.d('  - hasAccess: ${permissionStatus.hasAccess}');
 
     if (permissionStatus.isAuth || permissionStatus.hasAccess) {
-      AppLogger.i(
-          '[UserNotifier] Permission granted! Setting hasGalleryPermission to true');
+      AppLogger.i('[UserNotifier] Permission granted! Setting hasGalleryPermission to true');
       state = state.copyWith(hasGalleryPermission: true);
 
       // Update database if permission status changed
       if (!state.hasGalleryPermission) {
-        AppLogger.i(
-            '[UserNotifier] Updating database with new permission status...');
+        AppLogger.i('[UserNotifier] Updating database with new permission status...');
         // Update database here
       }
     } else {
-      AppLogger.i(
-          '[UserNotifier] Permission denied. Setting hasGalleryPermission to false');
+      AppLogger.i('[UserNotifier] Permission denied. Setting hasGalleryPermission to false');
       state = state.copyWith(hasGalleryPermission: false);
     }
   }
@@ -263,8 +257,7 @@ class UserNotifier extends StateNotifier<UserState> {
     // Update database
     final currentUser = await database.getSingleMoorUser();
     if (currentUser != null) {
-      await database
-          .updateMoorUser(currentUser.copyWith(tutorialCompleted: value));
+      await database.updateMoorUser(currentUser.copyWith(tutorialCompleted: value));
     }
 
     // Request gallery permission if tutorial is complete
@@ -372,8 +365,7 @@ class UserNotifier extends StateNotifier<UserState> {
       // Update database
       final currentUser = await database.getSingleMoorUser();
       if (currentUser != null) {
-        await database
-            .updateMoorUser(currentUser.copyWith(hasGalleryPermission: true));
+        await database.updateMoorUser(currentUser.copyWith(hasGalleryPermission: true));
       }
     } else {
       AppLogger.i('[UserNotifier] Gallery permission denied');
@@ -387,8 +379,7 @@ class UserNotifier extends StateNotifier<UserState> {
     // Check if permission was granted
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     final granted = await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
           alert: true,
           badge: true,
@@ -401,8 +392,7 @@ class UserNotifier extends StateNotifier<UserState> {
     }
   }
 
-  Future<void> checkNotificationPermission(
-      {bool firstPermissionCheck = false}) async {
+  Future<void> checkNotificationPermission({bool firstPermissionCheck = false}) async {
     AppLogger.i('[UserNotifier] Checking notification permission...');
     // TODO: Implement notification permission check
     // This is a placeholder to prevent compilation errors

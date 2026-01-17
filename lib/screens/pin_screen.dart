@@ -25,8 +25,7 @@ class PinScreen extends ConsumerStatefulWidget {
 }
 
 class _PinScreenState extends ConsumerState<PinScreen> {
-  final CarouselSliderController carouselController =
-      CarouselSliderController();
+  final CarouselSliderController carouselController = CarouselSliderController();
   int carouselPage = 0;
 
   Widget _buildPinPad(BuildContext context, int index) {
@@ -75,8 +74,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
             flex: 2,
           ),
           Shake(
-            preferences:
-                const AnimationPreferences(autoPlay: AnimationPlayStates.None),
+            preferences: const AnimationPreferences(autoPlay: AnimationPlayStates.None),
             child: Builder(builder: (context) {
               int filledPositions = 0;
 
@@ -111,14 +109,10 @@ class _PinScreenState extends ConsumerState<PinScreen> {
               onPressed: () {
                 final userState = ref.read(userProvider);
                 if (userState.email == null) {
-                  ref
-                      .read<PinFullNotifier>(pinFullProvider.notifier)
-                      .askEmail(context);
+                  ref.read<PinFullNotifier>(pinFullProvider.notifier).askEmail(context);
                   return;
                 }
-                ref
-                    .read<PinFullNotifier>(pinFullProvider.notifier)
-                    .recoverPin();
+                ref.read<PinFullNotifier>(pinFullProvider.notifier).recoverPin();
               },
               child: const Text(
                 'Already have an account?',
@@ -204,20 +198,14 @@ class _PinScreenState extends ConsumerState<PinScreen> {
           pinNotifier.setPin(pinState.pinTemp);
 
           // Set email before saving pin (used when saving the pin)
-          ref
-              .read<UserNotifier>(userProvider.notifier)
-              .setEmail(pinState.email);
+          ref.read<UserNotifier>(userProvider.notifier).setEmail(pinState.email);
           await pinNotifier.saveNewPin();
-          ref
-              .read<UserNotifier>(userProvider.notifier)
-              .setIsPinRegistered(true);
+          ref.read<UserNotifier>(userProvider.notifier).setIsPinRegistered(true);
           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
           pinNotifier.setPinTemp('');
           pinNotifier.setConfirmPinTemp('');
-          ref
-              .read<UserNotifier>(userProvider.notifier)
-              .setWaitingAccessCode(false);
+          ref.read<UserNotifier>(userProvider.notifier).setWaitingAccessCode(false);
           await carouselController.animateToPage(0);
 
           if (mounted) {
@@ -250,9 +238,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
 
         if (valid) {
           await pinNotifier.activateBiometric();
-          ref
-              .read<UserNotifier>(userProvider.notifier)
-              .setIsBiometricActivated(true);
+          ref.read<UserNotifier>(userProvider.notifier).setIsBiometricActivated(true);
 
           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
@@ -377,8 +363,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 3,
-                          itemBuilder:
-                              (BuildContext context, int index, int _) {
+                          itemBuilder: (BuildContext context, int index, int _) {
                             return _buildPinPad(context, index);
                           },
                           options: CarouselOptions(
@@ -394,14 +379,11 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                         String? assetImage;
 
                         if (userState.isBiometricActivated == true) {
-                          if (userState.availableBiometrics
-                              .contains(BiometricType.face)) {
+                          if (userState.availableBiometrics.contains(BiometricType.face)) {
                             assetImage = 'lib/images/faceidwhiteico.png';
-                          } else if (userState.availableBiometrics
-                              .contains(BiometricType.iris)) {
+                          } else if (userState.availableBiometrics.contains(BiometricType.iris)) {
                             assetImage = 'lib/images/irisscannerwhiteico.png';
-                          } else if (userState.availableBiometrics
-                              .contains(BiometricType.fingerprint)) {
+                          } else if (userState.availableBiometrics.contains(BiometricType.fingerprint)) {
                             assetImage = 'lib/images/fingerprintwhiteico.png';
                           }
                         }
@@ -471,8 +453,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 2,
-                          itemBuilder:
-                              (BuildContext context, int index, int _) {
+                          itemBuilder: (BuildContext context, int index, int _) {
                             return _buildPinPad(context, index);
                           },
                           options: CarouselOptions(
@@ -487,9 +468,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                         children: [
                           const Spacer(),
                           Text(
-                            (pinState.invalidAccessCode == true)
-                                ? 'Invalid Access Code'
-                                : s.access_code,
+                            (pinState.invalidAccessCode == true) ? 'Invalid Access Code' : s.access_code,
                             style: const TextStyle(
                               fontFamily: 'Lato',
                               color: kSecondaryColor,
@@ -503,9 +482,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                             padding: const EdgeInsets.only(top: 16),
                             child: Text(
                               s.access_code_sent(
-                                pinState.email.isEmpty
-                                    ? 'user@email.com'
-                                    : pinState.email,
+                                pinState.email.isEmpty ? 'user@email.com' : pinState.email,
                               ),
                               textAlign: TextAlign.center,
                               style: const TextStyle(

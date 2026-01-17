@@ -31,9 +31,8 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: width < 360
-          ? const EdgeInsets.symmetric(horizontal: 20)
-          : const EdgeInsets.symmetric(horizontal: 40),
+      insetPadding:
+          width < 360 ? const EdgeInsets.symmetric(horizontal: 20) : const EdgeInsets.symmetric(horizontal: 40),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: const BoxDecoration(
@@ -129,9 +128,7 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                                     ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                            child: keepAsking
-                                ? Image.asset('lib/images/checkwhiteico.png')
-                                : null,
+                            child: keepAsking ? Image.asset('lib/images/checkwhiteico.png') : null,
                           ),
                           Text(
                             s.keep_asking,
@@ -181,9 +178,7 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                                     ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                            child: !keepAsking
-                                ? Image.asset('lib/images/checkwhiteico.png')
-                                : null,
+                            child: !keepAsking ? Image.asset('lib/images/checkwhiteico.png') : null,
                           ),
                           Text(
                             s.dont_ask_again,
@@ -211,9 +206,7 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
                           if (keepAsking == false) {
-                            ref
-                                .read(userProvider.notifier)
-                                .setKeepAskingToDelete(false);
+                            ref.read(userProvider.notifier).setKeepAskingToDelete(false);
                           }
                           widget.onPressedDelete();
                         },
@@ -247,9 +240,7 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
                           if (keepAsking == false) {
-                            ref
-                                .read(userProvider.notifier)
-                                .setKeepAskingToDelete(false);
+                            ref.read(userProvider.notifier).setKeepAskingToDelete(false);
                           }
                           widget.onPressedOk();
                         },

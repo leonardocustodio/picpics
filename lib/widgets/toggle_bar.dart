@@ -45,9 +45,7 @@ class ToggleBarState extends State<ToggleBar> {
                 children: [
                   Positioned.fill(
                     child: AnimatedAlign(
-                      alignment: widget.activeToggle == 0
-                          ? Alignment.centerLeft
-                          : Alignment.centerRight,
+                      alignment: widget.activeToggle == 0 ? Alignment.centerLeft : Alignment.centerRight,
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.ease,
                       child: Container(
@@ -65,9 +63,7 @@ class ToggleBarState extends State<ToggleBar> {
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             onPressed: null,
                             child: Text(
-                              widget.activeToggle == 0
-                                  ? widget.titleLeft
-                                  : widget.titleRight,
+                              widget.activeToggle == 0 ? widget.titleLeft : widget.titleRight,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: Color(0xFF7E7E80),
@@ -90,9 +86,7 @@ class ToggleBarState extends State<ToggleBar> {
                           widget.titleLeft,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: widget.activeToggle == 0
-                                ? Colors.white
-                                : const Color(0xFF7E7E80),
+                            color: widget.activeToggle == 0 ? Colors.white : const Color(0xFF7E7E80),
                             fontFamily: 'Lato',
                             fontWeight: FontWeight.w600,
                           ),
@@ -108,9 +102,7 @@ class ToggleBarState extends State<ToggleBar> {
                           widget.titleRight,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: widget.activeToggle == 0
-                                ? const Color(0xFF7E7E80)
-                                : Colors.white,
+                            color: widget.activeToggle == 0 ? const Color(0xFF7E7E80) : Colors.white,
                             fontFamily: 'Lato',
                             fontWeight: FontWeight.w600,
                           ),

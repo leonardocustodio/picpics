@@ -48,11 +48,8 @@ class UntaggedTabMonth extends ConsumerWidget {
                 var i = index + 1;
                 isSelected = true;
 
-                while (i < tabsState.allUnTaggedPicsMonth.length &&
-                    tabsState.allUnTaggedPicsMonth[i] is String) {
-                  if (taggedState.selectedMultiBarPics[
-                          tabsState.allUnTaggedPicsMonth[i]] ==
-                      null) {
+                while (i < tabsState.allUnTaggedPicsMonth.length && tabsState.allUnTaggedPicsMonth[i] is String) {
+                  if (taggedState.selectedMultiBarPics[tabsState.allUnTaggedPicsMonth[i]] == null) {
                     isSelected = false;
                     break;
                   }
@@ -64,16 +61,14 @@ class UntaggedTabMonth extends ConsumerWidget {
                   if (tabsState.multiPicBar) {
                     var i = index + 1;
                     if (isSelected) {
-                      while (i < tabsState.allUnTaggedPicsMonth.length &&
-                          tabsState.allUnTaggedPicsMonth[i] is String) {
+                      while (i < tabsState.allUnTaggedPicsMonth.length && tabsState.allUnTaggedPicsMonth[i] is String) {
                         taggedNotifier.removeSelectedMultiBarPic(
                           tabsState.allUnTaggedPicsMonth[i] as String,
                         );
                         i++;
                       }
                     } else {
-                      while (i < tabsState.allUnTaggedPicsMonth.length &&
-                          tabsState.allUnTaggedPicsMonth[i] is String) {
+                      while (i < tabsState.allUnTaggedPicsMonth.length && tabsState.allUnTaggedPicsMonth[i] is String) {
                         taggedNotifier.addSelectedMultiBarPic(
                           tabsState.allUnTaggedPicsMonth[i] as String,
                         );
@@ -102,8 +97,7 @@ class UntaggedTabMonth extends ConsumerWidget {
                       if (taggedState.selectedMultiBarPics[object] == null) {
                         taggedNotifier.addSelectedMultiBarPic(object as String);
                       } else {
-                        taggedNotifier
-                            .removeSelectedMultiBarPic(object as String);
+                        taggedNotifier.removeSelectedMultiBarPic(object as String);
                       }
                       return;
                     }
@@ -131,9 +125,7 @@ class UntaggedTabMonth extends ConsumerWidget {
                             hash: blurHash,
                           ),
                         ),
-                        if (tabsState.multiPicBar &&
-                            taggedState.selectedMultiBarPics[object] !=
-                                null) ...[
+                        if (tabsState.multiPicBar && taggedState.selectedMultiBarPics[object] != null) ...[
                           Container(
                             constraints: const BoxConstraints.expand(),
                             decoration: BoxDecoration(
@@ -154,8 +146,7 @@ class UntaggedTabMonth extends ConsumerWidget {
                                 gradient: kSecondaryGradient,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child:
-                                  Image.asset('lib/images/checkwhiteico.png'),
+                              child: Image.asset('lib/images/checkwhiteico.png'),
                             ),
                           ),
                         ],

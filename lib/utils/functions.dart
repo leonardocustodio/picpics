@@ -12,8 +12,7 @@ import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/delete_secret_modal.dart';
 import 'package:picpics/widgets/unhide_secret_modal.dart';
 
-Future<void> showDeleteSecretModalForMultiPic(
-    BuildContext context, WidgetRef ref) async {
+Future<void> showDeleteSecretModalForMultiPic(BuildContext context, WidgetRef ref) async {
   final userState = ref.read(userProvider);
 
   if (userState.keepAskingToDelete == false) {
@@ -70,8 +69,7 @@ Future<void> showDeleteSecretModal(
   }
 
   final userState = ref.read(userProvider);
-  if (userState.keepAskingToDelete == false &&
-      picStore.state.isPrivate == false) {
+  if (userState.keepAskingToDelete == false && picStore.state.isPrivate == false) {
     //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
     return;
   }

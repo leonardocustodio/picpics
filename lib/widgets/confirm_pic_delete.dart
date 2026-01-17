@@ -23,9 +23,8 @@ class ConfirmPicDelete extends ConsumerWidget {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: width < 360
-          ? const EdgeInsets.symmetric(horizontal: 20)
-          : const EdgeInsets.symmetric(horizontal: 40),
+      insetPadding:
+          width < 360 ? const EdgeInsets.symmetric(horizontal: 20) : const EdgeInsets.symmetric(horizontal: 40),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: const BoxDecoration(

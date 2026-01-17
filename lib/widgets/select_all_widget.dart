@@ -25,8 +25,7 @@ class SelectAllWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.grey),
                   ),
-            child:
-                isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
+            child: isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
           ),
           const Text(
             'Select All',

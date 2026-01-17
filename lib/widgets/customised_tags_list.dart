@@ -79,9 +79,7 @@ class CustomisedTagsList extends ConsumerWidget {
                   ),
                 ]
               : List.generate(
-                  maxLength != null
-                      ? tagsKeyList.length.clamp(0, maxLength!)
-                      : tagsKeyList.length,
+                  maxLength != null ? tagsKeyList.length.clamp(0, maxLength!) : tagsKeyList.length,
                   (index) => _buildItem(context, ref, index, tagsState),
                 ),
         ),
@@ -89,8 +87,7 @@ class CustomisedTagsList extends ConsumerWidget {
     );
   }
 
-  Widget _buildItem(
-      BuildContext context, WidgetRef ref, int index, TagsState tagsState) {
+  Widget _buildItem(BuildContext context, WidgetRef ref, int index, TagsState tagsState) {
     final tag = tagsState.allTags[tagsKeyList[index]]!;
     final isColorFull = selectedTags[tag.key] != null;
     return GestureDetector(
@@ -120,8 +117,7 @@ class CustomisedTagsList extends ConsumerWidget {
         child: Text(
           tag.title,
           textScaler: const TextScaler.linear(1),
-          style: (isColorFull ? kWhiteTextStyle : kGrayTextStyle)
-              .copyWith(fontSize: 14),
+          style: (isColorFull ? kWhiteTextStyle : kGrayTextStyle).copyWith(fontSize: 14),
         ),
       ),
     );

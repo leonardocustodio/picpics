@@ -8,12 +8,10 @@ class PushNotificationsManager {
   factory PushNotificationsManager() => _instance;
   PushNotificationsManager._();
 
-  static final PushNotificationsManager _instance =
-      PushNotificationsManager._();
+  static final PushNotificationsManager _instance = PushNotificationsManager._();
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   bool _initialized = false;
 
@@ -40,8 +38,7 @@ class PushNotificationsManager {
       }); 
 */
 
-      const initializationSettingsAndroid =
-          AndroidInitializationSettings('ic_launcher');
+      const initializationSettingsAndroid = AndroidInitializationSettings('ic_launcher');
       const initializationSettingsIOS = DarwinInitializationSettings(
         requestAlertPermission: false,
         requestBadgePermission: false,
@@ -153,8 +150,7 @@ AppLogger.d('subscribed to topic: all_users');
         android: AndroidNotificationDetails(
           '0',
           'Daily Goal',
-          channelDescription:
-              'Notification for remembering your picPics daily goal',
+          channelDescription: 'Notification for remembering your picPics daily goal',
           importance: Importance.high,
           priority: Priority.high,
         ),

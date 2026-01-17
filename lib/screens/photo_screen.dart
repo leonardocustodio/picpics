@@ -65,9 +65,7 @@ class PhotoScreenNotifier extends StateNotifier<PhotoScreenState> {
   }
 }
 
-final photoScreenProvider =
-    StateNotifierProvider.autoDispose<PhotoScreenNotifier, PhotoScreenState>(
-        (ref) {
+final photoScreenProvider = StateNotifierProvider.autoDispose<PhotoScreenNotifier, PhotoScreenState>((ref) {
   return PhotoScreenNotifier();
 });
 
@@ -101,8 +99,7 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
         ref.read(photoScreenProvider.notifier).setSelectedIndex(index);
       });
     }
-    galleryPageController =
-        PageController(initialPage: index != -1 ? index : 0);
+    galleryPageController = PageController(initialPage: index != -1 ? index : 0);
   }
 
   @override
@@ -160,14 +157,12 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     final picIdValue = getPicIdList()[index];
-    final picStore = ref.read(tabsProvider).picStoreMap[picIdValue] ??
-        ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
+    final picStore =
+        ref.read(tabsProvider).picStoreMap[picIdValue] ?? ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
 
     if (picStore == null) {
       return PhotoViewGalleryPageOptions.customChild(
-        child: const Center(
-            child: Text('Photo not available',
-                style: TextStyle(color: Colors.white))),
+        child: const Center(child: Text('Photo not available', style: TextStyle(color: Colors.white))),
       );
     }
 
@@ -229,8 +224,8 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
 
   Widget _buildThumbnails(BuildContext context, int index) {
     final picIdValue = getPicIdList()[index];
-    final picStore = ref.read(tabsProvider).picStoreMap[picIdValue] ??
-        ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
+    final picStore =
+        ref.read(tabsProvider).picStoreMap[picIdValue] ?? ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
 
     if (picStore == null) {
       return Container(
@@ -312,8 +307,7 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                     child: CircularProgressIndicator(
                       value: event == null || event.expectedTotalBytes == null
                           ? 0
-                          : event.cumulativeBytesLoaded /
-                              event.expectedTotalBytes!,
+                          : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
                     ),
                   ),
                 ),
@@ -322,9 +316,7 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                 ),
                 pageController: galleryPageController,
                 onPageChanged: (index) {
-                  ref
-                      .read(photoScreenProvider.notifier)
-                      .setSelectedIndex(index);
+                  ref.read(photoScreenProvider.notifier).setSelectedIndex(index);
                   //GalleryStore.to.setSelectedThumbnail(index);
                 },
               ),
@@ -372,14 +364,9 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                                   vertical: 10,
                                 ),
                                 onPressed: () {
-                                  final picIdValue = getPicIdList()
-                                      .toList()[photoScreenState.selectedIndex];
-                                  final shareAblePicStore = ref
-                                          .read(tabsProvider)
-                                          .picStoreMap[picIdValue] ??
-                                      ref
-                                          .read(tabsProvider.notifier)
-                                          .explorPicStore(picIdValue);
+                                  final picIdValue = getPicIdList().toList()[photoScreenState.selectedIndex];
+                                  final shareAblePicStore = ref.read(tabsProvider).picStoreMap[picIdValue] ??
+                                      ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
                                   shareAblePicStore?.sharePic();
                                 },
                                 child: Image.asset(
@@ -409,14 +396,8 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
-                                Colors.black
-                                    .withValues(alpha: 0.7)
-                                    .withValues(alpha: 0.37)
-                                    .withValues(alpha: 0.3),
-                                Colors.black
-                                    .withValues(alpha: 1)
-                                    .withValues(alpha: 0.37)
-                                    .withValues(alpha: 0.3),
+                                Colors.black.withValues(alpha: 0.7).withValues(alpha: 0.37).withValues(alpha: 0.3),
+                                Colors.black.withValues(alpha: 1).withValues(alpha: 0.37).withValues(alpha: 0.3),
                               ],
                               stops: const [0, 0.40625],
                             ),
@@ -429,8 +410,7 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: <Widget>[
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       // RichText(
                                       //   textScaler: TextScaler.linear(1.0),
@@ -479,10 +459,7 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                                         dateFormat(
                                           ref
                                                   .read(tabsProvider)
-                                                  .picStoreMap[
-                                                      getPicIdList().toList()[
-                                                          photoScreenState
-                                                              .selectedIndex]]
+                                                  .picStoreMap[getPicIdList().toList()[photoScreenState.selectedIndex]]
                                                   ?.state
                                                   .createdAt ??
                                               DateTime.now(),
@@ -500,8 +477,7 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                                     ],
                                   ),
                                   BottomTabsListWidget(
-                                    picId: getPicIdList().toList()[
-                                        photoScreenState.selectedIndex],
+                                    picId: getPicIdList().toList()[photoScreenState.selectedIndex],
                                   ),
                                 ],
                               ),
@@ -574,9 +550,7 @@ class BottomTabsListWidget extends ConsumerWidget {
 
                 if (picStore != null) {
                   await Navigator.of(context).push<Object?>(
-                      MaterialPageRoute<Object?>(
-                          builder: (context) =>
-                              AllTagsScreen(picStore: picStore)));
+                      MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)));
                   await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
                   await ref.read(tabsProvider.notifier).refreshUntaggedList();
                   return;
@@ -613,9 +587,7 @@ class BottomTabsListWidget extends ConsumerWidget {
 
                 if (picStore != null) {
                   await Navigator.of(context).push<Object?>(
-                      MaterialPageRoute<Object?>(
-                          builder: (context) =>
-                              AllTagsScreen(picStore: picStore)));
+                      MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)));
                   await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
                   await ref.read(tabsProvider.notifier).refreshUntaggedList();
                   return;

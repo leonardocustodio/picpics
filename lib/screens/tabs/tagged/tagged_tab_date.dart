@@ -61,9 +61,7 @@ class _TaggedTabDateState extends ConsumerState<TaggedTabDate> {
 
               while (i < taggedState.allTaggedPicDateWiseList.length &&
                   taggedState.allTaggedPicDateWiseList[i] is String) {
-                if (taggedState.selectedMultiBarPics[
-                        taggedState.allTaggedPicDateWiseList[i]] ==
-                    null) {
+                if (taggedState.selectedMultiBarPics[taggedState.allTaggedPicDateWiseList[i]] == null) {
                   isSelected = false;
                   break;
                 }
@@ -103,10 +101,8 @@ class _TaggedTabDateState extends ConsumerState<TaggedTabDate> {
           }
 
           final picId = taggedState.allTaggedPicDateWiseList[index];
-          final blurHash = blurHashState
-              .blurHash[taggedState.allTaggedPicDateWiseList[index]];
-          final picStore = tabsState
-              .picStoreMap[taggedState.allTaggedPicDateWiseList[index]];
+          final blurHash = blurHashState.blurHash[taggedState.allTaggedPicDateWiseList[index]];
+          final picStore = tabsState.picStoreMap[taggedState.allTaggedPicDateWiseList[index]];
           return Padding(
             padding: const EdgeInsets.all(4),
             child: ClipRRect(

@@ -10,29 +10,23 @@ class ColorfulBackground extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final primaryGradient = Paint()
-      ..shader = kPrimaryGradient
-          .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+      ..shader = kPrimaryGradient.createShader(Rect.fromLTWH(0, 0, size.width, size.height));
     final secondaryGradient = Paint()
-      ..shader = kSecondaryGradient
-          .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-    final pinkGradient = Paint()
-      ..shader = kPinkGradient
-          .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+      ..shader = kSecondaryGradient.createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    final pinkGradient = Paint()..shader = kPinkGradient.createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
     final yellowPaint = Paint()
       ..color = kYellowColor
       ..style = PaintingStyle.fill;
 
-    final secondaryPath =
-        getSecondaryPath(size.width, size.height, moveBy.x - 20, moveBy.y * 2);
+    final secondaryPath = getSecondaryPath(size.width, size.height, moveBy.x - 20, moveBy.y * 2);
     final pinkPath = getPinkPath(
       size.width,
       size.height,
       -(moveBy.x / 3),
       -(moveBy.y / 2 - 30),
     );
-    final yellowPath =
-        getYellowPath(size.width, size.height, moveBy.x / 2, -moveBy.y + .0);
+    final yellowPath = getYellowPath(size.width, size.height, moveBy.x / 2, -moveBy.y + .0);
 
     canvas.drawPaint(primaryGradient);
     canvas.drawPath(pinkPath, pinkGradient);

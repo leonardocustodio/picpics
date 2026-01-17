@@ -20,9 +20,7 @@ class TaggedTabSelectiveTagKeyGrid extends ConsumerWidget {
     final tabsState = ref.watch(tabsProvider);
     final blurHashState = ref.watch(blurHashProvider);
 
-    final taggedPicIds =
-        taggedState.taggedPicId[tagKey]?.keys.toList().reversed.toList() ??
-            <String>[];
+    final taggedPicIds = taggedState.taggedPicId[tagKey]?.keys.toList().reversed.toList() ?? <String>[];
 
     return StaggeredGridView.countBuilder(
       key: Key(tagKey),
@@ -56,8 +54,7 @@ class TaggedTabSelectiveTagKeyGrid extends ConsumerWidget {
                 }
                 await Navigator.of(context).push(
                   MaterialPageRoute<void>(
-                    builder: (context) =>
-                        PhotoScreen(picId: picId, picIdList: taggedPicIds),
+                    builder: (context) => PhotoScreen(picId: picId, picIdList: taggedPicIds),
                   ),
                 );
               },
@@ -77,8 +74,7 @@ class TaggedTabSelectiveTagKeyGrid extends ConsumerWidget {
                         hash: blurHash,
                       ),
                     ),
-                    if (taggedState.multiPicBar &&
-                        taggedState.selectedMultiBarPics[picId] != null) ...[
+                    if (taggedState.multiPicBar && taggedState.selectedMultiBarPics[picId] != null) ...[
                       Container(
                         constraints: const BoxConstraints.expand(),
                         decoration: BoxDecoration(

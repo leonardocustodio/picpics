@@ -25,8 +25,7 @@ class PercentageDialog extends ConsumerWidget {
         Align(
           child: Container(
             width: 80,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(50)),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50)),
             height: 80,
             child: Stack(
               children: [
@@ -41,8 +40,7 @@ class PercentageDialog extends ConsumerWidget {
                   child: Text(
                     '$textPercent%',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        inherit: false, color: Colors.black, fontSize: 17),
+                    style: const TextStyle(inherit: false, color: Colors.black, fontSize: 17),
                   ),
                 ),
               ],
@@ -56,8 +54,7 @@ class PercentageDialog extends ConsumerWidget {
               child: Text(
                 textPercent > 98 ? "Finishing..." : state.message,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                    inherit: false, color: Colors.white, fontSize: 17),
+                style: const TextStyle(inherit: false, color: Colors.white, fontSize: 17),
               ),
             ),
           ),

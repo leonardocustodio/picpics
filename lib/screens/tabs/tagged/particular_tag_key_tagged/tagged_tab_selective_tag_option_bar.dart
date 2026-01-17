@@ -20,12 +20,10 @@ class TaggedTabSelectiveTagOptionBar extends ConsumerStatefulWidget {
   final String tagKey;
 
   @override
-  ConsumerState<TaggedTabSelectiveTagOptionBar> createState() =>
-      _TaggedTabSelectiveTagOptionBarState();
+  ConsumerState<TaggedTabSelectiveTagOptionBar> createState() => _TaggedTabSelectiveTagOptionBarState();
 }
 
-class _TaggedTabSelectiveTagOptionBarState
-    extends ConsumerState<TaggedTabSelectiveTagOptionBar> {
+class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelectiveTagOptionBar> {
   final bottomTagsEditingController = TextEditingController();
 
   @override
@@ -54,8 +52,7 @@ class _TaggedTabSelectiveTagOptionBarState
                 CupertinoButton(
                   padding: const EdgeInsets.all(0),
                   onPressed: () {
-                    taggedState.expandableController.expanded =
-                        !taggedState.expandableController.expanded;
+                    taggedState.expandableController.expanded = !taggedState.expandableController.expanded;
                   },
                   child: SafeArea(
                     bottom: !taggedState.expandableController.expanded,
@@ -90,8 +87,7 @@ class _TaggedTabSelectiveTagOptionBarState
                               //   return;
                               // }
 
-                              if (tagsState.multiPicTags[kSecretTagKey] !=
-                                  null) {
+                              if (tagsState.multiPicTags[kSecretTagKey] != null) {
                                 showDeleteSecretModalForMultiPic(context, ref);
                                 return;
                               }
@@ -99,9 +95,7 @@ class _TaggedTabSelectiveTagOptionBarState
                               taggedNotifier.setMultiTagSheet(false);
                               taggedNotifier.setMultiPicBar(false);
                               await tagsNotifier.addTagsToSelectedPics();
-                              await ref
-                                  .read(tabsProvider.notifier)
-                                  .refreshUntaggedList();
+                              await ref.read(tabsProvider.notifier).refreshUntaggedList();
                               await tagsNotifier.tagsSuggestionsCalculate();
                               tagsNotifier.clear();
                             },
@@ -196,14 +190,10 @@ class _TaggedTabSelectiveTagOptionBarState
                           Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: TagsList(
-                              title: tagsState.searchText != ''
-                                  ? s.search_results
-                                  : s.recent_tags,
+                              title: tagsState.searchText != '' ? s.search_results : s.recent_tags,
                               tagsKeyList: tagsState.searchTagsResults
                                   .where(
-                                    (tag) =>
-                                        tag.key != widget.tagKey &&
-                                        tagsState.multiPicTags[tag.key] == null,
+                                    (tag) => tag.key != widget.tagKey && tagsState.multiPicTags[tag.key] == null,
                                   )
                                   .toList()
                                   .map((e) => e.key)

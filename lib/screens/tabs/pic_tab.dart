@@ -28,8 +28,7 @@ class _PicTabState extends ConsumerState<PicTab> {
   Widget _buildPhotoSlider(int index) {
     final swiperState = ref.read(swiperTabProvider);
     final picId = swiperState.photoIds[index];
-    final picStore = ref.read(tabsProvider).picStoreMap[picId] ??
-        ref.read(tabsProvider.notifier).explorPicStore(picId);
+    final picStore = ref.read(tabsProvider).picStoreMap[picId] ?? ref.read(tabsProvider.notifier).explorPicStore(picId);
 
     if (picStore == null) {
       return Padding(

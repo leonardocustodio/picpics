@@ -63,7 +63,6 @@ class PrivatePhotosNotifier extends StateNotifier<PrivatePhotosState> {
   }
 }
 
-final privatePhotosProvider =
-    StateNotifierProvider<PrivatePhotosNotifier, PrivatePhotosState>((ref) {
+final privatePhotosProvider = StateNotifierProvider<PrivatePhotosNotifier, PrivatePhotosState>((ref) {
   return PrivatePhotosNotifier();
 });

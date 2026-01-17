@@ -48,8 +48,7 @@ void main() async {
   };
 
   // Set up Home Widget
-  final setAppGroup =
-      await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
+  final setAppGroup = await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
   AppLogger.d('Has setted app group: $setAppGroup');
 
   await BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
@@ -68,8 +67,7 @@ class PicPicsApp extends ConsumerStatefulWidget {
   ConsumerState<PicPicsApp> createState() => _PicPicsAppState();
 }
 
-class _PicPicsAppState extends ConsumerState<PicPicsApp>
-    with WidgetsBindingObserver {
+class _PicPicsAppState extends ConsumerState<PicPicsApp> with WidgetsBindingObserver {
   String initialRoute = LoginScreen.id;
   bool _initialized = false;
 

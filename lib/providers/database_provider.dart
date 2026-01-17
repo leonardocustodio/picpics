@@ -32,8 +32,7 @@ class DatabaseController {
   Future<void> setKeepAskingToDelete(bool value) async {
     final currentUser = await _database.getSingleMoorUser();
     if (currentUser != null) {
-      await _database
-          .updateMoorUser(currentUser.copyWith(keepAskingToDelete: value));
+      await _database.updateMoorUser(currentUser.copyWith(keepAskingToDelete: value));
     }
   }
 

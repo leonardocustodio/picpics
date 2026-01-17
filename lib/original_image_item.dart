@@ -27,8 +27,7 @@ class OriginalImageItem extends StatelessWidget {
       ),
       builder: (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {
         final futureData = snapshot.data;
-        if (snapshot.connectionState == ConnectionState.done &&
-            futureData != null) {
+        if (snapshot.connectionState == ConnectionState.done && futureData != null) {
           return _buildImageItem(context, futureData);
         }
 

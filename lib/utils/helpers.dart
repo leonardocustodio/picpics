@@ -22,9 +22,7 @@ class Helpers {
     if (isMonth) {
       formatter = DateFormat.yMMMM();
     } else {
-      formatter = dateTime.year == DateTime.now().year
-          ? DateFormat.MMMEd()
-          : DateFormat.yMMMEd();
+      formatter = dateTime.year == DateTime.now().year ? DateFormat.MMMEd() : DateFormat.yMMMEd();
     }
     return formatter.format(dateTime);
   }

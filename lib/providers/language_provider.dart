@@ -38,8 +38,7 @@ class LanguageNotifier extends StateNotifier<LanguageState> {
 }
 
 // Provider
-final languageProvider =
-    StateNotifierProvider<LanguageNotifier, LanguageState>((ref) {
+final languageProvider = StateNotifierProvider<LanguageNotifier, LanguageState>((ref) {
   return LanguageNotifier();
 });
 

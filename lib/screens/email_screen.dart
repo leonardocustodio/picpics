@@ -45,8 +45,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
       isLoading = true;
     });
 
-    final result =
-        await ref.read<PinFullNotifier>(pinFullProvider.notifier).register();
+    final result = await ref.read<PinFullNotifier>(pinFullProvider.notifier).register();
 
     setState(() {
       isLoading = false;
@@ -59,12 +58,9 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
       }
     } else {
       AppLogger.d('Result: $result');
-      if ((result['errorCode'] as FirebaseAuthException).code ==
-          'email-already-in-use') {
+      if ((result['errorCode'] as FirebaseAuthException).code == 'email-already-in-use') {
         if (mounted) {
-          await ref
-              .read<PinFullNotifier>(pinFullProvider.notifier)
-              .showErrorModal(
+          await ref.read<PinFullNotifier>(pinFullProvider.notifier).showErrorModal(
                 context,
                 'This e-mail is already in use by another account.',
               );
@@ -72,9 +68,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
         AppLogger.d('Error !!!');
       } else {
         if (mounted) {
-          await ref
-              .read<PinFullNotifier>(pinFullProvider.notifier)
-              .showErrorModal(
+          await ref.read<PinFullNotifier>(pinFullProvider.notifier).showErrorModal(
                 context,
                 'An error has occured. Please try again!',
               );
@@ -113,13 +107,10 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
                           vertical: 10,
                         ),
                         onPressed: () {
-                          ref
-                              .read(userProvider.notifier)
-                              .setWaitingAccessCode(false);
+                          ref.read(userProvider.notifier).setWaitingAccessCode(false);
                           Navigator.of(context).pop();
                         },
-                        child: Image.asset(
-                            'lib/images/backarrowwithdropshadow.png'),
+                        child: Image.asset('lib/images/backarrowwithdropshadow.png'),
                       ),
                     ],
                   ),
@@ -170,18 +161,14 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
                                   margin: const EdgeInsets.only(top: 6),
                                   child: TextField(
                                     onChanged: (value) {
-                                      ref
-                                          .read<PinFullNotifier>(
-                                              pinFullProvider.notifier)
-                                          .setEmail(value);
+                                      ref.read<PinFullNotifier>(pinFullProvider.notifier).setEmail(value);
                                     },
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.only(
                                         left: 10,
                                         right: 5,
                                       ),
-                                      fillColor: const Color(0xFFF1F3F5)
-                                          .withValues(alpha: 0.3),
+                                      fillColor: const Color(0xFFF1F3F5).withValues(alpha: 0.3),
                                       filled: true,
                                       border: OutlineInputBorder(
                                         borderSide: const BorderSide(

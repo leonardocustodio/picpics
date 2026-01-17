@@ -51,8 +51,7 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
                 CupertinoButton(
                   padding: const EdgeInsets.all(0),
                   onPressed: () {
-                    taggedState.expandableController.expanded =
-                        !taggedState.expandableController.expanded;
+                    taggedState.expandableController.expanded = !taggedState.expandableController.expanded;
                   },
                   child: SafeArea(
                     bottom: !taggedState.expandableController.expanded,
@@ -87,8 +86,7 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
                               //   return;
                               // }
 
-                              if (tagsState.multiPicTags[kSecretTagKey] !=
-                                  null) {
+                              if (tagsState.multiPicTags[kSecretTagKey] != null) {
                                 showDeleteSecretModalForMultiPic(context, ref);
                                 return;
                               }
@@ -96,9 +94,7 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
                               taggedNotifier.setMultiTagSheet(false);
                               taggedNotifier.setMultiPicBar(false);
                               await tagsNotifier.addTagsToSelectedPics();
-                              await ref
-                                  .read(tabsProvider.notifier)
-                                  .refreshUntaggedList();
+                              await ref.read(tabsProvider.notifier).refreshUntaggedList();
                               await tagsNotifier.tagsSuggestionsCalculate();
                               tagsNotifier.clear();
                             },
@@ -193,13 +189,10 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
                           Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: TagsList(
-                              title: tagsState.searchText != ''
-                                  ? s.search_results
-                                  : s.recent_tags,
+                              title: tagsState.searchText != '' ? s.search_results : s.recent_tags,
                               tagsKeyList: tagsState.searchTagsResults
                                   .where(
-                                    (tag) =>
-                                        tagsState.multiPicTags[tag.key] == null,
+                                    (tag) => tagsState.multiPicTags[tag.key] == null,
                                   )
                                   .toList()
                                   .map((e) => e.key)

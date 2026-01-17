@@ -66,7 +66,6 @@ class SwiperTabNotifier extends StateNotifier<SwiperTabState> {
   }
 }
 
-final swiperTabProvider =
-    StateNotifierProvider<SwiperTabNotifier, SwiperTabState>((ref) {
+final swiperTabProvider = StateNotifierProvider<SwiperTabNotifier, SwiperTabState>((ref) {
   return SwiperTabNotifier();
 });

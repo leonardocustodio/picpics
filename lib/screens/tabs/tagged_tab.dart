@@ -34,17 +34,15 @@ Widget? _buildHeaderLeading(
     focusNode: taggedNotifier.searchFocusNode,
     onChanged: (text) {
       AppLogger.d('searching: $text');
-      final isSearching = taggedNotifier.searchFocusNode.hasFocus ||
-          text.isNotEmpty ||
-          tagsState.selectedFilteringTagsKeys.isNotEmpty;
+      final isSearching =
+          taggedNotifier.searchFocusNode.hasFocus || text.isNotEmpty || tagsState.selectedFilteringTagsKeys.isNotEmpty;
       ref.read(tagsProvider.notifier).setIsSearching(isSearching);
       ref.read(tagsProvider.notifier).setSearchText(text);
     },
     onSubmitted: (text) {
       AppLogger.d('return');
-      final isSearching = taggedNotifier.searchFocusNode.hasFocus ||
-          text.isNotEmpty ||
-          tagsState.selectedFilteringTagsKeys.isNotEmpty;
+      final isSearching =
+          taggedNotifier.searchFocusNode.hasFocus || text.isNotEmpty || tagsState.selectedFilteringTagsKeys.isNotEmpty;
       ref.read(tagsProvider.notifier).setIsSearching(isSearching);
       ref.read(tagsProvider.notifier).setSearchText('');
       taggedNotifier.searchEditingController.clear();
@@ -162,8 +160,7 @@ class TaggedTab extends ConsumerWidget {
                             ///
                             /// Device has no pics
                             ///
-                            return DeviceHasNoPics(
-                                message: s.device_has_no_pics);
+                            return DeviceHasNoPics(message: s.device_has_no_pics);
                           }
                         },
                       ),
@@ -171,17 +168,14 @@ class TaggedTab extends ConsumerWidget {
                     Positioned.fill(
                       child: Builder(
                         builder: (context) {
-                          if (tabsState.assetMap.isNotEmpty &&
-                              taggedState.allTaggedPicIdList.isNotEmpty) {
+                          if (tabsState.assetMap.isNotEmpty && taggedState.allTaggedPicIdList.isNotEmpty) {
                             return NotificationListener<ScrollNotification>(
                               onNotification: (scrollNotification) {
-                                if (scrollNotification
-                                    is ScrollStartNotification) {
+                                if (scrollNotification is ScrollStartNotification) {
                                   AppLogger.d('Start scrolling');
                                   taggedNotifier.setIsScrolling(true);
                                   return true;
-                                } else if (scrollNotification
-                                    is ScrollEndNotification) {
+                                } else if (scrollNotification is ScrollEndNotification) {
                                   AppLogger.d('End scrolling');
                                   taggedNotifier.setIsScrolling(false);
                                 }
@@ -198,13 +192,11 @@ class TaggedTab extends ConsumerWidget {
                     AnimatedOpacity(
                       opacity: taggedState.isScrolling
                           ? 0.0
-                          : (taggedNotifier.searchFocusNode.hasFocus ||
-                                  taggedState.allTaggedPicIdList.isEmpty)
+                          : (taggedNotifier.searchFocusNode.hasFocus || taggedState.allTaggedPicIdList.isEmpty)
                               ? 0.0
                               : 1.0,
                       duration: Duration(
-                        milliseconds:
-                            taggedNotifier.searchFocusNode.hasFocus ? 0 : 300,
+                        milliseconds: taggedNotifier.searchFocusNode.hasFocus ? 0 : 300,
                       ),
                       onEnd: () {
                         tabsNotifier.setIsToggleBarVisible(
@@ -212,9 +204,7 @@ class TaggedTab extends ConsumerWidget {
                         );
                       },
                       child: Visibility(
-                        visible: taggedState.isScrolling
-                            ? tabsState.isToggleBarVisible
-                            : true,
+                        visible: taggedState.isScrolling ? tabsState.isToggleBarVisible : true,
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: Padding(

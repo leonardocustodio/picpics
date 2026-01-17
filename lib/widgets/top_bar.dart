@@ -57,12 +57,8 @@ class TopBar extends ConsumerWidget {
                       child: GestureDetector(
                         onTap: () {
                           if (!tagsState.isSearching) {
-                            ref
-                                .read(tagsProvider.notifier)
-                                .setIsSearching(true);
-                            ref
-                                .read(tagsProvider.notifier)
-                                .tagsSuggestionsCalculate();
+                            ref.read(tagsProvider.notifier).setIsSearching(true);
+                            ref.read(tagsProvider.notifier).tagsSuggestionsCalculate();
                           }
                         },
                         child: TextField(
@@ -88,12 +84,9 @@ class TopBar extends ConsumerWidget {
                           ),
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.only(right: 2),
-                            enabledBorder: const OutlineInputBorder(
-                                borderSide: BorderSide.none),
-                            focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide.none),
-                            border: const OutlineInputBorder(
-                                borderSide: BorderSide.none),
+                            enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+                            focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+                            border: const OutlineInputBorder(borderSide: BorderSide.none),
                             prefixIcon: Image.asset('lib/images/searchico.png'),
                             hintText: s.search,
                             hintStyle: const TextStyle(
@@ -117,9 +110,7 @@ class TopBar extends ConsumerWidget {
                     value: privatePhotosState.showPrivate,
                     onChanged: (value) {
                       AppLogger.d('turn off');
-                      ref
-                          .read(privatePhotosProvider.notifier)
-                          .toggleShowPrivate();
+                      ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
                     },
                   ),
                 ),
@@ -134,8 +125,7 @@ class TopBar extends ConsumerWidget {
                 CupertinoButton(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   onPressed: () {
-                    Navigator.of(context).push<void>(MaterialPageRoute<void>(
-                        builder: (_) => const SettingsScreen()));
+                    Navigator.of(context).push<void>(MaterialPageRoute<void>(builder: (_) => const SettingsScreen()));
                   },
                   child: Image.asset('lib/images/settings.png'),
                 ),

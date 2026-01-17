@@ -52,7 +52,6 @@ class BlurHashNotifier extends StateNotifier<BlurHashState> {
   }
 }
 
-final blurHashProvider =
-    StateNotifierProvider<BlurHashNotifier, BlurHashState>((ref) {
+final blurHashProvider = StateNotifierProvider<BlurHashNotifier, BlurHashState>((ref) {
   return BlurHashNotifier();
 });

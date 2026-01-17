@@ -24,8 +24,7 @@ class AccessCodeScreen extends ConsumerStatefulWidget {
 }
 
 class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
-  final CarouselSliderController carouselController =
-      CarouselSliderController();
+  final CarouselSliderController carouselController = CarouselSliderController();
   int carouselPage = 0;
 
   Widget _buildPinPad(BuildContext context, int index) {
@@ -69,8 +68,7 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
           ),
           const Spacer(flex: 2),
           Shake(
-            preferences:
-                const AnimationPreferences(autoPlay: AnimationPlayStates.None),
+            preferences: const AnimationPreferences(autoPlay: AnimationPlayStates.None),
             child: Builder(builder: (context) {
               int filledPositions = 0;
 
@@ -101,14 +99,10 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
               onPressed: () {
                 final userState = ref.read(userProvider);
                 if (userState.email == null) {
-                  ref
-                      .read<PinFullNotifier>(pinFullProvider.notifier)
-                      .askEmail(context);
+                  ref.read<PinFullNotifier>(pinFullProvider.notifier).askEmail(context);
                   return;
                 }
-                ref
-                    .read<PinFullNotifier>(pinFullProvider.notifier)
-                    .recoverPin();
+                ref.read<PinFullNotifier>(pinFullProvider.notifier).recoverPin();
               },
               child: const Text(
                 'Already have an account?',
@@ -137,8 +131,7 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
 
     if (userState.waitingAccessCode) {
       if (backspace) {
-        pinNotifier
-            .setAccessCode(Helpers.removeLastCharacter(pinState.accessCode));
+        pinNotifier.setAccessCode(Helpers.removeLastCharacter(pinState.accessCode));
         return;
       }
       pinNotifier.setAccessCode('${pinState.accessCode}$value');
@@ -164,8 +157,7 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
     }
 
     if (backspace) {
-      pinNotifier.setConfirmPinTemp(
-          Helpers.removeLastCharacter(pinState.confirmPinTemp));
+      pinNotifier.setConfirmPinTemp(Helpers.removeLastCharacter(pinState.confirmPinTemp));
       return;
     }
 
@@ -217,16 +209,14 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       CupertinoButton(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                         onPressed: () {
                           if (pinState.isWaitingRecoveryKey == true) {
                             pinNotifier.setIsWaitingRecoveryKey(false);
                           }
                           Navigator.of(context).pop();
                         },
-                        child: Image.asset(
-                            'lib/images/backarrowwithdropshadow.png'),
+                        child: Image.asset('lib/images/backarrowwithdropshadow.png'),
                       ),
                     ],
                   ),
@@ -236,8 +226,7 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 3,
-                          itemBuilder:
-                              (BuildContext context, int index, int _) {
+                          itemBuilder: (BuildContext context, int index, int _) {
                             return _buildPinPad(context, index);
                           },
                           options: CarouselOptions(
@@ -253,14 +242,11 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
                         String? assetImage;
 
                         if (userState.isBiometricActivated == true) {
-                          if (userState.availableBiometrics
-                              .contains(BiometricType.face)) {
+                          if (userState.availableBiometrics.contains(BiometricType.face)) {
                             assetImage = 'lib/images/faceidwhiteico.png';
-                          } else if (userState.availableBiometrics
-                              .contains(BiometricType.iris)) {
+                          } else if (userState.availableBiometrics.contains(BiometricType.iris)) {
                             assetImage = 'lib/images/irisscannerwhiteico.png';
-                          } else if (userState.availableBiometrics
-                              .contains(BiometricType.fingerprint)) {
+                          } else if (userState.availableBiometrics.contains(BiometricType.fingerprint)) {
                             assetImage = 'lib/images/fingerprintwhiteico.png';
                           }
                         }
@@ -282,10 +268,8 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
                             const Spacer(flex: 2),
                             Shake(
                               key: pinNotifier.shakeKey,
-                              preferences: const AnimationPreferences(
-                                  autoPlay: AnimationPlayStates.None),
-                              child: PinPlaceholder(
-                                  filledPositions: pinState.pinTemp.length),
+                              preferences: const AnimationPreferences(autoPlay: AnimationPlayStates.None),
+                              child: PinPlaceholder(filledPositions: pinState.pinTemp.length),
                             ),
                             const Spacer(),
                             NumberPad(onPinTapped: pinTapped),
@@ -322,9 +306,7 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
                         children: [
                           const Spacer(),
                           Text(
-                            (pinState.invalidAccessCode == true)
-                                ? 'Invalid Access Code'
-                                : s.access_code,
+                            (pinState.invalidAccessCode == true) ? 'Invalid Access Code' : s.access_code,
                             style: const TextStyle(
                               fontFamily: 'Lato',
                               color: kSecondaryColor,
@@ -338,9 +320,7 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
                             padding: const EdgeInsets.only(top: 16),
                             child: Text(
                               s.access_code_sent(
-                                pinState.email.isEmpty
-                                    ? 'user@email.com'
-                                    : pinState.email,
+                                pinState.email.isEmpty ? 'user@email.com' : pinState.email,
                               ),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
@@ -355,10 +335,8 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
                           const Spacer(),
                           Shake(
                             key: pinNotifier.shakeKey,
-                            preferences: const AnimationPreferences(
-                                autoPlay: AnimationPlayStates.None),
-                            child: PinPlaceholder(
-                                filledPositions: pinState.accessCode.length),
+                            preferences: const AnimationPreferences(autoPlay: AnimationPlayStates.None),
+                            child: PinPlaceholder(filledPositions: pinState.accessCode.length),
                           ),
                           const Spacer(),
                           NumberPad(onPinTapped: pinTapped),

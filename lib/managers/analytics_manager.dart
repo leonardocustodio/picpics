@@ -51,8 +51,7 @@ enum Event {
 class Analytics {
   // static FacebookAppEvents facebookAppEvents = FacebookAppEvents();
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  static FirebaseAnalyticsObserver observer =
-      FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
   static String enumToString(Object o) => o.toString().split('.').last;
 

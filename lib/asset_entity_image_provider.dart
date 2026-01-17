@@ -75,9 +75,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
     if (isOriginal) {
       AppLogger.d('Loading original...');
-      data = picStore.state.isPrivate
-          ? await key.picStore.assetOriginBytes
-          : await key.picStore.state.entity?.originBytes;
+      data =
+          picStore.state.isPrivate ? await key.picStore.assetOriginBytes : await key.picStore.state.entity?.originBytes;
     } else {
       AppLogger.d('Loading thumbnail...');
       if (picStore.state.entity == null) {

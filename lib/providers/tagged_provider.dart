@@ -70,14 +70,12 @@ class TaggedState {
       multiPicBar: multiPicBar ?? this.multiPicBar,
       multiTagSheet: multiTagSheet ?? this.multiTagSheet,
       expandableController: expandableController ?? this.expandableController,
-      expandablePaddingController:
-          expandablePaddingController ?? this.expandablePaddingController,
+      expandablePaddingController: expandablePaddingController ?? this.expandablePaddingController,
       toggleIndexTagged: toggleIndexTagged ?? this.toggleIndexTagged,
       selectedMultiBarPics: selectedMultiBarPics ?? this.selectedMultiBarPics,
       isScrolling: isScrolling ?? this.isScrolling,
       hideTitleThirdTab: hideTitleThirdTab ?? this.hideTitleThirdTab,
-      allTaggedPicDateWiseList:
-          allTaggedPicDateWiseList ?? this.allTaggedPicDateWiseList,
+      allTaggedPicDateWiseList: allTaggedPicDateWiseList ?? this.allTaggedPicDateWiseList,
     );
   }
 }
@@ -88,8 +86,7 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
   TaggedNotifier()
       : super(TaggedState(
           expandableController: ExpandableController(initialExpanded: false),
-          expandablePaddingController:
-              ExpandableController(initialExpanded: false),
+          expandablePaddingController: ExpandableController(initialExpanded: false),
         ));
 
   final AppDatabase _database = AppDatabase();
@@ -261,8 +258,7 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
   }
 
   void addPicIdToTaggedList(String tagKey, String picId) {
-    final newTaggedPicId =
-        Map<String, Map<String, String>>.from(state.taggedPicId);
+    final newTaggedPicId = Map<String, Map<String, String>>.from(state.taggedPicId);
 
     if (newTaggedPicId[tagKey] == null) {
       newTaggedPicId[tagKey] = {};
@@ -310,8 +306,7 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
   }
 
   void initScrollController() {
-    scrollControllerThirdTab =
-        ScrollController(initialScrollOffset: offsetThirdTab);
+    scrollControllerThirdTab = ScrollController(initialScrollOffset: offsetThirdTab);
     scrollControllerThirdTab.addListener(refreshGridPositionThirdTab);
   }
 
@@ -331,7 +326,6 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
   }
 }
 
-final taggedProvider =
-    StateNotifierProvider<TaggedNotifier, TaggedState>((ref) {
+final taggedProvider = StateNotifierProvider<TaggedNotifier, TaggedState>((ref) {
   return TaggedNotifier();
 });

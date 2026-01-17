@@ -87,12 +87,8 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                                   controller: searchEditingController,
                                   focusNode: focusNode,
                                   onChanged: (text) {
-                                    ref
-                                        .read(allTagsProvider.notifier)
-                                        .setSearchedText(text);
-                                    ref
-                                        .read(allTagsProvider.notifier)
-                                        .doSearching(tagsState.allTags);
+                                    ref.read(allTagsProvider.notifier).setSearchedText(text);
+                                    ref.read(allTagsProvider.notifier).doSearching(tagsState.allTags);
                                   },
                                   onFieldSubmitted: (text) {
                                     // Handle submission if needed
@@ -107,12 +103,9 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                                   ),
                                   decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.all(0),
-                                    border: OutlineInputBorder(
-                                        borderSide: BorderSide.none),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide.none),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide.none),
+                                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                                    enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                                    focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
                                     hintText: 'Search...',
                                     hintStyle: TextStyle(
                                       fontFamily: 'Lato',
@@ -128,9 +121,7 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                               if (allTagsState.searchedText.isNotEmpty)
                                 GestureDetector(
                                   onTap: () {
-                                    ref
-                                        .read(allTagsProvider.notifier)
-                                        .clearSearch();
+                                    ref.read(allTagsProvider.notifier).clearSearch();
                                     focusNode.unfocus();
                                     searchEditingController.clear();
                                   },
@@ -167,8 +158,7 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       CustomisedTagsList(
                         tagsKeyList: allTagsState.searchedTags.keys.toList(),
                         selectedTags: allTagsState.selectedTags,
-                        onTap: (String tagId, String tagName, int count,
-                                DateTime? time) async =>
+                        onTap: (String tagId, String tagName, int count, DateTime? time) async =>
                             doTagging(tagId, tagName, count, time),
                         onDoubleTap: () {
                           AppLogger.d('do nothing');
@@ -197,8 +187,7 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       CustomisedTagsList(
                         tagsKeyList: tagsState.mostUsedTags.keys.toList(),
                         selectedTags: allTagsState.selectedTags,
-                        onTap: (String tagId, String tagName, int count,
-                                DateTime? time) async =>
+                        onTap: (String tagId, String tagName, int count, DateTime? time) async =>
                             doTagging(tagId, tagName, count, time),
                         onDoubleTap: () {
                           AppLogger.d('do nothing');
@@ -206,11 +195,9 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       ),
                     ],
                   ),
-                if (tagsState.lastWeekUsedTags.isNotEmpty &&
-                    allTagsState.searchedText.isEmpty)
+                if (tagsState.lastWeekUsedTags.isNotEmpty && allTagsState.searchedText.isEmpty)
                   const SizedBox(height: 20),
-                if (tagsState.lastWeekUsedTags.isNotEmpty &&
-                    allTagsState.searchedText.isEmpty)
+                if (tagsState.lastWeekUsedTags.isNotEmpty && allTagsState.searchedText.isEmpty)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -231,8 +218,7 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       CustomisedTagsList(
                         tagsKeyList: tagsState.lastWeekUsedTags.keys.toList(),
                         selectedTags: allTagsState.selectedTags,
-                        onTap: (String tagId, String tagName, int count,
-                                DateTime? time) async =>
+                        onTap: (String tagId, String tagName, int count, DateTime? time) async =>
                             doTagging(tagId, tagName, count, time),
                         onDoubleTap: () {
                           AppLogger.d('do nothing');
@@ -240,11 +226,9 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       ),
                     ],
                   ),
-                if (tagsState.lastMonthUsedTags.isNotEmpty &&
-                    allTagsState.searchedText.isEmpty)
+                if (tagsState.lastMonthUsedTags.isNotEmpty && allTagsState.searchedText.isEmpty)
                   const SizedBox(height: 20),
-                if (tagsState.lastMonthUsedTags.isNotEmpty &&
-                    allTagsState.searchedText.isEmpty)
+                if (tagsState.lastMonthUsedTags.isNotEmpty && allTagsState.searchedText.isEmpty)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -265,8 +249,7 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       CustomisedTagsList(
                         tagsKeyList: tagsState.lastMonthUsedTags.keys.toList(),
                         selectedTags: allTagsState.selectedTags,
-                        onTap: (String tagId, String tagName, int count,
-                                DateTime? time) async =>
+                        onTap: (String tagId, String tagName, int count, DateTime? time) async =>
                             doTagging(tagId, tagName, count, time),
                         onDoubleTap: () {
                           AppLogger.d('do nothing');
@@ -274,8 +257,7 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       ),
                     ],
                   ),
-                if (allTagsState.searchedText.isEmpty)
-                  const SizedBox(height: 20),
+                if (allTagsState.searchedText.isEmpty) const SizedBox(height: 20),
                 if (allTagsState.searchedText.isEmpty)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,8 +279,7 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       CustomisedTagsList(
                         tagsKeyList: tagsState.allTags.keys.toList(),
                         selectedTags: allTagsState.selectedTags,
-                        onTap: (String tagId, String tagName, int count,
-                                DateTime? time) async =>
+                        onTap: (String tagId, String tagName, int count, DateTime? time) async =>
                             doTagging(tagId, tagName, count, time),
                         onDoubleTap: () {
                           AppLogger.d('do nothing');
@@ -314,8 +295,7 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
     );
   }
 
-  Future<void> doTagging(
-      String tagId, String tagName, int count, DateTime? time) async {
+  Future<void> doTagging(String tagId, String tagName, int count, DateTime? time) async {
     AppLogger.d('Tagging: $tagName');
 
     final currentSelected = ref.read(allTagsProvider).selectedTags;

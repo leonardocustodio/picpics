@@ -18,8 +18,7 @@ class SearchMapPlaceWidget extends StatefulWidget {
     this.darkMode = false,
     this.key,
   })  : assert(
-          (location == null && radius == null) ||
-              (location != null && radius != null),
+          (location == null && radius == null) || (location != null && radius != null),
         ),
         super(key: key);
   // ignore: library_private_types_in_public_api
@@ -82,8 +81,7 @@ class SearchMapPlaceWidget extends StatefulWidget {
   _SearchMapPlaceWidgetState createState() => _SearchMapPlaceWidgetState();
 }
 
-class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
-    with TickerProviderStateMixin {
+class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with TickerProviderStateMixin {
   final TextEditingController _textEditingController = TextEditingController();
   late AnimationController _animationController;
   // SearchContainer height.
@@ -105,8 +103,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   @override
   void initState() {
     geocode = Geocoding(apiKey: widget.apiKey, language: widget.language);
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     _containerHeight = Tween<double>(begin: 48, end: 420).animate(
       CurvedAnimation(
         curve: const Interval(0, 0.5, curve: Curves.easeInOut),
@@ -167,8 +164,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
                   opacity: _listOpacity.value,
                   child: Column(
                     children: <Widget>[
-                      for (final prediction in _placePredictions)
-                        _placeOption(Place.fromJSON(prediction, geocode)),
+                      for (final prediction in _placePredictions) _placeOption(Place.fromJSON(prediction, geocode)),
                     ],
                   ),
                 ),
@@ -212,10 +208,8 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(0),
                 border: const OutlineInputBorder(borderSide: BorderSide.none),
-                enabledBorder:
-                    const OutlineInputBorder(borderSide: BorderSide.none),
-                focusedBorder:
-                    const OutlineInputBorder(borderSide: BorderSide.none),
+                enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+                focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
                 hintText: widget.placeholder,
                 hintStyle: const TextStyle(
                   fontFamily: 'Lato',
@@ -258,9 +252,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
       onPressed: () => _selectPlace(prediction: prediction),
       child: ListTile(
         title: Text(
-          place.length < 45
-              ? place
-              : "${place.replaceRange(45, place.length, "")} ...",
+          place.length < 45 ? place : "${place.replaceRange(45, place.length, "")} ...",
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.04,
             color: widget.darkMode ? Colors.grey[100] : Colors.grey[850],
@@ -343,8 +335,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
     var url =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=${widget.apiKey}&language=${widget.language}';
     if (widget.location != null && widget.radius != null) {
-      url +=
-          '&location=${widget.location!.latitude},${widget.location!.longitude}&radius=${widget.radius}';
+      url += '&location=${widget.location!.latitude},${widget.location!.longitude}&radius=${widget.radius}';
       if (widget.strictBounds) {
         url += '&strictbounds';
       }
@@ -359,8 +350,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
     if (json['error_message'] != null) {
       var error = json['error_message'];
       if (error == 'This API project is not authorized to use this API.') {
-        error +=
-            ' Make sure the Places API is activated on your Google Cloud Platform';
+        error += ' Make sure the Places API is activated on your Google Cloud Platform';
       }
       throw Exception(error);
     } else {

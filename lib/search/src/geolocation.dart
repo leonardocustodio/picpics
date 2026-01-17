@@ -27,8 +27,7 @@ class Geolocation {
   /// a `LatLng` object. Otherwise, it'll be returned as Map.
   dynamic get coordinates {
     try {
-      return LatLng(
-          _coordinates['lat'] as double, _coordinates['lng'] as double);
+      return LatLng(_coordinates['lat'] as double, _coordinates['lng'] as double);
     } catch (e) {
       AppLogger.d(
         'You appear to not have the `google_maps_flutter` package installed. In this case, this method will return an object with the latitude and longitude',
@@ -42,10 +41,8 @@ class Geolocation {
   dynamic get bounds {
     try {
       return LatLngBounds(
-        southwest: LatLng(_bounds['southwest']['lat'] as double,
-            _bounds['southwest']['lng'] as double),
-        northeast: LatLng(_bounds['northeast']['lat'] as double,
-            _bounds['northeast']['lng'] as double),
+        southwest: LatLng(_bounds['southwest']['lat'] as double, _bounds['southwest']['lng'] as double),
+        northeast: LatLng(_bounds['northeast']['lat'] as double, _bounds['northeast']['lng'] as double),
       );
     } catch (e) {
       AppLogger.d(

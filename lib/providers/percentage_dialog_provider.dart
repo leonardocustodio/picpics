@@ -44,8 +44,6 @@ class PercentageDialogNotifier extends StateNotifier<PercentageDialogState> {
   }
 }
 
-final percentageDialogProvider =
-    StateNotifierProvider<PercentageDialogNotifier, PercentageDialogState>(
-        (ref) {
+final percentageDialogProvider = StateNotifierProvider<PercentageDialogNotifier, PercentageDialogState>((ref) {
   return PercentageDialogNotifier();
 });

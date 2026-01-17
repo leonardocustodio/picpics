@@ -16,20 +16,16 @@ class ColorTriplet {
   final double b;
 
   /// Adds two [ColorTriplet] objects.
-  ColorTriplet operator +(ColorTriplet other) =>
-      ColorTriplet(r + other.r, g + other.g, b + other.b);
+  ColorTriplet operator +(ColorTriplet other) => ColorTriplet(r + other.r, g + other.g, b + other.b);
 
   /// Subtracts two [ColorTriplet] objects.
-  ColorTriplet operator -(ColorTriplet other) =>
-      ColorTriplet(r - other.r, g - other.g, b - other.b);
+  ColorTriplet operator -(ColorTriplet other) => ColorTriplet(r - other.r, g - other.g, b - other.b);
 
   /// Multiplies two [ColorTriplet] objects.
-  ColorTriplet operator *(double scalar) =>
-      ColorTriplet(r * scalar, g * scalar, b * scalar);
+  ColorTriplet operator *(double scalar) => ColorTriplet(r * scalar, g * scalar, b * scalar);
 
   /// Divides two [ColorTriplet] objects.
-  ColorTriplet operator /(double scalar) =>
-      ColorTriplet(r / scalar, g / scalar, b / scalar);
+  ColorTriplet operator /(double scalar) => ColorTriplet(r / scalar, g / scalar, b / scalar);
 
   @override
   String toString() => 'ColorTriplet($r, $g, $b)';

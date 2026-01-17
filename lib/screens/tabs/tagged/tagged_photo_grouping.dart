@@ -58,12 +58,10 @@ class TaggedPhotosGrouping extends ConsumerWidget {
       },
       itemBuilder: (_, int index) {
         final tagKey = taggedKeys[index];
-        final showingPicId =
-            taggedState.taggedPicId[taggedKeys[index]]?.keys.last;
+        final showingPicId = taggedState.taggedPicId[taggedKeys[index]]?.keys.last;
 
         final blurHash = blurHashState.blurHash[showingPicId];
-        final ignore = tagsState.isSearching &&
-            tagsState.selectedFilteringTagsKeys[tagKey] == null;
+        final ignore = tagsState.isSearching && tagsState.selectedFilteringTagsKeys[tagKey] == null;
         AppLogger.d('$ignore');
 
         return IgnorePointer(
@@ -120,15 +118,13 @@ class TaggedPhotosGrouping extends ConsumerWidget {
                                 margin: const EdgeInsets.only(top: 5),
                                 child: AutoSizeText.rich(
                                   TextSpan(
-                                    text:
-                                        tagsState.allTags[tagKey]?.title ?? '',
+                                    text: tagsState.allTags[tagKey]?.title ?? '',
                                     style: const TextStyle(
                                       color: Colors.black,
                                     ),
                                     children: [
                                       TextSpan(
-                                        text:
-                                            ' (${taggedState.taggedPicId[tagKey]?.keys.length ?? 0})',
+                                        text: ' (${taggedState.taggedPicId[tagKey]?.keys.length ?? 0})',
                                       ),
                                     ],
                                   ),

@@ -28,8 +28,7 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
       canPop: false,
       onPopInvokedWithResult: (bool didPop, dynamic result) async {
         if (!didPop) {
-          final shouldPop =
-              await ref.read(taggedProvider.notifier).shouldPopOut();
+          final shouldPop = await ref.read(taggedProvider.notifier).shouldPopOut();
           if (shouldPop && context.mounted) {
             Navigator.of(context).pop();
           }
@@ -42,15 +41,13 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
           shadowColor: Colors.transparent,
           foregroundColor: Colors.black,
           actions: [
-            if (taggedState.multiPicBar &&
-                taggedState.selectedMultiBarPics.isNotEmpty)
+            if (taggedState.multiPicBar && taggedState.selectedMultiBarPics.isNotEmpty)
               CupertinoButton(
                 padding: const EdgeInsets.only(right: 10),
                 onPressed: () async {
                   await ref.read(taggedProvider.notifier).untagPicsFromTag(
                     tagKeyMapToPicId: <String, Map<String, String>>{
-                      tagKey: taggedState.selectedMultiBarPics
-                          .map((key, _) => MapEntry(key, '')),
+                      tagKey: taggedState.selectedMultiBarPics.map((key, _) => MapEntry(key, '')),
                     },
                   );
                 },
@@ -93,16 +90,14 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
                   ///
                   /// Device has pics
                   ///
-                  final hasTaggedPics =
-                      taggedState.taggedPicId[tagKey]?.isNotEmpty ?? false;
+                  final hasTaggedPics = taggedState.taggedPicId[tagKey]?.isNotEmpty ?? false;
                   if (hasTaggedPics) {
                     ///
                     /// Tagged Pics are available
                     ///
                     var isSelected = true;
                     if (taggedState.multiPicBar) {
-                      for (final picId
-                          in taggedState.taggedPicId[tagKey]!.keys) {
+                      for (final picId in taggedState.taggedPicId[tagKey]!.keys) {
                         if (taggedState.selectedMultiBarPics[picId] == null) {
                           isSelected = false;
                           break;
@@ -118,19 +113,14 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
                               if (taggedState.multiPicBar)
                                 GestureDetector(
                                   onTap: () {
-                                    final taggedNotifier =
-                                        ref.read(taggedProvider.notifier);
+                                    final taggedNotifier = ref.read(taggedProvider.notifier);
                                     if (isSelected) {
-                                      for (final picId in taggedState
-                                          .taggedPicId[tagKey]!.keys) {
-                                        taggedNotifier
-                                            .removeSelectedMultiBarPic(picId);
+                                      for (final picId in taggedState.taggedPicId[tagKey]!.keys) {
+                                        taggedNotifier.removeSelectedMultiBarPic(picId);
                                       }
                                     } else {
-                                      for (final picId in taggedState
-                                          .taggedPicId[tagKey]!.keys) {
-                                        taggedNotifier
-                                            .addSelectedMultiBarPic(picId);
+                                      for (final picId in taggedState.taggedPicId[tagKey]!.keys) {
+                                        taggedNotifier.addSelectedMultiBarPic(picId);
                                       }
                                     }
                                   },

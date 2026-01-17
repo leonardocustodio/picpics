@@ -122,8 +122,7 @@ class PicStoreState {
       createdAt: createdAt ?? this.createdAt,
       originalLatitude: originalLatitude ?? this.originalLatitude,
       originalLongitude: originalLongitude ?? this.originalLongitude,
-      deletedFromCameraRoll:
-          deletedFromCameraRoll ?? this.deletedFromCameraRoll,
+      deletedFromCameraRoll: deletedFromCameraRoll ?? this.deletedFromCameraRoll,
     );
   }
 }
@@ -270,8 +269,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
       if (Platform.isAndroid) {
         await PhotoManager.editor.deleteWithIds([state.entity!.id]);
       } else {
-        final result =
-            await PhotoManager.editor.deleteWithIds([state.entity!.id]);
+        final result = await PhotoManager.editor.deleteWithIds([state.entity!.id]);
         if (result.isEmpty) {
           return false;
         }
@@ -440,9 +438,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
       final showPrivate = ref.read(privatePhotosProvider).showPrivate;
 
       for (final recent in recentTags) {
-        if (tagsKeys.contains(recent) ||
-            suggestionTags.contains(recent) ||
-            (!showPrivate && recent == kSecretTagKey)) {
+        if (tagsKeys.contains(recent) || suggestionTags.contains(recent) || (!showPrivate && recent == kSecretTagKey)) {
           continue;
         }
         suggestionTags.add(recent);
@@ -508,8 +504,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
   }
 
   /// Remove photo ID from label
-  Future<String> _removePhotoIdFromLabel(
-      Map<String, String> selectedTags) async {
+  Future<String> _removePhotoIdFromLabel(Map<String, String> selectedTags) async {
     final list = <String>[];
     for (final entry in selectedTags.entries) {
       final getTag = await database.getLabelByLabelKey(entry.key);
@@ -597,8 +592,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     AppLogger.d('this picture is not in db, adding it...');
     AppLogger.d('Photo Id: ${state.photoId}');
 
-    final pic =
-        photoObject(acceptedTagKeys, acceptedTagKeys[kSecretTagKey] != null);
+    final pic = photoObject(acceptedTagKeys, acceptedTagKeys[kSecretTagKey] != null);
 
     await database.createPhoto(pic);
 
@@ -629,9 +623,8 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     String? path;
 
     if (Platform.isAndroid) {
-      path = await _writeByteToImageFile(state.entity == null
-          ? await assetOriginBytes
-          : await state.entity!.originBytes);
+      path =
+          await _writeByteToImageFile(state.entity == null ? await assetOriginBytes : await state.entity!.originBytes);
     } else {
       if (state.entity == null) {
         final bytes = await assetOriginBytes;
@@ -666,8 +659,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     if (Platform.isAndroid) {
       await PhotoManager.editor.deleteWithIds([state.entity!.id]);
     } else {
-      final result =
-          await PhotoManager.editor.deleteWithIds([state.entity!.id]);
+      final result = await PhotoManager.editor.deleteWithIds([state.entity!.id]);
       if (result.isEmpty) {
         return false;
       }
@@ -798,9 +790,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     final lang = ref.read(userProvider).appLanguage.split('_')[0];
     if (lang == 'pt' || lang == 'es' || lang == 'de' || lang == 'ja') {
       AppLogger.d('Offline translating it...');
-      return tagsText
-          .map((e) => PredefinedLabels.labelTranslation(e, widgetRef))
-          .toList();
+      return tagsText.map((e) => PredefinedLabels.labelTranslation(e, widgetRef)).toList();
     }
 
     final credentials = ServiceAccountCredentials.fromJson(r'''
@@ -827,12 +817,10 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
       request.contents = tagsText;
       request.mimeType = 'text/plain';
       request.sourceLanguageCode = 'en-US';
-      request.targetLanguageCode =
-          ref.read(userProvider).appLanguage.replaceAll('_', '-');
+      request.targetLanguageCode = ref.read(userProvider).appLanguage.replaceAll('_', '-');
       request.model = 'projects/picpics/locations/global/models/general/nmt';
 
-      final response =
-          await translate.projects.translateText(request, 'projects/picpics');
+      final response = await translate.projects.translateText(request, 'projects/picpics');
       final translations = response.translations;
       if (translations != null) {
         for (final element in translations) {
@@ -849,8 +837,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
 
 // Note: PicStore instances are managed by tabs_provider in a picStoreMap
 // This provider declaration is for reference but instances are created directly
-final picStoreProvider =
-    StateNotifierProvider.family<PicStoreNotifier, PicStoreState, String>(
+final picStoreProvider = StateNotifierProvider.family<PicStoreNotifier, PicStoreState, String>(
   (ref, photoId) {
     throw UnimplementedError(
       'PicStore instances should be created via tabs_provider.explorPicStore()',

@@ -59,8 +59,7 @@ class Photos extends Table {
   RealColumn get longitude => real().nullable()();
 
   BoolColumn get isPrivate => boolean().withDefault(const Constant(false))();
-  BoolColumn get deletedFromCameraRoll =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get deletedFromCameraRoll => boolean().withDefault(const Constant(false))();
   BoolColumn get isStarred => boolean().withDefault(const Constant(false))();
 
   TextColumn get tags => text().map(MapStringConvertor())();
@@ -75,8 +74,7 @@ class Labels extends Table {
   @override
   Set<Column> get primaryKey => {key};
   IntColumn get counter => integer().withDefault(const Constant(1))();
-  DateTimeColumn get lastUsedAt =>
-      dateTime().withDefault(Constant(DateTime.now()))();
+  DateTimeColumn get lastUsedAt => dateTime().withDefault(Constant(DateTime.now()))();
   TextColumn get title => text().withDefault(const Constant(''))();
   TextColumn get photoId => text().map(MapStringConvertor())();
 }
@@ -111,8 +109,7 @@ class MoorUsers extends Table {
   TextColumn get email => text().nullable()();
   TextColumn get password => text().nullable()();
   BoolColumn get notification => boolean().withDefault(const Constant(false))();
-  BoolColumn get dailyChallenges =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get dailyChallenges => boolean().withDefault(const Constant(false))();
   TextColumn get recentTags => text().map(ListStringConvertor())();
   TextColumn get appLanguage => text().nullable()();
   TextColumn get appVersion => text().nullable()();
@@ -125,25 +122,17 @@ class MoorUsers extends Table {
   IntColumn get minuteOfDay => integer().withDefault(const Constant(0))();
   IntColumn get picsTaggedToday => integer().withDefault(const Constant(0))();
 
-  BoolColumn get tutorialCompleted =>
-      boolean().withDefault(const Constant(false))();
-  BoolColumn get hasGalleryPermission =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get tutorialCompleted => boolean().withDefault(const Constant(false))();
+  BoolColumn get hasGalleryPermission => boolean().withDefault(const Constant(false))();
   BoolColumn get loggedIn => boolean().withDefault(const Constant(false))();
   BoolColumn get secretPhotos => boolean().withDefault(const Constant(false))();
-  BoolColumn get isPinRegistered =>
-      boolean().withDefault(const Constant(false))();
-  BoolColumn get keepAskingToDelete =>
-      boolean().withDefault(const Constant(true))();
-  BoolColumn get shouldDeleteOnPrivate =>
-      boolean().withDefault(const Constant(false))();
-  BoolColumn get tourCompleted =>
-      boolean().withDefault(const Constant(false))();
-  BoolColumn get isBiometricActivated =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get isPinRegistered => boolean().withDefault(const Constant(false))();
+  BoolColumn get keepAskingToDelete => boolean().withDefault(const Constant(true))();
+  BoolColumn get shouldDeleteOnPrivate => boolean().withDefault(const Constant(false))();
+  BoolColumn get tourCompleted => boolean().withDefault(const Constant(false))();
+  BoolColumn get isBiometricActivated => boolean().withDefault(const Constant(false))();
 
-  DateTimeColumn get lastTaggedPicDate =>
-      dateTime().withDefault(Constant(DateTime.now()))();
+  DateTimeColumn get lastTaggedPicDate => dateTime().withDefault(Constant(DateTime.now()))();
 }
 
 class MapStringConvertor extends TypeConverter<Map<String, String>, String> {
@@ -213,8 +202,7 @@ class AppDatabase extends _$AppDatabase {
   ///Blur Hash operations Start
   ///
   ///
-  Future<int> createBlurHash(PicBlurHash newBlurHash) =>
-      into(picBlurHashs).insert(newBlurHash);
+  Future<int> createBlurHash(PicBlurHash newBlurHash) => into(picBlurHashs).insert(newBlurHash);
 
   Future<List<PicBlurHash>> getAllPicBlurHash() => select(picBlurHashs).get();
 
@@ -234,9 +222,8 @@ class AppDatabase extends _$AppDatabase {
   ///
   Future<int> createLabel(Label newLabel) => into(labels).insert(newLabel);
 
-  Future<Label?> getLabelByLabelKey(String labelKey) => (select(labels)
-        ..where((l) => l.key.equals(labelKey) /* ?? const Constant(false) */))
-      .getSingleOrNull();
+  Future<Label?> getLabelByLabelKey(String labelKey) =>
+      (select(labels)..where((l) => l.key.equals(labelKey) /* ?? const Constant(false) */)).getSingleOrNull();
 
   Future<void> incrementLabelByKey(String labelKey) async {
     final label = await getLabelByLabelKey(labelKey);
@@ -254,17 +241,15 @@ class AppDatabase extends _$AppDatabase {
     if (label != null) {
       var count = label.counter - 1;
       if (count < 1) count = 1;
-      final updatedLabel =
-          label.copyWith(counter: count, lastUsedAt: DateTime.now());
+      final updatedLabel = label.copyWith(counter: count, lastUsedAt: DateTime.now());
       await updateLabel(updatedLabel);
     }
   }
 
   Future<List<Label>> getAllLabel() => select(labels).get();
 
-  Future<int> deleteLabelByLabelId(String labelKey) => (delete(labels)
-        ..where((l) => l.key.equals(labelKey) /* ?? const Constant(false) */))
-      .go();
+  Future<int> deleteLabelByLabelId(String labelKey) =>
+      (delete(labels)..where((l) => l.key.equals(labelKey) /* ?? const Constant(false) */)).go();
 
   Future<bool> updateLabel(Label oldLabel) => update(labels).replace(oldLabel);
 
@@ -316,9 +301,8 @@ class AppDatabase extends _$AppDatabase {
   ///
   Future<int> createPhoto(Photo newPhoto) => into(photos).insert(newPhoto);
 
-  Future<Photo?> getPhotoByPhotoId(String photoId) => (select(photos)
-        ..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */))
-      .getSingleOrNull();
+  Future<Photo?> getPhotoByPhotoId(String photoId) =>
+      (select(photos)..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */)).getSingleOrNull();
 
   /* Future<List<Photo>> getAllTaggedPhotoIdList() {
     var convertor = ListStringConvertor();
@@ -333,8 +317,7 @@ class AppDatabase extends _$AppDatabase {
         .get();
   } */
 
-  Future<List<Photo>> getPrivatePhotoList() =>
-      (select(photos)..where((tbl) => tbl.isPrivate.equals(true))).get();
+  Future<List<Photo>> getPrivatePhotoList() => (select(photos)..where((tbl) => tbl.isPrivate.equals(true))).get();
 
   Future<List<Photo>> getAllPhoto() => select(photos).get();
 
@@ -342,8 +325,7 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> deletePhotoByPhotoId(String photoId) => (delete(photos)
         ..where(
-          (picture) =>
-              picture.id.equals(photoId), /* ?? const Constant(false) */
+          (picture) => picture.id.equals(photoId), /* ?? const Constant(false) */
         ))
       .go();
 
@@ -360,20 +342,16 @@ class AppDatabase extends _$AppDatabase {
   ///Private CRUD operations Start
   ///
   ///
-  Future<int> createPrivate(Private newPrivate) =>
-      into(privates).insert(newPrivate);
+  Future<int> createPrivate(Private newPrivate) => into(privates).insert(newPrivate);
 
-  Future<Private?> getPrivateByPhotoId(String photoId) => (select(privates)
-        ..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */))
-      .getSingleOrNull();
+  Future<Private?> getPrivateByPhotoId(String photoId) =>
+      (select(privates)..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */)).getSingleOrNull();
 
   Future<List<Private>> getAllPrivate() => select(privates).get();
 
-  Future<bool> updatePrivate(Private oldPrivate) =>
-      update(privates).replace(oldPrivate);
+  Future<bool> updatePrivate(Private oldPrivate) => update(privates).replace(oldPrivate);
 
-  Future<int> deletePrivate(Private oldPrivate) =>
-      delete(privates).delete(oldPrivate);
+  Future<int> deletePrivate(Private oldPrivate) => delete(privates).delete(oldPrivate);
 
   ///
   ///
@@ -445,8 +423,7 @@ class AppDatabase extends _$AppDatabase {
   ///
   ///
 
-  Future<int> createPicBlurHash(PicBlurHash newPicBlurHash) =>
-      into(picBlurHashs).insert(
+  Future<int> createPicBlurHash(PicBlurHash newPicBlurHash) => into(picBlurHashs).insert(
         newPicBlurHash,
         mode: InsertMode.insertOrReplace,
       );

@@ -344,9 +344,7 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
     if (ref.read(tabsProvider).toggleIndexUntagged == 0) {
       formatter = DateFormat.yMMMM();
     } else {
-      formatter = dateTime.year == DateTime.now().year
-          ? DateFormat.MMMEd()
-          : DateFormat.yMMMEd();
+      formatter = dateTime.year == DateTime.now().year ? DateFormat.MMMEd() : DateFormat.yMMMEd();
     }
     return formatter.format(dateTime);
   }
@@ -373,9 +371,7 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: Colors.grey),
                     ),
-              child: isSelected
-                  ? Image.asset('lib/images/checkwhiteico.png')
-                  : null,
+              child: isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
             ),
           Text(
             dateFormat(date),
@@ -429,8 +425,7 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
     TaggedState taggedState,
     language.S s,
   ) {
-    final hasPics = tabsState.allUnTaggedPicsMonth.isNotEmpty ||
-        tabsState.allUnTaggedPicsDay.isNotEmpty;
+    final hasPics = tabsState.allUnTaggedPicsMonth.isNotEmpty || tabsState.allUnTaggedPicsDay.isNotEmpty;
 
     if (tabsState.isUntaggedPicsLoaded == false) {
       return const Center(
@@ -456,8 +451,7 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
             );
           },
           child: Visibility(
-            visible:
-                tabsState.isScrolling ? tabsState.isToggleBarVisible : true,
+            visible: tabsState.isScrolling ? tabsState.isToggleBarVisible : true,
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(

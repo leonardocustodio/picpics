@@ -12,15 +12,12 @@ class TabsScreenBottomNavigatioBar extends ConsumerStatefulWidget {
   const TabsScreenBottomNavigatioBar({super.key});
 
   @override
-  ConsumerState<TabsScreenBottomNavigatioBar> createState() =>
-      _TabsScreenBottomNavigatioBarState();
+  ConsumerState<TabsScreenBottomNavigatioBar> createState() => _TabsScreenBottomNavigatioBarState();
 }
 
-class _TabsScreenBottomNavigatioBarState
-    extends ConsumerState<TabsScreenBottomNavigatioBar> {
+class _TabsScreenBottomNavigatioBarState extends ConsumerState<TabsScreenBottomNavigatioBar> {
   final TextEditingController tagsEditingController = TextEditingController();
-  final TextEditingController bottomTagsEditingController =
-      TextEditingController();
+  final TextEditingController bottomTagsEditingController = TextEditingController();
   late ExpandableController expandableController;
 
   @override
@@ -79,9 +76,7 @@ class _TabsScreenBottomNavigatioBarState
                     children: <Widget>[
                       CupertinoButton(
                         onPressed: () {
-                          ref
-                              .read(tabsProvider.notifier)
-                              .setMultiTagSheet(false);
+                          ref.read(tabsProvider.notifier).setMultiTagSheet(false);
                         },
                         child: SizedBox(
                           width: 80,
@@ -100,22 +95,16 @@ class _TabsScreenBottomNavigatioBarState
                       const Spacer(),
                       CupertinoButton(
                         onPressed: () async {
-                          if (tagsState.multiPicTags
-                              .containsKey(kSecretTagKey)) {
+                          if (tagsState.multiPicTags.containsKey(kSecretTagKey)) {
                             showDeleteSecretModalForMultiPic(context, ref);
                             return;
                           }
 
-                          ref
-                              .read(tabsProvider.notifier)
-                              .setMultiTagSheet(false);
+                          ref.read(tabsProvider.notifier).setMultiTagSheet(false);
                           ref.read(tabsProvider.notifier).setMultiPicBar(false);
 
-                          WidgetsBinding.instance
-                              .addPostFrameCallback((timeStamp) async {
-                            await ref
-                                .read(tagsProvider.notifier)
-                                .addTagsToSelectedPics();
+                          WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+                            await ref.read(tagsProvider.notifier).addTagsToSelectedPics();
                           });
                         },
                         child: SizedBox(
@@ -145,8 +134,7 @@ class _TabsScreenBottomNavigatioBarState
     );
   }
 
-  Widget _buildMultiPicBar(
-      BuildContext context, TabsState tabsState, language.S s) {
+  Widget _buildMultiPicBar(BuildContext context, TabsState tabsState, language.S s) {
     return Container(
       color: const Color(0xfff1f2f3),
       child: SafeArea(
@@ -180,8 +168,7 @@ class _TabsScreenBottomNavigatioBarState
     );
   }
 
-  Widget _buildNormalBottomBar(
-      BuildContext context, TabsState tabsState, language.S s) {
+  Widget _buildNormalBottomBar(BuildContext context, TabsState tabsState, language.S s) {
     return Container(
       color: const Color(0xfff1f2f3),
       child: SafeArea(

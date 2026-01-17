@@ -72,8 +72,7 @@ class CircularMenu extends StatefulWidget {
   CircularMenuState createState() => CircularMenuState();
 }
 
-class CircularMenuState extends State<CircularMenu>
-    with SingleTickerProviderStateMixin {
+class CircularMenuState extends State<CircularMenu> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
 
@@ -119,13 +118,11 @@ class CircularMenuState extends State<CircularMenu>
               offset: widget.useInHorizontal
                   ? Offset.fromDirection(
                       -1.0 * math.pi,
-                      _animation.value * widget.radius +
-                          (index * widget.radius),
+                      _animation.value * widget.radius + (index * widget.radius),
                     )
                   : Offset.fromDirection(
                       -0.5 * math.pi,
-                      _animation.value * widget.radius +
-                          (index * widget.radius),
+                      _animation.value * widget.radius + (index * widget.radius),
                     ),
               child: Transform.scale(
                 scale: _animation.value,

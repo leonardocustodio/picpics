@@ -52,8 +52,7 @@ class TagsState {
       multiPicTags: multiPicTags ?? this.multiPicTags,
       searchTagsResults: searchTagsResults ?? this.searchTagsResults,
       searchText: searchText ?? this.searchText,
-      selectedFilteringTagsKeys:
-          selectedFilteringTagsKeys ?? this.selectedFilteringTagsKeys,
+      selectedFilteringTagsKeys: selectedFilteringTagsKeys ?? this.selectedFilteringTagsKeys,
       isSearching: isSearching ?? this.isSearching,
     );
   }
@@ -95,8 +94,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
   }
 
   void addTagKeyForFiltering(String tagKey) {
-    final newFiltering =
-        Map<String, String>.from(state.selectedFilteringTagsKeys);
+    final newFiltering = Map<String, String>.from(state.selectedFilteringTagsKeys);
     if (!newFiltering.containsKey(tagKey)) {
       newFiltering[tagKey] = '';
     }
@@ -105,8 +103,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
   }
 
   void removeTagKeyFromFiltering(String tagKey) {
-    final newFiltering =
-        Map<String, String>.from(state.selectedFilteringTagsKeys);
+    final newFiltering = Map<String, String>.from(state.selectedFilteringTagsKeys);
     newFiltering.remove(tagKey);
     state = state.copyWith(selectedFilteringTagsKeys: newFiltering);
     tagsSuggestionsCalculate();

@@ -24,13 +24,10 @@ class TaggedPicsInDeviceWithSearchOption extends ConsumerWidget {
     return Column(
       children: [
         // Search results dropdown (shown when searching)
-        if (tagsState.isSearching)
-          _buildSearchDropdown(context, ref, tagsState, s),
+        if (tagsState.isSearching) _buildSearchDropdown(context, ref, tagsState, s),
         // Main content
         Expanded(
-          child: taggedState.toggleIndexTagged == 0
-              ? TaggedTabDate()
-              : const TaggedPhotosGrouping(),
+          child: taggedState.toggleIndexTagged == 0 ? TaggedTabDate() : const TaggedPhotosGrouping(),
         ),
       ],
     );
@@ -52,14 +49,10 @@ class TaggedPicsInDeviceWithSearchOption extends ConsumerWidget {
               tagsKeyList: tagsState.selectedFilteringTagsKeys.keys.toList(),
               tagStyle: TagStyle.multiColored,
               onTap: (String tagKey) {
-                ref
-                    .read(tagsProvider.notifier)
-                    .removeTagKeyFromFiltering(tagKey);
+                ref.read(tagsProvider.notifier).removeTagKeyFromFiltering(tagKey);
               },
               onPanEnd: (String tagKey) {
-                ref
-                    .read(tagsProvider.notifier)
-                    .removeTagKeyFromFiltering(tagKey);
+                ref.read(tagsProvider.notifier).removeTagKeyFromFiltering(tagKey);
               },
               onDoubleTap: (String tagKey) {
                 AppLogger.d('do nothing');
@@ -83,11 +76,9 @@ class TaggedPicsInDeviceWithSearchOption extends ConsumerWidget {
         ),
         if (tagsState.searchTagsResults.isNotEmpty)
           Padding(
-            padding:
-                const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
             child: TagsList(
-              tagsKeyList:
-                  tagsState.searchTagsResults.map((e) => e.key).toList(),
+              tagsKeyList: tagsState.searchTagsResults.map((e) => e.key).toList(),
               tagStyle: TagStyle.grayOutlined,
               onTap: (tagKey) {
                 ref.read(tagsProvider.notifier).addTagKeyForFiltering(tagKey);
@@ -148,8 +139,7 @@ class TaggedPicsInDeviceWithSearchOption extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.grey),
                   ),
-            child:
-                isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
+            child: isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
           ),
           Text(
             dateFormat(date),

@@ -52,8 +52,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
       String? city;
       String? country;
 
-      for (final components in selectedGeolocation!
-          .fullJSON!['address_components'] as List<dynamic>) {
+      for (final components in selectedGeolocation!.fullJSON!['address_components'] as List<dynamic>) {
         final types = components['types'] as List<dynamic>;
         if (types.contains('establishment')) {
           AppLogger.d('find establishment: ${components["long_name"]}');
@@ -64,13 +63,11 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
           city = components['long_name'] as String?;
           continue;
         } else if (types.contains('administrative_area_level_2')) {
-          AppLogger.d(
-              'find administrative_area_level_2: ${components["long_name"]}');
+          AppLogger.d('find administrative_area_level_2: ${components["long_name"]}');
           city = components['long_name'] as String?;
           continue;
         } else if (types.contains('administrative_area_level_1')) {
-          AppLogger.d(
-              'find administrative_area_level_1: ${components["long_name"]}');
+          AppLogger.d('find administrative_area_level_1: ${components["long_name"]}');
           continue;
         } else if (types.contains('country')) {
           AppLogger.d('country: ${components["long_name"]}');
@@ -131,10 +128,8 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
 
     if (picStore.state.latitude != null && picStore.state.longitude != null) {
       latLng = LatLng(picStore.state.latitude!, picStore.state.longitude!);
-    } else if (picStore.state.originalLatitude != null &&
-        picStore.state.originalLongitude != null) {
-      latLng = LatLng(
-          picStore.state.originalLatitude!, picStore.state.originalLongitude!);
+    } else if (picStore.state.originalLatitude != null && picStore.state.originalLongitude != null) {
+      latLng = LatLng(picStore.state.originalLatitude!, picStore.state.originalLongitude!);
     }
 
     if (latLng != null && latLng != nullLocation) {
@@ -251,8 +246,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                         CupertinoButton(
                           padding: const EdgeInsets.only(left: 14, top: 14),
                           onPressed: getUserPosition,
-                          child: Image.asset(
-                              'lib/images/getcurrentlocationico.png'),
+                          child: Image.asset('lib/images/getcurrentlocationico.png'),
                         ),
                       ],
                     ),
