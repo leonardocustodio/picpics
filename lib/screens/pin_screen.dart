@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +37,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
     final s = ref.watch(sProvider);
     String title;
 
-    if (pinState.isWaitingRecoveryKey == true) {
+    if (pinState.isWaitingRecoveryKey) {
       if (index == 0) {
         title = 'Recovery Code';
       } else if (index == 1) {
@@ -76,9 +78,9 @@ class _PinScreenState extends ConsumerState<PinScreen> {
           Shake(
             preferences: const AnimationPreferences(autoPlay: AnimationPlayStates.None),
             child: Builder(builder: (context) {
-              int filledPositions = 0;
+              var filledPositions = 0;
 
-              if (pinState.isWaitingRecoveryKey == true) {
+              if (pinState.isWaitingRecoveryKey) {
                 if (index == 0) {
                   filledPositions = pinState.recoveryCode.length;
                 } else if (index == 1) {
@@ -97,22 +99,22 @@ class _PinScreenState extends ConsumerState<PinScreen> {
               return PinPlaceholder(
                 filledPositions: filledPositions,
               );
-            }),
+            },),
           ),
           const Spacer(),
           NumberPad(
             onPinTapped: pinTapped,
           ),
           const Spacer(),
-          if (pinState.isWaitingRecoveryKey != true) ...[
+          if (!pinState.isWaitingRecoveryKey) ...[
             CupertinoButton(
               onPressed: () {
                 final userState = ref.read(userProvider);
                 if (userState.email == null) {
-                  ref.read<PinFullNotifier>(pinFullProvider.notifier).askEmail(context);
+                  unawaited(ref.read<PinFullNotifier>(pinFullProvider.notifier).askEmail(context));
                   return;
                 }
-                ref.read<PinFullNotifier>(pinFullProvider.notifier).recoverPin();
+                unawaited(ref.read<PinFullNotifier>(pinFullProvider.notifier).recoverPin());
               },
               child: const Text(
                 'Already have an account?',
@@ -140,7 +142,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
     final userState = ref.read(userProvider);
 
     AppLogger.d('Value: ${pinState.recoveryCode}$value');
-    if (pinState.isWaitingRecoveryKey == true) {
+    if (pinState.isWaitingRecoveryKey) {
       if (carouselPage == 0) {
         if (backspace) {
           pinNotifier.setRecoveryCode(
@@ -203,8 +205,9 @@ class _PinScreenState extends ConsumerState<PinScreen> {
           ref.read<UserNotifier>(userProvider.notifier).setIsPinRegistered(true);
           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
-          pinNotifier.setPinTemp('');
-          pinNotifier.setConfirmPinTemp('');
+          pinNotifier
+            ..setPinTemp('')
+            ..setConfirmPinTemp('');
           ref.read<UserNotifier>(userProvider.notifier).setWaitingAccessCode(false);
           await carouselController.animateToPage(0);
 
@@ -213,19 +216,20 @@ class _PinScreenState extends ConsumerState<PinScreen> {
           }
         } else {
           pinNotifier.shakeKeyConfirm.currentState?.forward();
-          Future.delayed(const Duration(seconds: 1, milliseconds: 300), () {
+          unawaited(Future.delayed(const Duration(seconds: 1, milliseconds: 300), () {
             carouselPage = 1;
-            pinNotifier.setPinTemp('');
-            pinNotifier.setConfirmPinTemp('');
-            carouselController.animateToPage(1);
-          });
+            pinNotifier
+              ..setPinTemp('')
+              ..setConfirmPinTemp('');
+            unawaited(carouselController.animateToPage(1));
+          }));
         }
       }
 
       return;
     }
 
-    if (userState.isPinRegistered == true) {
+    if (userState.isPinRegistered) {
       if (backspace) {
         pinNotifier.setPinTemp(Helpers.removeLastCharacter(pinState.pinTemp));
         return;
@@ -242,22 +246,24 @@ class _PinScreenState extends ConsumerState<PinScreen> {
 
           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
-          pinNotifier.setPinTemp('');
-          pinNotifier.setConfirmPinTemp('');
+          pinNotifier
+            ..setPinTemp('')
+            ..setConfirmPinTemp('');
           if (mounted) {
             Navigator.of(context).pop();
           }
           return;
         }
 
-        pinNotifier.shakeKey.currentState?.forward();
-        pinNotifier.setPinTemp('');
-        pinNotifier.setConfirmPinTemp('');
+        pinNotifier
+          ..shakeKey.currentState?.forward()
+          ..setPinTemp('')
+          ..setConfirmPinTemp('');
       }
       return;
     }
 
-    if (userState.waitingAccessCode == true) {
+    if (userState.waitingAccessCode) {
       if (backspace) {
         pinNotifier.setAccessCode(
           Helpers.removeLastCharacter(pinState.accessCode),
@@ -298,21 +304,23 @@ class _PinScreenState extends ConsumerState<PinScreen> {
     if (pinState.confirmPinTemp.length == 6) {
       if (pinState.pinTemp == pinState.confirmPinTemp) {
         carouselPage = 0;
-        pinNotifier.setPin(pinState.pinTemp);
-        pinNotifier.setPinTemp('');
-        pinNotifier.setConfirmPinTemp('');
+        pinNotifier
+          ..setPin(pinState.pinTemp)
+          ..setPinTemp('')
+          ..setConfirmPinTemp('');
         await carouselController.animateToPage(0);
         if (mounted) {
           await Navigator.of(context).pushNamed(EmailScreen.id);
         }
       } else {
         pinNotifier.shakeKeyConfirm.currentState?.forward();
-        Future.delayed(const Duration(seconds: 1, milliseconds: 300), () {
+        unawaited(Future.delayed(const Duration(seconds: 1, milliseconds: 300), () {
           carouselPage = 0;
-          pinNotifier.setPinTemp('');
-          pinNotifier.setConfirmPinTemp('');
-          carouselController.animateToPage(0);
-        });
+          pinNotifier
+            ..setPinTemp('')
+            ..setConfirmPinTemp('');
+          unawaited(carouselController.animateToPage(0));
+        }));
       }
     }
   }
@@ -346,7 +354,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                           vertical: 10,
                         ),
                         onPressed: () {
-                          if (pinState.isWaitingRecoveryKey == true) {
+                          if (pinState.isWaitingRecoveryKey) {
                             pinNotifier.setIsWaitingRecoveryKey(false);
                           }
                           Navigator.of(context).pop();
@@ -359,7 +367,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                   ),
                   Expanded(
                     child: Builder(builder: (context) {
-                      if (pinState.isWaitingRecoveryKey == true) {
+                      if (pinState.isWaitingRecoveryKey) {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 3,
@@ -375,10 +383,10 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                         );
                       }
 
-                      if (userState.isPinRegistered == true) {
+                      if (userState.isPinRegistered) {
                         String? assetImage;
 
-                        if (userState.isBiometricActivated == true) {
+                        if (userState.isBiometricActivated) {
                           if (userState.availableBiometrics.contains(BiometricType.face)) {
                             assetImage = 'lib/images/faceidwhiteico.png';
                           } else if (userState.availableBiometrics.contains(BiometricType.iris)) {
@@ -421,16 +429,12 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                             const Spacer(),
                             if (assetImage != null)
                               CupertinoButton(
-                                onPressed: () {
-                                  pinNotifier.authenticate();
-                                },
+                                onPressed: pinNotifier.authenticate,
                                 child: Image.asset(assetImage),
                               ),
                             const SizedBox(height: 16),
                             CupertinoButton(
-                              onPressed: () {
-                                pinNotifier.recoverPin();
-                              },
+                              onPressed: pinNotifier.recoverPin,
                               child: Text(
                                 s.forgot_secret_key,
                                 style: const TextStyle(
@@ -449,7 +453,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                         );
                       }
 
-                      if (userState.waitingAccessCode == false) {
+                      if (!userState.waitingAccessCode) {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 2,
@@ -468,7 +472,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                         children: [
                           const Spacer(),
                           Text(
-                            (pinState.invalidAccessCode == true) ? 'Invalid Access Code' : s.access_code,
+                            (pinState.invalidAccessCode) ? 'Invalid Access Code' : s.access_code,
                             style: const TextStyle(
                               fontFamily: 'Lato',
                               color: kSecondaryColor,
@@ -511,12 +515,12 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                           const Spacer(),
                         ],
                       );
-                    }),
+                    },),
                   ),
                 ],
               ),
             ),
-            if (pinState.isLoading == true)
+            if (pinState.isLoading)
               ColoredBox(
                 color: Colors.black.withValues(alpha: 0.7),
                 child: const Center(
@@ -593,7 +597,7 @@ class NumberPad extends StatelessWidget {
             Expanded(
               child: CupertinoButton(
                 onPressed: () {
-                  onPinTapped('', true);
+                  unawaited(onPinTapped('', true));
                 },
                 child: Container(
                   margin: const EdgeInsets.all(2),
@@ -617,9 +621,9 @@ class NumberPad extends StatelessWidget {
         number.add(
           Expanded(
             child: CupertinoButton(
-              padding: const EdgeInsets.all(0),
+              padding: EdgeInsets.zero,
               onPressed: () {
-                onPinTapped('${pin == 11 ? '0' : pin}', false);
+                unawaited(onPinTapped('${pin == 11 ? '0' : pin}', false));
               },
               child: Container(
                 margin: const EdgeInsets.all(2),

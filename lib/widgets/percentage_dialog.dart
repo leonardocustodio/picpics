@@ -34,7 +34,7 @@ class PercentageDialog extends ConsumerWidget {
                       radius: 70,
                       percent: percentage,
                       progressColor: Colors.green,
-                      backgroundColor: Colors.grey.withValues(alpha: .4)),
+                      backgroundColor: Colors.grey.withValues(alpha: .4),),
                 ),
                 Align(
                   child: Text(
@@ -52,7 +52,7 @@ class PercentageDialog extends ConsumerWidget {
             child: Container(
               margin: const EdgeInsets.only(top: 130),
               child: Text(
-                textPercent > 98 ? "Finishing..." : state.message,
+                textPercent > 98 ? 'Finishing...' : state.message,
                 textAlign: TextAlign.center,
                 style: const TextStyle(inherit: false, color: Colors.white, fontSize: 17),
               ),

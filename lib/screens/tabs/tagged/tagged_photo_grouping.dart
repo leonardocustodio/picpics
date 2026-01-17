@@ -1,16 +1,18 @@
 // ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
 
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picpics/providers/blur_hash_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key.dart';
-import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/photo_widget.dart';
 
@@ -70,11 +72,11 @@ class TaggedPhotosGrouping extends ConsumerWidget {
             opacity: ignore ? 0.3 : 1.0,
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
+                unawaited(Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (context) => TaggedTabSelectiveTagKey(tagKey),
                   ),
-                );
+                ));
               },
               child: Container(
                 margin: const EdgeInsets.all(4),

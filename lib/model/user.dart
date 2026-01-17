@@ -27,19 +27,26 @@ class User {
   });
   final String id;
   final List<String> recentTags;
-  String email, password, appLanguage, appVersion, defaultWidgetImage;
-  int goal, hourOfDay, minutesOfDay, picsTaggedToday;
-  bool hasGalleryPermission,
-      loggedIn,
-      secretPhotos,
-      isPinRegistered,
-      keepAskingToDelete,
-      shouldDeleteOnPrivate,
-      tourCompleted,
-      isBiometricActivated,
-      notifications,
-      dailyChallenges,
-      tutorialCompleted;
+  String email;
+  String password;
+  String appLanguage;
+  String appVersion;
+  String defaultWidgetImage;
+  int goal;
+  int hourOfDay;
+  int minutesOfDay;
+  int picsTaggedToday;
+  bool hasGalleryPermission;
+  bool loggedIn;
+  bool secretPhotos;
+  bool isPinRegistered;
+  bool keepAskingToDelete;
+  bool shouldDeleteOnPrivate;
+  bool tourCompleted;
+  bool isBiometricActivated;
+  bool notifications;
+  bool dailyChallenges;
+  bool tutorialCompleted;
   DateTime lastTaggedPicDate;
   Map<String, String> starredPhotos;
 }

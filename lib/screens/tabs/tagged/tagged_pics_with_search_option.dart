@@ -27,7 +27,7 @@ class TaggedPicsInDeviceWithSearchOption extends ConsumerWidget {
         if (tagsState.isSearching) _buildSearchDropdown(context, ref, tagsState, s),
         // Main content
         Expanded(
-          child: taggedState.toggleIndexTagged == 0 ? TaggedTabDate() : const TaggedPhotosGrouping(),
+          child: taggedState.toggleIndexTagged == 0 ? const TaggedTabDate() : const TaggedPhotosGrouping(),
         ),
       ],
     );
@@ -63,7 +63,7 @@ class TaggedPicsInDeviceWithSearchOption extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             tagsState.searchText != '' ? s.search_results : s.recent_tags,
-            textScaler: const TextScaler.linear(1),
+            textScaler: TextScaler.noScaling,
             style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff979a9b),
@@ -96,7 +96,7 @@ class TaggedPicsInDeviceWithSearchOption extends ConsumerWidget {
             padding: const EdgeInsets.only(top: 10, left: 26, bottom: 10),
             child: Text(
               s.no_tags_found,
-              textScaler: const TextScaler.linear(1),
+              textScaler: TextScaler.noScaling,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontFamily: 'Lato',
@@ -143,7 +143,7 @@ class TaggedPicsInDeviceWithSearchOption extends ConsumerWidget {
           ),
           Text(
             dateFormat(date),
-            textScaler: const TextScaler.linear(1),
+            textScaler: TextScaler.noScaling,
             style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),

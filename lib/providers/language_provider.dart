@@ -4,13 +4,13 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:picpics/generated/l10n.dart' as language;
 
 class LanguageState {
-  final language.S s;
-  final String languageCode;
 
   LanguageState({
     required this.s,
     this.languageCode = 'en',
   });
+  final language.S s;
+  final String languageCode;
 
   LanguageState copyWith({
     language.S? s,

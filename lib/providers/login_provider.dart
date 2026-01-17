@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -14,15 +16,15 @@ enum Board {
 }
 
 class LoginState {
-  final int slideIndex;
-  final List<Board> boards;
-  final bool isLoading;
 
   LoginState({
     this.slideIndex = 0,
     List<Board>? boards,
     this.isLoading = false,
   }) : boards = boards ?? Board.values;
+  final int slideIndex;
+  final List<Board> boards;
+  final bool isLoading;
 
   int get totalSlides => boards.length;
 
@@ -95,10 +97,10 @@ class LoginState {
 }
 
 class LoginNotifier extends StateNotifier<LoginState> {
-  final Ref ref;
-  final AppDatabase _database = AppDatabase();
 
   LoginNotifier(this.ref) : super(LoginState());
+  final Ref ref;
+  final AppDatabase _database = AppDatabase();
 
   void initializeScreens() {
     // Initialize with default boards
@@ -127,8 +129,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
     try {
       // Update user state
-      final userNotifier = ref.read(userProvider.notifier);
-      userNotifier.setTutorialCompleted(true);
+      unawaited(ref.read(userProvider.notifier).setTutorialCompleted(true));
 
       // Update database
       final user = await _database.getSingleMoorUser();

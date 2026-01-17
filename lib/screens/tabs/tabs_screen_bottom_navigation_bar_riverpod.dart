@@ -63,7 +63,7 @@ class _TabsScreenBottomNavigatioBarState extends ConsumerState<TabsScreenBottomN
           mainAxisSize: MainAxisSize.min,
           children: [
             CupertinoButton(
-              padding: const EdgeInsets.all(0),
+              padding: EdgeInsets.zero,
               onPressed: () {
                 expandableController.expanded = !expandableController.expanded;
               },
@@ -82,7 +82,7 @@ class _TabsScreenBottomNavigatioBarState extends ConsumerState<TabsScreenBottomN
                           width: 80,
                           child: Text(
                             s.cancel,
-                            textScaler: const TextScaler.linear(1),
+                            textScaler: TextScaler.noScaling,
                             style: const TextStyle(
                               color: Color(0xff707070),
                               fontSize: 16,
@@ -111,7 +111,7 @@ class _TabsScreenBottomNavigatioBarState extends ConsumerState<TabsScreenBottomN
                           width: 80,
                           child: Text(
                             s.ok,
-                            textScaler: const TextScaler.linear(1),
+                            textScaler: TextScaler.noScaling,
                             textAlign: TextAlign.end,
                             style: const TextStyle(
                               color: Color(0xff707070),
@@ -135,7 +135,7 @@ class _TabsScreenBottomNavigatioBarState extends ConsumerState<TabsScreenBottomN
   }
 
   Widget _buildMultiPicBar(BuildContext context, TabsState tabsState, language.S s) {
-    return Container(
+    return ColoredBox(
       color: const Color(0xfff1f2f3),
       child: SafeArea(
         top: false,
@@ -151,7 +151,7 @@ class _TabsScreenBottomNavigatioBarState extends ConsumerState<TabsScreenBottomN
                 },
                 child: Text(
                   s.cancel,
-                  textScaler: const TextScaler.linear(1),
+                  textScaler: TextScaler.noScaling,
                   style: const TextStyle(
                     color: Color(0xff707070),
                     fontSize: 16,
@@ -169,7 +169,7 @@ class _TabsScreenBottomNavigatioBarState extends ConsumerState<TabsScreenBottomN
   }
 
   Widget _buildNormalBottomBar(BuildContext context, TabsState tabsState, language.S s) {
-    return Container(
+    return ColoredBox(
       color: const Color(0xfff1f2f3),
       child: SafeArea(
         top: false,
@@ -212,7 +212,7 @@ class _TabsScreenBottomNavigatioBarState extends ConsumerState<TabsScreenBottomN
     final iconPath = isSelected ? activeIcon : inactiveIcon;
 
     return CupertinoButton(
-      padding: const EdgeInsets.all(0),
+      padding: EdgeInsets.zero,
       onPressed: () {
         ref.read(tabsProvider.notifier).setCurrentTab(index);
       },

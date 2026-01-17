@@ -25,7 +25,7 @@ class NoTaggedPicsInDevice extends ConsumerWidget {
         ),
         Text(
           s.no_tagged_photos,
-          textScaler: const TextScaler.linear(1),
+          textScaler: TextScaler.noScaling,
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontFamily: 'Lato',
@@ -39,7 +39,7 @@ class NoTaggedPicsInDevice extends ConsumerWidget {
           height: 17,
         ),
         CupertinoButton(
-          padding: const EdgeInsets.all(0),
+          padding: EdgeInsets.zero,
           onPressed: () => ref.read(tabsProvider.notifier).setCurrentTab(1),
           child: Container(
             width: 201,
@@ -51,7 +51,7 @@ class NoTaggedPicsInDevice extends ConsumerWidget {
             child: Center(
               child: Text(
                 s.start_tagging,
-                textScaler: const TextScaler.linear(1),
+                textScaler: TextScaler.noScaling,
                 style: const TextStyle(
                   fontFamily: 'Lato',
                   color: kWhiteColor,

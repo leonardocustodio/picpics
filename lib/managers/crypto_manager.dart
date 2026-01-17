@@ -472,7 +472,7 @@ class Crypto {
         macAlgorithm: cryptography.Hmac.sha256(),
       );
     } else {
-      // TODO: Check if this will work
+      // TODO(picpics): Check if this will work
       algorithm = cryptography.AesGcm.with256bits() as cryptography.StreamingCipher;
     }
 

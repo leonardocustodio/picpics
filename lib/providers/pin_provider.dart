@@ -1,10 +1,6 @@
 import 'package:flutter_riverpod/legacy.dart';
 
 class PinState {
-  final String pin;
-  final bool isPinSet;
-  final bool isAuthenticated;
-  final int failedAttempts;
 
   PinState({
     this.pin = '',
@@ -12,6 +8,10 @@ class PinState {
     this.isAuthenticated = false,
     this.failedAttempts = 0,
   });
+  final String pin;
+  final bool isPinSet;
+  final bool isAuthenticated;
+  final int failedAttempts;
 
   PinState copyWith({
     String? pin,

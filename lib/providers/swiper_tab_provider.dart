@@ -1,10 +1,6 @@
 import 'package:flutter_riverpod/legacy.dart';
 
 class SwiperTabState {
-  final int currentIndex;
-  final List<String> photoIds;
-  final bool isZoomed;
-  final bool isLoaded;
 
   SwiperTabState({
     this.currentIndex = 0,
@@ -12,6 +8,10 @@ class SwiperTabState {
     this.isZoomed = false,
     this.isLoaded = false,
   });
+  final int currentIndex;
+  final List<String> photoIds;
+  final bool isZoomed;
+  final bool isLoaded;
 
   SwiperTabState copyWith({
     int? currentIndex,
@@ -51,17 +51,16 @@ class SwiperTabNotifier extends StateNotifier<SwiperTabState> {
     }
   }
 
-  void setZoomed(bool zoomed) {
+  void setZoomed({required bool zoomed}) {
     state = state.copyWith(isZoomed: zoomed);
   }
 
   void removePhotoId(String id) {
-    final ids = List<String>.from(state.photoIds);
-    ids.remove(id);
+    final ids = List<String>.from(state.photoIds)..remove(id);
     state = state.copyWith(photoIds: ids);
   }
 
-  void setLoaded(bool loaded) {
+  void setLoaded({required bool loaded}) {
     state = state.copyWith(isLoaded: loaded);
   }
 }

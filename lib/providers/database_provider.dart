@@ -22,14 +22,14 @@ class DatabaseController {
     return user;
   }
 
-  Future<void> setDeletedFromCameraRoll(String picId, bool value) async {
+  Future<void> setDeletedFromCameraRoll(String picId, {required bool value}) async {
     final pic = await _database.getPhotoByPhotoId(picId);
     if (pic != null) {
       await _database.updatePhoto(pic.copyWith(deletedFromCameraRoll: value));
     }
   }
 
-  Future<void> setKeepAskingToDelete(bool value) async {
+  Future<void> setKeepAskingToDelete({required bool value}) async {
     final currentUser = await _database.getSingleMoorUser();
     if (currentUser != null) {
       await _database.updateMoorUser(currentUser.copyWith(keepAskingToDelete: value));

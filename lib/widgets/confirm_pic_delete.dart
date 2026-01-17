@@ -97,7 +97,7 @@ class ConfirmPicDelete extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         onPressed: () {
                           /* if (keepAsking == false) {
                             UserController.to.setKeepAskingToDelete(false);
@@ -114,7 +114,7 @@ class ConfirmPicDelete extends ConsumerWidget {
                           child: Center(
                             child: Text(
                               s.cancel,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: kLoginButtonTextStyle,
                             ),
                           ),
@@ -126,7 +126,7 @@ class ConfirmPicDelete extends ConsumerWidget {
                     ),
                     Expanded(
                       child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         onPressed: onPressedDelete,
                         child: Container(
                           height: 44,
@@ -137,7 +137,7 @@ class ConfirmPicDelete extends ConsumerWidget {
                           child: Center(
                             child: Text(
                               s.delete,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: const TextStyle(
                                 color: kSecondaryColor,
                                 fontWeight: FontWeight.w700,

@@ -132,7 +132,7 @@ AppLogger.d('subscribed to topic: all_users');
   }) async {
     await _flutterLocalNotificationsPlugin.cancelAll();
 
-    // TODO: Check this
+    // TODO(picpics): Check this
     // var time = Time(
     //   hourOfDay,
     //   minutesOfDay,

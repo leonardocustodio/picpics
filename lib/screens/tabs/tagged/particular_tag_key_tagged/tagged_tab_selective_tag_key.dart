@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/providers/language_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key_grid.dart';
 import 'package:picpics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_option_bar.dart';
@@ -12,7 +12,6 @@ import 'package:picpics/widgets/device_no_pics.dart';
 import 'package:picpics/widgets/percentage_dialog.dart';
 import 'package:picpics/widgets/select_all_widget.dart';
 
-// ignore: must_be_immutable
 class TaggedTabSelectiveTagKey extends ConsumerWidget {
   const TaggedTabSelectiveTagKey(this.tagKey, {super.key});
   final String tagKey;
@@ -82,7 +81,7 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
           child: SafeArea(
             child: Builder(
               builder: (context) {
-                if (taggedState.isTaggedPicsLoaded == false) {
+                if (!taggedState.isTaggedPicsLoaded) {
                   return const Center(child: CircularProgressIndicator());
                 }
 

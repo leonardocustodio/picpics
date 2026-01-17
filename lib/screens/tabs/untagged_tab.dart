@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/generated/l10n.dart' as language;
 import 'package:picpics/providers/language_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/screens/tabs/untagged_tabs/untagged_day.dart';
 import 'package:picpics/screens/tabs/untagged_tabs/untagged_month.dart';
 import 'package:picpics/utils/app_logger.dart';
@@ -375,7 +375,7 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
             ),
           Text(
             dateFormat(date),
-            textScaler: const TextScaler.linear(1),
+            textScaler: TextScaler.noScaling,
             style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),
@@ -427,7 +427,7 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
   ) {
     final hasPics = tabsState.allUnTaggedPicsMonth.isNotEmpty || tabsState.allUnTaggedPicsDay.isNotEmpty;
 
-    if (tabsState.isUntaggedPicsLoaded == false) {
+    if (!tabsState.isUntaggedPicsLoaded) {
       return const Center(
         child: CircularProgressIndicator(),
       );
@@ -447,11 +447,11 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
           duration: const Duration(milliseconds: 300),
           onEnd: () {
             tabsNotifier.setIsToggleBarVisible(
-              tabsState.isScrolling ? false : true,
+              !tabsState.isScrolling,
             );
           },
           child: Visibility(
-            visible: tabsState.isScrolling ? tabsState.isToggleBarVisible : true,
+            visible: !tabsState.isScrolling || tabsState.isToggleBarVisible,
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(

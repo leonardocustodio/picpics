@@ -90,7 +90,7 @@ class UnhideSecretModal extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         onPressed: onPressedDelete,
                         child: Container(
                           height: 44,
@@ -101,7 +101,7 @@ class UnhideSecretModal extends ConsumerWidget {
                           child: Center(
                             child: Text(
                               s.no,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: const TextStyle(
                                 color: kSecondaryColor,
                                 fontWeight: FontWeight.w700,
@@ -117,7 +117,7 @@ class UnhideSecretModal extends ConsumerWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         onPressed: onPressedOk,
                         child: Container(
                           height: 44,
@@ -128,7 +128,7 @@ class UnhideSecretModal extends ConsumerWidget {
                           child: Center(
                             child: Text(
                               s.yes,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: kLoginButtonTextStyle,
                             ),
                           ),

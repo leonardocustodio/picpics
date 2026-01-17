@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,7 +49,7 @@ class CustomisedTagsList extends ConsumerWidget {
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
               title!,
-              textScaler: const TextScaler.linear(1),
+              textScaler: TextScaler.noScaling,
               style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),
@@ -92,18 +94,18 @@ class CustomisedTagsList extends ConsumerWidget {
     final isColorFull = selectedTags[tag.key] != null;
     return GestureDetector(
       onTap: () {
-        HapticFeedback.lightImpact();
+        unawaited(HapticFeedback.lightImpact());
         /* DatabaseManager.instance.selectedTagKey = tag.key; */
         onTap?.call(tag.key, tag.title, tag.count, tag.time);
       },
       onDoubleTap: () {
-        HapticFeedback.lightImpact();
+        unawaited(HapticFeedback.lightImpact());
         /* DatabaseManager.instance.selectedTagKey = tag.key; */
         onDoubleTap?.call();
       },
       onLongPress: () {
         /* DatabaseManager.instance.selectedTagKey = tag.key; */
-        showEditTagModal(tag.key, context, ref);
+        unawaited(showEditTagModal(tag.key, context, ref));
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
@@ -116,7 +118,7 @@ class CustomisedTagsList extends ConsumerWidget {
             : kGrayBoxDecoration,
         child: Text(
           tag.title,
-          textScaler: const TextScaler.linear(1),
+          textScaler: TextScaler.noScaling,
           style: (isColorFull ? kWhiteTextStyle : kGrayTextStyle).copyWith(fontSize: 14),
         ),
       ),

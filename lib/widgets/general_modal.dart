@@ -67,7 +67,7 @@ class GeneralModal extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.all(16),
               child: CupertinoButton(
-                padding: const EdgeInsets.all(0),
+                padding: EdgeInsets.zero,
                 onPressed: onPressedOk,
                 child: Container(
                   height: 44,
@@ -78,7 +78,7 @@ class GeneralModal extends ConsumerWidget {
                   child: Center(
                     child: Text(
                       s.continue_string,
-                      textScaler: const TextScaler.linear(1),
+                      textScaler: TextScaler.noScaling,
                       style: kLoginButtonTextStyle,
                     ),
                   ),

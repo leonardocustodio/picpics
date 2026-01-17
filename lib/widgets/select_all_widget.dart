@@ -29,7 +29,7 @@ class SelectAllWidget extends StatelessWidget {
           ),
           const Text(
             'Select All',
-            textScaler: TextScaler.linear(1),
+            textScaler: TextScaler.noScaling,
             style: TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),

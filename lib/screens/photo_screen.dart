@@ -1,12 +1,16 @@
 // ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
 
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+/* import 'package:picpics/stores/gallery_store.dart'; */
+/* import 'package:picpics/stores/tagged_controller.dart'; */
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -14,27 +18,23 @@ import 'package:picpics/asset_entity_image_provider.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/fade_image_builder.dart';
 import 'package:picpics/managers/analytics_manager.dart';
-import 'package:picpics/screens/all_tags_screen.dart';
-/* import 'package:picpics/stores/gallery_store.dart'; */
-/* import 'package:picpics/stores/tagged_controller.dart'; */
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tagged_provider.dart';
+import 'package:picpics/screens/all_tags_screen.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
 import 'package:picpics/widgets/tags_list.dart';
 
 class PhotoScreenState {
-  final bool overlay;
-  final bool showSlideshow;
-  final int selectedIndex;
 
   PhotoScreenState({
     this.overlay = true,
     this.showSlideshow = false,
     this.selectedIndex = 0,
   });
+  final bool overlay;
+  final bool showSlideshow;
+  final int selectedIndex;
 
   PhotoScreenState copyWith({
     bool? overlay,
@@ -65,11 +65,11 @@ class PhotoScreenNotifier extends StateNotifier<PhotoScreenState> {
   }
 }
 
-final photoScreenProvider = StateNotifierProvider.autoDispose<PhotoScreenNotifier, PhotoScreenState>((ref) {
+final StateNotifierProvider<PhotoScreenNotifier, PhotoScreenState> photoScreenProvider = StateNotifierProvider.autoDispose<PhotoScreenNotifier, PhotoScreenState>((ref) {
   return PhotoScreenNotifier();
 });
 
-// ignore_for_file: must_be_immutable,prefer_final_fields, unused_field
+// ignore_for_file: unused_field
 class PhotoScreen extends ConsumerStatefulWidget {
   const PhotoScreen({required this.picId, required this.picIdList, super.key});
 
@@ -88,7 +88,7 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
   void initState() {
     super.initState();
 
-    Analytics.sendCurrentScreen(Screen.photo_screen);
+    unawaited(Analytics.sendCurrentScreen(Screen.photo_screen));
 
     if (widget.picIdList.isNotEmpty) {
       idList.addAll(widget.picIdList);
@@ -136,15 +136,16 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
 
     if (!photoScreenState.overlay) {
       photoScreenNotifier.setOverlay(true);
-      // TODO: Removing this to compile
+      // TODO(picpics): Removing this to compile
       // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     } else {
       if (!photoScreenState.showSlideshow) {
         photoScreenNotifier.setShowSlideshow(true);
       } else {
-        photoScreenNotifier.setShowSlideshow(false);
-        photoScreenNotifier.setOverlay(false);
-        // TODO: Removing this to compile
+        photoScreenNotifier
+          ..setShowSlideshow(false)
+          ..setOverlay(false);
+        // TODO(picpics): Removing this to compile
         // SystemChrome.setEnabledSystemUIOverlays([]);
       }
     }
@@ -181,7 +182,6 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
             switch (state.extendedImageLoadState) {
               case LoadState.loading:
                 loader = const ColoredBox(color: kGreyPlaceholder);
-                break;
               case LoadState.completed:
                 loader = FadeImageBuilder(
                   child: () {
@@ -190,10 +190,8 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                     );
                   }(),
                 );
-                break;
               case LoadState.failed:
                 loader = Container();
-                break;
             }
             return loader;
           },
@@ -239,7 +237,7 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
     final imageProvider = AssetEntityImageProvider(picStore);
 
     return CupertinoButton(
-      padding: const EdgeInsets.all(0),
+      padding: EdgeInsets.zero,
       onPressed: () {
         ref.read(photoScreenProvider.notifier).setSelectedIndex(index);
         galleryPageController.jumpToPage(index);
@@ -256,7 +254,6 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
             switch (state.extendedImageLoadState) {
               case LoadState.loading:
                 loader = const ColoredBox(color: kGreyPlaceholder);
-                break;
               case LoadState.completed:
                 loader = FadeImageBuilder(
                   child: () {
@@ -265,10 +262,8 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                     );
                   }(),
                 );
-                break;
               case LoadState.failed:
                 loader = Container();
-                break;
             }
             return loader;
           },
@@ -367,7 +362,7 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                                   final picIdValue = getPicIdList().toList()[photoScreenState.selectedIndex];
                                   final shareAblePicStore = ref.read(tabsProvider).picStoreMap[picIdValue] ??
                                       ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
-                                  shareAblePicStore?.sharePic();
+                                  unawaited(shareAblePicStore?.sharePic());
                                 },
                                 child: Image.asset(
                                   'lib/images/sharebuttonwithdropshadow.png',
@@ -464,7 +459,7 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                                                   .createdAt ??
                                               DateTime.now(),
                                         ),
-                                        textScaler: const TextScaler.linear(1),
+                                        textScaler: TextScaler.noScaling,
                                         style: const TextStyle(
                                           fontFamily: 'Lato',
                                           color: kWhiteColor,
@@ -550,7 +545,7 @@ class BottomTabsListWidget extends ConsumerWidget {
 
                 if (picStore != null) {
                   await Navigator.of(context).push<Object?>(
-                      MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)));
+                      MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)),);
                   await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
                   await ref.read(tabsProvider.notifier).refreshUntaggedList();
                   return;
@@ -587,7 +582,7 @@ class BottomTabsListWidget extends ConsumerWidget {
 
                 if (picStore != null) {
                   await Navigator.of(context).push<Object?>(
-                      MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)));
+                      MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)),);
                   await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
                   await ref.read(tabsProvider.notifier).refreshUntaggedList();
                   return;

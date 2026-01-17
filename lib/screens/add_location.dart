@@ -14,9 +14,9 @@ import 'package:picpics/constants.dart';
 import 'package:picpics/fade_image_builder.dart';
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/search/search_map_place.dart';
-import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
@@ -78,20 +78,20 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
 
       if (location != null) {
         final latLng = selectedGeolocation!.coordinates as LatLng;
-        picStore.saveLocation(
+        unawaited(picStore.saveLocation(
           lat: latLng.latitude,
           long: latLng.longitude,
           specific: location,
           general: city,
-        );
+        ));
       } else {
         final latLng = selectedGeolocation!.coordinates as LatLng;
-        picStore.saveLocation(
+        unawaited(picStore.saveLocation(
           lat: latLng.latitude,
           long: latLng.longitude,
           specific: city,
           general: country,
-        );
+        ));
       }
     }
 
@@ -161,13 +161,13 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
   @override
   void initState() {
     super.initState();
-    Analytics.sendCurrentScreen(Screen.add_location_screen);
+    unawaited(Analytics.sendCurrentScreen(Screen.add_location_screen));
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    findInitialCamera();
+    unawaited(findInitialCamera());
   }
 
   @override
@@ -208,7 +208,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
                         CupertinoButton(
-                          padding: const EdgeInsets.all(0),
+                          padding: EdgeInsets.zero,
                           onPressed: () => Navigator.of(context).pop(),
                           child: SizedBox(
                             width: height * 0.17,
@@ -225,17 +225,14 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                                       loader = const ColoredBox(
                                         color: kGreyPlaceholder,
                                       );
-                                      break;
                                     case LoadState.completed:
                                       loader = FadeImageBuilder(
                                         child: RepaintBoundary(
                                           child: state.completedWidget,
                                         ),
                                       );
-                                      break;
                                     case LoadState.failed:
                                       loader = Container();
-                                      break;
                                   }
                                   return loader;
                                 },
@@ -251,7 +248,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                       ],
                     ),
                     CupertinoButton(
-                      padding: const EdgeInsets.all(0),
+                      padding: EdgeInsets.zero,
                       onPressed: () {
                         AppLogger.d('saving location...');
                         saveLocation(context);
@@ -266,7 +263,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                         child: Center(
                           child: Text(
                             s.save_location,
-                            textScaler: const TextScaler.linear(1),
+                            textScaler: TextScaler.noScaling,
                             style: const TextStyle(
                               fontFamily: 'Lato',
                               color: kWhiteColor,

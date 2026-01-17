@@ -28,10 +28,11 @@ class ColorfulBackground extends CustomPainter {
     );
     final yellowPath = getYellowPath(size.width, size.height, moveBy.x / 2, -moveBy.y + .0);
 
-    canvas.drawPaint(primaryGradient);
-    canvas.drawPath(pinkPath, pinkGradient);
-    canvas.drawPath(secondaryPath, secondaryGradient);
-    canvas.drawPath(yellowPath, yellowPaint);
+    canvas
+      ..drawPaint(primaryGradient)
+      ..drawPath(pinkPath, pinkGradient)
+      ..drawPath(secondaryPath, secondaryGradient)
+      ..drawPath(yellowPath, yellowPaint);
   }
 
   Path getPinkPath(double x, double y, double moveByX, double moveByY) {

@@ -7,9 +7,9 @@ import 'package:picpics/constants.dart';
 import 'package:picpics/model/tag_model.dart';
 import 'package:picpics/providers/all_tags_provider.dart';
 import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
-import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/customised_tags_list.dart';
 
@@ -47,7 +47,7 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
     // Initialize selected tags from picStore on first build
     if (loadTagsFromPicStoreNotifier && widget.picStore != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        // TODO: Access picStore.tags properly without .value
+        // TODO(picpics): Access picStore.tags properly without .value
         // For now, initialize with empty map
         ref.read(allTagsProvider.notifier).initializeSelectedTags({});
         loadTagsFromPicStoreNotifier = false;
@@ -102,7 +102,7 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                                     letterSpacing: -0.4099999964237213,
                                   ),
                                   decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.all(0),
+                                    contentPadding: EdgeInsets.zero,
                                     border: OutlineInputBorder(borderSide: BorderSide.none),
                                     enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
                                     focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),

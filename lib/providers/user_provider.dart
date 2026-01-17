@@ -13,32 +13,6 @@ import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/languages.dart';
 
 class UserState {
-  final String appVersion;
-  final String deviceLocale;
-  final bool notifications;
-  final bool dailyChallenges;
-  final bool isPinRegistered;
-  final bool keepAskingToDelete;
-  final bool shouldDeleteOnPrivate;
-  final int picsTaggedToday;
-  final DateTime? lastTaggedPicDate;
-  final bool loggedIn;
-  final bool tutorialCompleted;
-  final bool hasGalleryPermission;
-  final bool waitingAccessCode;
-  final bool isMenuExpanded;
-  final bool isBiometricActivated;
-  final bool tourCompleted;
-  final int requireSecret;
-  final int hourOfDay;
-  final int minutesOfDay;
-  final double photoHeightInCardWidget;
-  final String appLanguage;
-  final String currentLanguage;
-  final List<String> recentTags;
-  final List<BiometricType> availableBiometrics;
-  final String appLocale;
-  final String? email;
 
   UserState({
     this.appVersion = '',
@@ -68,6 +42,32 @@ class UserState {
     this.appLocale = 'en',
     this.email,
   });
+  final String appVersion;
+  final String deviceLocale;
+  final bool notifications;
+  final bool dailyChallenges;
+  final bool isPinRegistered;
+  final bool keepAskingToDelete;
+  final bool shouldDeleteOnPrivate;
+  final int picsTaggedToday;
+  final DateTime? lastTaggedPicDate;
+  final bool loggedIn;
+  final bool tutorialCompleted;
+  final bool hasGalleryPermission;
+  final bool waitingAccessCode;
+  final bool isMenuExpanded;
+  final bool isBiometricActivated;
+  final bool tourCompleted;
+  final int requireSecret;
+  final int hourOfDay;
+  final int minutesOfDay;
+  final double photoHeightInCardWidget;
+  final String appLanguage;
+  final String currentLanguage;
+  final List<String> recentTags;
+  final List<BiometricType> availableBiometrics;
+  final String appLocale;
+  final String? email;
 
   UserState copyWith({
     String? appVersion,
@@ -129,11 +129,11 @@ class UserState {
 }
 
 class UserNotifier extends StateNotifier<UserState> {
+
+  UserNotifier(this.ref) : super(UserState());
   final LocalAuthentication biometricAuth = LocalAuthentication();
   final AppDatabase database = AppDatabase();
   final Ref ref;
-
-  UserNotifier(this.ref) : super(UserState());
 
   Future<void> initialize() async {
     AppLogger.i('[UserNotifier] Starting initialization...');
@@ -181,7 +181,7 @@ class UserNotifier extends StateNotifier<UserState> {
     _updateCurrentLanguage(state.appLanguage);
 
     // Load recent tags
-    // TODO: Uncomment when tags provider is fully implemented
+    // TODO(picpics): Uncomment when tags provider is fully implemented
     // final tagsController = ref.read(tagsProvider.notifier);
     // for (final tagKey in user.recentTags) {
     //   tagsController.addRecentTag(tagKey);
@@ -231,7 +231,7 @@ class UserNotifier extends StateNotifier<UserState> {
   void setAppLanguage(String language) {
     state = state.copyWith(appLanguage: language);
     _updateCurrentLanguage(language);
-    // TODO: Update language controller when fully migrated
+    // TODO(picpics): Update language controller when fully migrated
     // ref.read(languageProvider.notifier).changeLanguageTo(language);
   }
 
@@ -328,8 +328,7 @@ class UserNotifier extends StateNotifier<UserState> {
   }
 
   void removeRecentTag(String tag) {
-    final tags = List<String>.from(state.recentTags);
-    tags.remove(tag);
+    final tags = List<String>.from(state.recentTags)..remove(tag);
     state = state.copyWith(recentTags: tags);
   }
 
@@ -386,7 +385,7 @@ class UserNotifier extends StateNotifier<UserState> {
           sound: true,
         );
 
-    if (granted == true) {
+    if (granted ?? false) {
       AppLogger.i('[UserNotifier] Notification permission granted');
       state = state.copyWith(notifications: true);
     }
@@ -394,7 +393,7 @@ class UserNotifier extends StateNotifier<UserState> {
 
   Future<void> checkNotificationPermission({bool firstPermissionCheck = false}) async {
     AppLogger.i('[UserNotifier] Checking notification permission...');
-    // TODO: Implement notification permission check
+    // TODO(picpics): Implement notification permission check
     // This is a placeholder to prevent compilation errors
   }
 }

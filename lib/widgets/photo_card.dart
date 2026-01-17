@@ -1,5 +1,7 @@
 // ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
 
+import 'dart:async';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +17,13 @@ import 'package:picpics/constants.dart';
 import 'package:picpics/fade_image_builder.dart';
 import 'package:picpics/providers/blur_hash_provider.dart';
 import 'package:picpics/providers/language_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/all_tags_screen.dart';
 import 'package:picpics/screens/photo_screen.dart';
-import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
 import 'package:picpics/utils/functions.dart';
@@ -229,7 +231,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                 ),
                 CircularMenu(
                   isExpanded: userState.isMenuExpanded,
-                  useInHorizontal: userState.photoHeightInCardWidget < 280 ? true : false,
+                  useInHorizontal: userState.photoHeightInCardWidget < 280,
                   alignment: Alignment.bottomRight,
                   radius: 52,
                   toggleButtonOnPressed: () {
@@ -254,17 +256,17 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                       iconSize: 19.2,
                       onTap: () {
                         ref.read(tabsProvider.notifier).removePicFromUI(picStore.state.photoId);
-                        ref.read(tabsProvider.notifier).trashPic(picStore.state.photoId);
+                        unawaited(ref.read(tabsProvider.notifier).trashPic(picStore.state.photoId));
                       },
                     ),
                     CircularMenuItem(
-                      image: picStore.state.isPrivate == true
+                      image: picStore.state.isPrivate
                           ? Image.asset('lib/images/openlockmenu.png')
                           : Image.asset('lib/images/lockmenu.png'),
-                      color: picStore.state.isPrivate == true ? const Color(0xFFF5FAFA) : kYellowColor,
+                      color: picStore.state.isPrivate ? const Color(0xFFF5FAFA) : kYellowColor,
                       iconSize: 19.2,
                       onTap: () {
-                        showDeleteSecretModal(context, ref, picStore);
+                        unawaited(showDeleteSecretModal(context, ref, picStore));
                       },
                     ),
                     CircularMenuItem(
@@ -272,7 +274,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                       color: kPrimaryColor,
                       iconSize: 19.2,
                       onTap: () {
-                        picStore.sharePic();
+                        unawaited(picStore.sharePic());
                       },
                     ),
                     CircularMenuItem(
@@ -307,10 +309,10 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                   children: <Widget>[
                     CupertinoButton(
                       onPressed: null,
-                      padding: const EdgeInsets.all(0),
+                      padding: EdgeInsets.zero,
                       child: Text(
                         dateFormat(picStore.state.createdAt),
-                        textScaler: const TextScaler.linear(1),
+                        textScaler: TextScaler.noScaling,
                         style: const TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff606566),
@@ -384,13 +386,13 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                       String suggestionsTitle;
 
                       if (picStore.state.aiTags) {
-                        if (picStore.state.aiTagsLoaded == false) {
+                        if (!picStore.state.aiTagsLoaded) {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 s.suggestions,
-                                textScaler: const TextScaler.linear(1),
+                                textScaler: TextScaler.noScaling,
                                 style: const TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff979a9b),

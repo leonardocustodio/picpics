@@ -47,7 +47,7 @@ class CupertinoInputDialog extends StatelessWidget {
               padding: const EdgeInsets.only(top: 19, bottom: 10),
               child: Text(
                 title,
-                textScaler: const TextScaler.linear(1),
+                textScaler: TextScaler.noScaling,
                 style: const TextStyle(
                   color: Color(0xff606566),
                   fontSize: 16,
@@ -91,7 +91,7 @@ class CupertinoInputDialog extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: CupertinoButton(
-                    padding: const EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: onPressedDestructive,
                     child: Container(
                       color: const Color(0xFFF5FAFA),
@@ -99,7 +99,7 @@ class CupertinoInputDialog extends StatelessWidget {
                       child: Center(
                         child: Text(
                           destructiveButtonTitle,
-                          textScaler: const TextScaler.linear(1),
+                          textScaler: TextScaler.noScaling,
                           style: const TextStyle(
                             color: Color(0xFFE01717),
                             fontSize: 16,
@@ -113,7 +113,7 @@ class CupertinoInputDialog extends StatelessWidget {
                 ),
                 Expanded(
                   child: CupertinoButton(
-                    padding: const EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: onPressedDefault,
                     child: Container(
                       color: const Color(0xFFF5FAFA),
@@ -121,7 +121,7 @@ class CupertinoInputDialog extends StatelessWidget {
                       child: Center(
                         child: Text(
                           defaultButtonTitle,
-                          textScaler: const TextScaler.linear(1),
+                          textScaler: TextScaler.noScaling,
                           style: const TextStyle(
                             color: Color(0xFF606566),
                             fontSize: 16,

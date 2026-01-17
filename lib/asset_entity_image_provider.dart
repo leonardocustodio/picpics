@@ -18,7 +18,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     this.isOriginal = true,
   }) : assert(
           isOriginal || thumbSize.length == 2,
-          'thumbSize must contain and only contain two integers when it\'s not original',
+          "thumbSize must contain and only contain two integers when it's not original",
         );
   final PicStoreNotifier picStore;
 
@@ -88,7 +88,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
               ThumbnailSize(thumbSize[0], thumbSize[1]),
             );
 
-      // TODO: Blur hash generation needs to be moved to a provider-aware context
+      // TODO(picpics): Blur hash generation needs to be moved to a provider-aware context
       // Cannot access Riverpod provider from ImageProvider
       // if (data != null) {
       //   await createBlurHash(picStore.photoId.value, data);
@@ -132,22 +132,16 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
         case 'jpg':
         case 'jpeg':
           type = ImageFileType.jpg;
-          break;
         case 'png':
           type = ImageFileType.png;
-          break;
         case 'gif':
           type = ImageFileType.gif;
-          break;
         case 'tiff':
           type = ImageFileType.tiff;
-          break;
         case 'heic':
           type = ImageFileType.heic;
-          break;
         default:
           type = ImageFileType.other;
-          break;
       }
     }
     return type;

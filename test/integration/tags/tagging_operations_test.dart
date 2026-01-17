@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:picpics/providers/tags_provider.dart';
 
 /// Integration tests for tagging operations
@@ -45,10 +45,8 @@ void main() {
     });
 
     test('Clear should reset tags state', () {
-      final notifier = container.read(tagsProvider.notifier);
-
       // Clear the state
-      notifier.clear();
+      container.read(tagsProvider.notifier).clear();
 
       final tagsState = container.read(tagsProvider);
       expect(tagsState.allTags, isEmpty);
@@ -143,21 +141,17 @@ void main() {
     });
 
     test('Search text can be updated', () {
-      final notifier = container.read(tagsProvider.notifier);
-
-      notifier.setSearchText('test');
+      container.read(tagsProvider.notifier).setSearchText('test');
 
       final tagsState = container.read(tagsProvider);
       expect(tagsState.searchText, 'test');
     });
 
     test('Search mode can be toggled', () {
-      final notifier = container.read(tagsProvider.notifier);
-
-      notifier.setIsSearching(true);
+      container.read(tagsProvider.notifier).setIsSearching(true);
       expect(container.read(tagsProvider).isSearching, isTrue);
 
-      notifier.setIsSearching(false);
+      container.read(tagsProvider.notifier).setIsSearching(false);
       expect(container.read(tagsProvider).isSearching, isFalse);
     });
   });

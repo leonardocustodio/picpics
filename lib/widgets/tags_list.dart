@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -98,7 +99,7 @@ class _TagsListState extends ConsumerState<TagsList> {
       /// We'll have to avoid the tags whose tag name is null and
       /// also if the tags is [kSecretTagKey] and showPrivate is False
       if (tagsState.allTags[tagKey]?.title == null ||
-          (privatePhotosState.showPrivate == false && tagKey == kSecretTagKey)) {
+          (!privatePhotosState.showPrivate && tagKey == kSecretTagKey)) {
         continue;
       }
 
@@ -114,15 +115,15 @@ class _TagsListState extends ConsumerState<TagsList> {
                 }
               });
             }
-            HapticFeedback.lightImpact();
+            unawaited(HapticFeedback.lightImpact());
             widget.onTap?.call(tagKey);
           },
           onDoubleTap: () {
-            HapticFeedback.lightImpact();
+            unawaited(HapticFeedback.lightImpact());
             widget.onDoubleTap?.call(tagKey);
           },
           onLongPress: () {
-            showEditTagModal(tagKey, context, ref);
+            unawaited(showEditTagModal(tagKey, context, ref));
           },
           onPanStart: (details) {
             AppLogger.d('Started pan on tag: $tagKey');
@@ -142,7 +143,7 @@ class _TagsListState extends ConsumerState<TagsList> {
           onPanEnd: (details) {
             if (swipedRightDirection) {
               showSwiperInIndex = null;
-              HapticFeedback.lightImpact();
+              unawaited(HapticFeedback.lightImpact());
               widget.onPanEnd?.call(tagKey);
               swipedRightDirection = false;
             }
@@ -163,7 +164,7 @@ class _TagsListState extends ConsumerState<TagsList> {
                         ),
                         child: Text(
                           tagsState.allTags[tagKey]?.title ?? '',
-                          textScaler: const TextScaler.linear(1),
+                          textScaler: TextScaler.noScaling,
                           style: widget.tagStyle == TagStyle.multiColored ? kWhiteTextStyle : kGrayTextStyle,
                         ),
                       )
@@ -233,7 +234,7 @@ class _TagsListState extends ConsumerState<TagsList> {
                               ),
                               child: Text(
                                 tagsState.allTags[tagKey]?.title ?? '',
-                                textScaler: const TextScaler.linear(1),
+                                textScaler: TextScaler.noScaling,
                                 style: widget.tagStyle == TagStyle.multiColored ? kWhiteTextStyle : kGrayTextStyle,
                               ),
                             ),
@@ -257,7 +258,7 @@ class _TagsListState extends ConsumerState<TagsList> {
                             opacity: thirdOpct,
                             child: Text(
                               s.delete,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: widget.tagStyle == TagStyle.multiColored ? kWhiteTextStyle : kGrayTextStyle,
                             ),
                           ),
@@ -273,7 +274,7 @@ class _TagsListState extends ConsumerState<TagsList> {
     if (widget.addTagButton != null) {
       tagsWidgets.add(
         CupertinoButton(
-          padding: const EdgeInsets.all(0),
+          padding: EdgeInsets.zero,
           onPressed: widget.addTagButton,
           minimumSize: const Size(30, 30),
           child: Container(
@@ -293,7 +294,7 @@ class _TagsListState extends ConsumerState<TagsList> {
                 ),
                 Text(
                   s.add_tag,
-                  textScaler: const TextScaler.linear(1),
+                  textScaler: TextScaler.noScaling,
                   style: const TextStyle(
                     fontFamily: 'Lato',
                     color: kGrayColor,
@@ -369,7 +370,7 @@ class _TagsListState extends ConsumerState<TagsList> {
                       ),
                       if (widget.addButtonVisible)
                         CupertinoButton(
-                          padding: const EdgeInsets.all(0),
+                          padding: EdgeInsets.zero,
                           onPressed: () {
                             if (widget.onSubmitted != null) {
                               widget.onSubmitted!(
@@ -396,7 +397,7 @@ class _TagsListState extends ConsumerState<TagsList> {
                     children: [
                       Text(
                         widget.aiButtonTitle!,
-                        textScaler: const TextScaler.linear(1),
+                        textScaler: TextScaler.noScaling,
                         style: kGrayTextStyle.copyWith(fontSize: 15),
                       ),
                       const Icon(
@@ -421,7 +422,7 @@ class _TagsListState extends ConsumerState<TagsList> {
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
               widget.title!,
-              textScaler: const TextScaler.linear(1),
+              textScaler: TextScaler.noScaling,
               style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),

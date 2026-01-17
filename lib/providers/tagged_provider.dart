@@ -7,6 +7,21 @@ import 'package:picpics/database/app_database.dart';
 
 /// Tagged photos state for managing tagged photo collections
 class TaggedState {
+
+  const TaggedState({
+    required this.expandableController, required this.expandablePaddingController, this.bottomOptionsBar = 0,
+    this.taggedPicId = const {},
+    this.allTaggedPicIdList = const {},
+    this.picWiseTags = const {},
+    this.isTaggedPicsLoaded = false,
+    this.multiPicBar = false,
+    this.multiTagSheet = false,
+    this.toggleIndexTagged = 1,
+    this.selectedMultiBarPics = const {},
+    this.isScrolling = false,
+    this.hideTitleThirdTab = false,
+    this.allTaggedPicDateWiseList = const [],
+  });
   final int bottomOptionsBar;
 
   /// Map of tagKey to map of picId
@@ -27,23 +42,6 @@ class TaggedState {
 
   final bool hideTitleThirdTab;
   final List<dynamic> allTaggedPicDateWiseList;
-
-  const TaggedState({
-    this.bottomOptionsBar = 0,
-    this.taggedPicId = const {},
-    this.allTaggedPicIdList = const {},
-    this.picWiseTags = const {},
-    this.isTaggedPicsLoaded = false,
-    this.multiPicBar = false,
-    this.multiTagSheet = false,
-    required this.expandableController,
-    required this.expandablePaddingController,
-    this.toggleIndexTagged = 1,
-    this.selectedMultiBarPics = const {},
-    this.isScrolling = false,
-    this.hideTitleThirdTab = false,
-    this.allTaggedPicDateWiseList = const [],
-  });
 
   TaggedState copyWith({
     int? bottomOptionsBar,
@@ -87,7 +85,7 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
       : super(TaggedState(
           expandableController: ExpandableController(initialExpanded: false),
           expandablePaddingController: ExpandableController(initialExpanded: false),
-        ));
+        ),);
 
   final AppDatabase _database = AppDatabase();
 
@@ -291,15 +289,14 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
   }
 
   void removeSelectedMultiBarPic(String picId) {
-    final newSelected = Map<String, bool>.from(state.selectedMultiBarPics);
-    newSelected.remove(picId);
+    final newSelected = Map<String, bool>.from(state.selectedMultiBarPics)..remove(picId);
     state = state.copyWith(selectedMultiBarPics: newSelected);
   }
 
   Future<void> untagPicsFromTag({
     required Map<String, Map<String, String>> tagKeyMapToPicId,
   }) async {
-    // TODO: Implement untagPicsFromTag - requires AppDatabase API update
+    // TODO(picpics): Implement untagPicsFromTag - requires AppDatabase API update
     // This method should remove specified tags from photos in the database
     // For now, just refresh to avoid compilation errors
     await refreshTaggedPhotos();

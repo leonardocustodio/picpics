@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:expandable/expandable.dart';
@@ -6,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/providers/language_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
@@ -50,7 +51,7 @@ class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelect
               mainAxisSize: MainAxisSize.min,
               children: [
                 CupertinoButton(
-                  padding: const EdgeInsets.all(0),
+                  padding: EdgeInsets.zero,
                   onPressed: () {
                     taggedState.expandableController.expanded = !taggedState.expandableController.expanded;
                   },
@@ -69,7 +70,7 @@ class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelect
                               width: 80,
                               child: Text(
                                 s.cancel,
-                                textScaler: const TextScaler.linear(1),
+                                textScaler: TextScaler.noScaling,
                                 style: const TextStyle(
                                   color: Color(0xff707070),
                                   fontSize: 16,
@@ -92,8 +93,9 @@ class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelect
                                 return;
                               }
 
-                              taggedNotifier.setMultiTagSheet(false);
-                              taggedNotifier.setMultiPicBar(false);
+                              taggedNotifier
+                                ..setMultiTagSheet(false)
+                                ..setMultiPicBar(false);
                               await tagsNotifier.addTagsToSelectedPics();
                               await ref.read(tabsProvider.notifier).refreshUntaggedList();
                               await tagsNotifier.tagsSuggestionsCalculate();
@@ -103,7 +105,7 @@ class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelect
                               width: 80,
                               child: Text(
                                 s.ok,
-                                textScaler: const TextScaler.linear(1),
+                                textScaler: TextScaler.noScaling,
                                 textAlign: TextAlign.end,
                                 style: const TextStyle(
                                   color: Color(0xff707070),
@@ -124,7 +126,7 @@ class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelect
                   expanded: Container(
                     padding: const EdgeInsets.all(24),
 
-                    /// TODO: Tags List Not Showing
+                    /// TODO(picpics): Tags List Not Showing
                     color: const Color(0xFFEFEFF4).withValues(alpha: 0.94),
                     child: SafeArea(
                       child: Column(
@@ -148,7 +150,7 @@ class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelect
                               //   return;
                               // }
                               tagsNotifier.removeMultiPicTag(tagKey);
-                              tagsNotifier.tagsSuggestionsCalculate();
+                              unawaited(tagsNotifier.tagsSuggestionsCalculate());
                               //GalleryStore.to.removeFromMultiPicTags(tagKey);
                             },
                             onDoubleTap: (String tagKey) {
@@ -160,7 +162,7 @@ class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelect
                             },
                             onChanged: (text) {
                               tagsNotifier.setSearchText(text);
-                              tagsNotifier.tagsSuggestionsCalculate();
+                              unawaited(tagsNotifier.tagsSuggestionsCalculate());
                               //GalleryStore.to.setSearchText(text);
                             },
                             onSubmitted: (text) {
@@ -171,7 +173,7 @@ class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelect
                               if (text != '') {
                                 bottomTagsEditingController.clear();
                                 tagsNotifier.setSearchText(text);
-                                tagsNotifier.tagsSuggestionsCalculate();
+                                unawaited(tagsNotifier.tagsSuggestionsCalculate());
                                 final tagKey = Helpers.encryptTag(text);
 
                                 if (tagsState.multiPicTags[tagKey] == null) {
@@ -179,10 +181,11 @@ class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelect
                                     AppLogger.d(
                                       'tag does not exist! creating it!',
                                     );
-                                    tagsNotifier.createTag(text);
+                                    unawaited(tagsNotifier.createTag(text));
                                   }
-                                  tagsNotifier.addMultiPicTag(tagKey);
-                                  tagsNotifier.setSearchText('');
+                                  tagsNotifier
+                                    ..addMultiPicTag(tagKey)
+                                    ..setSearchText('');
                                 }
                               }
                             },
@@ -207,10 +210,11 @@ class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelect
                                                   } */
 
                                 bottomTagsEditingController.clear();
-                                tagsNotifier.setSearchText('');
-                                //GalleryStore.to.setSearchText('');
-                                tagsNotifier.addMultiPicTag(tagKey);
-                                tagsNotifier.tagsSuggestionsCalculate();
+                                tagsNotifier
+                                  ..setSearchText('')
+                                  //GalleryStore.to.setSearchText('');
+                                  ..addMultiPicTag(tagKey);
+                                unawaited(tagsNotifier.tagsSuggestionsCalculate());
                                 //GalleryStore.to.addToMultiPicTags(tagKey);
                               },
                               onDoubleTap: (String tagKey) {
@@ -287,9 +291,7 @@ class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelect
       ];
       return Platform.isIOS
           ? CupertinoTabBar(
-              onTap: (index) {
-                taggedNotifier.setBottomOptionsBar(index);
-              },
+              onTap: taggedNotifier.setBottomOptionsBar,
               iconSize: 24,
               border: const Border(
                 top: BorderSide(color: Color(0xFFE2E4E5)),
@@ -299,15 +301,13 @@ class _TaggedTabSelectiveTagOptionBarState extends ConsumerState<TaggedTabSelect
           : SizedBox(
               height: 64,
               child: BottomNavigationBar(
-                onTap: (index) {
-                  taggedNotifier.setBottomOptionsBar(index);
-                },
+                onTap: taggedNotifier.setBottomOptionsBar,
                 type: BottomNavigationBarType.fixed,
                 showSelectedLabels: false,
                 showUnselectedLabels: false,
                 items: listOfBottomNavigationItems,
               ),
             );
-    });
+    },);
   }
 }

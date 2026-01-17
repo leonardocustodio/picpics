@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +31,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     super.initState();
     // Load assets when the screen initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeTabsScreen();
+      unawaited(_initializeTabsScreen());
     });
   }
 
@@ -107,11 +109,11 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     // Show the appropriate tab based on current index
     switch (tabsState.currentIndex) {
       case 0:
-        return UntaggedTab();
+        return const UntaggedTab();
       case 1:
-        return PicTab();
+        return const PicTab();
       case 2:
-        return TaggedTab();
+        return const TaggedTab();
       default:
         return Container();
     }
@@ -136,12 +138,12 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                   CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     onPressed: () {
-                      Navigator.push<void>(
+                      unawaited(Navigator.push<void>(
                         context,
                         MaterialPageRoute<void>(
                           builder: (context) => const SettingsScreen(),
                         ),
-                      );
+                      ));
                     },
                     child: Image.asset('lib/images/settings.png'),
                   ),
@@ -162,7 +164,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                   const SizedBox(height: 21),
                   Text(
                     s.gallery_access_permission_description,
-                    textScaler: const TextScaler.linear(1),
+                    textScaler: TextScaler.noScaling,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontFamily: 'Lato',
@@ -174,7 +176,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                   ),
                   const SizedBox(height: 17),
                   CupertinoButton(
-                    padding: const EdgeInsets.all(0),
+                    padding: EdgeInsets.zero,
                     onPressed: () async {
                       AppLogger.i('[TabsScreen] User tapped permission button');
                       await ref.read(userProvider.notifier).requestGalleryPermission();
@@ -208,7 +210,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                       child: Center(
                         child: Text(
                           s.gallery_access_permission,
-                          textScaler: const TextScaler.linear(1),
+                          textScaler: TextScaler.noScaling,
                           style: const TextStyle(
                             fontFamily: 'Lato',
                             color: kWhiteColor,

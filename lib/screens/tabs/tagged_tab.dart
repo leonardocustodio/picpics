@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/generated/l10n.dart' as language;
 import 'package:picpics/providers/language_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/screens/tabs/tagged/no_tagged_pics_in_device.dart';
 import 'package:picpics/screens/tabs/tagged/tagged_pics_with_search_option.dart';
@@ -50,7 +52,7 @@ Widget? _buildHeaderLeading(
     onTap: () {
       if (!tagsState.isSearching) {
         ref.read(tagsProvider.notifier).setIsSearching(true);
-        ref.read(tagsProvider.notifier).tagsSuggestionsCalculate();
+        unawaited(ref.read(tagsProvider.notifier).tagsSuggestionsCalculate());
       }
     },
     keyboardType: TextInputType.text,
@@ -200,11 +202,11 @@ class TaggedTab extends ConsumerWidget {
                       ),
                       onEnd: () {
                         tabsNotifier.setIsToggleBarVisible(
-                          taggedState.isScrolling ? false : true,
+                          !taggedState.isScrolling,
                         );
                       },
                       child: Visibility(
-                        visible: taggedState.isScrolling ? tabsState.isToggleBarVisible : true,
+                        visible: !taggedState.isScrolling || tabsState.isToggleBarVisible,
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: Padding(

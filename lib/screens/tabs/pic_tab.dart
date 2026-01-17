@@ -12,7 +12,6 @@ import 'package:picpics/widgets/app_header.dart';
 import 'package:picpics/widgets/device_no_pics.dart';
 import 'package:picpics/widgets/photo_card.dart';
 
-// ignore: must_be_immutable
 class PicTab extends ConsumerStatefulWidget {
   const PicTab({super.key});
   static const id = 'pic_tab';

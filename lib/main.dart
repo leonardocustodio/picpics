@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:background_fetch/background_fetch.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -39,11 +41,11 @@ void main() async {
   );
 
   FlutterError.onError = (errorDetails) {
-    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    unawaited(FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails));
   };
 
   PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    unawaited(FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
     return true;
   };
 
@@ -76,10 +78,10 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp> with WidgetsBindingObse
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    unawaited(SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]));
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
-    _initializeApp();
+    unawaited(_initializeApp());
   }
 
   Future<void> _initializeApp() async {
@@ -113,12 +115,12 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp> with WidgetsBindingObse
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       AppLogger.d('&&&& Here lifecycle!');
-      WidgetManager.sendAndUpdate();
+      unawaited(WidgetManager.sendAndUpdate());
     }
 
     if (state == AppLifecycleState.resumed) {
       AppLogger.d('&&&&&&&&& App got back from background');
-      _handleAppResume();
+      unawaited(_handleAppResume());
     }
   }
 
@@ -166,18 +168,18 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp> with WidgetsBindingObse
       initialRoute: initialRoute,
       navigatorObservers: [Analytics.observer],
       routes: {
-        AllTagsScreen.id: (context) => AllTagsScreen(),
+        AllTagsScreen.id: (context) => const AllTagsScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         TabsScreen.id: (context) => const TabsScreen(),
-        PhotoScreen.id: (context) => PhotoScreen(
+        PhotoScreen.id: (context) => const PhotoScreen(
               picId: '',
-              picIdList: const <String>[],
+              picIdList: <String>[],
             ),
         SettingsScreen.id: (context) => const SettingsScreen(),
         AddLocationScreen.id: (context) => const AddLocationScreen(null),
-        PinScreen.id: (context) => PinScreen(),
+        PinScreen.id: (context) => const PinScreen(),
         EmailScreen.id: (context) => const EmailScreen(),
-        AccessCodeScreen.id: (context) => AccessCodeScreen(),
+        AccessCodeScreen.id: (context) => const AccessCodeScreen(),
       },
     );
   }

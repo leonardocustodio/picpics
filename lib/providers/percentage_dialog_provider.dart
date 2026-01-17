@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/legacy.dart';
 
 class PercentageDialogState {
-  final bool isShowing;
-  final double progress;
-  final String message;
 
   PercentageDialogState({
     this.isShowing = false,
     this.progress = 0.0,
     this.message = '',
   });
+  final bool isShowing;
+  final double progress;
+  final String message;
 
   PercentageDialogState copyWith({
     bool? isShowing,
@@ -28,7 +28,7 @@ class PercentageDialogNotifier extends StateNotifier<PercentageDialogState> {
   PercentageDialogNotifier() : super(PercentageDialogState());
 
   void show(String message) {
-    state = state.copyWith(isShowing: true, message: message, progress: 0.0);
+    state = state.copyWith(isShowing: true, message: message, progress: 0);
   }
 
   void updateProgress(double progress) {

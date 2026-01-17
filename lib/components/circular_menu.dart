@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -78,12 +79,12 @@ class CircularMenuState extends State<CircularMenu> with SingleTickerProviderSta
 
   /// forward animation
   void forwardAnimation() {
-    _animationController.forward();
+    unawaited(_animationController.forward());
   }
 
   /// reverse animation
   void reverseAnimation() {
-    _animationController.reverse();
+    unawaited(_animationController.reverse());
   }
 
   @override
@@ -146,8 +147,8 @@ class CircularMenuState extends State<CircularMenu> with SingleTickerProviderSta
 //          padding: (-_animation.value * widget.toggleButtonPadding * 0.5) + widget.toggleButtonPadding,
           onTap: () {
             _animationController.status == AnimationStatus.dismissed
-                ? _animationController.forward()
-                : _animationController.reverse();
+                ? unawaited(_animationController.forward())
+                : unawaited(_animationController.reverse());
             widget.toggleButtonOnPressed?.call();
           },
           boxShadow: widget.toggleButtonBoxShadow,

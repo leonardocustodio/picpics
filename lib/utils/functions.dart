@@ -2,12 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/providers/private_photos_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/pin_screen.dart';
-import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/delete_secret_modal.dart';
 import 'package:picpics/widgets/unhide_secret_modal.dart';
@@ -15,7 +15,7 @@ import 'package:picpics/widgets/unhide_secret_modal.dart';
 Future<void> showDeleteSecretModalForMultiPic(BuildContext context, WidgetRef ref) async {
   final userState = ref.read(userProvider);
 
-  if (userState.keepAskingToDelete == false) {
+  if (!userState.keepAskingToDelete) {
     ref.read(tabsProvider.notifier).setMultiTagSheet(false);
     ref.read(tabsProvider.notifier).setMultiPicBar(false);
     await ref.read(tagsProvider.notifier).addTagsToSelectedPics();
@@ -58,7 +58,7 @@ Future<void> showDeleteSecretModal(
 ) async {
   final privatePhotosState = ref.read(privatePhotosProvider);
 
-  if (privatePhotosState.showPrivate != true) {
+  if (!privatePhotosState.showPrivate) {
     // TODO(Week 3D): Add popPinScreenToId property to UserState if needed
     // For now, just navigate to PIN screen
     if (!context.mounted) return;
@@ -69,7 +69,7 @@ Future<void> showDeleteSecretModal(
   }
 
   final userState = ref.read(userProvider);
-  if (userState.keepAskingToDelete == false && picStore.state.isPrivate == false) {
+  if (!userState.keepAskingToDelete && !picStore.state.isPrivate) {
     //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
     return;
   }
@@ -80,7 +80,7 @@ Future<void> showDeleteSecretModal(
   await showDialog<void>(
     context: context,
     builder: (BuildContext buildContext) {
-      if (picStore.state.isPrivate == true) {
+      if (picStore.state.isPrivate) {
         return UnhideSecretModal(
           onPressedDelete: () {
             Navigator.of(buildContext).pop();

@@ -39,7 +39,7 @@ class DatabaseManager extends ChangeNotifier {
   bool showShowAdAfterReload = false; */
 
   Future<void> requestNotification() async {
-    // TODO: commented below line
+    // TODO(picpics): commented below line
     //var userBox = Hive.box('user');
 
     userSettings = (await database.getSingleMoorUser())!;

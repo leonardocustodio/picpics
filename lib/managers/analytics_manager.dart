@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 // import 'package:facebook_app_events/facebook_app_events.dart';
 
 enum Screen {
@@ -59,7 +60,7 @@ class Analytics {
     Event event, {
     Map<String, dynamic>? params,
   }) async {
-    if (/* kDebugMode */ true) {
+    if (kDebugMode) {
       return;
     }
 
@@ -75,7 +76,7 @@ class Analytics {
   }
 
   static Future<void> sendAppOpen() async {
-    if (/* kDebugMode */ true) {
+    if (kDebugMode) {
       return;
     }
 
@@ -84,7 +85,7 @@ class Analytics {
   }
 
   static Future<void> sendTutorialBegin() async {
-    if (/* kDebugMode */ true) {
+    if (kDebugMode) {
       return;
     }
 
@@ -93,7 +94,7 @@ class Analytics {
   }
 
   static Future<void> sendTutorialComplete() async {
-    if (/* kDebugMode */ true) {
+    if (kDebugMode) {
       return;
     }
 
@@ -105,7 +106,7 @@ class Analytics {
     required String currency,
     required double price,
   }) async {
-    if (/* kDebugMode */ true) {
+    if (kDebugMode) {
       return;
     }
 
@@ -124,7 +125,7 @@ class Analytics {
   }
 
   static Future<void> setUserId(String userId) async {
-    if (/* kDebugMode */ true) {
+    if (kDebugMode) {
       return;
     }
 
@@ -134,7 +135,7 @@ class Analytics {
   }
 
   static Future<void> sendCurrentScreen(Screen screen) async {
-    if (/* kDebugMode */ true) {
+    if (kDebugMode) {
       return;
     }
 
@@ -150,7 +151,7 @@ class Analytics {
   }
 
   static Future<void> sendCurrentTab(int index) async {
-    if (/* kDebugMode */ true) {
+    if (kDebugMode) {
       return;
     }
 

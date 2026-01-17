@@ -26,7 +26,7 @@ class PerformanceTestUtils {
     dynamic provider,
     void Function() action,
   ) {
-    int rebuildCount = 0;
+    var rebuildCount = 0;
 
     // Using dynamic to work around ProviderListenable export issue in Riverpod 3.x
     try {
@@ -36,7 +36,6 @@ class PerformanceTestUtils {
         (dynamic previous, dynamic next) {
           rebuildCount++;
         },
-        fireImmediately: false,
       );
 
       action();
@@ -54,7 +53,7 @@ class PerformanceTestUtils {
   static int estimateMemoryUsage(Object? state) {
     if (state == null) return 0;
 
-    int size = 0;
+    var size = 0;
 
     // Estimate based on type
     if (state is Map) {
@@ -89,7 +88,7 @@ class PerformanceTestUtils {
   }) async {
     final durations = <Duration>[];
 
-    for (int i = 0; i < iterations; i++) {
+    for (var i = 0; i < iterations; i++) {
       await setup();
 
       final duration = await measureExecutionTime(action);
@@ -111,7 +110,7 @@ class PerformanceTestUtils {
     required int count,
     Duration? delay,
   }) async {
-    for (int i = 0; i < count; i++) {
+    for (var i = 0; i < count; i++) {
       changeState();
       if (delay != null) {
         await Future<void>.delayed(delay);
@@ -134,15 +133,15 @@ class PerformanceTestUtils {
 
 /// Result of a benchmark run
 class BenchmarkResult {
-  final String name;
-  final int iterations;
-  final List<Duration> durations;
 
   BenchmarkResult({
     required this.name,
     required this.iterations,
     required this.durations,
   });
+  final String name;
+  final int iterations;
+  final List<Duration> durations;
 
   /// Average execution time
   Duration get average {
@@ -228,10 +227,10 @@ extension DoubleExtension on double {
     if (this < 0) return 0;
 
     // Newton's method for square root
-    double x = this;
-    double guess = this / 2;
+    final x = this;
+    var guess = this / 2;
 
-    for (int i = 0; i < 10; i++) {
+    for (var i = 0; i < 10; i++) {
       guess = (guess + x / guess) / 2;
     }
 

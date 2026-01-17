@@ -14,19 +14,51 @@ import 'package:picpics/constants.dart';
 import 'package:picpics/database/app_database.dart';
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/managers/widget_manager.dart';
+import 'package:picpics/providers/percentage_dialog_provider.dart';
 import 'package:picpics/providers/pic_store_provider.dart';
-import 'package:picpics/providers/user_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/private_photos_provider.dart';
 import 'package:picpics/providers/swiper_tab_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
-import 'package:picpics/providers/percentage_dialog_provider.dart';
+import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Tabs state for managing tab navigation, photo selection, and photo management
 class TabsState {
+
+  const TabsState({
+    // UI controllers
+    required this.expandableController, required this.expandablePaddingController, // Core tab state
+    this.currentIndex = 0,
+    this.isTagging = false,
+    this.isMultiSelecting = false,
+    this.selectedPhotos = const [],
+    this.multiTagSheet = false,
+    this.multiPicBar = false,
+    // Core photo management
+    this.assetMap = const {},
+    this.assetEntityList = const [],
+    this.picStoreMap = const {},
+    this.starredPicMap = const {},
+    this.status = Status.loading,
+    // Untagged photos
+    this.allUnTaggedPics = const {},
+    this.allUnTaggedPicsMonth = const [],
+    this.allUnTaggedPicsDay = const [],
+    // UI state
+    this.toggleIndexUntagged = 1,
+    this.toggleIndexTagged = 1,
+    this.topOffsetFirstTab = 64.0,
+    this.tutorialIndex = 0,
+    this.showDeleteSecretModal = false,
+    this.isScrolling = false,
+    this.isToggleBarVisible = true,
+    this.isLoading = false,
+    this.isUntaggedPicsLoaded = false,
+    this.modalCard = false,
+  });
   // Core tab state (6 properties - existing)
   final int currentIndex;
   final bool isTagging;
@@ -62,40 +94,6 @@ class TabsState {
   // UI controllers (2 properties)
   final ExpandableController expandableController;
   final ExpandableController expandablePaddingController;
-
-  const TabsState({
-    // Core tab state
-    this.currentIndex = 0,
-    this.isTagging = false,
-    this.isMultiSelecting = false,
-    this.selectedPhotos = const [],
-    this.multiTagSheet = false,
-    this.multiPicBar = false,
-    // Core photo management
-    this.assetMap = const {},
-    this.assetEntityList = const [],
-    this.picStoreMap = const {},
-    this.starredPicMap = const {},
-    this.status = Status.loading,
-    // Untagged photos
-    this.allUnTaggedPics = const {},
-    this.allUnTaggedPicsMonth = const [],
-    this.allUnTaggedPicsDay = const [],
-    // UI state
-    this.toggleIndexUntagged = 1,
-    this.toggleIndexTagged = 1,
-    this.topOffsetFirstTab = 64.0,
-    this.tutorialIndex = 0,
-    this.showDeleteSecretModal = false,
-    this.isScrolling = false,
-    this.isToggleBarVisible = true,
-    this.isLoading = false,
-    this.isUntaggedPicsLoaded = false,
-    this.modalCard = false,
-    // UI controllers
-    required this.expandableController,
-    required this.expandablePaddingController,
-  });
 
   TabsState copyWith({
     // Core tab state
@@ -169,13 +167,13 @@ class TabsState {
 /// Notifier for tabs state
 /// Manages tab navigation, photo selection, and photo operations
 class TabsNotifier extends StateNotifier<TabsState> {
-  final Ref _ref;
 
   TabsNotifier(this._ref)
       : super(TabsState(
           expandableController: ExpandableController(initialExpanded: false),
           expandablePaddingController: ExpandableController(initialExpanded: false),
-        ));
+        ),);
+  final Ref _ref;
 
   // Scroll controllers (instance variables, not state)
   ScrollController untaggedScrollControllerMonth = ScrollController();
@@ -234,7 +232,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     final permitted = _ref.read(userProvider).hasGalleryPermission;
     AppLogger.d('[TabsProvider] Gallery permission: $permitted');
 
-    if (permitted == false) {
+    if (!permitted) {
       AppLogger.w('[TabsProvider] No gallery permission, aborting load');
       setIsUntaggedPicsLoaded(true);
       _ref.read(swiperTabProvider.notifier).setLoaded(true);
@@ -247,8 +245,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       final filterOptionGroup = FilterOptionGroup()
         ..addOrderOption(
           const OrderOption(
-            type: OrderOptionType.createDate,
-            asc: false,
+            
           ),
         );
 
@@ -298,11 +295,11 @@ class TabsNotifier extends StateNotifier<TabsState> {
   }
 
   void sortAssetEntityList() {
-    final sorted = List<AssetEntity>.from(state.assetEntityList);
-    sorted.sort((a, b) {
-      return DateTime(b.createDateTime.year, b.createDateTime.month, b.createDateTime.day)
-          .compareTo(DateTime(a.createDateTime.year, a.createDateTime.month, a.createDateTime.day));
-    });
+    final sorted = List<AssetEntity>.from(state.assetEntityList)
+      ..sort((a, b) {
+        return DateTime(b.createDateTime.year, b.createDateTime.month, b.createDateTime.day)
+            .compareTo(DateTime(a.createDateTime.year, a.createDateTime.month, a.createDateTime.day));
+      });
     state = state.copyWith(assetEntityList: sorted);
   }
 
@@ -653,8 +650,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
   Future<void> trashMultiplePics(Set<String> selectedPicsIds) async {
     var deleted = false;
-    final percentageNotifier = _ref.read(percentageDialogProvider.notifier);
-    percentageNotifier.hide();
+    final percentageNotifier = _ref.read(percentageDialogProvider.notifier)..hide();
 
     // Delete photos from device using PhotoManager
     final result = await PhotoManager.editor.deleteWithIds(selectedPicsIds.toList());
@@ -664,8 +660,9 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
     if (deleted) {
       final database = AppDatabase();
-      percentageNotifier.show('Deleting photos');
-      percentageNotifier.updateProgress(0.0);
+      percentageNotifier
+        ..show('Deleting photos')
+        ..updateProgress(0);
 
       await Future.forEach(selectedPicsIds.toList(), (String picId) async {
         final picStore = state.picStoreMap[picId] ?? explorPicStore(picId);
@@ -703,7 +700,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
         }
       }).then((_) {
         percentageNotifier.hide();
-        refreshUntaggedList();
+        unawaited(refreshUntaggedList());
         // SwiperTabController refresh will be handled separately
       });
 
@@ -769,7 +766,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (state.selectedPhotos.isEmpty) {
       return;
     }
-    trashMultiplePics(state.selectedPhotos.toSet());
+    unawaited(trashMultiplePics(state.selectedPhotos.toSet()));
   }
 
   void clearSelectedPics() {

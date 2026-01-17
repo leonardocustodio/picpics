@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
@@ -29,7 +31,7 @@ Future<void> showEditTagModal(String tagKey, BuildContext context, WidgetRef ref
               title: s.edit_tag,
               destructiveButtonTitle: s.delete,
               onPressedDestructive: () {
-                ref.read(tagsProvider.notifier).deleteTagFromPic(tagKey: tagKey);
+                unawaited(ref.read(tagsProvider.notifier).deleteTagFromPic(tagKey: tagKey));
                 Navigator.of(context).pop();
               },
               defaultButtonTitle: s.ok,
@@ -38,10 +40,10 @@ Future<void> showEditTagModal(String tagKey, BuildContext context, WidgetRef ref
                   'Editing tag - Old name: $tagKey - New name: ${alertInputController.text}',
                 );
                 if (tagName != alertInputController.text) {
-                  ref.read(tagsProvider.notifier).editTagName(
+                  unawaited(ref.read(tagsProvider.notifier).editTagName(
                         oldTagKey: tagKey,
                         newName: alertInputController.text,
-                      );
+                      ));
                 }
                 Navigator.of(context).pop();
               },

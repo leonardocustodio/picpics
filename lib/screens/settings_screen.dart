@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -51,7 +52,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
       scheme: 'mailto',
       path: 'picpics@inovatso.com.br',
     );
-    launchUrl(emailLaunchUri);
+    unawaited(launchUrl(emailLaunchUri));
   }
 
   final rateMyApp = RateMyApp(
@@ -61,8 +62,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
 
   void shareApp(BuildContext context) {
     final s = ref.read(sProvider);
-    Share.share(s.take_a_look, subject: S.of(context).take_a_look_description('https://picpics.link/share'));
-    Analytics.sendEvent(Event.shared_app);
+    unawaited(Share.share(s.take_a_look, subject: S.of(context).take_a_look_description('https://picpics.link/share')));
+    unawaited(Analytics.sendEvent(Event.shared_app));
   }
 
   Future<void> rateDialog() async {
@@ -79,7 +80,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
       );
     }
 
-    Analytics.sendEvent(Event.rated_app);
+    unawaited(Analytics.sendEvent(Event.rated_app));
   }
 
   Future<void> showRequirePinPicker(BuildContext context) async {
@@ -105,14 +106,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                       width: 80,
                       child: Text(
                         s.cancel,
-                        textScaler: const TextScaler.linear(1),
+                        textScaler: TextScaler.noScaling,
                         style: kBottomSheetTextStyle,
                       ),
                     ),
                   ),
                   const Text(
                     'Require secret key',
-                    textScaler: TextScaler.linear(1),
+                    textScaler: TextScaler.noScaling,
                     style: kBottomSheetTitleTextStyle,
                   ),
                   CupertinoButton(
@@ -124,7 +125,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                       width: 80,
                       child: Text(
                         s.ok,
-                        textScaler: const TextScaler.linear(1),
+                        textScaler: TextScaler.noScaling,
                         textAlign: TextAlign.end,
                         style: kBottomSheetTextStyle,
                       ),
@@ -148,8 +149,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                     return Center(
                         child: Text(
                       kRequireOptions[index],
-                      textScaler: const TextScaler.linear(1),
-                    ));
+                      textScaler: TextScaler.noScaling,
+                    ),);
                   },
                 ),
               ),
@@ -189,19 +190,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                       width: 80,
                       child: Text(
                         s.cancel,
-                        textScaler: const TextScaler.linear(1),
+                        textScaler: TextScaler.noScaling,
                         style: kBottomSheetTextStyle,
                       ),
                     ),
                   ),
                   Text(
                     s.language,
-                    textScaler: const TextScaler.linear(1),
+                    textScaler: TextScaler.noScaling,
                     style: kBottomSheetTitleTextStyle,
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      showDialog<void>(
+                      unawaited(showDialog<void>(
                           context: context,
                           builder: (context) => Center(
                                 child: Container(
@@ -216,9 +217,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                     child: CupertinoActivityIndicator(),
                                   ),
                                 ),
-                              ));
+                              ),),);
 
-                      // TODO: Implement language change through providers
+                      // TODO(settings): Implement language change through providers
                       ref.read(userProvider.notifier).setAppLanguage(supportedLocales[temporaryLanguage].toString());
 
                       setState(() {});
@@ -229,7 +230,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                       width: 80,
                       child: Text(
                         s.ok,
-                        textScaler: const TextScaler.linear(1),
+                        textScaler: TextScaler.noScaling,
                         textAlign: TextAlign.end,
                         style: kBottomSheetTextStyle,
                       ),
@@ -253,8 +254,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                     return Center(
                         child: Text(
                       '${language.getDisplayLanguage(supportedLocales[index].languageCode)['name']} / ${language.getDisplayLanguage(supportedLocales[index].languageCode)['nativeName']}',
-                      textScaler: const TextScaler.linear(1),
-                    ));
+                      textScaler: TextScaler.noScaling,
+                    ),);
                   },
                 ),
               ),
@@ -288,14 +289,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                       width: 80,
                       child: Text(
                         s.cancel,
-                        textScaler: const TextScaler.linear(1),
+                        textScaler: TextScaler.noScaling,
                         style: kBottomSheetTextStyle,
                       ),
                     ),
                   ),
                   Text(
                     s.time,
-                    textScaler: const TextScaler.linear(1),
+                    textScaler: TextScaler.noScaling,
                     style: kBottomSheetTitleTextStyle,
                   ),
                   CupertinoButton(
@@ -308,7 +309,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                       width: 80,
                       child: Text(
                         s.ok,
-                        textScaler: const TextScaler.linear(1),
+                        textScaler: TextScaler.noScaling,
                         textAlign: TextAlign.end,
                         style: kBottomSheetTextStyle,
                       ),
@@ -337,13 +338,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    Analytics.sendCurrentScreen(Screen.settings_screen);
+    unawaited(Analytics.sendCurrentScreen(Screen.settings_screen));
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      ref.read(userProvider.notifier).checkNotificationPermission();
+      unawaited(ref.read(userProvider.notifier).checkNotificationPermission());
     }
   }
 
@@ -371,7 +372,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                   ),
                   Text(
                     s.settings,
-                    textScaler: const TextScaler.linear(1),
+                    textScaler: TextScaler.noScaling,
                     style: kGraySettingsBoldTextStyle,
                   ),
                   CupertinoButton(
@@ -405,14 +406,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 16),
                                     child: CupertinoButton(
-                                      padding: const EdgeInsets.all(0),
+                                      padding: EdgeInsets.zero,
                                       pressedOpacity: 1,
                                       onPressed: () async {
-                                        if (privatePhotosState.showPrivate == true) {
+                                        if (privatePhotosState.showPrivate) {
                                           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
                                           return;
                                         }
-                                        // TODO: Set popPinScreenToId properly
+                                        // TODO(settings): Set popPinScreenToId properly
                                         await Navigator.of(context).pushNamed(PinScreen.id);
                                       },
                                       child: Row(
@@ -420,17 +421,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                         children: <Widget>[
                                           Text(
                                             s.private_photos,
-                                            textScaler: const TextScaler.linear(1),
+                                            textScaler: TextScaler.noScaling,
                                             style: kGraySettingsFieldTextStyle,
                                           ),
                                           SecretSwitch(
                                             value: privatePhotosState.showPrivate,
                                             onChanged: (bool value) async {
-                                              if (value == false) {
+                                              if (!value) {
                                                 ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
                                                 return;
                                               }
-                                              // TODO: Set wantsToActivateBiometric and popPinScreenToId
+                                              // TODO(settings): Set wantsToActivateBiometric and popPinScreenToId
                                               await Navigator.of(context).pushNamed(PinScreen.id);
                                             },
                                           ),
@@ -443,7 +444,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                   color: kLightGrayColor,
                                   thickness: 1,
                                 ),
-                                if (privatePhotosState.showPrivate == true && userState.availableBiometrics.isNotEmpty)
+                                if (privatePhotosState.showPrivate && userState.availableBiometrics.isNotEmpty)
                                   Builder(
                                     builder: (context) {
                                       String? enableBiometric;
@@ -469,13 +470,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                                   child: Padding(
                                                     padding: const EdgeInsets.symmetric(horizontal: 16),
                                                     child: CupertinoButton(
-                                                      padding: const EdgeInsets.all(0),
+                                                      padding: EdgeInsets.zero,
                                                       onPressed: () {
-                                                        if (userState.isBiometricActivated != true) {
-                                                          // TODO: Set wantsToActivateBiometric
-                                                          Navigator.of(context).push<void>(MaterialPageRoute<void>(
-                                                            builder: (_) => PinScreen(),
-                                                          ));
+                                                        if (!userState.isBiometricActivated) {
+                                                          // TODO(settings): Set wantsToActivateBiometric
+                                                          unawaited(Navigator.of(context).push<void>(MaterialPageRoute<void>(
+                                                            builder: (_) => const PinScreen(),
+                                                          ),));
                                                           return;
                                                         }
                                                         ref.read(userProvider.notifier).setIsBiometricActivated(false);
@@ -485,19 +486,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                                         children: <Widget>[
                                                           Text(
                                                             enableBiometric ?? '',
-                                                            textScaler: const TextScaler.linear(1),
+                                                            textScaler: TextScaler.noScaling,
                                                             style: kGraySettingsFieldTextStyle,
                                                           ),
                                                           CupertinoSwitch(
                                                             value: userState.isBiometricActivated,
                                                             activeTrackColor: kSecondaryColor,
                                                             onChanged: (value) async {
-                                                              if (value == true) {
-                                                                // TODO: Set wantsToActivateBiometric
+                                                              if (value) {
+                                                                // TODO(settings): Set wantsToActivateBiometric
                                                                 await Navigator.of(context)
                                                                     .push<dynamic>(MaterialPageRoute<dynamic>(
-                                                                  builder: (_) => PinScreen(),
-                                                                ));
+                                                                  builder: (_) => const PinScreen(),
+                                                                ),);
                                                                 return;
                                                               }
                                                               ref
@@ -526,19 +527,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 16),
                                     child: CupertinoButton(
-                                      padding: const EdgeInsets.all(0),
+                                      padding: EdgeInsets.zero,
                                       onPressed: () => showLanguagePicker(context),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
                                           Text(
                                             s.language,
-                                            textScaler: const TextScaler.linear(1),
+                                            textScaler: TextScaler.noScaling,
                                             style: kGraySettingsFieldTextStyle,
                                           ),
                                           Text(
                                             userState.currentLanguage,
-                                            textScaler: const TextScaler.linear(1),
+                                            textScaler: TextScaler.noScaling,
                                             style: kGraySettingsValueTextStyle,
                                           ),
                                         ],
@@ -563,7 +564,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                       const SizedBox(width: 15),
                                       Text(
                                         s.share_with_friends,
-                                        textScaler: const TextScaler.linear(1),
+                                        textScaler: TextScaler.noScaling,
                                         style: kGraySettingsBoldTextStyle,
                                       ),
                                     ],
@@ -578,7 +579,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                       const SizedBox(width: 15),
                                       Text(
                                         s.rate_this_app,
-                                        textScaler: const TextScaler.linear(1),
+                                        textScaler: TextScaler.noScaling,
                                         style: kGraySettingsBoldTextStyle,
                                       ),
                                     ],
@@ -593,7 +594,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                       const SizedBox(width: 15),
                                       Text(
                                         s.feedback_bug_report,
-                                        textScaler: const TextScaler.linear(1),
+                                        textScaler: TextScaler.noScaling,
                                         style: kGraySettingsBoldTextStyle,
                                       ),
                                     ],
@@ -609,7 +610,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                     CupertinoButton(
                                       padding: const EdgeInsets.only(top: 8),
                                       onPressed: () {
-                                        _launchURL('https://picpics.link/e/facebook');
+                                        unawaited(_launchURL('https://picpics.link/e/facebook'));
                                       },
                                       child: SizedBox(
                                         height: 20,
@@ -620,7 +621,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                     CupertinoButton(
                                       padding: const EdgeInsets.only(top: 8),
                                       onPressed: () {
-                                        _launchURL('https://picpics.link/e/website');
+                                        unawaited(_launchURL('https://picpics.link/e/website'));
                                       },
                                       child: SizedBox(
                                         height: 20,
@@ -631,7 +632,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                     CupertinoButton(
                                       padding: const EdgeInsets.only(top: 8),
                                       onPressed: () {
-                                        _launchURL('https://picpics.link/e/instagram');
+                                        unawaited(_launchURL('https://picpics.link/e/instagram'));
                                       },
                                       child: SizedBox(
                                         height: 20,
@@ -646,7 +647,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                   children: <Widget>[
                                     CupertinoButton(
                                       onPressed: () {
-                                        _launchURL('https://picpics.link/e/privacy');
+                                        unawaited(_launchURL('https://picpics.link/e/privacy'));
                                       },
                                       padding: const EdgeInsets.symmetric(vertical: 8),
                                       minimumSize: const Size(32, 32),
@@ -674,7 +675,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                     ),
                                     CupertinoButton(
                                       onPressed: () {
-                                        _launchURL('https://picpics.link/e/terms');
+                                        unawaited(_launchURL('https://picpics.link/e/terms'));
                                       },
                                       padding: const EdgeInsets.symmetric(vertical: 10),
                                       minimumSize: const Size(32, 32),
@@ -697,7 +698,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                   child: Center(
                                     child: Text(
                                       'VERSION: ${userState.appVersion}',
-                                      textScaler: const TextScaler.linear(1),
+                                      textScaler: TextScaler.noScaling,
                                       style: kGraySettingsFieldTextStyle,
                                     ),
                                   ),

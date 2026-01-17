@@ -41,7 +41,7 @@ class DateHeaderWidget extends ConsumerWidget {
             ),
           Text(
             Helpers.dateFormat(date, isMonth: isMonth),
-            textScaler: const TextScaler.linear(1),
+            textScaler: TextScaler.noScaling,
             style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),

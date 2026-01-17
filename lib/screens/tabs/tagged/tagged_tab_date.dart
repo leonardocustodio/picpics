@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/providers/blur_hash_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/screens/photo_screen.dart';
 import 'package:picpics/widgets/date_header.dart';
 import 'package:picpics/widgets/photo_widget.dart';
@@ -108,7 +108,7 @@ class _TaggedTabDateState extends ConsumerState<TaggedTabDate> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(6),
               child: CupertinoButton(
-                padding: const EdgeInsets.all(0),
+                padding: EdgeInsets.zero,
                 onPressed: () async {
                   if (taggedState.multiPicBar) {
                     if (taggedState.selectedMultiBarPics[picId] == null) {
@@ -130,7 +130,7 @@ class _TaggedTabDateState extends ConsumerState<TaggedTabDate> {
                 },
                 child: GestureDetector(
                   onLongPress: () {
-                    if (taggedState.multiPicBar == false) {
+                    if (!taggedState.multiPicBar) {
                       taggedNotifier.setMultiPicBar(true);
                     }
                     taggedNotifier.addSelectedMultiBarPic(picId as String);
@@ -151,7 +151,7 @@ class _TaggedTabDateState extends ConsumerState<TaggedTabDate> {
                         ),
                       if (taggedState.multiPicBar &&
                           taggedState.selectedMultiBarPics[picId] != null &&
-                          taggedState.selectedMultiBarPics[picId] == true) ...[
+                          (taggedState.selectedMultiBarPics[picId] ?? false)) ...[
                         Container(
                           constraints: const BoxConstraints.expand(),
                           decoration: BoxDecoration(
@@ -208,7 +208,7 @@ class _TaggedTabDateState extends ConsumerState<TaggedTabDate> {
               ),
             ),
           );
-        });
+        },);
       },
     );
   }

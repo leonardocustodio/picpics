@@ -74,12 +74,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     const Spacer(),
                                     Text(
                                       s.welcome,
-                                      textScaler: const TextScaler.linear(1),
+                                      textScaler: TextScaler.noScaling,
                                       style: kLoginDescriptionTextStyle,
                                     ),
                                     Text(
                                       s.photos_always_organized,
-                                      textScaler: const TextScaler.linear(1),
+                                      textScaler: TextScaler.noScaling,
                                       style: kLoginDescriptionTextStyle,
                                     ),
                                     const Spacer(
@@ -110,7 +110,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   ),
                                   child: Text(
                                     loginState.getDescription(index - 1) ?? '',
-                                    textScaler: const TextScaler.linear(1),
+                                    textScaler: TextScaler.noScaling,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       fontFamily: 'Lato',
@@ -181,7 +181,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           AppLogger.d('next');
                           await swiperController.next();
                         },
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         child: Container(
                           height: 66,
                           margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -194,7 +194,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             loginState.slideIndex == loginState.totalSlides - 1
                                 ? s.start.toUpperCase()
                                 : s.next.toUpperCase(),
-                            textScaler: const TextScaler.linear(1),
+                            textScaler: TextScaler.noScaling,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               fontFamily: 'Lato',

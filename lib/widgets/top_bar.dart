@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,7 +25,7 @@ class TopBar extends ConsumerWidget {
     this.onChanged,
   }) : assert((searchEditingController == null
             ? (onChanged == null && onSubmitted == null)
-            : (onChanged != null && onSubmitted != null)));
+            : (onChanged != null && onSubmitted != null)),);
 
   final FocusNode? searchFocusNode;
   final bool showUntag;
@@ -58,7 +60,7 @@ class TopBar extends ConsumerWidget {
                         onTap: () {
                           if (!tagsState.isSearching) {
                             ref.read(tagsProvider.notifier).setIsSearching(true);
-                            ref.read(tagsProvider.notifier).tagsSuggestionsCalculate();
+                            unawaited(ref.read(tagsProvider.notifier).tagsSuggestionsCalculate());
                           }
                         },
                         child: TextField(
@@ -125,7 +127,7 @@ class TopBar extends ConsumerWidget {
                 CupertinoButton(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   onPressed: () {
-                    Navigator.of(context).push<void>(MaterialPageRoute<void>(builder: (_) => const SettingsScreen()));
+                    unawaited(Navigator.of(context).push<void>(MaterialPageRoute<void>(builder: (_) => const SettingsScreen())));
                   },
                   child: Image.asset('lib/images/settings.png'),
                 ),

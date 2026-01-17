@@ -1,10 +1,6 @@
 import 'package:flutter_riverpod/legacy.dart';
 
 class PhotoScreenState {
-  final String currentPhotoId;
-  final List<String> photoIds;
-  final int currentIndex;
-  final bool isEditing;
 
   PhotoScreenState({
     this.currentPhotoId = '',
@@ -12,6 +8,10 @@ class PhotoScreenState {
     this.currentIndex = 0,
     this.isEditing = false,
   });
+  final String currentPhotoId;
+  final List<String> photoIds;
+  final int currentIndex;
+  final bool isEditing;
 
   PhotoScreenState copyWith({
     String? currentPhotoId,
@@ -68,7 +68,7 @@ class PhotoScreenNotifier extends StateNotifier<PhotoScreenState> {
     }
   }
 
-  void setEditing(bool editing) {
+  void setEditing({required bool editing}) {
     state = state.copyWith(isEditing: editing);
   }
 

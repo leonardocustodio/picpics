@@ -196,7 +196,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
                           ),
                           const Spacer(flex: 2),
                           CupertinoButton(
-                            padding: const EdgeInsets.all(0),
+                            padding: EdgeInsets.zero,
                             onPressed: startRegistration,
                             child: Container(
                               height: 44,
@@ -207,7 +207,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
                               child: Center(
                                 child: Text(
                                   s.continue_string,
-                                  textScaler: const TextScaler.linear(1),
+                                  textScaler: TextScaler.noScaling,
                                   style: kLoginButtonTextStyle,
                                 ),
                               ),

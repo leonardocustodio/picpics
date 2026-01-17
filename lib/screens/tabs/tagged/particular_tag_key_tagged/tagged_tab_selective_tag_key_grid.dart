@@ -4,12 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/providers/blur_hash_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/screens/photo_screen.dart';
 import 'package:picpics/widgets/photo_widget.dart';
 
-// ignore: must_be_immutable
 class TaggedTabSelectiveTagKeyGrid extends ConsumerWidget {
   const TaggedTabSelectiveTagKeyGrid(this.tagKey, {super.key});
   final String tagKey;
@@ -41,7 +40,7 @@ class TaggedTabSelectiveTagKeyGrid extends ConsumerWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: CupertinoButton(
-              padding: const EdgeInsets.all(0),
+              padding: EdgeInsets.zero,
               onPressed: () async {
                 if (taggedState.multiPicBar) {
                   final taggedNotifier = ref.read(taggedProvider.notifier);
@@ -61,7 +60,7 @@ class TaggedTabSelectiveTagKeyGrid extends ConsumerWidget {
               child: GestureDetector(
                 onLongPress: () {
                   final taggedNotifier = ref.read(taggedProvider.notifier);
-                  if (taggedState.multiPicBar == false) {
+                  if (!taggedState.multiPicBar) {
                     taggedNotifier.setMultiPicBar(true);
                   }
                   taggedNotifier.addSelectedMultiBarPic(picId);

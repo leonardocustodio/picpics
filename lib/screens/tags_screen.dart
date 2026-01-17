@@ -45,7 +45,7 @@ class _TagsScreenState extends State<TagsScreen> {
                           letterSpacing: -0.4099999964237213,
                         ),
                         decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(0),
+                          contentPadding: EdgeInsets.zero,
                           border: OutlineInputBorder(borderSide: BorderSide.none),
                           enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
                           focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),

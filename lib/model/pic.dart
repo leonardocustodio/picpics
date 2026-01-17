@@ -16,9 +16,15 @@ class Pic {
   });
   final String photoId;
   final DateTime createdAt;
-  final double originalLatitude, originalLongitude;
-  double latitude, longitude;
-  String specificLocation, generalLocation, base64encoded;
+  final double originalLatitude;
+  final double originalLongitude;
+  double latitude;
+  double longitude;
+  String specificLocation;
+  String generalLocation;
+  String base64encoded;
   final List<String> tags;
-  bool isPrivate, deletedFromCameraRoll, isStarred;
+  bool isPrivate;
+  bool deletedFromCameraRoll;
+  bool isStarred;
 }

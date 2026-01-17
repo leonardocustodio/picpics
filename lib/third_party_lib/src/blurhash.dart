@@ -13,16 +13,16 @@ class BlurHash {
   BlurHash._(
     this.hash,
     this.components,
-  )   : assert(components.isNotEmpty),
-        assert(components[0].isNotEmpty),
+  )   : assert(components.isNotEmpty, 'Components must not be empty'),
+        assert(components[0].isNotEmpty, 'First component row must not be empty'),
         numCompY = components.length,
         numCompX = components[0].length;
 
   /// Construct a [BlurHash] object from decoded components.
   /// This is useful for e.g. transposing a BlurHash.
   BlurHash.components(this.components)
-      : assert(components.isNotEmpty),
-        assert(components[0].isNotEmpty),
+      : assert(components.isNotEmpty, 'Components must not be empty'),
+        assert(components[0].isNotEmpty, 'First component row must not be empty'),
         hash = _encodeComponents(components),
         numCompX = components[0].length,
         numCompY = components.length;
@@ -118,9 +118,9 @@ class BlurHash {
   ///
   /// The RGB values must be in range [0, 255].
   factory BlurHash.fromRgb(int red, int green, int blue) {
-    assert(red >= 0 && red <= 255);
-    assert(green >= 0 && green <= 255);
-    assert(blue >= 0 && blue <= 255);
+    assert(red >= 0 && red <= 255, 'Red value must be between 0 and 255');
+    assert(green >= 0 && green <= 255, 'Green value must be between 0 and 255');
+    assert(blue >= 0 && blue <= 255, 'Blue value must be between 0 and 255');
 
     final color = ColorTriplet(
       sRgbToLinear(red),
@@ -152,10 +152,10 @@ class BlurHash {
   /// recommended to keep the [width] and [height] small and let the UI layer
   /// handle upscaling for better performance.
   Image toImage(int width, int height) {
-    assert(width > 0);
-    assert(height > 0);
+    assert(width > 0, 'Width must be greater than 0');
+    assert(height > 0, 'Height must be greater than 0');
     final data = _transform(width, height, components);
-    // TODO: Check
+    // TODO(blurhash): Verify Image.fromBytes output format is correct.
     return Image.fromBytes(width: width, height: height, bytes: data.buffer);
   }
 }
@@ -183,7 +183,7 @@ String encodeBlurHash(
   int numCompX = 4,
   int numpCompY = 3,
 }) {
-  // TODO: Conferir se ta certo
+  // TODO(blurhash): Verify Image.fromBytes conversion is correct.
   final image = Image.fromBytes(width: width, height: height, bytes: data.buffer);
   final hash = BlurHash.encode(image, numCompX: numCompX, numCompY: numpCompY);
   return hash.hash;

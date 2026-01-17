@@ -203,9 +203,9 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                   children: [
                     Expanded(
                       child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (keepAsking == false) {
+                          if (!keepAsking) {
                             ref.read(userProvider.notifier).setKeepAskingToDelete(false);
                           }
                           widget.onPressedDelete();
@@ -219,7 +219,7 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                           child: Center(
                             child: Text(
                               s.no,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: const TextStyle(
                                 color: kSecondaryColor,
                                 fontWeight: FontWeight.w700,
@@ -237,9 +237,9 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                     ),
                     Expanded(
                       child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (keepAsking == false) {
+                          if (!keepAsking) {
                             ref.read(userProvider.notifier).setKeepAskingToDelete(false);
                           }
                           widget.onPressedOk();
@@ -253,7 +253,7 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                           child: Center(
                             child: Text(
                               s.yes,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: kLoginButtonTextStyle,
                             ),
                           ),

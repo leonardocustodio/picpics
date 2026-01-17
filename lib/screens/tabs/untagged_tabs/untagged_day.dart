@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/providers/blur_hash_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/screens/photo_screen.dart';
 import 'package:picpics/widgets/date_header.dart';
 import 'package:picpics/widgets/photo_widget.dart';
@@ -90,7 +90,7 @@ class UntaggedTabDay extends ConsumerWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(6),
                 child: CupertinoButton(
-                  padding: const EdgeInsets.all(0),
+                  padding: EdgeInsets.zero,
                   onPressed: () async {
                     if (tabsState.multiPicBar) {
                       if (taggedState.selectedMultiBarPics[object] == null) {
@@ -111,7 +111,7 @@ class UntaggedTabDay extends ConsumerWidget {
                   },
                   child: GestureDetector(
                     onLongPress: () {
-                      if (tabsState.multiPicBar == false) {
+                      if (!tabsState.multiPicBar) {
                         tabsNotifier.setMultiPicBar(true);
                       }
                       taggedNotifier.addSelectedMultiBarPic(object as String);

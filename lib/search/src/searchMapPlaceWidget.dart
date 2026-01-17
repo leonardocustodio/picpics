@@ -21,7 +21,6 @@ class SearchMapPlaceWidget extends StatefulWidget {
           (location == null && radius == null) || (location != null && radius != null),
         ),
         super(key: key);
-  // ignore: library_private_types_in_public_api
   @override
   // ignore: overridden_fields
   final Key? key;
@@ -179,7 +178,6 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           CupertinoButton(
             padding: const EdgeInsets.only(left: 5, right: 10),
@@ -206,7 +204,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
                 letterSpacing: -0.4099999964237213,
               ),
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(0),
+                contentPadding: EdgeInsets.zero,
                 border: const OutlineInputBorder(borderSide: BorderSide.none),
                 enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
                 focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
@@ -323,10 +321,10 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
         return;
       }
 
-      Future.delayed(const Duration(milliseconds: 500), () {
+      unawaited(Future.delayed(const Duration(milliseconds: 500), () {
         _textEditingController.addListener(_autocompletePlace);
-        if (_isEditing == true) _autocompletePlace();
-      });
+        if (_isEditing) unawaited(_autocompletePlace());
+      }));
     }
   }
 

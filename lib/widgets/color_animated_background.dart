@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
@@ -30,8 +31,10 @@ class ColorAnimatedBackgroundState extends State<ColorAnimatedBackground> with A
   @override
   void initState() {
     super.initState();
-    widthController = createController()..mirror(duration: 3.seconds);
-    heightController = createController()..mirror(duration: 3.seconds);
+    widthController = createController();
+    unawaited(widthController.mirror(duration: 3.seconds));
+    heightController = createController();
+    unawaited(heightController.mirror(duration: 3.seconds));
     xAnimation = 0.0.tweenTo(widget.moveByX).animatedBy(widthController);
     yAnimation = 0.0.tweenTo(widget.moveByY).animatedBy(heightController);
   }
