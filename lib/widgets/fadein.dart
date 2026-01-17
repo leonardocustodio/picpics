@@ -5,9 +5,10 @@ import 'package:supercharged/supercharged.dart';
 enum _AniProps { opacity, translateY }
 
 class FadeIn extends StatelessWidget {
-
   const FadeIn({
-    required this.delay, required this.child, super.key,
+    required this.delay,
+    required this.child,
+    super.key,
   });
   final double delay;
   final Widget child;

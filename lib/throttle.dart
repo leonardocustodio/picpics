@@ -6,7 +6,6 @@ typedef VoidCallback = void Function();
 ///
 /// Like rxdart `throttle` method
 class Throttle {
-
   Throttle({
     required this.onCall,
     this.duration = const Duration(seconds: 2),

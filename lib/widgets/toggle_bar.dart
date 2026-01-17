@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 class ToggleBar extends StatefulWidget {
-
   const ToggleBar({
-    required this.titleLeft, required this.titleRight, required this.activeToggle, required this.onToggle, super.key,
+    required this.titleLeft,
+    required this.titleRight,
+    required this.activeToggle,
+    required this.onToggle,
+    super.key,
   });
   final int activeToggle;
   final Function onToggle;
@@ -49,7 +52,9 @@ class ToggleBarState extends State<ToggleBar> {
                       curve: Curves.ease,
                       child: Container(
                         margin: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 4,),
+                          horizontal: 4,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFB7B7B7),
                           borderRadius: BorderRadius.circular(19),
@@ -57,8 +62,7 @@ class ToggleBarState extends State<ToggleBar> {
                         child: Opacity(
                           opacity: 0,
                           child: CupertinoButton(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                             onPressed: null,
                             child: Text(
                               widget.activeToggle == 0

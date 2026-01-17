@@ -7,7 +7,8 @@ import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/cupertino_input_dialog.dart';
 
-Future<void> showEditTagModal(String tagKey, BuildContext context, WidgetRef ref) async {
+Future<void> showEditTagModal(
+    String tagKey, BuildContext context, WidgetRef ref) async {
   if (tagKey.trim().isNotEmpty && tagKey != kSecretTagKey) {
     final alertInputController = TextEditingController();
     final tagName = await DatabaseManager.instance.getTagName(tagKey);
@@ -29,16 +30,21 @@ Future<void> showEditTagModal(String tagKey, BuildContext context, WidgetRef ref
               title: s.edit_tag,
               destructiveButtonTitle: s.delete,
               onPressedDestructive: () {
-                ref.read(tagsProvider.notifier).deleteTagFromPic(tagKey: tagKey);
+                ref
+                    .read(tagsProvider.notifier)
+                    .deleteTagFromPic(tagKey: tagKey);
                 Navigator.of(context).pop();
               },
               defaultButtonTitle: s.ok,
               onPressedDefault: () {
                 AppLogger.d(
-                    'Editing tag - Old name: $tagKey - New name: ${alertInputController.text}',);
+                  'Editing tag - Old name: $tagKey - New name: ${alertInputController.text}',
+                );
                 if (tagName != alertInputController.text) {
                   ref.read(tagsProvider.notifier).editTagName(
-                      oldTagKey: tagKey, newName: alertInputController.text,);
+                        oldTagKey: tagKey,
+                        newName: alertInputController.text,
+                      );
                 }
                 Navigator.of(context).pop();
               },

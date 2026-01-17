@@ -5,7 +5,6 @@ import 'package:picpics/utils/app_logger.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class PushNotificationsManager {
-
   factory PushNotificationsManager() => _instance;
   PushNotificationsManager._();
 
@@ -44,9 +43,10 @@ class PushNotificationsManager {
       const initializationSettingsAndroid =
           AndroidInitializationSettings('ic_launcher');
       const initializationSettingsIOS = DarwinInitializationSettings(
-          requestAlertPermission: false,
-          requestBadgePermission: false,
-          requestSoundPermission: false,);
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      );
 
       const initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid,
@@ -58,11 +58,12 @@ class PushNotificationsManager {
     }
   }
 
-  Future<void> register(
-      {int hourOfDay = 0,
-      int minutesOfDay = 0,
-      String? title,
-      String? description,}) async {
+  Future<void> register({
+    int hourOfDay = 0,
+    int minutesOfDay = 0,
+    String? title,
+    String? description,
+  }) async {
     if (!_initialized) {
       await init();
       AppLogger.d('subscribed');
@@ -101,7 +102,8 @@ AppLogger.d('subscribed to topic: all_users');
       );
 
       AppLogger.d(
-          'User settings: notification: ${DatabaseManager.instance.userSettings.notification} - dailyChallenges ${DatabaseManager.instance.userSettings.dailyChallenges}',);
+        'User settings: notification: ${DatabaseManager.instance.userSettings.notification} - dailyChallenges ${DatabaseManager.instance.userSettings.dailyChallenges}',
+      );
 
       await _flutterLocalNotificationsPlugin.cancelAll();
     } catch (error) {
@@ -112,18 +114,25 @@ AppLogger.d('subscribed to topic: all_users');
   tz.TZDateTime _nextInstanceOfTime(tz.TZDateTime time) {
     final now = tz.TZDateTime.now(tz.local);
     var scheduledDate = tz.TZDateTime(
-        tz.local, now.year, now.month, now.day, time.hour, time.minute,);
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      time.hour,
+      time.minute,
+    );
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
     return scheduledDate;
   }
 
-  Future<void> scheduleNotification(
-      {int hourOfDay = 0,
-      int minutesOfDay = 0,
-      String? title,
-      String? description,}) async {
+  Future<void> scheduleNotification({
+    int hourOfDay = 0,
+    int minutesOfDay = 0,
+    String? title,
+    String? description,
+  }) async {
     await _flutterLocalNotificationsPlugin.cancelAll();
 
     // TODO: Check this

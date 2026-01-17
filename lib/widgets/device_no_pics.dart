@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 class DeviceHasNoPics extends StatelessWidget {
-
   const DeviceHasNoPics({required this.message, super.key});
   final String message;
 

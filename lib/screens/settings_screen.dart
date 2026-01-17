@@ -32,7 +32,6 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen>
     with WidgetsBindingObserver {
-
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -64,7 +63,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
   void shareApp(BuildContext context) {
     final s = ref.read(sProvider);
     Share.share(s.take_a_look,
-        subject: S.of(context).take_a_look_description('https://picpics.link/share'));
+        subject: S
+            .of(context)
+            .take_a_look_description('https://picpics.link/share'));
     Analytics.sendEvent(Event.shared_app);
   }
 
@@ -88,8 +89,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
   Future<void> showRequirePinPicker(BuildContext context) async {
     final userState = ref.read(userProvider);
-    final extentScrollController = FixedExtentScrollController(
-        initialItem: userState.requireSecret);
+    final extentScrollController =
+        FixedExtentScrollController(initialItem: userState.requireSecret);
 
     await showModalBottomSheet<void>(
       context: context,
@@ -122,7 +123,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      ref.read(userProvider.notifier).setRequireSecret(temporaryOption);
+                      ref
+                          .read(userProvider.notifier)
+                          .setRequireSecret(temporaryOption);
                       Navigator.of(context).pop();
                     },
                     child: SizedBox(
@@ -227,8 +230,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
 
                       // TODO: Implement language change through providers
                       ref.read(userProvider.notifier).setAppLanguage(
-                        supportedLocales[temporaryLanguage].toString()
-                      );
+                          supportedLocales[temporaryLanguage].toString());
 
                       setState(() {});
                       Navigator.pop(context);
@@ -281,11 +283,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
       context: context,
       builder: (BuildContext builder) {
         final now = DateTime.now();
-        var time = DateTime(
-            now.year,
-            now.month,
-            now.day,
-            userState.hourOfDay,
+        var time = DateTime(now.year, now.month, now.day, userState.hourOfDay,
             userState.minutesOfDay);
         final s = ref.read(sProvider);
 
@@ -315,7 +313,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                   CupertinoButton(
                     onPressed: () {
                       ref.read(userProvider.notifier).setHourOfDay(time.hour);
-                      ref.read(userProvider.notifier).setMinutesOfDay(time.minute);
+                      ref
+                          .read(userProvider.notifier)
+                          .setMinutesOfDay(time.minute);
                       Navigator.of(context).pop();
                     },
                     child: SizedBox(
@@ -379,8 +379,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CupertinoButton(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 5, vertical: 10),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                     onPressed: () => Navigator.of(context).pop(),
                     child: Image.asset('lib/images/backarrowgray.png'),
                   ),
@@ -425,12 +425,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                       padding: const EdgeInsets.all(0),
                                       pressedOpacity: 1,
                                       onPressed: () async {
-                                        if (privatePhotosState.showPrivate == true) {
-                                          ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
+                                        if (privatePhotosState.showPrivate ==
+                                            true) {
+                                          ref
+                                              .read(privatePhotosProvider
+                                                  .notifier)
+                                              .toggleShowPrivate();
                                           return;
                                         }
                                         // TODO: Set popPinScreenToId properly
-                                        await Navigator.of(context).pushNamed(PinScreen.id);
+                                        await Navigator.of(context)
+                                            .pushNamed(PinScreen.id);
                                       },
                                       child: Row(
                                         mainAxisAlignment:
@@ -438,18 +443,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                         children: <Widget>[
                                           Text(
                                             s.private_photos,
-                                            textScaler: const TextScaler.linear(1),
+                                            textScaler:
+                                                const TextScaler.linear(1),
                                             style: kGraySettingsFieldTextStyle,
                                           ),
                                           SecretSwitch(
-                                            value: privatePhotosState.showPrivate,
+                                            value:
+                                                privatePhotosState.showPrivate,
                                             onChanged: (bool value) async {
                                               if (value == false) {
-                                                ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
+                                                ref
+                                                    .read(privatePhotosProvider
+                                                        .notifier)
+                                                    .toggleShowPrivate();
                                                 return;
                                               }
                                               // TODO: Set wantsToActivateBiometric and popPinScreenToId
-                                              await Navigator.of(context).pushNamed(PinScreen.id);
+                                              await Navigator.of(context)
+                                                  .pushNamed(PinScreen.id);
                                             },
                                           ),
                                         ],
@@ -467,11 +478,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                     builder: (context) {
                                       String? enableBiometric;
 
-                                      if (userState.availableBiometrics.contains(BiometricType.face)) {
+                                      if (userState.availableBiometrics
+                                          .contains(BiometricType.face)) {
                                         enableBiometric = s.enable_faceid;
-                                      } else if (userState.availableBiometrics.contains(BiometricType.iris)) {
+                                      } else if (userState.availableBiometrics
+                                          .contains(BiometricType.iris)) {
                                         enableBiometric = s.enable_irisscanner;
-                                      } else if (userState.availableBiometrics.contains(BiometricType.fingerprint)) {
+                                      } else if (userState.availableBiometrics
+                                          .contains(
+                                              BiometricType.fingerprint)) {
                                         enableBiometric = Platform.isIOS
                                             ? s.enable_touchid
                                             : s.enable_fingerprint;
@@ -488,52 +503,79 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                               children: [
                                                 Expanded(
                                                   child: Padding(
-                                                    padding: const EdgeInsets.symmetric(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
                                                         horizontal: 16),
                                                     child: CupertinoButton(
-                                                      padding: const EdgeInsets.all(0),
-                                                        onPressed: () {
-                                                          if (userState.isBiometricActivated != true) {
-                                                            // TODO: Set wantsToActivateBiometric
-                                                            Navigator.of(context).push<void>(
-                                                              MaterialPageRoute<void>(
-                                                                builder: (_) => PinScreen(),
-                                                              )
-                                                            );
-                                                            return;
-                                                          }
-                                                          ref.read(userProvider.notifier).setIsBiometricActivated(false);
-                                                        },
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment.spaceBetween,
-                                                          children: <Widget>[
-                                                            Text(
-                                                              enableBiometric ?? '',
-                                                              textScaler: const TextScaler.linear(1),
-                                                              style: kGraySettingsFieldTextStyle,
-                                                            ),
-                                                            CupertinoSwitch(
-                                                              value: userState.isBiometricActivated,
-                                                              activeTrackColor: kSecondaryColor,
-                                                              onChanged: (value) async {
-                                                                if (value == true) {
-                                                                  // TODO: Set wantsToActivateBiometric
-                                                                  await Navigator.of(context).push<dynamic>(
-                                                                    MaterialPageRoute<dynamic>(
-                                                                      builder: (_) => PinScreen(),
-                                                                    )
-                                                                  );
-                                                                  return;
-                                                                }
-                                                                ref.read(userProvider.notifier).setIsBiometricActivated(value);
-                                                              },
-                                                            ),
-                                                          ],
-                                                        ),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              0),
+                                                      onPressed: () {
+                                                        if (userState
+                                                                .isBiometricActivated !=
+                                                            true) {
+                                                          // TODO: Set wantsToActivateBiometric
+                                                          Navigator.of(context)
+                                                              .push<void>(
+                                                                  MaterialPageRoute<
+                                                                      void>(
+                                                            builder: (_) =>
+                                                                PinScreen(),
+                                                          ));
+                                                          return;
+                                                        }
+                                                        ref
+                                                            .read(userProvider
+                                                                .notifier)
+                                                            .setIsBiometricActivated(
+                                                                false);
+                                                      },
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            enableBiometric ??
+                                                                '',
+                                                            textScaler:
+                                                                const TextScaler
+                                                                    .linear(1),
+                                                            style:
+                                                                kGraySettingsFieldTextStyle,
+                                                          ),
+                                                          CupertinoSwitch(
+                                                            value: userState
+                                                                .isBiometricActivated,
+                                                            activeTrackColor:
+                                                                kSecondaryColor,
+                                                            onChanged:
+                                                                (value) async {
+                                                              if (value ==
+                                                                  true) {
+                                                                // TODO: Set wantsToActivateBiometric
+                                                                await Navigator.of(
+                                                                        context)
+                                                                    .push<dynamic>(
+                                                                        MaterialPageRoute<
+                                                                            dynamic>(
+                                                                  builder: (_) =>
+                                                                      PinScreen(),
+                                                                ));
+                                                                return;
+                                                              }
+                                                              ref
+                                                                  .read(userProvider
+                                                                      .notifier)
+                                                                  .setIsBiometricActivated(
+                                                                      value);
+                                                            },
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ),
+                                                ),
                                                 const Divider(
                                                   color: kLightGrayColor,
                                                   thickness: 1,
@@ -552,19 +594,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                         horizontal: 16),
                                     child: CupertinoButton(
                                       padding: const EdgeInsets.all(0),
-                                      onPressed: () => showLanguagePicker(context),
+                                      onPressed: () =>
+                                          showLanguagePicker(context),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
                                           Text(
                                             s.language,
-                                            textScaler: const TextScaler.linear(1),
+                                            textScaler:
+                                                const TextScaler.linear(1),
                                             style: kGraySettingsFieldTextStyle,
                                           ),
                                           Text(
                                             userState.currentLanguage,
-                                            textScaler: const TextScaler.linear(1),
+                                            textScaler:
+                                                const TextScaler.linear(1),
                                             style: kGraySettingsValueTextStyle,
                                           ),
                                         ],
@@ -585,7 +630,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      Image.asset('lib/images/sharegrayicon.png'),
+                                      Image.asset(
+                                          'lib/images/sharegrayicon.png'),
                                       const SizedBox(width: 15),
                                       Text(
                                         s.share_with_friends,
@@ -635,34 +681,40 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                     CupertinoButton(
                                       padding: const EdgeInsets.only(top: 8),
                                       onPressed: () {
-                                        _launchURL('https://picpics.link/e/facebook');
+                                        _launchURL(
+                                            'https://picpics.link/e/facebook');
                                       },
                                       child: SizedBox(
                                         height: 20,
                                         width: 20,
-                                        child: Image.asset('lib/images/facebookico.png'),
+                                        child: Image.asset(
+                                            'lib/images/facebookico.png'),
                                       ),
                                     ),
                                     CupertinoButton(
                                       padding: const EdgeInsets.only(top: 8),
                                       onPressed: () {
-                                        _launchURL('https://picpics.link/e/website');
+                                        _launchURL(
+                                            'https://picpics.link/e/website');
                                       },
                                       child: SizedBox(
                                         height: 20,
                                         width: 20,
-                                        child: Image.asset('lib/images/webico.png'),
+                                        child: Image.asset(
+                                            'lib/images/webico.png'),
                                       ),
                                     ),
                                     CupertinoButton(
                                       padding: const EdgeInsets.only(top: 8),
                                       onPressed: () {
-                                        _launchURL('https://picpics.link/e/instagram');
+                                        _launchURL(
+                                            'https://picpics.link/e/instagram');
                                       },
                                       child: SizedBox(
                                         height: 20,
                                         width: 20,
-                                        child: Image.asset('lib/images/instagramico.png'),
+                                        child: Image.asset(
+                                            'lib/images/instagramico.png'),
                                       ),
                                     ),
                                   ],
@@ -672,9 +724,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                   children: <Widget>[
                                     CupertinoButton(
                                       onPressed: () {
-                                        _launchURL('https://picpics.link/e/privacy');
+                                        _launchURL(
+                                            'https://picpics.link/e/privacy');
                                       },
-                                      padding: const EdgeInsets.symmetric(vertical: 8),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8),
                                       minimumSize: const Size(32, 32),
                                       child: Text(
                                         s.privacy_policy,
@@ -700,9 +754,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen>
                                     ),
                                     CupertinoButton(
                                       onPressed: () {
-                                        _launchURL('https://picpics.link/e/terms');
+                                        _launchURL(
+                                            'https://picpics.link/e/terms');
                                       },
-                                      padding: const EdgeInsets.symmetric(vertical: 10),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10),
                                       minimumSize: const Size(32, 32),
                                       child: Text(
                                         s.terms_of_use,

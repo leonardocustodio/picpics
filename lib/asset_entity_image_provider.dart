@@ -11,14 +11,15 @@ import 'package:picpics/utils/app_logger.dart';
 
 @immutable
 class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
-
   const AssetEntityImageProvider(
     this.picStore, {
     this.scale = 1.0,
     this.thumbSize = kDefaultPreviewThumbSize,
     this.isOriginal = true,
-  }) : assert(isOriginal || thumbSize.length == 2,
-            'thumbSize must contain and only contain two integers when it\'s not original',);
+  }) : assert(
+          isOriginal || thumbSize.length == 2,
+          'thumbSize must contain and only contain two integers when it\'s not original',
+        );
   final PicStoreNotifier picStore;
 
   /// Scale for image provider.
@@ -45,7 +46,9 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   @override
   ImageStreamCompleter loadImage(
-      AssetEntityImageProvider key, ImageDecoderCallback decode,) {
+    AssetEntityImageProvider key,
+    ImageDecoderCallback decode,
+  ) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -83,7 +86,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       data = picStore.state.isPrivate
           ? await key.picStore.assetThumbBytes
           : await key.picStore.state.entity?.thumbnailDataWithSize(
-              ThumbnailSize(thumbSize[0], thumbSize[1]),);
+              ThumbnailSize(thumbSize[0], thumbSize[1]),
+            );
 
       // TODO: Blur hash generation needs to be moved to a provider-aware context
       // Cannot access Riverpod provider from ImageProvider

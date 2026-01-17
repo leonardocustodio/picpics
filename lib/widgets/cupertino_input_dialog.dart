@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:picpics/constants.dart';
 
 class CupertinoInputDialog extends StatelessWidget {
-
   const CupertinoInputDialog({
-    required this.title, required this.destructiveButtonTitle, required this.defaultButtonTitle, required this.onPressedDestructive, required this.onPressedDefault, required this.alertInputController, super.key,
+    required this.title,
+    required this.destructiveButtonTitle,
+    required this.defaultButtonTitle,
+    required this.onPressedDestructive,
+    required this.onPressedDefault,
+    required this.alertInputController,
+    super.key,
     this.inputPlaceholder,
     this.prefixImage,
   });

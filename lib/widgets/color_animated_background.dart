@@ -7,7 +7,6 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
 class ColorAnimatedBackground extends StatefulWidget {
-
   const ColorAnimatedBackground({
     super.key,
     this.moveByX = 30.0,

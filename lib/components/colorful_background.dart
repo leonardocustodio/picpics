@@ -26,7 +26,11 @@ class ColorfulBackground extends CustomPainter {
     final secondaryPath =
         getSecondaryPath(size.width, size.height, moveBy.x - 20, moveBy.y * 2);
     final pinkPath = getPinkPath(
-        size.width, size.height, -(moveBy.x / 3), -(moveBy.y / 2 - 30),);
+      size.width,
+      size.height,
+      -(moveBy.x / 3),
+      -(moveBy.y / 2 - 30),
+    );
     final yellowPath =
         getYellowPath(size.width, size.height, moveBy.x / 2, -moveBy.y + .0);
 
@@ -40,7 +44,11 @@ class ColorfulBackground extends CustomPainter {
     return Path()
       ..moveTo(x * 1, y * 0.35 + moveByY)
       ..quadraticBezierTo(
-          x * 0.5 + moveByX, y * 0.4 + moveByY, 0 + moveByX, y * 0.3 + moveByY,)
+        x * 0.5 + moveByX,
+        y * 0.4 + moveByY,
+        0 + moveByX,
+        y * 0.3 + moveByY,
+      )
       ..lineTo(0 * x + moveByX, 1 * y + moveByY)
       ..lineTo(1 * x, y * 1 + moveByY)
       ..close();
@@ -58,7 +66,11 @@ class ColorfulBackground extends CustomPainter {
     return Path()
       ..moveTo(0, y * 0.25 + moveByY / 3)
       ..quadraticBezierTo(
-          x * 0.75 + moveByX, y * 0.3 + moveByY, x, y * 0.5 - moveByY / 2,)
+        x * 0.75 + moveByX,
+        y * 0.3 + moveByY,
+        x,
+        y * 0.5 - moveByY / 2,
+      )
       ..lineTo(x * 1, y * 1)
       ..lineTo(0, y * 1)
       ..close();

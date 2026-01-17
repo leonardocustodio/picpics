@@ -6,9 +6,9 @@ import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 class ConfirmPicDelete extends ConsumerWidget {
-
   const ConfirmPicDelete({
-    required this.onPressedDelete, super.key,
+    required this.onPressedDelete,
+    super.key,
     this.deleteText = 'Are you sure you want to delete photo ?',
     this.onPressedClose,
   });
@@ -132,8 +132,7 @@ class ConfirmPicDelete extends ConsumerWidget {
                         child: Container(
                           height: 44,
                           decoration: BoxDecoration(
-                            border:
-                                Border.all(color: kSecondaryColor),
+                            border: Border.all(color: kSecondaryColor),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(

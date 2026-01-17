@@ -50,8 +50,8 @@ class UntaggedTabDay extends ConsumerWidget {
 
                 while (i < tabsState.allUnTaggedPicsDay.length &&
                     tabsState.allUnTaggedPicsDay[i] is String) {
-                  if (taggedState
-                          .selectedMultiBarPics[tabsState.allUnTaggedPicsDay[i]] ==
+                  if (taggedState.selectedMultiBarPics[
+                          tabsState.allUnTaggedPicsDay[i]] ==
                       null) {
                     isSelected = false;
                     break;
@@ -102,7 +102,8 @@ class UntaggedTabDay extends ConsumerWidget {
                       if (taggedState.selectedMultiBarPics[object] == null) {
                         taggedNotifier.addSelectedMultiBarPic(object as String);
                       } else {
-                        taggedNotifier.removeSelectedMultiBarPic(object as String);
+                        taggedNotifier
+                            .removeSelectedMultiBarPic(object as String);
                       }
                       return;
                     }

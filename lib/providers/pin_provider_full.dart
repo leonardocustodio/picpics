@@ -80,24 +80,33 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   final Ref ref;
 
   GlobalKey<AnimatorWidgetState> shakeKey = GlobalKey<AnimatorWidgetState>();
-  GlobalKey<AnimatorWidgetState> shakeKeyConfirm = GlobalKey<AnimatorWidgetState>();
-  GlobalKey<AnimatorWidgetState> shakeRecovery = GlobalKey<AnimatorWidgetState>();
+  GlobalKey<AnimatorWidgetState> shakeKeyConfirm =
+      GlobalKey<AnimatorWidgetState>();
+  GlobalKey<AnimatorWidgetState> shakeRecovery =
+      GlobalKey<AnimatorWidgetState>();
 
   PinFullNotifier(this.ref) : super(PinFullState());
 
   void setEmail(String value) => state = state.copyWith(email: value);
   void setPinTemp(String value) => state = state.copyWith(pinTemp: value);
-  void setConfirmPinTemp(String value) => state = state.copyWith(confirmPinTemp: value);
+  void setConfirmPinTemp(String value) =>
+      state = state.copyWith(confirmPinTemp: value);
   void setAccessCode(String value) => state = state.copyWith(accessCode: value);
-  void setInvalidAccessCode(bool value) => state = state.copyWith(invalidAccessCode: value);
-  void setIsWaitingRecoveryKey(bool value) => state = state.copyWith(isWaitingRecoveryKey: value);
-  void setIsSettingNewPin(bool value) => state = state.copyWith(isSettingNewPin: value);
-  void setRecoveryCode(String value) => state = state.copyWith(recoveryCode: value);
-  void setGeneratedIv(String value) => state = state.copyWith(generatedIv: value);
+  void setInvalidAccessCode(bool value) =>
+      state = state.copyWith(invalidAccessCode: value);
+  void setIsWaitingRecoveryKey(bool value) =>
+      state = state.copyWith(isWaitingRecoveryKey: value);
+  void setIsSettingNewPin(bool value) =>
+      state = state.copyWith(isSettingNewPin: value);
+  void setRecoveryCode(String value) =>
+      state = state.copyWith(recoveryCode: value);
+  void setGeneratedIv(String value) =>
+      state = state.copyWith(generatedIv: value);
   void setPin(String value) => state = state.copyWith(pin: value);
 
   Future<bool> requestRecoveryKey(String userEmail) async {
-    final callable = FirebaseFunctions.instance.httpsCallable('requestRecoveryKey');
+    final callable =
+        FirebaseFunctions.instance.httpsCallable('requestRecoveryKey');
 
     final rand = Random();
     final randomNumber = rand.nextInt(900000) + 100000;
@@ -124,7 +133,8 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
 
       return false;
     } on FirebaseFunctionsException catch (e) {
-      AppLogger.d('caught firebase functions exception: ${e.message}:${e.details}');
+      AppLogger.d(
+          'caught firebase functions exception: ${e.message}:${e.details}');
     } catch (e) {
       AppLogger.d('caught generic exception: $e');
     }
@@ -137,7 +147,8 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
 
     // TODO(Week 3D): Update Crypto.checkRecoveryKey to accept UserNotifier/UserState
     // For now, return false as placeholder until Crypto manager is migrated
-    AppLogger.w('Recovery key validation temporarily disabled - requires Crypto manager migration');
+    AppLogger.w(
+        'Recovery key validation temporarily disabled - requires Crypto manager migration');
     return false;
 
     // Original code (commented until Crypto migration):
@@ -154,7 +165,8 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   Future<void> saveNewPin() async {
     // TODO(Week 3D): Update Crypto.reSaveSpKey to accept UserNotifier/UserState
     // Temporarily skip encryption key operations until Crypto manager is migrated
-    AppLogger.w('PIN save temporarily simplified - requires Crypto manager migration');
+    AppLogger.w(
+        'PIN save temporarily simplified - requires Crypto manager migration');
 
     // Reset state
     setPin('');
@@ -181,7 +193,8 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       user = (await auth.createUserWithEmailAndPassword(
         email: state.email,
         password: state.pin,
-      )).user;
+      ))
+          .user;
 
       if (user == null) {
         result['success'] = false;
@@ -201,7 +214,8 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   }
 
   Future<bool> _validateAccessCode() async {
-    final callable = FirebaseFunctions.instance.httpsCallable('validateAccessCode');
+    final callable =
+        FirebaseFunctions.instance.httpsCallable('validateAccessCode');
 
     final rand = Random();
     final randomNumber = rand.nextInt(900000) + 100000;
@@ -224,7 +238,8 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       if (result.data is Map && (result.data as Map).isNotEmpty) {
         await Crypto.saveSaltKey();
         // TODO(Week 3D): Update Crypto.saveSpKey to accept UserNotifier/UserState
-        AppLogger.w('Access code validation simplified - requires Crypto manager migration');
+        AppLogger.w(
+            'Access code validation simplified - requires Crypto manager migration');
         // await Crypto.saveSpKey(
         //   state.accessCode,
         //   result.data as String,
@@ -237,7 +252,8 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
 
       return false;
     } on FirebaseFunctionsException catch (e) {
-      AppLogger.d('caught firebase functions exception: ${e.code}:${e.message}:${e.details}');
+      AppLogger.d(
+          'caught firebase functions exception: ${e.code}:${e.message}:${e.details}');
     } catch (e) {
       AppLogger.d('caught generic exception: $e');
     }
@@ -247,7 +263,8 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
 
   Future<bool> isPinValid() async {
     final userState = ref.read(userProvider);
-    final encryptionKey = await Crypto.checkIsPinValid(state.pinTemp, userState.email ?? '');
+    final encryptionKey =
+        await Crypto.checkIsPinValid(state.pinTemp, userState.email ?? '');
     return encryptionKey != null;
   }
 
@@ -328,9 +345,11 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
     userNotifier.setWaitingAccessCode(false);
 
     if (popToId != null) {
-      Navigator.of(context).pushNamedAndRemoveUntil(popToId, ModalRoute.withName(popToId));
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(popToId, ModalRoute.withName(popToId));
     } else {
-      Navigator.of(context).pushNamedAndRemoveUntil(TabsScreen.id, (route) => false);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(TabsScreen.id, (route) => false);
     }
   }
 
@@ -347,7 +366,8 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
     );
   }
 
-  Future<void> showCreatedKeyModal(BuildContext context, {String? popToId}) async {
+  Future<void> showCreatedKeyModal(BuildContext context,
+      {String? popToId}) async {
     await showDialog<void>(
       context: context,
       builder: (buildContext) {
@@ -401,6 +421,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   }
 }
 
-final pinFullProvider = StateNotifierProvider<PinFullNotifier, PinFullState>((ref) {
+final pinFullProvider =
+    StateNotifierProvider<PinFullNotifier, PinFullState>((ref) {
   return PinFullNotifier(ref);
 });

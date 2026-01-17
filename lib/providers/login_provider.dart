@@ -7,7 +7,6 @@ import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 enum Board {
-  introduction,
   createTags,
   swipeRight,
   keepSecret,
@@ -40,8 +39,6 @@ class LoginState {
 
   String _getImagePath(Board board) {
     switch (board) {
-      case Board.introduction:
-        return '';
       case Board.createTags:
         return 'lib/images/onboardtagging.png';
       case Board.swipeRight:
@@ -58,8 +55,6 @@ class LoginState {
     final board = boards[index];
     // These will be replaced with actual translations
     switch (board) {
-      case Board.introduction:
-        return 'Welcome';
       case Board.createTags:
         return 'Organize however you want';
       case Board.swipeRight:
@@ -75,8 +70,6 @@ class LoginState {
     if (index < 0 || index >= boards.length) return null;
     final board = boards[index];
     switch (board) {
-      case Board.introduction:
-        return null;
       case Board.createTags:
         return Image.asset('lib/images/onboardtagging.png');
       case Board.swipeRight:
@@ -131,12 +124,12 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
   Future<void> _completeOnboarding() async {
     state = state.copyWith(isLoading: true);
-    
+
     try {
       // Update user state
       final userNotifier = ref.read(userProvider.notifier);
       userNotifier.setTutorialCompleted(true);
-      
+
       // Update database
       final user = await _database.getSingleMoorUser();
       if (user != null) {
@@ -144,7 +137,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
           user.copyWith(tutorialCompleted: true),
         );
       }
-      
+
       AppLogger.i('Onboarding completed successfully');
     } catch (e) {
       AppLogger.e('Error completing onboarding: $e');

@@ -1,5 +1,4 @@
 class Pic {
-
   Pic({
     required this.photoId,
     required this.createdAt,

@@ -8,7 +8,6 @@ import 'package:picpics/third_party_lib/src/exception.dart';
 import 'package:picpics/third_party_lib/src/foundation.dart';
 
 class BlurHash {
-
   /// Private constructor used in the actual factory constructors.
   /// See [BlurHash.decode] and [BlurHash.encode].
   BlurHash._(
@@ -136,6 +135,7 @@ class BlurHash {
       [color],
     ]);
   }
+
   /// The actual BlurHash string.
   final String hash;
 

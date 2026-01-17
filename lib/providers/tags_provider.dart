@@ -52,7 +52,8 @@ class TagsState {
       multiPicTags: multiPicTags ?? this.multiPicTags,
       searchTagsResults: searchTagsResults ?? this.searchTagsResults,
       searchText: searchText ?? this.searchText,
-      selectedFilteringTagsKeys: selectedFilteringTagsKeys ?? this.selectedFilteringTagsKeys,
+      selectedFilteringTagsKeys:
+          selectedFilteringTagsKeys ?? this.selectedFilteringTagsKeys,
       isSearching: isSearching ?? this.isSearching,
     );
   }
@@ -73,7 +74,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
   Future<void> loadAllTags() async {
     final tags = await _database.getAllLabel();
     final allTagsMap = <String, TagModel>{};
-    
+
     for (final tag in tags) {
       allTagsMap[tag.key] = TagModel(
         key: tag.key,
@@ -82,7 +83,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
         time: tag.lastUsedAt,
       );
     }
-    
+
     state = state.copyWith(allTags: allTagsMap);
   }
 
@@ -94,7 +95,8 @@ class TagsNotifier extends StateNotifier<TagsState> {
   }
 
   void addTagKeyForFiltering(String tagKey) {
-    final newFiltering = Map<String, String>.from(state.selectedFilteringTagsKeys);
+    final newFiltering =
+        Map<String, String>.from(state.selectedFilteringTagsKeys);
     if (!newFiltering.containsKey(tagKey)) {
       newFiltering[tagKey] = '';
     }
@@ -103,7 +105,8 @@ class TagsNotifier extends StateNotifier<TagsState> {
   }
 
   void removeTagKeyFromFiltering(String tagKey) {
-    final newFiltering = Map<String, String>.from(state.selectedFilteringTagsKeys);
+    final newFiltering =
+        Map<String, String>.from(state.selectedFilteringTagsKeys);
     newFiltering.remove(tagKey);
     state = state.copyWith(selectedFilteringTagsKeys: newFiltering);
     tagsSuggestionsCalculate();
@@ -117,10 +120,10 @@ class TagsNotifier extends StateNotifier<TagsState> {
   Future<List<TagModel>> tagsSuggestionsCalculate() async {
     final tagsList = await _database.getAllLabel();
     final getUser = await _database.getSingleMoorUser();
-    
+
     final suggestionTags = <String>[];
     final text = state.searchText.trim();
-    
+
     if (text.isEmpty) {
       // Add recent tags to suggestions
       for (final String recent in getUser?.recentTags ?? <String>[]) {
@@ -129,7 +132,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
         }
         suggestionTags.add(recent);
       }
-      
+
       // Fill remaining suggestions with other tags
       if (suggestionTags.length < kMaxNumOfSuggestions) {
         for (final tag in tagsList) {
@@ -152,7 +155,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
         if (state.selectedFilteringTagsKeys.containsKey(tagKey)) {
           continue;
         }
-        
+
         final tagModel = state.allTags[tagKey];
         if (tagModel != null) {
           // Perform custom searching logic here
@@ -162,7 +165,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
         }
       }
     }
-    
+
     // Convert tag keys to TagModel objects
     final searchResults = <TagModel>[];
     for (final tagKey in suggestionTags) {
@@ -171,7 +174,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
         searchResults.add(tagModel);
       }
     }
-    
+
     state = state.copyWith(searchTagsResults: searchResults);
     return searchResults;
   }

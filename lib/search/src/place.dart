@@ -1,7 +1,6 @@
 part of '../search_map_place.dart';
 
 class Place {
-
   Place(
     this.geocode, {
     this.description = '',

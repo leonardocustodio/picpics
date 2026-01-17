@@ -5,11 +5,12 @@ import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/utils/helpers.dart';
 
 class DateHeaderWidget extends ConsumerWidget {
-  const DateHeaderWidget(
-      {required this.date,
-      required this.isSelected,
-      required this.isMonth,
-      super.key,});
+  const DateHeaderWidget({
+    required this.date,
+    required this.isSelected,
+    required this.isMonth,
+    super.key,
+  });
   final DateTime date;
   final bool isSelected;
   final bool isMonth;
@@ -34,7 +35,8 @@ class DateHeaderWidget extends ConsumerWidget {
                     )
                   : BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey),),
+                      border: Border.all(color: Colors.grey),
+                    ),
               child: isSelected
                   ? Image.asset('lib/images/checkwhiteico.png')
                   : null,

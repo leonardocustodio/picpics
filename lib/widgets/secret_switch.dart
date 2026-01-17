@@ -4,9 +4,10 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
 class SecretSwitch extends StatefulWidget {
-
   const SecretSwitch({
-    required this.value, required this.onChanged, super.key,
+    required this.value,
+    required this.onChanged,
+    super.key,
   });
   final bool value;
   final Function onChanged;

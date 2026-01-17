@@ -6,9 +6,10 @@ import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 class UnhideSecretModal extends ConsumerWidget {
-
   const UnhideSecretModal({
-    required this.onPressedDelete, required this.onPressedOk, super.key,
+    required this.onPressedDelete,
+    required this.onPressedOk,
+    super.key,
   });
   final void Function() onPressedDelete;
   final void Function() onPressedOk;
@@ -95,8 +96,7 @@ class UnhideSecretModal extends ConsumerWidget {
                         child: Container(
                           height: 44,
                           decoration: BoxDecoration(
-                            border:
-                                Border.all(color: kSecondaryColor),
+                            border: Border.all(color: kSecondaryColor),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(

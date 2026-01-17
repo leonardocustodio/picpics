@@ -12,6 +12,7 @@ import 'package:picpics/generated/l10n.dart' as lang;
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/managers/widget_manager.dart';
 import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/login_screen.dart';
@@ -119,6 +120,24 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp>
 
     if (state == AppLifecycleState.resumed) {
       AppLogger.d('&&&&&&&&& App got back from background');
+      _handleAppResume();
+    }
+  }
+
+  Future<void> _handleAppResume() async {
+    final hadPermissionBefore = ref.read(userProvider).hasGalleryPermission;
+
+    // Re-check gallery permission in case user granted it from system dialog
+    await ref.read(userProvider.notifier).checkGalleryPermissions();
+
+    final hasPermissionNow = ref.read(userProvider).hasGalleryPermission;
+
+    // If permission was just granted, load the gallery assets
+    if (!hadPermissionBefore && hasPermissionNow) {
+      AppLogger.i('[Main] Permission granted after resume, loading assets...');
+      // Import needed at top of file
+      final tabsNotifier = ref.read(tabsProvider.notifier);
+      await tabsNotifier.loadAssetPath();
     }
   }
 
@@ -135,8 +154,6 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp>
     }
 
     final userState = ref.watch(userProvider);
-
-    // Removed verbose build logs to prevent log spam
 
     return MaterialApp(
       navigatorKey: NavigationService.navigatorKey,

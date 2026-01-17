@@ -120,16 +120,18 @@ class TaggedPhotosGrouping extends ConsumerWidget {
                                 margin: const EdgeInsets.only(top: 5),
                                 child: AutoSizeText.rich(
                                   TextSpan(
-                                      text: tagsState.allTags[tagKey]?.title ?? '',
-                                      style: const TextStyle(
-                                        color: Colors.black,
+                                    text:
+                                        tagsState.allTags[tagKey]?.title ?? '',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text:
+                                            ' (${taggedState.taggedPicId[tagKey]?.keys.length ?? 0})',
                                       ),
-                                      children: [
-                                        TextSpan(
-                                          text:
-                                              ' (${taggedState.taggedPicId[tagKey]?.keys.length ?? 0})',
-                                        ),
-                                      ],),
+                                    ],
+                                  ),
                                   maxFontSize: 20,
                                   minFontSize: 5,
                                   maxLines: 1,
@@ -144,8 +146,7 @@ class TaggedPhotosGrouping extends ConsumerWidget {
                           Positioned(
                             left: 6,
                             top: 6,
-                            child:
-                                Image.asset('lib/images/staryellowico.png'),
+                            child: Image.asset('lib/images/staryellowico.png'),
                           ),
                         if (picStore?.state.isPrivate ?? false)
                           Positioned(
@@ -169,7 +170,8 @@ class TaggedPhotosGrouping extends ConsumerWidget {
                                 ),
                               ),
                               child: Image.asset(
-                                  'lib/images/smallwhitelock.png',),
+                                'lib/images/smallwhitelock.png',
+                              ),
                             ),
                           ),
                       ],

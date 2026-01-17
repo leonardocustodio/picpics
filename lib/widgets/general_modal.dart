@@ -5,9 +5,11 @@ import 'package:picpics/constants.dart';
 import 'package:picpics/providers/language_provider.dart';
 
 class GeneralModal extends ConsumerWidget {
-
   const GeneralModal({
-    required this.message, required this.onPressedDelete, required this.onPressedOk, super.key,
+    required this.message,
+    required this.onPressedDelete,
+    required this.onPressedOk,
+    super.key,
   });
   final String message;
   final void Function() onPressedDelete;

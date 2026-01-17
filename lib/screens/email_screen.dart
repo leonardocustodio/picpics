@@ -35,9 +35,9 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
 
     if (!isValid) {
       await ref.read<PinFullNotifier>(pinFullProvider.notifier).showErrorModal(
-        context,
-        'Please type a valid e-mail address to proceed.',
-      );
+            context,
+            'Please type a valid e-mail address to proceed.',
+          );
       return;
     }
 
@@ -45,7 +45,8 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
       isLoading = true;
     });
 
-    final result = await ref.read<PinFullNotifier>(pinFullProvider.notifier).register();
+    final result =
+        await ref.read<PinFullNotifier>(pinFullProvider.notifier).register();
 
     setState(() {
       isLoading = false;
@@ -61,18 +62,22 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
       if ((result['errorCode'] as FirebaseAuthException).code ==
           'email-already-in-use') {
         if (mounted) {
-          await ref.read<PinFullNotifier>(pinFullProvider.notifier).showErrorModal(
-            context,
-            'This e-mail is already in use by another account.',
-          );
+          await ref
+              .read<PinFullNotifier>(pinFullProvider.notifier)
+              .showErrorModal(
+                context,
+                'This e-mail is already in use by another account.',
+              );
         }
         AppLogger.d('Error !!!');
       } else {
         if (mounted) {
-          await ref.read<PinFullNotifier>(pinFullProvider.notifier).showErrorModal(
-            context,
-            'An error has occured. Please try again!',
-          );
+          await ref
+              .read<PinFullNotifier>(pinFullProvider.notifier)
+              .showErrorModal(
+                context,
+                'An error has occured. Please try again!',
+              );
         }
         AppLogger.d('Error !!!');
       }
@@ -108,10 +113,13 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
                           vertical: 10,
                         ),
                         onPressed: () {
-                          ref.read(userProvider.notifier).setWaitingAccessCode(false);
+                          ref
+                              .read(userProvider.notifier)
+                              .setWaitingAccessCode(false);
                           Navigator.of(context).pop();
                         },
-                        child: Image.asset('lib/images/backarrowwithdropshadow.png'),
+                        child: Image.asset(
+                            'lib/images/backarrowwithdropshadow.png'),
                       ),
                     ],
                   ),
@@ -162,7 +170,10 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
                                   margin: const EdgeInsets.only(top: 6),
                                   child: TextField(
                                     onChanged: (value) {
-                                      ref.read<PinFullNotifier>(pinFullProvider.notifier).setEmail(value);
+                                      ref
+                                          .read<PinFullNotifier>(
+                                              pinFullProvider.notifier)
+                                          .setEmail(value);
                                     },
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.only(

@@ -153,7 +153,8 @@ class TabsState {
       toggleIndexTagged: toggleIndexTagged ?? this.toggleIndexTagged,
       topOffsetFirstTab: topOffsetFirstTab ?? this.topOffsetFirstTab,
       tutorialIndex: tutorialIndex ?? this.tutorialIndex,
-      showDeleteSecretModal: showDeleteSecretModal ?? this.showDeleteSecretModal,
+      showDeleteSecretModal:
+          showDeleteSecretModal ?? this.showDeleteSecretModal,
       isScrolling: isScrolling ?? this.isScrolling,
       isToggleBarVisible: isToggleBarVisible ?? this.isToggleBarVisible,
       isLoading: isLoading ?? this.isLoading,
@@ -161,7 +162,8 @@ class TabsState {
       modalCard: modalCard ?? this.modalCard,
       // UI controllers
       expandableController: expandableController ?? this.expandableController,
-      expandablePaddingController: expandablePaddingController ?? this.expandablePaddingController,
+      expandablePaddingController:
+          expandablePaddingController ?? this.expandablePaddingController,
     );
   }
 }
@@ -174,7 +176,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
   TabsNotifier(this._ref)
       : super(TabsState(
           expandableController: ExpandableController(initialExpanded: false),
-          expandablePaddingController: ExpandableController(initialExpanded: false),
+          expandablePaddingController:
+              ExpandableController(initialExpanded: false),
         ));
 
   // Scroll controllers (instance variables, not state)
@@ -237,6 +240,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (permitted == false) {
       AppLogger.w('[TabsProvider] No gallery permission, aborting load');
       setIsUntaggedPicsLoaded(true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(true);
       return;
     }
 
@@ -264,6 +268,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.e('[TabsProvider] Error in loadAssetPath: $e');
       AppLogger.e('[TabsProvider] Stack trace: $stackTrace');
       setIsUntaggedPicsLoaded(true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(true);
     }
   }
 
@@ -272,6 +277,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.w('[TabsProvider] No asset paths found - device has no photos');
       state = state.copyWith(status: Status.deviceHasNoPics);
       setIsUntaggedPicsLoaded(true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(true);
       return;
     }
 
@@ -283,10 +289,12 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.w('[TabsProvider] Asset count is 0 - device has no photos');
       state = state.copyWith(status: Status.deviceHasNoPics);
       setIsUntaggedPicsLoaded(true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(true);
       return;
     }
 
-    final assets = await assetPathEntity.getAssetListRange(start: 0, end: assetCount);
+    final assets =
+        await assetPathEntity.getAssetListRange(start: 0, end: assetCount);
     AppLogger.d('[TabsProvider] Loaded ${assets.length} asset entities');
 
     state = state.copyWith(assetEntityList: List<AssetEntity>.from(assets));
@@ -296,8 +304,10 @@ class TabsNotifier extends StateNotifier<TabsState> {
   void sortAssetEntityList() {
     final sorted = List<AssetEntity>.from(state.assetEntityList);
     sorted.sort((a, b) {
-      return DateTime(b.createDateTime.year, b.createDateTime.month, b.createDateTime.day)
-          .compareTo(DateTime(a.createDateTime.year, a.createDateTime.month, a.createDateTime.day));
+      return DateTime(b.createDateTime.year, b.createDateTime.month,
+              b.createDateTime.day)
+          .compareTo(DateTime(a.createDateTime.year, a.createDateTime.month,
+              a.createDateTime.day));
     });
     state = state.copyWith(assetEntityList: sorted);
   }
@@ -325,11 +335,13 @@ class TabsNotifier extends StateNotifier<TabsState> {
         );
 
         // Add to picStoreMap
-        final newPicStoreMap = Map<String, PicStoreNotifier>.from(state.picStoreMap);
+        final newPicStoreMap =
+            Map<String, PicStoreNotifier>.from(state.picStoreMap);
         newPicStoreMap[picId] = picStoreValue;
         state = state.copyWith(picStoreMap: newPicStoreMap);
       } else if (!silent) {
-        AppLogger.w('[TabsProvider] explorPicStore: Entity not found for picId: $picId');
+        AppLogger.w(
+            '[TabsProvider] explorPicStore: Entity not found for picId: $picId');
       }
     }
 
@@ -367,7 +379,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
     final newAllUnTaggedPics = <String, String>{};
     final newAllUnTaggedPicsMonth = <dynamic>[];
     final newAllUnTaggedPicsDay = <dynamic>[];
-    final newPicStoreMap = Map<String, PicStoreNotifier>.from(state.picStoreMap);
+    final newPicStoreMap =
+        Map<String, PicStoreNotifier>.from(state.picStoreMap);
 
     for (final entity in state.assetEntityList) {
       newAssetMap[entity.id] = entity;
@@ -433,7 +446,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
     // Update swiper tab with untagged photo IDs
     final photoIds = newAllUnTaggedPics.keys.toList();
-    AppLogger.d('[TabsProvider] Updating swiper with ${photoIds.length} photos');
+    AppLogger.d(
+        '[TabsProvider] Updating swiper with ${photoIds.length} photos');
     _ref.read(swiperTabProvider.notifier).setPhotoIds(photoIds);
   }
 
@@ -457,7 +471,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
   void removePicFromUI(String picId) {
     final newAllUnTaggedPicsDay = List<dynamic>.from(state.allUnTaggedPicsDay);
-    final newAllUnTaggedPicsMonth = List<dynamic>.from(state.allUnTaggedPicsMonth);
+    final newAllUnTaggedPicsMonth =
+        List<dynamic>.from(state.allUnTaggedPicsMonth);
     final newAllUnTaggedPics = Map<String, String>.from(state.allUnTaggedPics);
     final newAssetMap = Map<String, AssetEntity>.from(state.assetMap);
     final newAssetEntityList = List<AssetEntity>.from(state.assetEntityList);
@@ -654,7 +669,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
     percentageNotifier.hide();
 
     // Delete photos from device using PhotoManager
-    final result = await PhotoManager.editor.deleteWithIds(selectedPicsIds.toList());
+    final result =
+        await PhotoManager.editor.deleteWithIds(selectedPicsIds.toList());
     if (result.isNotEmpty) {
       deleted = true;
     }
@@ -668,7 +684,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
         final picStore = state.picStoreMap[picId] ?? explorPicStore(picId);
 
         if (picStore == null) {
-          AppLogger.w('[TabsProvider] PicStore not found for picId: $picId, skipping');
+          AppLogger.w(
+              '[TabsProvider] PicStore not found for picId: $picId, skipping');
           return;
         }
 
@@ -694,8 +711,10 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
           await database.deletePhotoByPhotoId(picStore.state.photoId);
           await Future.delayed(Duration.zero, () {
-            final currentProgress = _ref.read(percentageDialogProvider).progress;
-            percentageNotifier.updateProgress(currentProgress + 1.0 / selectedPicsIds.length);
+            final currentProgress =
+                _ref.read(percentageDialogProvider).progress;
+            percentageNotifier
+                .updateProgress(currentProgress + 1.0 / selectedPicsIds.length);
           });
         }
       }).then((_) {
@@ -712,7 +731,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
   Future<void> trashPic(String picId) async {
     final picStore = state.picStoreMap[picId] ?? explorPicStore(picId);
     if (picStore == null) {
-      AppLogger.w('[TabsProvider] Cannot trash pic - PicStore not found for picId: $picId');
+      AppLogger.w(
+          '[TabsProvider] Cannot trash pic - PicStore not found for picId: $picId');
       return;
     }
     await picStore.deletePic();

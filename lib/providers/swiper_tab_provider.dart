@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/legacy.dart';
+
 class SwiperTabState {
   final int currentIndex;
   final List<String> photoIds;
@@ -65,6 +66,7 @@ class SwiperTabNotifier extends StateNotifier<SwiperTabState> {
   }
 }
 
-final swiperTabProvider = StateNotifierProvider<SwiperTabNotifier, SwiperTabState>((ref) {
+final swiperTabProvider =
+    StateNotifierProvider<SwiperTabNotifier, SwiperTabState>((ref) {
   return SwiperTabNotifier();
 });

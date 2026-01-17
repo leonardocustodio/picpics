@@ -49,8 +49,7 @@ class DatabaseManager extends ChangeNotifier {
 
     if (Platform.isIOS) {
       final firebaseMessaging = FirebaseMessaging.instance;
-      await firebaseMessaging.requestPermission(
-          );
+      await firebaseMessaging.requestPermission();
 
       // _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
       // });
@@ -163,8 +162,10 @@ AppLogger.d('got token this mean it did accept notification');
     }
   }
  */
-  Future<void> changeUserLanguage(String appLanguage,
-      {bool notify = true,}) async {
+  Future<void> changeUserLanguage(
+    String appLanguage, {
+    bool notify = true,
+  }) async {
     await database.updateMoorUser(
       userSettings.copyWith(
         appLanguage: Value(appLanguage),

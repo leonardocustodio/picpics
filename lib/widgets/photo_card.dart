@@ -72,7 +72,8 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
 
     if ((picStore.state.originalLatitude == null ||
             picStore.state.originalLongitude == null) ||
-        (picStore.state.originalLatitude == 0 && picStore.state.originalLongitude == 0)) {
+        (picStore.state.originalLatitude == 0 &&
+            picStore.state.originalLongitude == 0)) {
       return [
         s.photo_location,
         '  ${s.country}',
@@ -80,7 +81,9 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
     }
 
     final placemark = await placemarkFromCoordinates(
-        picStore.state.originalLatitude!, picStore.state.originalLongitude!,);
+      picStore.state.originalLatitude!,
+      picStore.state.originalLongitude!,
+    );
 
     AppLogger.d('Placemark: ${placemark.length}');
     for (final place in placemark) {
@@ -110,7 +113,9 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
     final cardBox =
         _photoSpaceKey.currentContext!.findRenderObject()! as RenderBox;
     // Note: setPhotoHeightInCardWidget now only updates state if value changed
-    ref.read(userProvider.notifier).setPhotoHeightInCardWidget(cardBox.size.height);
+    ref
+        .read(userProvider.notifier)
+        .setPhotoHeightInCardWidget(cardBox.size.height);
   }
 
   String? hash;
@@ -147,8 +152,11 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
 
     hash ??= blurHashState.blurHash[picStore.state.photoId];
 
-    final imageProvider = AssetEntityImageProvider(picStore,
-        thumbSize: kDefaultPhotoSize, isOriginal: false,);
+    final imageProvider = AssetEntityImageProvider(
+      picStore,
+      thumbSize: kDefaultPhotoSize,
+      isOriginal: false,
+    );
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
@@ -231,9 +239,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                 CircularMenu(
                   isExpanded: userState.isMenuExpanded,
                   useInHorizontal:
-                      userState.photoHeightInCardWidget < 280
-                          ? true
-                          : false,
+                      userState.photoHeightInCardWidget < 280 ? true : false,
                   alignment: Alignment.bottomRight,
                   radius: 52,
                   toggleButtonOnPressed: () {
@@ -243,7 +249,10 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                       const Color(0xFF979A9B).withValues(alpha: 0.5),
                   toggleButtonBoxShadow: const [
                     BoxShadow(
-                        color: Colors.black12, blurRadius: 3, spreadRadius: 3,),
+                      color: Colors.black12,
+                      blurRadius: 3,
+                      spreadRadius: 3,
+                    ),
                   ],
                   toggleButtonIconColor: Colors.white,
                   toggleButtonMargin: 12,
@@ -255,9 +264,12 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                       color: kWarningColor,
                       iconSize: 19.2,
                       onTap: () {
-                        ref.read(tabsProvider.notifier)
+                        ref
+                            .read(tabsProvider.notifier)
                             .removePicFromUI(picStore.state.photoId);
-                        ref.read(tabsProvider.notifier).trashPic(picStore.state.photoId);
+                        ref
+                            .read(tabsProvider.notifier)
+                            .trashPic(picStore.state.photoId);
                       },
                     ),
                     CircularMenuItem(
@@ -303,8 +315,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
             ),
           ),
           Padding(
-            padding:
-                const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -331,8 +342,8 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                 ),
                 TagsList(
                   tagStyle: TagStyle.multiColored,
-                  tagsKeyList: taggedState.picWiseTags[picStore.state.photoId]
-                          ?.keys
+                  tagsKeyList: taggedState
+                          .picWiseTags[picStore.state.photoId]?.keys
                           .toList() ??
                       <String>[],
                   addTagField: true,
@@ -356,30 +367,41 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                   },
                   onPanEnd: (String selectedTagKey) async {
                     await ref.read(tagsProvider.notifier).removeTagFromPic(
-                        picId: picStore.state.photoId,
-                        tagKey: selectedTagKey,);
+                          picId: picStore.state.photoId,
+                          tagKey: selectedTagKey,
+                        );
 
                     await picStore.tagsSuggestionsCalculate();
-                    await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
+                    await ref
+                        .read(taggedProvider.notifier)
+                        .refreshTaggedPhotos();
                     await ref.read(tabsProvider.notifier).loadAssetPath();
                   },
                   onChanged: (text) async {
                     ref.read(tagsProvider.notifier).setSearchText(text);
-                    await ref.read(tagsProvider.notifier).tagsSuggestionsCalculate();
+                    await ref
+                        .read(tagsProvider.notifier)
+                        .tagsSuggestionsCalculate();
                   },
                   onSubmitted: (text) async {
                     AppLogger.d('return');
 
                     if (text != '') {
-                      final tagKey = await ref.read(tagsProvider.notifier).createTag(text);
+                      final tagKey =
+                          await ref.read(tagsProvider.notifier).createTag(text);
                       await picStore.addMultipleTagsToPic(
-                          acceptedTagKeys: {tagKey: ''},);
+                        acceptedTagKeys: {tagKey: ''},
+                      );
 
                       HapticFeedback.lightImpact();
                       tagsEditingController.clear();
                       ref.read(tagsProvider.notifier).setSearchText('');
-                      await ref.read(tagsProvider.notifier).tagsSuggestionsCalculate();
-                      await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
+                      await ref
+                          .read(tagsProvider.notifier)
+                          .tagsSuggestionsCalculate();
+                      await ref
+                          .read(taggedProvider.notifier)
+                          .refreshTaggedPhotos();
                       await ref.read(tabsProvider.notifier).loadAssetPath();
                     }
                   },
@@ -409,11 +431,11 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                               ),
                               const Center(
                                 child: Padding(
-                                  padding:
-                                      EdgeInsets.only(top: 32, bottom: 32),
+                                  padding: EdgeInsets.only(top: 32, bottom: 32),
                                   child: CircularProgressIndicator(
                                     valueColor: AlwaysStoppedAnimation<Color>(
-                                        kSecondaryColor,),
+                                      kSecondaryColor,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -436,11 +458,9 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                             .map((e) => e.key)
                             .toList()
                             .where((tagKey) {
-                          if (taggedState.picWiseTags[
-                                      picStore.state.photoId] !=
+                          if (taggedState.picWiseTags[picStore.state.photoId] !=
                                   null &&
-                              taggedState.picWiseTags[
-                                          picStore.state.photoId]
+                              taggedState.picWiseTags[picStore.state.photoId]
                                       ?[tagKey] !=
                                   null) {
                             return false;
@@ -451,10 +471,14 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                         tagStyle: TagStyle.grayOutlined,
                         onTap: (tagKey) async {
                           await picStore.addMultipleTagsToPic(
-                              acceptedTagKeys: {tagKey: ''},);
-                          await ref.read(tagsProvider.notifier)
+                            acceptedTagKeys: {tagKey: ''},
+                          );
+                          await ref
+                              .read(tagsProvider.notifier)
                               .tagsSuggestionsCalculate();
-                          await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
+                          await ref
+                              .read(taggedProvider.notifier)
+                              .refreshTaggedPhotos();
                           await ref.read(tabsProvider.notifier).loadAssetPath();
                         },
                         onDoubleTap: (tagKey) {

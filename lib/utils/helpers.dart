@@ -81,7 +81,10 @@ LinearGradient getGradient(int index) {
 typedef CallBack = void Function(bool);
 
 void doCustomisedSearching(
-    dynamic tag, List<String> listOfLetters, CallBack callback,) {
+  dynamic tag,
+  List<String> listOfLetters,
+  CallBack callback,
+) {
   if (tag == null) {
     callback(false);
     return;
@@ -94,7 +97,7 @@ void doCustomisedSearching(
     return;
   }
   final title = titleNullable.toLowerCase();
-  
+
   var i = 0;
   for (var index = 0; index < listOfLetters.length; index++) {
     var found = false;

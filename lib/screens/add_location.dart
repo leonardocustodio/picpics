@@ -52,8 +52,8 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
       String? city;
       String? country;
 
-      for (final components
-          in selectedGeolocation!.fullJSON!['address_components'] as List<dynamic>) {
+      for (final components in selectedGeolocation!
+          .fullJSON!['address_components'] as List<dynamic>) {
         final types = components['types'] as List<dynamic>;
         if (types.contains('establishment')) {
           AppLogger.d('find establishment: ${components["long_name"]}');
@@ -133,7 +133,8 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
       latLng = LatLng(picStore.state.latitude!, picStore.state.longitude!);
     } else if (picStore.state.originalLatitude != null &&
         picStore.state.originalLongitude != null) {
-      latLng = LatLng(picStore.state.originalLatitude!, picStore.state.originalLongitude!);
+      latLng = LatLng(
+          picStore.state.originalLatitude!, picStore.state.originalLongitude!);
     }
 
     if (latLng != null && latLng != nullLocation) {
@@ -250,7 +251,8 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                         CupertinoButton(
                           padding: const EdgeInsets.only(left: 14, top: 14),
                           onPressed: getUserPosition,
-                          child: Image.asset('lib/images/getcurrentlocationico.png'),
+                          child: Image.asset(
+                              'lib/images/getcurrentlocationico.png'),
                         ),
                       ],
                     ),

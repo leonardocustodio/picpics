@@ -81,6 +81,7 @@ class AllTagsNotifier extends StateNotifier<AllTagsState> {
   }
 }
 
-final allTagsProvider = StateNotifierProvider<AllTagsNotifier, AllTagsState>((ref) {
+final allTagsProvider =
+    StateNotifierProvider<AllTagsNotifier, AllTagsState>((ref) {
   return AllTagsNotifier(ref);
 });

@@ -1,5 +1,4 @@
 class Secret {
-
   Secret({
     required this.photoId,
     required this.photoPath,

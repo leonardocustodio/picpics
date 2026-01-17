@@ -65,7 +65,9 @@ class PhotoScreenNotifier extends StateNotifier<PhotoScreenState> {
   }
 }
 
-final photoScreenProvider = StateNotifierProvider.autoDispose<PhotoScreenNotifier, PhotoScreenState>((ref) {
+final photoScreenProvider =
+    StateNotifierProvider.autoDispose<PhotoScreenNotifier, PhotoScreenState>(
+        (ref) {
   return PhotoScreenNotifier();
 });
 
@@ -99,7 +101,8 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
         ref.read(photoScreenProvider.notifier).setSelectedIndex(index);
       });
     }
-    galleryPageController = PageController(initialPage: index != -1 ? index : 0);
+    galleryPageController =
+        PageController(initialPage: index != -1 ? index : 0);
   }
 
   @override
@@ -162,7 +165,9 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
 
     if (picStore == null) {
       return PhotoViewGalleryPageOptions.customChild(
-        child: const Center(child: Text('Photo not available', style: TextStyle(color: Colors.white))),
+        child: const Center(
+            child: Text('Photo not available',
+                style: TextStyle(color: Colors.white))),
       );
     }
 
@@ -289,217 +294,129 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
     final photoScreenState = ref.watch(photoScreenProvider);
 
     return Scaffold(
-        body: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.light,
-          child: Stack(
-            children: <Widget>[
-              Container(
-                constraints: const BoxConstraints.expand(),
-                color: const Color(0xff101010),
-                child: PhotoViewGallery.builder(
-                  scrollPhysics: const BouncingScrollPhysics(),
-                  builder: _buildItem,
-                  itemCount: getPicIdList().length,
-                  loadingBuilder: (context, event) => Center(
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        value: event == null || event.expectedTotalBytes == null
-                            ? 0
-                            : event.cumulativeBytesLoaded /
-                                event.expectedTotalBytes!,
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              constraints: const BoxConstraints.expand(),
+              color: const Color(0xff101010),
+              child: PhotoViewGallery.builder(
+                scrollPhysics: const BouncingScrollPhysics(),
+                builder: _buildItem,
+                itemCount: getPicIdList().length,
+                loadingBuilder: (context, event) => Center(
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      value: event == null || event.expectedTotalBytes == null
+                          ? 0
+                          : event.cumulativeBytesLoaded /
+                              event.expectedTotalBytes!,
+                    ),
+                  ),
+                ),
+                backgroundDecoration: const BoxDecoration(
+                  color: Colors.black,
+                ),
+                pageController: galleryPageController,
+                onPageChanged: (index) {
+                  ref
+                      .read(photoScreenProvider.notifier)
+                      .setSelectedIndex(index);
+                  //GalleryStore.to.setSelectedThumbnail(index);
+                },
+              ),
+            ),
+            if (photoScreenState.overlay)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(
+                        sigmaX: 2,
+                        sigmaY: 2,
+                      ),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withValues(alpha: 0.7 * 0.37 * 0.3),
+                              Colors.black.withValues(alpha: 1.0 * 0.37 * 0.3),
+                            ],
+                            stops: const [0, 0.40625],
+                          ),
+                        ),
+                        child: SafeArea(
+                          bottom: false,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              CupertinoButton(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                  vertical: 10,
+                                ),
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Image.asset(
+                                  'lib/images/backarrowwithdropshadow.png',
+                                ),
+                              ),
+                              CupertinoButton(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                  vertical: 10,
+                                ),
+                                onPressed: () {
+                                  final picIdValue = getPicIdList()
+                                      .toList()[photoScreenState.selectedIndex];
+                                  final shareAblePicStore = ref
+                                          .read(tabsProvider)
+                                          .picStoreMap[picIdValue] ??
+                                      ref
+                                          .read(tabsProvider.notifier)
+                                          .explorPicStore(picIdValue);
+                                  shareAblePicStore?.sharePic();
+                                },
+                                child: Image.asset(
+                                  'lib/images/sharebuttonwithdropshadow.png',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  backgroundDecoration: const BoxDecoration(
-                    color: Colors.black,
-                  ),
-                  pageController: galleryPageController,
-                  onPageChanged: (index) {
-                    ref.read(photoScreenProvider.notifier).setSelectedIndex(index);
-                    //GalleryStore.to.setSelectedThumbnail(index);
-                  },
-                ),
-              ),
-              if (photoScreenState.overlay)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
+                  const Spacer(),
+                  if (!photoScreenState.showSlideshow)
                     ClipRect(
                       child: BackdropFilter(
                         filter: ImageFilter.blur(
                           sigmaX: 2,
                           sigmaY: 2,
                         ),
-                        child: DecoratedBox(
+                        child: Container(
+                          constraints: const BoxConstraints(
+                            minHeight: 184,
+                          ),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.black
-                                    .withValues(alpha: 0.7 * 0.37 * 0.3),
-                                Colors.black.withValues(alpha: 1.0 * 0.37 * 0.3),
-                              ],
-                              stops: const [0, 0.40625],
-                            ),
-                          ),
-                          child: SafeArea(
-                            bottom: false,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                CupertinoButton(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: 10,),
-                                  onPressed: () => Navigator.of(context).pop(),
-                                  child: Image.asset(
-                                      'lib/images/backarrowwithdropshadow.png',),
-                                ),
-                                CupertinoButton(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: 10,),
-                                  onPressed: () {
-                                    final picIdValue = getPicIdList().toList()[
-                                        photoScreenState.selectedIndex];
-                                    final shareAblePicStore = ref.read(tabsProvider).picStoreMap[picIdValue] ??
-                                        ref.read(tabsProvider.notifier).explorPicStore(picIdValue);
-                                    shareAblePicStore?.sharePic();
-                                  },
-                                  child: Image.asset(
-                                      'lib/images/sharebuttonwithdropshadow.png',),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    if (!photoScreenState.showSlideshow)
-                      ClipRect(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: 2,
-                            sigmaY: 2,
-                          ),
-                          child: Container(
-                            constraints: const BoxConstraints(
-                              minHeight: 184,
-                            ),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.black
-                                      .withValues(alpha: 0.7)
-                                      .withValues(alpha: 0.37)
-                                      .withValues(alpha: 0.3),
-                                  Colors.black
-                                      .withValues(alpha: 1)
-                                      .withValues(alpha: 0.37)
-                                      .withValues(alpha: 0.3),
-                                ],
-                                stops: const [0, 0.40625],
-                              ),
-                            ),
-                            child: SafeArea(
-                              top: false,
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        // RichText(
-                                        //   textScaler: TextScaler.linear(1.0),
-                                        //   text: TextSpan(
-                                        //     children: [
-                                        //       TextSpan(
-                                        //           text: TabsController
-                                        //                   .to
-                                        //                   .picStoreMap[
-                                        //                       getPicIdList()
-                                        //                               .toList()[
-                                        //                           controller
-                                        //                               .selectedIndex
-                                        //                               .value]]
-                                        //                   ?.value
-                                        //                   .specificLocation
-                                        //                   .value ??
-                                        //               LangControl.to.S.value
-                                        //                   .photo_location,
-                                        //           style: const TextStyle(
-                                        //             fontFamily: 'NotoSans',
-                                        //             color: kWhiteColor,
-                                        //             fontSize: 17,
-                                        //             fontWeight: FontWeight.w400,
-                                        //             fontStyle: FontStyle.normal,
-                                        //             letterSpacing:
-                                        //                 -0.4099999964237213,
-                                        //           )),
-                                        //       TextSpan(
-                                        //         text:
-                                        //             '  ${TabsController.to.picStoreMap[getPicIdList()[ref.read(photoScreenProvider).selectedIndex]]?.value.generalLocation.value ?? LangControl.to.S.value.country}',
-                                        //         style: const TextStyle(
-                                        //           fontFamily: 'NotoSans',
-                                        //           color: kWhiteColor,
-                                        //           fontSize: 12,
-                                        //           fontWeight: FontWeight.w300,
-                                        //           fontStyle: FontStyle.normal,
-                                        //           letterSpacing:
-                                        //               -0.4099999964237213,
-                                        //         ),
-                                        //       ),
-                                        //     ],
-                                        //   ),
-                                        // ),
-                                        Text(
-                                          dateFormat(ref.read(tabsProvider)
-                                                  .picStoreMap[
-                                                      getPicIdList().toList()[
-                                                          photoScreenState.selectedIndex]]
-                                                  ?.state.createdAt ??
-                                              DateTime.now(),),
-                                          textScaler: const TextScaler.linear(1),
-                                          style: const TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: kWhiteColor,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w300,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    BottomTabsListWidget(
-                                        picId: getPicIdList().toList()[
-                                            photoScreenState.selectedIndex],),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    if (photoScreenState.showSlideshow)
-                      ClipRect(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
+                                    .withValues(alpha: 0.7)
+                                    .withValues(alpha: 0.37)
+                                    .withValues(alpha: 0.3),
                                 Colors.black
-                                    .withValues(alpha: 0.7 * 0.37 * 0.3),
-                                Colors.black.withValues(alpha: 1.0 * 0.37 * 0.3),
+                                    .withValues(alpha: 1)
+                                    .withValues(alpha: 0.37)
+                                    .withValues(alpha: 0.3),
                               ],
                               stops: const [0, 0.40625],
                             ),
@@ -507,18 +424,84 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                           child: SafeArea(
                             top: false,
                             child: Padding(
-                              padding: const EdgeInsets.only(top: 8),
+                              padding: const EdgeInsets.all(16),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: <Widget>[
-                                  SizedBox(
-                                    height: 98,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: _buildThumbnails,
-                                      itemCount: getPicIdList().length,
-                                      padding: const EdgeInsets.only(left: 8),
-                                    ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      // RichText(
+                                      //   textScaler: TextScaler.linear(1.0),
+                                      //   text: TextSpan(
+                                      //     children: [
+                                      //       TextSpan(
+                                      //           text: TabsController
+                                      //                   .to
+                                      //                   .picStoreMap[
+                                      //                       getPicIdList()
+                                      //                               .toList()[
+                                      //                           controller
+                                      //                               .selectedIndex
+                                      //                               .value]]
+                                      //                   ?.value
+                                      //                   .specificLocation
+                                      //                   .value ??
+                                      //               LangControl.to.S.value
+                                      //                   .photo_location,
+                                      //           style: const TextStyle(
+                                      //             fontFamily: 'NotoSans',
+                                      //             color: kWhiteColor,
+                                      //             fontSize: 17,
+                                      //             fontWeight: FontWeight.w400,
+                                      //             fontStyle: FontStyle.normal,
+                                      //             letterSpacing:
+                                      //                 -0.4099999964237213,
+                                      //           )),
+                                      //       TextSpan(
+                                      //         text:
+                                      //             '  ${TabsController.to.picStoreMap[getPicIdList()[ref.read(photoScreenProvider).selectedIndex]]?.value.generalLocation.value ?? LangControl.to.S.value.country}',
+                                      //         style: const TextStyle(
+                                      //           fontFamily: 'NotoSans',
+                                      //           color: kWhiteColor,
+                                      //           fontSize: 12,
+                                      //           fontWeight: FontWeight.w300,
+                                      //           fontStyle: FontStyle.normal,
+                                      //           letterSpacing:
+                                      //               -0.4099999964237213,
+                                      //         ),
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // ),
+                                      Text(
+                                        dateFormat(
+                                          ref
+                                                  .read(tabsProvider)
+                                                  .picStoreMap[
+                                                      getPicIdList().toList()[
+                                                          photoScreenState
+                                                              .selectedIndex]]
+                                                  ?.state
+                                                  .createdAt ??
+                                              DateTime.now(),
+                                        ),
+                                        textScaler: const TextScaler.linear(1),
+                                        style: const TextStyle(
+                                          fontFamily: 'Lato',
+                                          color: kWhiteColor,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w300,
+                                          fontStyle: FontStyle.normal,
+                                          letterSpacing: -0.4099999964237213,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  BottomTabsListWidget(
+                                    picId: getPicIdList().toList()[
+                                        photoScreenState.selectedIndex],
                                   ),
                                 ],
                               ),
@@ -526,11 +509,48 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                           ),
                         ),
                       ),
-                  ],
-                ),
-            ],
-          ),
+                    ),
+                  if (photoScreenState.showSlideshow)
+                    ClipRect(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withValues(alpha: 0.7 * 0.37 * 0.3),
+                              Colors.black.withValues(alpha: 1.0 * 0.37 * 0.3),
+                            ],
+                            stops: const [0, 0.40625],
+                          ),
+                        ),
+                        child: SafeArea(
+                          top: false,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                SizedBox(
+                                  height: 98,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: _buildThumbnails,
+                                    itemCount: getPicIdList().length,
+                                    padding: const EdgeInsets.only(left: 8),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+          ],
         ),
+      ),
     );
   }
 }
@@ -553,7 +573,10 @@ class BottomTabsListWidget extends ConsumerWidget {
                 final picStore = ref.read(tabsProvider).picStoreMap[picId];
 
                 if (picStore != null) {
-                  await Navigator.of(context).push<Object?>(MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)));
+                  await Navigator.of(context).push<Object?>(
+                      MaterialPageRoute<Object?>(
+                          builder: (context) =>
+                              AllTagsScreen(picStore: picStore)));
                   await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
                   await ref.read(tabsProvider.notifier).refreshUntaggedList();
                   return;
@@ -575,8 +598,7 @@ class BottomTabsListWidget extends ConsumerWidget {
                                                   showEditTagModal(context, false), */
             )
           : TagsList(
-              tagsKeyList:
-                  picWiseTags[picId]?.keys.toList() ?? <String>[],
+              tagsKeyList: picWiseTags[picId]?.keys.toList() ?? <String>[],
               tagStyle: TagStyle.multiColored,
               addTagButton: () async {
                 /* GalleryStore.to.setCurrentPic(
@@ -590,7 +612,10 @@ class BottomTabsListWidget extends ConsumerWidget {
                 final picStore = ref.read(tabsProvider).picStoreMap[picId];
 
                 if (picStore != null) {
-                  await Navigator.of(context).push<Object?>(MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)));
+                  await Navigator.of(context).push<Object?>(
+                      MaterialPageRoute<Object?>(
+                          builder: (context) =>
+                              AllTagsScreen(picStore: picStore)));
                   await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
                   await ref.read(tabsProvider.notifier).refreshUntaggedList();
                   return;

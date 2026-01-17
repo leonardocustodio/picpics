@@ -28,7 +28,8 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
       canPop: false,
       onPopInvokedWithResult: (bool didPop, dynamic result) async {
         if (!didPop) {
-          final shouldPop = await ref.read(taggedProvider.notifier).shouldPopOut();
+          final shouldPop =
+              await ref.read(taggedProvider.notifier).shouldPopOut();
           if (shouldPop && context.mounted) {
             Navigator.of(context).pop();
           }
@@ -47,10 +48,11 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
                 padding: const EdgeInsets.only(right: 10),
                 onPressed: () async {
                   await ref.read(taggedProvider.notifier).untagPicsFromTag(
-                      tagKeyMapToPicId: <String, Map<String, String>>{
-                        tagKey: taggedState.selectedMultiBarPics
-                            .map((key, _) => MapEntry(key, '')),
-                      },);
+                    tagKeyMapToPicId: <String, Map<String, String>>{
+                      tagKey: taggedState.selectedMultiBarPics
+                          .map((key, _) => MapEntry(key, '')),
+                    },
+                  );
                 },
                 child: const Text('Untag'),
               ),
@@ -99,7 +101,8 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
                     ///
                     var isSelected = true;
                     if (taggedState.multiPicBar) {
-                      for (final picId in taggedState.taggedPicId[tagKey]!.keys) {
+                      for (final picId
+                          in taggedState.taggedPicId[tagKey]!.keys) {
                         if (taggedState.selectedMultiBarPics[picId] == null) {
                           isSelected = false;
                           break;
@@ -114,24 +117,30 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
                             children: [
                               if (taggedState.multiPicBar)
                                 GestureDetector(
-                                    onTap: () {
-                                      final taggedNotifier = ref.read(taggedProvider.notifier);
-                                      if (isSelected) {
-                                        for (final picId in taggedState
-                                            .taggedPicId[tagKey]!.keys) {
-                                          taggedNotifier.removeSelectedMultiBarPic(picId);
-                                        }
-                                      } else {
-                                        for (final picId in taggedState
-                                            .taggedPicId[tagKey]!.keys) {
-                                          taggedNotifier.addSelectedMultiBarPic(picId);
-                                        }
+                                  onTap: () {
+                                    final taggedNotifier =
+                                        ref.read(taggedProvider.notifier);
+                                    if (isSelected) {
+                                      for (final picId in taggedState
+                                          .taggedPicId[tagKey]!.keys) {
+                                        taggedNotifier
+                                            .removeSelectedMultiBarPic(picId);
                                       }
-                                    },
-                                    child: SelectAllWidget(
-                                        isSelected: isSelected,),),
+                                    } else {
+                                      for (final picId in taggedState
+                                          .taggedPicId[tagKey]!.keys) {
+                                        taggedNotifier
+                                            .addSelectedMultiBarPic(picId);
+                                      }
+                                    }
+                                  },
+                                  child: SelectAllWidget(
+                                    isSelected: isSelected,
+                                  ),
+                                ),
                               Expanded(
-                                  child: TaggedTabSelectiveTagKeyGrid(tagKey),),
+                                child: TaggedTabSelectiveTagKeyGrid(tagKey),
+                              ),
                             ],
                           ),
                         ),
@@ -144,12 +153,14 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
                   /// No Pics Tagged
                   ///
                   return DeviceHasNoPics(
-                      message: s.no_photos_were_tagged,);
+                    message: s.no_photos_were_tagged,
+                  );
                 }
 
                 /// Device has no Pics
                 return DeviceHasNoPics(
-                    message: s.device_has_no_pics,);
+                  message: s.device_has_no_pics,
+                );
               },
             ),
           ),

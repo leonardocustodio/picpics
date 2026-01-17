@@ -52,7 +52,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     final tabsState = ref.watch(tabsProvider);
     final userState = ref.watch(userProvider);
     final s = ref.watch(sProvider);
-    
+
     final height = MediaQuery.of(context).size.height;
 
     return PopScope(
@@ -184,24 +184,26 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                       AppLogger.i('[TabsScreen] Permission request completed');
 
                       // Check if permission was granted by reading the updated state
-                      final hasPermission = ref.read(userProvider).hasGalleryPermission;
+                      final hasPermission =
+                          ref.read(userProvider).hasGalleryPermission;
 
                       if (hasPermission) {
                         // Request notification permission
                         await ref
                             .read(userProvider.notifier)
                             .requestNotificationPermission();
-                        
+
                         // Check notification permission
                         await ref
                             .read(userProvider.notifier)
-                            .checkNotificationPermission(firstPermissionCheck: true);
-                        
+                            .checkNotificationPermission(
+                                firstPermissionCheck: true);
+
                         // Mark tutorial as completed
                         await ref
                             .read(userProvider.notifier)
                             .setTutorialCompleted(true);
-                        
+
                         // Load assets after permission is granted
                         await ref.read(tabsProvider.notifier).loadAssetPath();
                       }

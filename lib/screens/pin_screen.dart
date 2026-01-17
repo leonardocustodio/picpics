@@ -25,7 +25,8 @@ class PinScreen extends ConsumerStatefulWidget {
 }
 
 class _PinScreenState extends ConsumerState<PinScreen> {
-  final CarouselSliderController carouselController = CarouselSliderController();
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
   int carouselPage = 0;
 
   Widget _buildPinPad(BuildContext context, int index) {
@@ -110,10 +111,14 @@ class _PinScreenState extends ConsumerState<PinScreen> {
               onPressed: () {
                 final userState = ref.read(userProvider);
                 if (userState.email == null) {
-                  ref.read<PinFullNotifier>(pinFullProvider.notifier).askEmail(context);
+                  ref
+                      .read<PinFullNotifier>(pinFullProvider.notifier)
+                      .askEmail(context);
                   return;
                 }
-                ref.read<PinFullNotifier>(pinFullProvider.notifier).recoverPin();
+                ref
+                    .read<PinFullNotifier>(pinFullProvider.notifier)
+                    .recoverPin();
               },
               child: const Text(
                 'Already have an account?',
@@ -199,14 +204,20 @@ class _PinScreenState extends ConsumerState<PinScreen> {
           pinNotifier.setPin(pinState.pinTemp);
 
           // Set email before saving pin (used when saving the pin)
-          ref.read<UserNotifier>(userProvider.notifier).setEmail(pinState.email);
+          ref
+              .read<UserNotifier>(userProvider.notifier)
+              .setEmail(pinState.email);
           await pinNotifier.saveNewPin();
-          ref.read<UserNotifier>(userProvider.notifier).setIsPinRegistered(true);
+          ref
+              .read<UserNotifier>(userProvider.notifier)
+              .setIsPinRegistered(true);
           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
           pinNotifier.setPinTemp('');
           pinNotifier.setConfirmPinTemp('');
-          ref.read<UserNotifier>(userProvider.notifier).setWaitingAccessCode(false);
+          ref
+              .read<UserNotifier>(userProvider.notifier)
+              .setWaitingAccessCode(false);
           await carouselController.animateToPage(0);
 
           if (mounted) {
@@ -239,7 +250,9 @@ class _PinScreenState extends ConsumerState<PinScreen> {
 
         if (valid) {
           await pinNotifier.activateBiometric();
-          ref.read<UserNotifier>(userProvider.notifier).setIsBiometricActivated(true);
+          ref
+              .read<UserNotifier>(userProvider.notifier)
+              .setIsBiometricActivated(true);
 
           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
@@ -372,8 +385,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                             enableInfiniteScroll: false,
                             height: double.maxFinite,
                             viewportFraction: 1,
-                            scrollPhysics:
-                                const NeverScrollableScrollPhysics(),
+                            scrollPhysics: const NeverScrollableScrollPhysics(),
                           ),
                         );
                       }
@@ -467,8 +479,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                             enableInfiniteScroll: false,
                             height: double.maxFinite,
                             viewportFraction: 1,
-                            scrollPhysics:
-                                const NeverScrollableScrollPhysics(),
+                            scrollPhysics: const NeverScrollableScrollPhysics(),
                           ),
                         );
                       }
@@ -617,11 +628,13 @@ class NumberPad extends StatelessWidget {
           continue;
         }
         if (pin == 12) {
-          number.add(Expanded(
-            child: Container(
-              margin: const EdgeInsets.all(2),
+          number.add(
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.all(2),
+              ),
             ),
-          ),);
+          );
           continue;
         }
         number.add(

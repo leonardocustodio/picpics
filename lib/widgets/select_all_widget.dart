@@ -23,7 +23,8 @@ class SelectAllWidget extends StatelessWidget {
                   )
                 : BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey),),
+                    border: Border.all(color: Colors.grey),
+                  ),
             child:
                 isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
           ),

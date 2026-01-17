@@ -19,8 +19,7 @@ class TaggedTabOptionBar extends ConsumerStatefulWidget {
   const TaggedTabOptionBar({super.key});
 
   @override
-  ConsumerState<TaggedTabOptionBar> createState() =>
-      _TaggedTabOptionBarState();
+  ConsumerState<TaggedTabOptionBar> createState() => _TaggedTabOptionBarState();
 }
 
 class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
@@ -97,7 +96,9 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
                               taggedNotifier.setMultiTagSheet(false);
                               taggedNotifier.setMultiPicBar(false);
                               await tagsNotifier.addTagsToSelectedPics();
-                              await ref.read(tabsProvider.notifier).refreshUntaggedList();
+                              await ref
+                                  .read(tabsProvider.notifier)
+                                  .refreshUntaggedList();
                               await tagsNotifier.tagsSuggestionsCalculate();
                               tagsNotifier.clear();
                             },

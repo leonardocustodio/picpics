@@ -56,8 +56,10 @@ class Analytics {
 
   static String enumToString(Object o) => o.toString().split('.').last;
 
-  static Future<void> sendEvent(Event event,
-      {Map<String, dynamic>? params,}) async {
+  static Future<void> sendEvent(
+    Event event, {
+    Map<String, dynamic>? params,
+  }) async {
     if (/* kDebugMode */ true) {
       return;
     }
@@ -100,8 +102,10 @@ class Analytics {
     // await facebookAppEvents.logEvent(name: 'fb_mobile_tutorial_completion');
   }
 
-  static Future<void> sendBeginCheckout(
-      {required String currency, required double price,}) async {
+  static Future<void> sendBeginCheckout({
+    required String currency,
+    required double price,
+  }) async {
     if (/* kDebugMode */ true) {
       return;
     }

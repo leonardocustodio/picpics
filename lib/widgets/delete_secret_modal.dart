@@ -7,9 +7,11 @@ import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 class DeleteSecretModal extends ConsumerStatefulWidget {
-
   const DeleteSecretModal({
-    required this.onPressedClose, required this.onPressedDelete, required this.onPressedOk, super.key,
+    required this.onPressedClose,
+    required this.onPressedDelete,
+    required this.onPressedOk,
+    super.key,
   });
   final void Function() onPressedClose;
   final void Function() onPressedDelete;
@@ -209,15 +211,16 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
                           if (keepAsking == false) {
-                            ref.read(userProvider.notifier).setKeepAskingToDelete(false);
+                            ref
+                                .read(userProvider.notifier)
+                                .setKeepAskingToDelete(false);
                           }
                           widget.onPressedDelete();
                         },
                         child: Container(
                           height: 44,
                           decoration: BoxDecoration(
-                            border:
-                                Border.all(color: kSecondaryColor),
+                            border: Border.all(color: kSecondaryColor),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
@@ -244,7 +247,9 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
                           if (keepAsking == false) {
-                            ref.read(userProvider.notifier).setKeepAskingToDelete(false);
+                            ref
+                                .read(userProvider.notifier)
+                                .setKeepAskingToDelete(false);
                           }
                           widget.onPressedOk();
                         },

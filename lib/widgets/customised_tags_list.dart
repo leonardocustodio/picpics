@@ -10,13 +10,20 @@ import 'package:picpics/utils/helpers.dart';
 import 'package:picpics/utils/show_edit_label_dialog.dart';
 
 typedef OnTap = void Function(
-    String tagId, String tagName, int counter, DateTime? lastUsedAt,);
+  String tagId,
+  String tagName,
+  int counter,
+  DateTime? lastUsedAt,
+);
 
 // ignore: must_be_immutable
 class CustomisedTagsList extends ConsumerWidget {
-
   CustomisedTagsList({
-    required this.tagsKeyList, required this.selectedTags, required this.onTap, required this.onDoubleTap, super.key,
+    required this.tagsKeyList,
+    required this.selectedTags,
+    required this.onTap,
+    required this.onDoubleTap,
+    super.key,
     this.maxLength,
     this.title,
   });
@@ -82,7 +89,8 @@ class CustomisedTagsList extends ConsumerWidget {
     );
   }
 
-  Widget _buildItem(BuildContext context, WidgetRef ref, int index, TagsState tagsState) {
+  Widget _buildItem(
+      BuildContext context, WidgetRef ref, int index, TagsState tagsState) {
     final tag = tagsState.allTags[tagsKeyList[index]]!;
     final isColorFull = selectedTags[tag.key] != null;
     return GestureDetector(
@@ -106,7 +114,8 @@ class CustomisedTagsList extends ConsumerWidget {
         decoration: isColorFull
             ? BoxDecoration(
                 gradient: getGradient(index % 4),
-                borderRadius: BorderRadius.circular(19),)
+                borderRadius: BorderRadius.circular(19),
+              )
             : kGrayBoxDecoration,
         child: Text(
           tag.title,

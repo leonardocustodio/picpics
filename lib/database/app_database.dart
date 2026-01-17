@@ -188,15 +188,17 @@ LazyDatabase _openConnection() {
     //final path = p.join(dbFolder.path, 'db.sqlite');
     //AppLogger.d('db:path:-$path');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return NativeDatabase(file, setup: (rawDb) {
-      rawDb.execute("PRAGMA key = 'Leonardo';");
-    },);
+    return NativeDatabase(
+      file,
+      setup: (rawDb) {
+        rawDb.execute("PRAGMA key = 'Leonardo';");
+      },
+    );
   });
 }
 
 @DriftDatabase(tables: [Photos, PicBlurHashs, Privates, Labels, MoorUsers])
 class AppDatabase extends _$AppDatabase {
-
   factory AppDatabase() {
     return _singleton;
   }
@@ -217,10 +219,12 @@ class AppDatabase extends _$AppDatabase {
   Future<List<PicBlurHash>> getAllPicBlurHash() => select(picBlurHashs).get();
 
   Future<PicBlurHash?> getSinglePicBlurHash(
-          String photoId,) =>
+    String photoId,
+  ) =>
       (select(picBlurHashs)
-            ..where((l) =>
-                l.photoId.equals(photoId), /* ?? const Constant(false) */))
+            ..where(
+              (l) => l.photoId.equals(photoId), /* ?? const Constant(false) */
+            ))
           .getSingleOrNull();
 
   ///
@@ -238,7 +242,9 @@ class AppDatabase extends _$AppDatabase {
     final label = await getLabelByLabelKey(labelKey);
     if (label != null) {
       final updatedLabel = label.copyWith(
-          counter: label.counter + 1, lastUsedAt: DateTime.now(),);
+        counter: label.counter + 1,
+        lastUsedAt: DateTime.now(),
+      );
       await updateLabel(updatedLabel);
     }
   }
@@ -335,8 +341,10 @@ class AppDatabase extends _$AppDatabase {
   Future<bool> updatePhoto(Photo oldPhoto) => update(photos).replace(oldPhoto);
 
   Future<int> deletePhotoByPhotoId(String photoId) => (delete(photos)
-        ..where((picture) =>
-            picture.id.equals(photoId), /* ?? const Constant(false) */))
+        ..where(
+          (picture) =>
+              picture.id.equals(photoId), /* ?? const Constant(false) */
+        ))
       .go();
 
   Future<int> deletePhoto(Photo oldPhoto) => delete(photos).delete(oldPhoto);
@@ -352,7 +360,8 @@ class AppDatabase extends _$AppDatabase {
   ///Private CRUD operations Start
   ///
   ///
-  Future<int> createPrivate(Private newPrivate) => into(privates).insert(newPrivate);
+  Future<int> createPrivate(Private newPrivate) =>
+      into(privates).insert(newPrivate);
 
   Future<Private?> getPrivateByPhotoId(String photoId) => (select(privates)
         ..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */))
@@ -420,7 +429,8 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> deleteMoorUser(MoorUser newMoorUser) => (delete(moorUsers)
         ..where(
-            (u) => u.customPrimaryKey.equals(0), /* ?? const Constant(false) */))
+          (u) => u.customPrimaryKey.equals(0), /* ?? const Constant(false) */
+        ))
       .delete(newMoorUser);
 
   ///
@@ -445,8 +455,12 @@ class AppDatabase extends _$AppDatabase {
     final blurHashedCompanion = <PicBlurHashsCompanion>[];
 
     for (final blurHash in blurHashes) {
-      blurHashedCompanion.add(PicBlurHashsCompanion.insert(
-          photoId: blurHash.photoId, blurHash: blurHash.blurHash,),);
+      blurHashedCompanion.add(
+        PicBlurHashsCompanion.insert(
+          photoId: blurHash.photoId,
+          blurHash: blurHash.blurHash,
+        ),
+      );
     }
 
     await batch((Batch batch) {
@@ -588,21 +602,22 @@ class AppDatabase extends _$AppDatabase {
       photosTags[pic.photoId] = pic.tags;
       photosCompanions.add(
         PhotosCompanion.insert(
-            id: pic.photoId,
-            createdAt: pic.createdAt,
-            originalLatitude: pic.originalLatitude.moorValue /* ?? 0.0 */,
-            originalLongitude: pic.originalLongitude.moorValue /* ?? 0.0 */,
-            latitude: pic.latitude.moorValue,
-            longitude: pic.longitude.moorValue,
-            specificLocation: pic.specificLocation.moorValue,
-            generalLocation: pic.generalLocation.moorValue,
-            isPrivate: pic.isPrivate.moorValue,
-            deletedFromCameraRoll: pic.deletedFromCameraRoll.moorValue,
-            isStarred: pic.isStarred.moorValue,
-            base64encoded: pic.base64encoded.moorValue,
-            tags: <String, String>{
-              for (final t in pic.tags) t: '',
-            },),
+          id: pic.photoId,
+          createdAt: pic.createdAt,
+          originalLatitude: pic.originalLatitude.moorValue /* ?? 0.0 */,
+          originalLongitude: pic.originalLongitude.moorValue /* ?? 0.0 */,
+          latitude: pic.latitude.moorValue,
+          longitude: pic.longitude.moorValue,
+          specificLocation: pic.specificLocation.moorValue,
+          generalLocation: pic.generalLocation.moorValue,
+          isPrivate: pic.isPrivate.moorValue,
+          deletedFromCameraRoll: pic.deletedFromCameraRoll.moorValue,
+          isStarred: pic.isStarred.moorValue,
+          base64encoded: pic.base64encoded.moorValue,
+          tags: <String, String>{
+            for (final t in pic.tags) t: '',
+          },
+        ),
       );
     }
 

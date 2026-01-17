@@ -104,7 +104,8 @@ class UserState {
       dailyChallenges: dailyChallenges ?? this.dailyChallenges,
       isPinRegistered: isPinRegistered ?? this.isPinRegistered,
       keepAskingToDelete: keepAskingToDelete ?? this.keepAskingToDelete,
-      shouldDeleteOnPrivate: shouldDeleteOnPrivate ?? this.shouldDeleteOnPrivate,
+      shouldDeleteOnPrivate:
+          shouldDeleteOnPrivate ?? this.shouldDeleteOnPrivate,
       picsTaggedToday: picsTaggedToday ?? this.picsTaggedToday,
       lastTaggedPicDate: lastTaggedPicDate ?? this.lastTaggedPicDate,
       loggedIn: loggedIn ?? this.loggedIn,
@@ -117,7 +118,8 @@ class UserState {
       requireSecret: requireSecret ?? this.requireSecret,
       hourOfDay: hourOfDay ?? this.hourOfDay,
       minutesOfDay: minutesOfDay ?? this.minutesOfDay,
-      photoHeightInCardWidget: photoHeightInCardWidget ?? this.photoHeightInCardWidget,
+      photoHeightInCardWidget:
+          photoHeightInCardWidget ?? this.photoHeightInCardWidget,
       appLanguage: appLanguage ?? this.appLanguage,
       currentLanguage: currentLanguage ?? this.currentLanguage,
       recentTags: recentTags ?? this.recentTags,
@@ -137,28 +139,29 @@ class UserNotifier extends StateNotifier<UserState> {
 
   Future<void> initialize() async {
     AppLogger.i('[UserNotifier] Starting initialization...');
-    
+
     // Get device locale
     final locale = await Devicelocale.currentLocale ?? 'en';
     state = state.copyWith(deviceLocale: locale);
-    
+
     // Get app version
     final packageInfo = await PackageInfo.fromPlatform();
     state = state.copyWith(appVersion: packageInfo.version);
-    
+
     // Load user from database
     final databaseController = DatabaseController();
     final user = await databaseController.getUser(deviceLocale: locale);
-    
+
     // Create default tags if needed
     await createDefaultTags();
-    
+
     AppLogger.i('[UserNotifier] User loaded from database:');
     AppLogger.d('  - tutorialCompleted: ${user.tutorialCompleted}');
-    AppLogger.d('  - hasGalleryPermission (from DB): ${user.hasGalleryPermission}');
+    AppLogger.d(
+        '  - hasGalleryPermission (from DB): ${user.hasGalleryPermission}');
     AppLogger.d('  - isPinRegistered: ${user.isPinRegistered}');
     AppLogger.d('  - appLanguage: ${user.appLanguage}');
-    
+
     // Update state with user data
     state = state.copyWith(
       notifications: user.notification,
@@ -176,17 +179,17 @@ class UserNotifier extends StateNotifier<UserState> {
       tourCompleted: user.tourCompleted,
       isBiometricActivated: user.isBiometricActivated,
     );
-    
+
     // Set current language
     _updateCurrentLanguage(state.appLanguage);
-    
+
     // Load recent tags
     // TODO: Uncomment when tags provider is fully implemented
     // final tagsController = ref.read(tagsProvider.notifier);
     // for (final tagKey in user.recentTags) {
     //   tagsController.addRecentTag(tagKey);
     // }
-    
+
     // Check gallery permissions if tutorial is completed
     if (user.tutorialCompleted) {
       await checkGalleryPermissions();
@@ -196,22 +199,25 @@ class UserNotifier extends StateNotifier<UserState> {
   Future<void> checkGalleryPermissions() async {
     AppLogger.i('[UserNotifier] Checking actual gallery permission status...');
     final permissionStatus = await PhotoManager.requestPermissionExtend();
-    
+
     AppLogger.i('[UserNotifier] PhotoManager permission status:');
     AppLogger.d('  - isAuth: ${permissionStatus.isAuth}');
     AppLogger.d('  - hasAccess: ${permissionStatus.hasAccess}');
-    
+
     if (permissionStatus.isAuth || permissionStatus.hasAccess) {
-      AppLogger.i('[UserNotifier] Permission granted! Setting hasGalleryPermission to true');
+      AppLogger.i(
+          '[UserNotifier] Permission granted! Setting hasGalleryPermission to true');
       state = state.copyWith(hasGalleryPermission: true);
-      
+
       // Update database if permission status changed
       if (!state.hasGalleryPermission) {
-        AppLogger.i('[UserNotifier] Updating database with new permission status...');
+        AppLogger.i(
+            '[UserNotifier] Updating database with new permission status...');
         // Update database here
       }
     } else {
-      AppLogger.i('[UserNotifier] Permission denied. Setting hasGalleryPermission to false');
+      AppLogger.i(
+          '[UserNotifier] Permission denied. Setting hasGalleryPermission to false');
       state = state.copyWith(hasGalleryPermission: false);
     }
   }
@@ -222,7 +228,7 @@ class UserNotifier extends StateNotifier<UserState> {
       lang = 'en';
     }
     state = state.copyWith(appLocale: lang);
-    
+
     final local = LanguageLocal();
     final langName = local.getDisplayLanguage(lang)['nativeName'] ?? '';
     state = state.copyWith(currentLanguage: langName);
@@ -253,15 +259,14 @@ class UserNotifier extends StateNotifier<UserState> {
 
   Future<void> setTutorialCompleted(bool value) async {
     state = state.copyWith(tutorialCompleted: value);
-    
+
     // Update database
     final currentUser = await database.getSingleMoorUser();
     if (currentUser != null) {
-      await database.updateMoorUser(
-        currentUser.copyWith(tutorialCompleted: value)
-      );
+      await database
+          .updateMoorUser(currentUser.copyWith(tutorialCompleted: value));
     }
-    
+
     // Request gallery permission if tutorial is complete
     if (value) {
       await checkGalleryPermissions();
@@ -367,9 +372,8 @@ class UserNotifier extends StateNotifier<UserState> {
       // Update database
       final currentUser = await database.getSingleMoorUser();
       if (currentUser != null) {
-        await database.updateMoorUser(
-          currentUser.copyWith(hasGalleryPermission: true)
-        );
+        await database
+            .updateMoorUser(currentUser.copyWith(hasGalleryPermission: true));
       }
     } else {
       AppLogger.i('[UserNotifier] Gallery permission denied');
@@ -397,7 +401,8 @@ class UserNotifier extends StateNotifier<UserState> {
     }
   }
 
-  Future<void> checkNotificationPermission({bool firstPermissionCheck = false}) async {
+  Future<void> checkNotificationPermission(
+      {bool firstPermissionCheck = false}) async {
     AppLogger.i('[UserNotifier] Checking notification permission...');
     // TODO: Implement notification permission check
     // This is a placeholder to prevent compilation errors

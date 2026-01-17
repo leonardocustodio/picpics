@@ -99,7 +99,9 @@ class _TaggedTabSelectiveTagOptionBarState
                               taggedNotifier.setMultiTagSheet(false);
                               taggedNotifier.setMultiPicBar(false);
                               await tagsNotifier.addTagsToSelectedPics();
-                              await ref.read(tabsProvider.notifier).refreshUntaggedList();
+                              await ref
+                                  .read(tabsProvider.notifier)
+                                  .refreshUntaggedList();
                               await tagsNotifier.tagsSuggestionsCalculate();
                               tagsNotifier.clear();
                             },

@@ -153,13 +153,16 @@ class _TagsListState extends ConsumerState<TagsList> {
             decoration: widget.tagStyle == TagStyle.multiColored
                 ? BoxDecoration(
                     gradient: getGradient(i % 4),
-                    borderRadius: BorderRadius.circular(19),)
+                    borderRadius: BorderRadius.circular(19),
+                  )
                 : kGrayBoxDecoration,
             child: showSwiperInIndex != i
                 ? tagKey != kSecretTagKey
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16,),
+                          vertical: 8,
+                          horizontal: 16,
+                        ),
                         child: Text(
                           tagsState.allTags[tagKey]?.title ?? '',
                           textScaler: const TextScaler.linear(1),
@@ -170,7 +173,9 @@ class _TagsListState extends ConsumerState<TagsList> {
                       )
                     : Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 5.2, horizontal: 19,),
+                          vertical: 5.2,
+                          horizontal: 19,
+                        ),
                         child: widget.tagStyle == TagStyle.multiColored
                             ? Image.asset('lib/images/locktagwhite.png')
                             : Image.asset('lib/images/locktaggray.png'),
@@ -227,7 +232,9 @@ class _TagsListState extends ConsumerState<TagsList> {
                             opacity: firstOpct,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16,),
+                                vertical: 8,
+                                horizontal: 16,
+                              ),
                               child: Text(
                                 tagsState.allTags[tagKey]?.title ?? '',
                                 textScaler: const TextScaler.linear(1),
@@ -272,41 +279,43 @@ class _TagsListState extends ConsumerState<TagsList> {
     }
 
     if (widget.addTagButton != null) {
-      tagsWidgets.add(CupertinoButton(
-        padding: const EdgeInsets.all(0),
-        onPressed: widget.addTagButton,
-        minimumSize: const Size(30, 30),
-        child: Container(
-          height: 30,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF1F3F5),
-            border: Border.all(color: kLightGrayColor),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Image.asset('lib/images/smalladdtag.png'),
-              const SizedBox(
-                width: 4,
-              ),
-              Text(
-                s.add_tag,
-                textScaler: const TextScaler.linear(1),
-                style: const TextStyle(
-                  fontFamily: 'Lato',
-                  color: kGrayColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  letterSpacing: -0.4099999964237213,
+      tagsWidgets.add(
+        CupertinoButton(
+          padding: const EdgeInsets.all(0),
+          onPressed: widget.addTagButton,
+          minimumSize: const Size(30, 30),
+          child: Container(
+            height: 30,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF1F3F5),
+              border: Border.all(color: kLightGrayColor),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Image.asset('lib/images/smalladdtag.png'),
+                const SizedBox(
+                  width: 4,
                 ),
-              ),
-            ],
+                Text(
+                  s.add_tag,
+                  textScaler: const TextScaler.linear(1),
+                  style: const TextStyle(
+                    fontFamily: 'Lato',
+                    color: kGrayColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    letterSpacing: -0.4099999964237213,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),);
+      );
     }
 
     if (widget.addTagField) {
@@ -346,11 +355,14 @@ class _TagsListState extends ConsumerState<TagsList> {
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.only(left: 6),
                             enabledBorder: const OutlineInputBorder(
-                                borderSide: BorderSide.none,),
+                              borderSide: BorderSide.none,
+                            ),
                             focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide.none,),
+                              borderSide: BorderSide.none,
+                            ),
                             border: const OutlineInputBorder(
-                                borderSide: BorderSide.none,),
+                              borderSide: BorderSide.none,
+                            ),
                             hintText: s.add_tags,
                             hintStyle: const TextStyle(
                               fontFamily: 'Lato',
@@ -369,7 +381,8 @@ class _TagsListState extends ConsumerState<TagsList> {
                           onPressed: () {
                             if (widget.onSubmitted != null) {
                               widget.onSubmitted!(
-                                  widget.textEditingController!.text,);
+                                widget.textEditingController!.text,
+                              );
                             }
                           },
                           minimumSize: const Size(30, 30),
@@ -394,8 +407,11 @@ class _TagsListState extends ConsumerState<TagsList> {
                         textScaler: const TextScaler.linear(1),
                         style: kGrayTextStyle.copyWith(fontSize: 15),
                       ),
-                      const Icon(Icons.arrow_forward_ios_rounded,
-                          size: 18, color: Colors.grey,),
+                      const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
                     ],
                   ),
                 ),

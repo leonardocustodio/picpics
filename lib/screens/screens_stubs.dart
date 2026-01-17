@@ -10,7 +10,7 @@ class AllTagsScreen extends ConsumerWidget {
   final Pic? picStore;
 
   const AllTagsScreen({super.key, this.picStore});
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -30,7 +30,7 @@ class PhotoScreen extends ConsumerWidget {
     required this.picId,
     required this.picIdList,
   });
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -43,7 +43,7 @@ class PhotoScreen extends ConsumerWidget {
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
   static const id = 'settings_screen';
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -56,9 +56,9 @@ class SettingsScreen extends ConsumerWidget {
 class AddLocationScreen extends ConsumerWidget {
   static const id = 'add_location_screen';
   final Pic? pic;
-  
+
   const AddLocationScreen(this.pic, {super.key});
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -72,7 +72,7 @@ class PinScreen extends ConsumerWidget {
   static const id = 'pin_screen';
 
   const PinScreen({super.key});
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -85,7 +85,7 @@ class PinScreen extends ConsumerWidget {
 class EmailScreen extends ConsumerWidget {
   const EmailScreen({super.key});
   static const id = 'email_screen';
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -99,7 +99,7 @@ class AccessCodeScreen extends ConsumerWidget {
   static const id = 'access_code_screen';
 
   const AccessCodeScreen({super.key});
-  
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(

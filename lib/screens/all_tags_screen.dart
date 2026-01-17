@@ -65,78 +65,87 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: Row(
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 5, right: 10),
-                            child: Image.asset('lib/images/backarrowgray.png'),
-                          ),
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 5, right: 10),
+                          child: Image.asset('lib/images/backarrowgray.png'),
                         ),
-                        Image.asset('lib/images/searchico.png'),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            width: 200,
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: searchEditingController,
-                                      focusNode: focusNode,
-                                      onChanged: (text) {
-                                        ref.read(allTagsProvider.notifier).setSearchedText(text);
-                                        ref.read(allTagsProvider.notifier).doSearching(tagsState.allTags);
-                                      },
-                                      onFieldSubmitted: (text) {
-                                        // Handle submission if needed
-                                      },
-                                      style: const TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff606566),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.all(0),
-                                        border: OutlineInputBorder(borderSide: BorderSide.none),
-                                        enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                                        focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                                        hintText: 'Search...',
-                                        hintStyle: TextStyle(
-                                          fontFamily: 'Lato',
-                                          color: kGrayColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400,
-                                          fontStyle: FontStyle.normal,
-                                          letterSpacing: -0.5,
-                                        ),
-                                      ),
+                      ),
+                      Image.asset('lib/images/searchico.png'),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Container(
+                          height: 50,
+                          width: 200,
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: searchEditingController,
+                                  focusNode: focusNode,
+                                  onChanged: (text) {
+                                    ref
+                                        .read(allTagsProvider.notifier)
+                                        .setSearchedText(text);
+                                    ref
+                                        .read(allTagsProvider.notifier)
+                                        .doSearching(tagsState.allTags);
+                                  },
+                                  onFieldSubmitted: (text) {
+                                    // Handle submission if needed
+                                  },
+                                  style: const TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff606566),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    letterSpacing: -0.4099999964237213,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    contentPadding: EdgeInsets.all(0),
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide.none),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide.none),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide.none),
+                                    hintText: 'Search...',
+                                    hintStyle: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: kGrayColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.normal,
+                                      letterSpacing: -0.5,
                                     ),
                                   ),
-                                if (allTagsState.searchedText.isNotEmpty)
-                                  GestureDetector(
-                                    onTap: () {
-                                      ref.read(allTagsProvider.notifier).clearSearch();
-                                      focusNode.unfocus();
-                                      searchEditingController.clear();
-                                    },
-                                    child: const SizedBox(
-                                      width: 60,
-                                      child: Icon(Icons.clear),
-                                    ),
+                                ),
+                              ),
+                              if (allTagsState.searchedText.isNotEmpty)
+                                GestureDetector(
+                                  onTap: () {
+                                    ref
+                                        .read(allTagsProvider.notifier)
+                                        .clearSearch();
+                                    focusNode.unfocus();
+                                    searchEditingController.clear();
+                                  },
+                                  child: const SizedBox(
+                                    width: 60,
+                                    child: Icon(Icons.clear),
                                   ),
-                              ],
-                            ),
+                                ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                ),
                 if (allTagsState.searchedText.isNotEmpty)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +167,8 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       CustomisedTagsList(
                         tagsKeyList: allTagsState.searchedTags.keys.toList(),
                         selectedTags: allTagsState.selectedTags,
-                        onTap: (String tagId, String tagName, int count, DateTime? time) async =>
+                        onTap: (String tagId, String tagName, int count,
+                                DateTime? time) async =>
                             doTagging(tagId, tagName, count, time),
                         onDoubleTap: () {
                           AppLogger.d('do nothing');
@@ -187,7 +197,8 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       CustomisedTagsList(
                         tagsKeyList: tagsState.mostUsedTags.keys.toList(),
                         selectedTags: allTagsState.selectedTags,
-                        onTap: (String tagId, String tagName, int count, DateTime? time) async =>
+                        onTap: (String tagId, String tagName, int count,
+                                DateTime? time) async =>
                             doTagging(tagId, tagName, count, time),
                         onDoubleTap: () {
                           AppLogger.d('do nothing');
@@ -195,9 +206,11 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       ),
                     ],
                   ),
-                if (tagsState.lastWeekUsedTags.isNotEmpty && allTagsState.searchedText.isEmpty)
+                if (tagsState.lastWeekUsedTags.isNotEmpty &&
+                    allTagsState.searchedText.isEmpty)
                   const SizedBox(height: 20),
-                if (tagsState.lastWeekUsedTags.isNotEmpty && allTagsState.searchedText.isEmpty)
+                if (tagsState.lastWeekUsedTags.isNotEmpty &&
+                    allTagsState.searchedText.isEmpty)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -218,7 +231,8 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       CustomisedTagsList(
                         tagsKeyList: tagsState.lastWeekUsedTags.keys.toList(),
                         selectedTags: allTagsState.selectedTags,
-                        onTap: (String tagId, String tagName, int count, DateTime? time) async =>
+                        onTap: (String tagId, String tagName, int count,
+                                DateTime? time) async =>
                             doTagging(tagId, tagName, count, time),
                         onDoubleTap: () {
                           AppLogger.d('do nothing');
@@ -226,9 +240,11 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       ),
                     ],
                   ),
-                if (tagsState.lastMonthUsedTags.isNotEmpty && allTagsState.searchedText.isEmpty)
+                if (tagsState.lastMonthUsedTags.isNotEmpty &&
+                    allTagsState.searchedText.isEmpty)
                   const SizedBox(height: 20),
-                if (tagsState.lastMonthUsedTags.isNotEmpty && allTagsState.searchedText.isEmpty)
+                if (tagsState.lastMonthUsedTags.isNotEmpty &&
+                    allTagsState.searchedText.isEmpty)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -249,7 +265,8 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       CustomisedTagsList(
                         tagsKeyList: tagsState.lastMonthUsedTags.keys.toList(),
                         selectedTags: allTagsState.selectedTags,
-                        onTap: (String tagId, String tagName, int count, DateTime? time) async =>
+                        onTap: (String tagId, String tagName, int count,
+                                DateTime? time) async =>
                             doTagging(tagId, tagName, count, time),
                         onDoubleTap: () {
                           AppLogger.d('do nothing');
@@ -257,7 +274,8 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       ),
                     ],
                   ),
-                if (allTagsState.searchedText.isEmpty) const SizedBox(height: 20),
+                if (allTagsState.searchedText.isEmpty)
+                  const SizedBox(height: 20),
                 if (allTagsState.searchedText.isEmpty)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -279,7 +297,8 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                       CustomisedTagsList(
                         tagsKeyList: tagsState.allTags.keys.toList(),
                         selectedTags: allTagsState.selectedTags,
-                        onTap: (String tagId, String tagName, int count, DateTime? time) async =>
+                        onTap: (String tagId, String tagName, int count,
+                                DateTime? time) async =>
                             doTagging(tagId, tagName, count, time),
                         onDoubleTap: () {
                           AppLogger.d('do nothing');
@@ -295,7 +314,8 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
     );
   }
 
-  Future<void> doTagging(String tagId, String tagName, int count, DateTime? time) async {
+  Future<void> doTagging(
+      String tagId, String tagName, int count, DateTime? time) async {
     AppLogger.d('Tagging: $tagName');
 
     final currentSelected = ref.read(allTagsProvider).selectedTags;
@@ -303,19 +323,19 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
     if (currentSelected.containsKey(tagId)) {
       // Remove tag
       ref.read(allTagsProvider.notifier).toggleTagSelection(
-        tagId,
-        TagModel(key: tagId, title: tagName, count: count, time: time),
-      );
+            tagId,
+            TagModel(key: tagId, title: tagName, count: count, time: time),
+          );
       await ref.read(tagsProvider.notifier).removeTagFromPic(
-        picId: widget.picStore!.state.photoId,
-        tagKey: tagId,
-      );
+            picId: widget.picStore!.state.photoId,
+            tagKey: tagId,
+          );
     } else {
       // Add tag
       ref.read(allTagsProvider.notifier).toggleTagSelection(
-        tagId,
-        TagModel(key: tagId, title: tagName, count: count, time: time),
-      );
+            tagId,
+            TagModel(key: tagId, title: tagName, count: count, time: time),
+          );
       await widget.picStore?.addMultipleTagsToPic(acceptedTagKeys: {tagId: ''});
     }
 
