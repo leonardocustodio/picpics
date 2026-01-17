@@ -479,7 +479,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                                           ),));
                                                           return;
                                                         }
-                                                        ref.read(userProvider.notifier).setIsBiometricActivated(false);
+                                                        ref.read(userProvider.notifier).setIsBiometricActivated(value: false);
                                                       },
                                                       child: Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -503,7 +503,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                                               }
                                                               ref
                                                                   .read(userProvider.notifier)
-                                                                  .setIsBiometricActivated(value);
+                                                                  .setIsBiometricActivated(value: value);
                                                             },
                                                           ),
                                                         ],

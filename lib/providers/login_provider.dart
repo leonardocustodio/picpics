@@ -129,7 +129,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
     try {
       // Update user state
-      unawaited(ref.read(userProvider.notifier).setTutorialCompleted(true));
+      unawaited(ref.read(userProvider.notifier).setTutorialCompleted(value: true));
 
       // Update database
       final user = await _database.getSingleMoorUser();

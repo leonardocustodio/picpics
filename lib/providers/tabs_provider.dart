@@ -235,7 +235,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (!permitted) {
       AppLogger.w('[TabsProvider] No gallery permission, aborting load');
       setIsUntaggedPicsLoaded(true);
-      _ref.read(swiperTabProvider.notifier).setLoaded(true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
       return;
     }
 
@@ -262,7 +262,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.e('[TabsProvider] Error in loadAssetPath: $e');
       AppLogger.e('[TabsProvider] Stack trace: $stackTrace');
       setIsUntaggedPicsLoaded(true);
-      _ref.read(swiperTabProvider.notifier).setLoaded(true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
     }
   }
 
@@ -271,7 +271,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.w('[TabsProvider] No asset paths found - device has no photos');
       state = state.copyWith(status: Status.deviceHasNoPics);
       setIsUntaggedPicsLoaded(true);
-      _ref.read(swiperTabProvider.notifier).setLoaded(true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
       return;
     }
 
@@ -283,7 +283,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.w('[TabsProvider] Asset count is 0 - device has no photos');
       state = state.copyWith(status: Status.deviceHasNoPics);
       setIsUntaggedPicsLoaded(true);
-      _ref.read(swiperTabProvider.notifier).setLoaded(true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
       return;
     }
 
@@ -440,7 +440,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
   Future<void> refreshUntaggedList() async {
     AppLogger.d('[TabsProvider] Starting refreshUntaggedList');
     setIsUntaggedPicsLoaded(false);
-    _ref.read(swiperTabProvider.notifier).setLoaded(false);
+    _ref.read(swiperTabProvider.notifier).setLoaded(loaded: false);
     try {
       sortAssetEntityList();
       await filterUntaggedPhotos();
@@ -451,7 +451,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     } finally {
       // Always set loaded to true to stop the loading indicator
       setIsUntaggedPicsLoaded(true);
-      _ref.read(swiperTabProvider.notifier).setLoaded(true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
     }
   }
 
@@ -497,22 +497,22 @@ class TabsNotifier extends StateNotifier<TabsState> {
     state = state.copyWith(currentIndex: index);
   }
 
-  void setIsTagging(bool value) {
+  void setIsTagging({required bool value}) {
     state = state.copyWith(isTagging: value);
   }
 
-  void setIsMultiSelecting(bool value) {
+  void setIsMultiSelecting({required bool value}) {
     state = state.copyWith(isMultiSelecting: value);
     if (!value) {
       clearSelectedPhotos();
     }
   }
 
-  void setMultiTagSheet(bool value) {
+  void setMultiTagSheet({required bool value}) {
     state = state.copyWith(multiTagSheet: value);
   }
 
-  void setMultiPicBar(bool value) {
+  void setMultiPicBar({required bool value}) {
     state = state.copyWith(multiPicBar: value);
   }
 
@@ -542,11 +542,11 @@ class TabsNotifier extends StateNotifier<TabsState> {
   // UI STATE SETTERS
   // ============================================================
 
-  void setIsLoading(bool value) {
+  void setIsLoading({required bool value}) {
     state = state.copyWith(isLoading: value);
   }
 
-  void setModalCard(bool value) {
+  void setModalCard({required bool value}) {
     state = state.copyWith(modalCard: value);
   }
 
@@ -558,15 +558,15 @@ class TabsNotifier extends StateNotifier<TabsState> {
     state = state.copyWith(topOffsetFirstTab: value);
   }
 
-  void setShowDeleteSecretModal(bool value) {
+  void setShowDeleteSecretModal({required bool value}) {
     state = state.copyWith(showDeleteSecretModal: value);
   }
 
-  void setIsScrolling(bool value) {
+  void setIsScrolling({required bool value}) {
     state = state.copyWith(isScrolling: value);
   }
 
-  void setIsToggleBarVisible(bool value) {
+  void setIsToggleBarVisible({required bool value}) {
     state = state.copyWith(isToggleBarVisible: value);
   }
 
@@ -578,7 +578,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     state = state.copyWith(toggleIndexTagged: value);
   }
 
-  void setIsUntaggedPicsLoaded(bool value) {
+  void setIsUntaggedPicsLoaded({required bool value}) {
     state = state.copyWith(isUntaggedPicsLoaded: value);
   }
 
@@ -719,7 +719,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     await Analytics.sendEvent(Event.deleted_photo);
   }
 
-  void deletePic(String picId, bool removeFromGallery) {
+  void deletePic(String picId, {required bool removeFromGallery}) {
     removePicFromUI(picId);
   }
 

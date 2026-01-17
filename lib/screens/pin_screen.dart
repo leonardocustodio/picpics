@@ -136,7 +136,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
     );
   }
 
-  Future<void> pinTapped(String value, bool backspace) async {
+  Future<void> pinTapped(String value, {required bool backspace}) async {
     final pinNotifier = ref.read<PinFullNotifier>(pinFullProvider.notifier);
     final pinState = ref.read<PinFullState>(pinFullProvider);
     final userState = ref.read(userProvider);
@@ -202,13 +202,13 @@ class _PinScreenState extends ConsumerState<PinScreen> {
           // Set email before saving pin (used when saving the pin)
           ref.read<UserNotifier>(userProvider.notifier).setEmail(pinState.email);
           await pinNotifier.saveNewPin();
-          ref.read<UserNotifier>(userProvider.notifier).setIsPinRegistered(true);
+          ref.read<UserNotifier>(userProvider.notifier).setIsPinRegistered(value: true);
           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
           pinNotifier
             ..setPinTemp('')
             ..setConfirmPinTemp('');
-          ref.read<UserNotifier>(userProvider.notifier).setWaitingAccessCode(false);
+          ref.read<UserNotifier>(userProvider.notifier).setWaitingAccessCode(value: false);
           await carouselController.animateToPage(0);
 
           if (mounted) {
@@ -242,7 +242,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
 
         if (valid) {
           await pinNotifier.activateBiometric();
-          ref.read<UserNotifier>(userProvider.notifier).setIsBiometricActivated(true);
+          ref.read<UserNotifier>(userProvider.notifier).setIsBiometricActivated(value: true);
 
           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
@@ -355,7 +355,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                         ),
                         onPressed: () {
                           if (pinState.isWaitingRecoveryKey) {
-                            pinNotifier.setIsWaitingRecoveryKey(false);
+                            pinNotifier.setIsWaitingRecoveryKey(value: false);
                           }
                           Navigator.of(context).pop();
                         },

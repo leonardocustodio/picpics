@@ -39,11 +39,11 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
         /// Hiding Months on days from here by listening to the scrollNotification
         if (scrollNotification is ScrollStartNotification) {
           AppLogger.d('Start scrolling');
-          tabsNotifier.setIsScrolling(true);
+          tabsNotifier.setIsScrolling(value: true);
           return false;
         } else if (scrollNotification is ScrollEndNotification) {
           AppLogger.d('End scrolling');
-          tabsNotifier.setIsScrolling(false);
+          tabsNotifier.setIsScrolling(value: false);
           return true;
         }
         return true;
@@ -133,7 +133,7 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
                           },
                           child: buildDateHeader(
                             controller.allUnTaggedPicsMonth[index],
-                            isSelected,
+                            isSelected: isSelected,
                           ),
                         );
                       }
@@ -265,8 +265,8 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
                             },
                             child: buildDateHeader(
                               controller.allUnTaggedPicsDay[index],
-                              isSelected,
-                            ));
+                              isSelected: isSelected,
+                            ),);
                       }
                       var blurHash = BlurHashController
                           .to.blurHash[controller.allUnTaggedPicsDay[index]];
@@ -349,7 +349,7 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
     return formatter.format(dateTime);
   }
 
-  Widget buildDateHeader(DateTime date, bool isSelected) {
+  Widget buildDateHeader(DateTime date, {required bool isSelected}) {
     final tabsState = ref.watch(tabsProvider);
 
     return Container(
@@ -447,7 +447,7 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
           duration: const Duration(milliseconds: 300),
           onEnd: () {
             tabsNotifier.setIsToggleBarVisible(
-              !tabsState.isScrolling,
+              value: !tabsState.isScrolling,
             );
           },
           child: Visibility(

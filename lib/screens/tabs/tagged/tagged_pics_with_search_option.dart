@@ -120,7 +120,7 @@ class TaggedPicsInDeviceWithSearchOption extends ConsumerWidget {
     return DateFormat.yMMMM().format(dateTime);
   }
 
-  Widget buildDateHeader(DateTime date, bool isSelected) {
+  Widget buildDateHeader(DateTime date, {required bool isSelected}) {
     return Container(
       padding: const EdgeInsets.only(left: 8, right: 8),
       height: 40,

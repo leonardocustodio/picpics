@@ -113,7 +113,7 @@ class UntaggedTabMonth extends ConsumerWidget {
                   child: GestureDetector(
                     onLongPress: () {
                       if (!tabsState.multiPicBar) {
-                        tabsNotifier.setMultiPicBar(true);
+                        tabsNotifier.setMultiPicBar(value: true);
                       }
                       taggedNotifier.addSelectedMultiBarPic(object as String);
                     },

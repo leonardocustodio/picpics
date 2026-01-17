@@ -38,20 +38,20 @@ Widget? _buildHeaderLeading(
       AppLogger.d('searching: $text');
       final isSearching =
           taggedNotifier.searchFocusNode.hasFocus || text.isNotEmpty || tagsState.selectedFilteringTagsKeys.isNotEmpty;
-      ref.read(tagsProvider.notifier).setIsSearching(isSearching);
+      ref.read(tagsProvider.notifier).setIsSearching(val: isSearching);
       ref.read(tagsProvider.notifier).setSearchText(text);
     },
     onSubmitted: (text) {
       AppLogger.d('return');
       final isSearching =
           taggedNotifier.searchFocusNode.hasFocus || text.isNotEmpty || tagsState.selectedFilteringTagsKeys.isNotEmpty;
-      ref.read(tagsProvider.notifier).setIsSearching(isSearching);
+      ref.read(tagsProvider.notifier).setIsSearching(val: isSearching);
       ref.read(tagsProvider.notifier).setSearchText('');
       taggedNotifier.searchEditingController.clear();
     },
     onTap: () {
       if (!tagsState.isSearching) {
-        ref.read(tagsProvider.notifier).setIsSearching(true);
+        ref.read(tagsProvider.notifier).setIsSearching(val: true);
         unawaited(ref.read(tagsProvider.notifier).tagsSuggestionsCalculate());
       }
     },
@@ -104,17 +104,17 @@ class TaggedTab extends ConsumerWidget {
           AppLogger.d('PopScope taggedTab');
           if (taggedState.multiTagSheet) {
             AppLogger.d('PopScope multiTagSheet');
-            taggedNotifier.setMultiTagSheet(false);
+            taggedNotifier.setMultiTagSheet(value: false);
             return;
           }
           if (taggedState.multiPicBar) {
             AppLogger.d('PopScope multiPicBar');
-            taggedNotifier.setMultiPicBar(false);
+            taggedNotifier.setMultiPicBar(value: false);
             return;
           }
           if (tagsState.isSearching) {
             AppLogger.d('PopScope isSearching');
-            tagsNotifier.setIsSearching(false);
+            tagsNotifier.setIsSearching(val: false);
             return;
           }
           AppLogger.d('PopScope currentTab = 0');
@@ -175,11 +175,11 @@ class TaggedTab extends ConsumerWidget {
                               onNotification: (scrollNotification) {
                                 if (scrollNotification is ScrollStartNotification) {
                                   AppLogger.d('Start scrolling');
-                                  taggedNotifier.setIsScrolling(true);
+                                  taggedNotifier.setIsScrolling(value: true);
                                   return true;
                                 } else if (scrollNotification is ScrollEndNotification) {
                                   AppLogger.d('End scrolling');
-                                  taggedNotifier.setIsScrolling(false);
+                                  taggedNotifier.setIsScrolling(value: false);
                                 }
                                 return false;
                               },
@@ -202,7 +202,7 @@ class TaggedTab extends ConsumerWidget {
                       ),
                       onEnd: () {
                         tabsNotifier.setIsToggleBarVisible(
-                          !taggedState.isScrolling,
+                          value: !taggedState.isScrolling,
                         );
                       },
                       child: Visibility(

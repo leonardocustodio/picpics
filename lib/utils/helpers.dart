@@ -76,7 +76,7 @@ LinearGradient getGradient(int index) {
   }
 }
 
-typedef CallBack = void Function(bool);
+typedef CallBack = void Function({required bool matched});
 
 void doCustomisedSearching(
   dynamic tag,

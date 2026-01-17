@@ -518,7 +518,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
   }
 
   /// Create photo object
-  Photo photoObject(Map<String, String> tagsMap, bool isPrivate) {
+  Photo photoObject(Map<String, String> tagsMap, {required bool isPrivate}) {
     return Photo(
       id: state.photoId,
       createdAt: state.createdAt,
@@ -590,7 +590,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     AppLogger.d('this picture is not in db, adding it...');
     AppLogger.d('Photo Id: ${state.photoId}');
 
-    final pic = photoObject(acceptedTagKeys, acceptedTagKeys[kSecretTagKey] != null);
+    final pic = photoObject(acceptedTagKeys, isPrivate: acceptedTagKeys[kSecretTagKey] != null);
 
     await database.createPhoto(pic);
 

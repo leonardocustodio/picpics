@@ -235,11 +235,11 @@ class UserNotifier extends StateNotifier<UserState> {
     // ref.read(languageProvider.notifier).changeLanguageTo(language);
   }
 
-  void setNotifications(bool value) {
+  void setNotifications({required bool value}) {
     state = state.copyWith(notifications: value);
   }
 
-  void setDailyChallenges(bool value) {
+  void setDailyChallenges({required bool value}) {
     state = state.copyWith(dailyChallenges: value);
   }
 
@@ -251,7 +251,7 @@ class UserNotifier extends StateNotifier<UserState> {
     state = state.copyWith(minutesOfDay: value);
   }
 
-  Future<void> setTutorialCompleted(bool value) async {
+  Future<void> setTutorialCompleted({required bool value}) async {
     state = state.copyWith(tutorialCompleted: value);
 
     // Update database
@@ -267,23 +267,23 @@ class UserNotifier extends StateNotifier<UserState> {
     }
   }
 
-  void setHasGalleryPermission(bool value) {
+  void setHasGalleryPermission({required bool value}) {
     state = state.copyWith(hasGalleryPermission: value);
   }
 
-  void setLoggedIn(bool value) {
+  void setLoggedIn({required bool value}) {
     state = state.copyWith(loggedIn: value);
   }
 
-  void setIsPinRegistered(bool value) {
+  void setIsPinRegistered({required bool value}) {
     state = state.copyWith(isPinRegistered: value);
   }
 
-  void setKeepAskingToDelete(bool value) {
+  void setKeepAskingToDelete({required bool value}) {
     state = state.copyWith(keepAskingToDelete: value);
   }
 
-  void setShouldDeleteOnPrivate(bool value) {
+  void setShouldDeleteOnPrivate({required bool value}) {
     state = state.copyWith(shouldDeleteOnPrivate: value);
   }
 
@@ -291,19 +291,19 @@ class UserNotifier extends StateNotifier<UserState> {
     state = state.copyWith(email: value);
   }
 
-  void setTourCompleted(bool value) {
+  void setTourCompleted({required bool value}) {
     state = state.copyWith(tourCompleted: value);
   }
 
-  void setIsBiometricActivated(bool value) {
+  void setIsBiometricActivated({required bool value}) {
     state = state.copyWith(isBiometricActivated: value);
   }
 
-  void setIsMenuExpanded(bool value) {
+  void setIsMenuExpanded({required bool value}) {
     state = state.copyWith(isMenuExpanded: value);
   }
 
-  void setWaitingAccessCode(bool value) {
+  void setWaitingAccessCode({required bool value}) {
     state = state.copyWith(waitingAccessCode: value);
   }
 

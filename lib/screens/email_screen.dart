@@ -52,7 +52,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
     });
 
     if (result['success'] == true) {
-      ref.read<UserNotifier>(userProvider.notifier).setWaitingAccessCode(true);
+      ref.read<UserNotifier>(userProvider.notifier).setWaitingAccessCode(value: true);
       if (mounted) {
         await Navigator.of(context).pushNamed(PinScreen.id);
       }
@@ -107,7 +107,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
                           vertical: 10,
                         ),
                         onPressed: () {
-                          ref.read(userProvider.notifier).setWaitingAccessCode(false);
+                          ref.read(userProvider.notifier).setWaitingAccessCode(value: false);
                           Navigator.of(context).pop();
                         },
                         child: Image.asset('lib/images/backarrowwithdropshadow.png'),

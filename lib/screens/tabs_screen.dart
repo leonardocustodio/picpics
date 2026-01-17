@@ -194,7 +194,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                         await ref.read(userProvider.notifier).checkNotificationPermission(firstPermissionCheck: true);
 
                         // Mark tutorial as completed
-                        await ref.read(userProvider.notifier).setTutorialCompleted(true);
+                        await ref.read(userProvider.notifier).setTutorialCompleted(value: true);
 
                         // Load assets after permission is granted
                         await ref.read(tabsProvider.notifier).loadAssetPath();

@@ -131,7 +131,7 @@ class _TaggedTabDateState extends ConsumerState<TaggedTabDate> {
                 child: GestureDetector(
                   onLongPress: () {
                     if (!taggedState.multiPicBar) {
-                      taggedNotifier.setMultiPicBar(true);
+                      taggedNotifier.setMultiPicBar(value: true);
                     }
                     taggedNotifier.addSelectedMultiBarPic(picId as String);
                   },

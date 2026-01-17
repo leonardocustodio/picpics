@@ -118,7 +118,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       if (result.data is Map && (result.data as Map).isNotEmpty) {
         AppLogger.d('Recovery Key Encrypted: ${result.data}');
         state = state.copyWith(encryptedRecoveryKey: result.data as String);
-        setIsWaitingRecoveryKey(true);
+        setIsWaitingRecoveryKey(value: true);
         await Crypto.saveSaltKey();
         return true;
       }
@@ -159,7 +159,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
 
     // Reset state
     setPin('');
-    setIsWaitingRecoveryKey(false);
+    setIsWaitingRecoveryKey(value: false);
     AppLogger.d('Saved new pin (simplified)!!!');
 
     // Original code (commented until Crypto migration):
@@ -288,7 +288,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       AppLogger.d('Is valid: $valid');
     } else {
       shakeKey.currentState?.forward();
-      setInvalidAccessCode(true);
+      setInvalidAccessCode(value: true);
     }
   }
 
@@ -325,8 +325,8 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   Future<void> setPinAndPop(BuildContext context, {String? popToId}) async {
     ref.read(userProvider.notifier)
       ..setEmail(state.email)
-      ..setIsPinRegistered(true)
-      ..setWaitingAccessCode(false);
+      ..setIsPinRegistered(value: true)
+      ..setWaitingAccessCode(value: false);
     ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
     if (popToId != null) {

@@ -61,7 +61,7 @@ class TaggedTabSelectiveTagKeyGrid extends ConsumerWidget {
                 onLongPress: () {
                   final taggedNotifier = ref.read(taggedProvider.notifier);
                   if (!taggedState.multiPicBar) {
-                    taggedNotifier.setMultiPicBar(true);
+                    taggedNotifier.setMultiPicBar(value: true);
                   }
                   taggedNotifier.addSelectedMultiBarPic(picId);
                 },

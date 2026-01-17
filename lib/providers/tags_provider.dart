@@ -88,7 +88,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
     state = state.copyWith(allTags: allTagsMap);
   }
 
-  void setIsSearching(bool val) {
+  void setIsSearching({required bool val}) {
     state = state.copyWith(isSearching: val);
     if (!val) {
       state = state.copyWith(selectedFilteringTagsKeys: {});

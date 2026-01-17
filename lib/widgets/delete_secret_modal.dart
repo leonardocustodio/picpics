@@ -206,7 +206,7 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                         padding: EdgeInsets.zero,
                         onPressed: () {
                           if (!keepAsking) {
-                            ref.read(userProvider.notifier).setKeepAskingToDelete(false);
+                            ref.read(userProvider.notifier).setKeepAskingToDelete(value: false);
                           }
                           widget.onPressedDelete();
                         },
@@ -240,7 +240,7 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                         padding: EdgeInsets.zero,
                         onPressed: () {
                           if (!keepAsking) {
-                            ref.read(userProvider.notifier).setKeepAskingToDelete(false);
+                            ref.read(userProvider.notifier).setKeepAskingToDelete(value: false);
                           }
                           widget.onPressedOk();
                         },

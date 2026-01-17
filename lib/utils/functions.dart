@@ -16,8 +16,8 @@ Future<void> showDeleteSecretModalForMultiPic(BuildContext context, WidgetRef re
   final userState = ref.read(userProvider);
 
   if (!userState.keepAskingToDelete) {
-    ref.read(tabsProvider.notifier).setMultiTagSheet(false);
-    ref.read(tabsProvider.notifier).setMultiPicBar(false);
+    ref.read(tabsProvider.notifier).setMultiTagSheet(value: false);
+    ref.read(tabsProvider.notifier).setMultiPicBar(value: false);
     await ref.read(tagsProvider.notifier).addTagsToSelectedPics();
     return;
   }
@@ -33,16 +33,16 @@ Future<void> showDeleteSecretModalForMultiPic(BuildContext context, WidgetRef re
           Navigator.of(buildContext).pop();
         },
         onPressedDelete: () async {
-          ref.read(userProvider.notifier).setShouldDeleteOnPrivate(false);
-          ref.read(tabsProvider.notifier).setMultiTagSheet(false);
-          ref.read(tabsProvider.notifier).setMultiPicBar(false);
+          ref.read(userProvider.notifier).setShouldDeleteOnPrivate(value: false);
+          ref.read(tabsProvider.notifier).setMultiTagSheet(value: false);
+          ref.read(tabsProvider.notifier).setMultiPicBar(value: false);
           await ref.read(tagsProvider.notifier).addTagsToSelectedPics();
           if (buildContext.mounted) Navigator.of(buildContext).pop();
         },
         onPressedOk: () async {
-          ref.read(userProvider.notifier).setShouldDeleteOnPrivate(true);
-          ref.read(tabsProvider.notifier).setMultiTagSheet(false);
-          ref.read(tabsProvider.notifier).setMultiPicBar(false);
+          ref.read(userProvider.notifier).setShouldDeleteOnPrivate(value: true);
+          ref.read(tabsProvider.notifier).setMultiTagSheet(value: false);
+          ref.read(tabsProvider.notifier).setMultiPicBar(value: false);
           await ref.read(tagsProvider.notifier).addTagsToSelectedPics();
           if (buildContext.mounted) Navigator.of(buildContext).pop();
         },
@@ -97,12 +97,12 @@ Future<void> showDeleteSecretModal(
         },
         onPressedDelete: () async {
           //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
-          ref.read(userProvider.notifier).setShouldDeleteOnPrivate(false);
+          ref.read(userProvider.notifier).setShouldDeleteOnPrivate(value: false);
           Navigator.of(buildContext).pop();
         },
         onPressedOk: () async {
           //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
-          ref.read(userProvider.notifier).setShouldDeleteOnPrivate(true);
+          ref.read(userProvider.notifier).setShouldDeleteOnPrivate(value: true);
           Navigator.of(buildContext).pop();
         },
       );

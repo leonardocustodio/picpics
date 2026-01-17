@@ -52,11 +52,11 @@ class PhotoScreenState {
 class PhotoScreenNotifier extends StateNotifier<PhotoScreenState> {
   PhotoScreenNotifier() : super(PhotoScreenState());
 
-  void setOverlay(bool value) {
+  void setOverlay({required bool value}) {
     state = state.copyWith(overlay: value);
   }
 
-  void setShowSlideshow(bool value) {
+  void setShowSlideshow({required bool value}) {
     state = state.copyWith(showSlideshow: value);
   }
 

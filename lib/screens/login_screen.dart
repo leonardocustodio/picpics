@@ -168,7 +168,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         onPressed: () async {
                           if (loginState.slideIndex == loginState.totalSlides - 1) {
                             await ref.read(loginProvider.notifier).completeIntroduction();
-                            ref.read(userProvider.notifier).setTutorialCompleted(true);
+                            ref.read(userProvider.notifier).setTutorialCompleted(value: true);
                             if (mounted) {
                               // ignore: use_build_context_synchronously
                               Navigator.of(context).pushNamedAndRemoveUntil(

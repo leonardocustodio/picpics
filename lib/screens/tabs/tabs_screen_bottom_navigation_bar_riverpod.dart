@@ -76,7 +76,7 @@ class _TabsScreenBottomNavigatioBarState extends ConsumerState<TabsScreenBottomN
                     children: <Widget>[
                       CupertinoButton(
                         onPressed: () {
-                          ref.read(tabsProvider.notifier).setMultiTagSheet(false);
+                          ref.read(tabsProvider.notifier).setMultiTagSheet(value: false);
                         },
                         child: SizedBox(
                           width: 80,
@@ -100,8 +100,8 @@ class _TabsScreenBottomNavigatioBarState extends ConsumerState<TabsScreenBottomN
                             return;
                           }
 
-                          ref.read(tabsProvider.notifier).setMultiTagSheet(false);
-                          ref.read(tabsProvider.notifier).setMultiPicBar(false);
+                          ref.read(tabsProvider.notifier).setMultiTagSheet(value: false);
+                          ref.read(tabsProvider.notifier).setMultiPicBar(value: false);
 
                           WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
                             await ref.read(tagsProvider.notifier).addTagsToSelectedPics();
@@ -147,7 +147,7 @@ class _TabsScreenBottomNavigatioBarState extends ConsumerState<TabsScreenBottomN
               CupertinoButton(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 onPressed: () {
-                  ref.read(tabsProvider.notifier).setMultiPicBar(false);
+                  ref.read(tabsProvider.notifier).setMultiPicBar(value: false);
                 },
                 child: Text(
                   s.cancel,

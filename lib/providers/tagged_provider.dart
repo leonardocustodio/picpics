@@ -97,7 +97,7 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
   late ScrollController scrollControllerThirdTab;
   double offsetThirdTab = 0;
 
-  void setMultiPicBar(bool value) {
+  void setMultiPicBar({required bool value}) {
     state = state.copyWith(multiPicBar: value);
   }
 
@@ -108,7 +108,7 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
     );
   }
 
-  void setMultiTagSheet(bool value) {
+  void setMultiTagSheet({required bool value}) {
     state = state.copyWith(multiTagSheet: value);
   }
 
@@ -145,7 +145,7 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
     return true;
   }
 
-  void setHideTitleThirdTab(bool value) {
+  void setHideTitleThirdTab({required bool value}) {
     if (value == state.hideTitleThirdTab) {
       return;
     }
@@ -168,7 +168,7 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
     }
   }
 
-  void setIsScrolling(bool value) {
+  void setIsScrolling({required bool value}) {
     state = state.copyWith(isScrolling: value);
   }
 

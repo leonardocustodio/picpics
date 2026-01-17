@@ -63,7 +63,7 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
                         children: <Widget>[
                           CupertinoButton(
                             onPressed: () {
-                              taggedNotifier.setMultiTagSheet(false);
+                              taggedNotifier.setMultiTagSheet(value: false);
                             },
                             child: SizedBox(
                               width: 80,
@@ -93,8 +93,8 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
                               }
 
                               taggedNotifier
-                                ..setMultiTagSheet(false)
-                                ..setMultiPicBar(false);
+                                ..setMultiTagSheet(value: false)
+                                ..setMultiPicBar(value: false);
                               await tagsNotifier.addTagsToSelectedPics();
                               await ref.read(tabsProvider.notifier).refreshUntaggedList();
                               await tagsNotifier.tagsSuggestionsCalculate();

@@ -124,7 +124,7 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
     );
   }
 
-  Future<void> pinTapped(String value, bool backspace) async {
+  Future<void> pinTapped(String value, {required bool backspace}) async {
     final pinNotifier = ref.read<PinFullNotifier>(pinFullProvider.notifier);
     final pinState = ref.read<PinFullState>(pinFullProvider);
     final userState = ref.read(userProvider);
@@ -216,7 +216,7 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                         onPressed: () {
                           if (pinState.isWaitingRecoveryKey) {
-                            pinNotifier.setIsWaitingRecoveryKey(false);
+                            pinNotifier.setIsWaitingRecoveryKey(value: false);
                           }
                           Navigator.of(context).pop();
                         },
