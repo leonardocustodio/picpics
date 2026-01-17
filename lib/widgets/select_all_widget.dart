@@ -23,13 +23,13 @@ class SelectAllWidget extends StatelessWidget {
                   )
                 : BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey),),
-            child:
-                isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
+                    border: Border.all(color: Colors.grey),
+                  ),
+            child: isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
           ),
           const Text(
             'Select All',
-            textScaler: TextScaler.linear(1),
+            textScaler: TextScaler.noScaling,
             style: TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),

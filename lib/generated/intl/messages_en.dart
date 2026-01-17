@@ -21,10 +21,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(email) => "An access key was sent to ${email}";
 
-  static String m1(howMany) => Intl.plural(howMany,
-      zero: 'No photos selected',
-      one: '1 photo selected',
-      other: '${howMany} photos selected');
+  static String m1(howMany) =>
+      Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected');
 
   static String m2(url) => "To organize all your photos go to ${url}";
 
@@ -32,21 +30,17 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "access_code": MessageLookupByLibrary.simpleMessage("Access code"),
         "access_code_sent": m0,
-        "add_multiple_tags":
-            MessageLookupByLibrary.simpleMessage("Adicione múltiplas tags"),
+        "add_multiple_tags": MessageLookupByLibrary.simpleMessage("Adicione múltiplas tags"),
         "add_tag": MessageLookupByLibrary.simpleMessage("Add tag"),
         "add_tags": MessageLookupByLibrary.simpleMessage("Add tags"),
-        "aerospace_engineering_tag":
-            MessageLookupByLibrary.simpleMessage("Aerospace engineering"),
+        "aerospace_engineering_tag": MessageLookupByLibrary.simpleMessage("Aerospace engineering"),
         "aircraft_tag": MessageLookupByLibrary.simpleMessage("Aircraft"),
         "airliner_tag": MessageLookupByLibrary.simpleMessage("Airliner"),
         "airplane_tag": MessageLookupByLibrary.simpleMessage("Airplane"),
         "alcohol_tag": MessageLookupByLibrary.simpleMessage("Alcohol"),
         "allTags": MessageLookupByLibrary.simpleMessage("All Tags"),
-        "all_at_once": MessageLookupByLibrary.simpleMessage(
-            "Organize multiple photos at once"),
-        "all_search_tags":
-            MessageLookupByLibrary.simpleMessage("All Search Tags"),
+        "all_at_once": MessageLookupByLibrary.simpleMessage("Organize multiple photos at once"),
+        "all_search_tags": MessageLookupByLibrary.simpleMessage("All Search Tags"),
         "always": MessageLookupByLibrary.simpleMessage("Always"),
         "aquarium_tag": MessageLookupByLibrary.simpleMessage("Aquarium"),
         "archery_tag": MessageLookupByLibrary.simpleMessage("Archery"),
@@ -56,10 +50,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "We need access to your photo library so you can start organizing your photos with picPics. Don't worry your data will never leave your device!"),
         "asphalt_tag": MessageLookupByLibrary.simpleMessage("Asphalt"),
         "aurora_tag": MessageLookupByLibrary.simpleMessage("Aurora"),
-        "auto_renewable_first_part":
-            MessageLookupByLibrary.simpleMessage("The subscription is "),
-        "auto_renewable_second_part":
-            MessageLookupByLibrary.simpleMessage("auto-renewable."),
+        "auto_renewable_first_part": MessageLookupByLibrary.simpleMessage("The subscription is "),
+        "auto_renewable_second_part": MessageLookupByLibrary.simpleMessage("auto-renewable."),
         "aviation_tag": MessageLookupByLibrary.simpleMessage("Aviation"),
         "baby_tag": MessageLookupByLibrary.simpleMessage("Baby"),
         "backpacking_tag": MessageLookupByLibrary.simpleMessage("Backpacking"),
@@ -72,8 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "bangs_tag": MessageLookupByLibrary.simpleMessage("Bangs"),
         "bar_tag": MessageLookupByLibrary.simpleMessage("Bar"),
         "barn_tag": MessageLookupByLibrary.simpleMessage("Barn"),
-        "basset_hound_tag":
-            MessageLookupByLibrary.simpleMessage("Basset hound"),
+        "basset_hound_tag": MessageLookupByLibrary.simpleMessage("Basset hound"),
         "bathing_tag": MessageLookupByLibrary.simpleMessage("Bathing"),
         "bathroom_tag": MessageLookupByLibrary.simpleMessage("Bathroom"),
         "beach_tag": MessageLookupByLibrary.simpleMessage("Beach"),
@@ -100,21 +91,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "brig_tag": MessageLookupByLibrary.simpleMessage("Brig"),
         "building_tag": MessageLookupByLibrary.simpleMessage("Building"),
         "bull_tag": MessageLookupByLibrary.simpleMessage("Bull"),
-        "bullfighting_tag":
-            MessageLookupByLibrary.simpleMessage("Bullfighting"),
+        "bullfighting_tag": MessageLookupByLibrary.simpleMessage("Bullfighting"),
         "bumper_tag": MessageLookupByLibrary.simpleMessage("Bumper"),
         "bunk_bed_tag": MessageLookupByLibrary.simpleMessage("Bunk bed"),
         "bus_tag": MessageLookupByLibrary.simpleMessage("Bus"),
         "butterfly_tag": MessageLookupByLibrary.simpleMessage("Butterfly"),
         "cabinetry_tag": MessageLookupByLibrary.simpleMessage("Cabinetry"),
         "cage_tag": MessageLookupByLibrary.simpleMessage("Cage"),
-        "cairn_terrier_tag":
-            MessageLookupByLibrary.simpleMessage("Cairn terrier"),
+        "cairn_terrier_tag": MessageLookupByLibrary.simpleMessage("Cairn terrier"),
         "cake_tag": MessageLookupByLibrary.simpleMessage("Cake"),
         "camping_tag": MessageLookupByLibrary.simpleMessage("Camping"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
-        "cancel_anytime":
-            MessageLookupByLibrary.simpleMessage("Cancel anytime"),
+        "cancel_anytime": MessageLookupByLibrary.simpleMessage("Cancel anytime"),
         "canoe_tag": MessageLookupByLibrary.simpleMessage("Canoe"),
         "canyon_tag": MessageLookupByLibrary.simpleMessage("Canyon"),
         "cap_tag": MessageLookupByLibrary.simpleMessage("Cap"),
@@ -132,8 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "centrepiece_tag": MessageLookupByLibrary.simpleMessage("Centrepiece"),
         "chain_tag": MessageLookupByLibrary.simpleMessage("Chain"),
         "chair_tag": MessageLookupByLibrary.simpleMessage("Chair"),
-        "cheeseburger_tag":
-            MessageLookupByLibrary.simpleMessage("Cheeseburger"),
+        "cheeseburger_tag": MessageLookupByLibrary.simpleMessage("Cheeseburger"),
         "christmas_tag": MessageLookupByLibrary.simpleMessage("Christmas"),
         "church_tag": MessageLookupByLibrary.simpleMessage("Church"),
         "circus_tag": MessageLookupByLibrary.simpleMessage("Circus"),
@@ -151,16 +138,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "competition_tag": MessageLookupByLibrary.simpleMessage("Competition"),
         "computer_tag": MessageLookupByLibrary.simpleMessage("Computer"),
         "concert_tag": MessageLookupByLibrary.simpleMessage("Concert"),
-        "confirm_email": MessageLookupByLibrary.simpleMessage(
-            "Confirm your registration email to receive your access code"),
-        "confirm_secret_key":
-            MessageLookupByLibrary.simpleMessage("Confirm secret key"),
-        "construction_tag":
-            MessageLookupByLibrary.simpleMessage("Construction"),
+        "confirm_email":
+            MessageLookupByLibrary.simpleMessage("Confirm your registration email to receive your access code"),
+        "confirm_secret_key": MessageLookupByLibrary.simpleMessage("Confirm secret key"),
+        "construction_tag": MessageLookupByLibrary.simpleMessage("Construction"),
         "continue_string": MessageLookupByLibrary.simpleMessage("Continue"),
         "cookie_tag": MessageLookupByLibrary.simpleMessage("Cookie"),
-        "cookware_and_bakeware_tag":
-            MessageLookupByLibrary.simpleMessage("Cookware and bakeware"),
+        "cookware_and_bakeware_tag": MessageLookupByLibrary.simpleMessage("Cookware and bakeware"),
         "cool_tag": MessageLookupByLibrary.simpleMessage("Cool"),
         "cotton_tag": MessageLookupByLibrary.simpleMessage("Cotton"),
         "couch_tag": MessageLookupByLibrary.simpleMessage("Couch"),
@@ -178,16 +162,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "cushion_tag": MessageLookupByLibrary.simpleMessage("Cushion"),
         "cutlery_tag": MessageLookupByLibrary.simpleMessage("Cutlery"),
         "cycling_tag": MessageLookupByLibrary.simpleMessage("Cycling"),
-        "daily_challenge":
-            MessageLookupByLibrary.simpleMessage("Daily challenge"),
-        "daily_challenge_permission_description":
-            MessageLookupByLibrary.simpleMessage(
-                "For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone"),
+        "daily_challenge": MessageLookupByLibrary.simpleMessage("Daily challenge"),
+        "daily_challenge_permission_description": MessageLookupByLibrary.simpleMessage(
+            "For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone"),
         "daily_goal": MessageLookupByLibrary.simpleMessage("Daily goal"),
-        "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It's time to complete your picPics daily challenge!"),
-        "daily_notification_title":
-            MessageLookupByLibrary.simpleMessage("Daily challenge"),
+        "daily_notification_description":
+            MessageLookupByLibrary.simpleMessage("It's time to complete your picPics daily challenge!"),
+        "daily_notification_title": MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "dalmatian_tag": MessageLookupByLibrary.simpleMessage("Dalmatian"),
         "dam_tag": MessageLookupByLibrary.simpleMessage("Dam"),
         "dance_tag": MessageLookupByLibrary.simpleMessage("Dance"),
@@ -199,12 +180,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "device_has_no_pics": MessageLookupByLibrary.simpleMessage(
             "This device has no photo in the gallery, so there is no photo that can be tagged."),
         "dinosaur_tag": MessageLookupByLibrary.simpleMessage("Dinosaur"),
-        "disable_secret": MessageLookupByLibrary.simpleMessage(
-            "Do you want to unhide this photo?"),
+        "disable_secret": MessageLookupByLibrary.simpleMessage("Do you want to unhide this photo?"),
         "dog_tag": MessageLookupByLibrary.simpleMessage("Dog"),
         "doily_tag": MessageLookupByLibrary.simpleMessage("Doily"),
-        "dont_ask_again":
-            MessageLookupByLibrary.simpleMessage("Don't ask again"),
+        "dont_ask_again": MessageLookupByLibrary.simpleMessage("Don't ask again"),
         "dragon_tag": MessageLookupByLibrary.simpleMessage("Dragon"),
         "drawer_tag": MessageLookupByLibrary.simpleMessage("Drawer"),
         "dress_tag": MessageLookupByLibrary.simpleMessage("Dress"),
@@ -216,30 +195,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit_tag": MessageLookupByLibrary.simpleMessage("Edit tag"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
         "enable_faceid": MessageLookupByLibrary.simpleMessage("Enable Face ID"),
-        "enable_fingerprint":
-            MessageLookupByLibrary.simpleMessage("Enable Fingerprint"),
-        "enable_irisscanner":
-            MessageLookupByLibrary.simpleMessage("Enable Iris Scanner"),
-        "enable_touchid":
-            MessageLookupByLibrary.simpleMessage("Enable Touch ID"),
+        "enable_fingerprint": MessageLookupByLibrary.simpleMessage("Enable Fingerprint"),
+        "enable_irisscanner": MessageLookupByLibrary.simpleMessage("Enable Iris Scanner"),
+        "enable_touchid": MessageLookupByLibrary.simpleMessage("Enable Touch ID"),
         "event_tag": MessageLookupByLibrary.simpleMessage("Event"),
-        "export_all_gallery":
-            MessageLookupByLibrary.simpleMessage("Export all gallery"),
-        "export_library":
-            MessageLookupByLibrary.simpleMessage("Export Library"),
+        "export_all_gallery": MessageLookupByLibrary.simpleMessage("Export all gallery"),
+        "export_library": MessageLookupByLibrary.simpleMessage("Export Library"),
         "eyelash_tag": MessageLookupByLibrary.simpleMessage("Eyelash"),
         "factory_tag": MessageLookupByLibrary.simpleMessage("Factory"),
         "family_tag": MessageLookupByLibrary.simpleMessage("Family"),
         "farm_tag": MessageLookupByLibrary.simpleMessage("Farm"),
         "fast_food_tag": MessageLookupByLibrary.simpleMessage("Fast food"),
-        "feedback_bug_report":
-            MessageLookupByLibrary.simpleMessage("Feedback & bug report"),
-        "ferris_wheel_tag":
-            MessageLookupByLibrary.simpleMessage("Ferris wheel"),
+        "feedback_bug_report": MessageLookupByLibrary.simpleMessage("Feedback & bug report"),
+        "ferris_wheel_tag": MessageLookupByLibrary.simpleMessage("Ferris wheel"),
         "fiction_tag": MessageLookupByLibrary.simpleMessage("Fiction"),
         "field_tag": MessageLookupByLibrary.simpleMessage("Field"),
-        "find_easily":
-            MessageLookupByLibrary.simpleMessage("Easily find your photos"),
+        "find_easily": MessageLookupByLibrary.simpleMessage("Easily find your photos"),
         "finishing": MessageLookupByLibrary.simpleMessage("Finishing..."),
         "fire_tag": MessageLookupByLibrary.simpleMessage("Fire"),
         "fireworks_tag": MessageLookupByLibrary.simpleMessage("Fireworks"),
@@ -255,20 +226,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "foods_tag": MessageLookupByLibrary.simpleMessage("Foods"),
         "foot_tag": MessageLookupByLibrary.simpleMessage("Foot"),
         "forest_tag": MessageLookupByLibrary.simpleMessage("Forest"),
-        "forgot_secret_key":
-            MessageLookupByLibrary.simpleMessage("Forgot secret key?"),
+        "forgot_secret_key": MessageLookupByLibrary.simpleMessage("Forgot secret key?"),
         "frigate_tag": MessageLookupByLibrary.simpleMessage("Frigate"),
         "fruit_tag": MessageLookupByLibrary.simpleMessage("Fruit"),
         "full_screen": MessageLookupByLibrary.simpleMessage("Full Screen"),
         "fun_tag": MessageLookupByLibrary.simpleMessage("Fun"),
         "fur_tag": MessageLookupByLibrary.simpleMessage("Fur"),
-        "gallery_access_permission":
-            MessageLookupByLibrary.simpleMessage("Access permissions"),
-        "gallery_access_permission_description":
-            MessageLookupByLibrary.simpleMessage(
-                "To start organizing your photos, we need authorization to access them"),
-        "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
-            "To organize your photos we need access to your photo gallery"),
+        "gallery_access_permission": MessageLookupByLibrary.simpleMessage("Access permissions"),
+        "gallery_access_permission_description": MessageLookupByLibrary.simpleMessage(
+            "To start organizing your photos, we need authorization to access them"),
+        "gallery_access_reason":
+            MessageLookupByLibrary.simpleMessage("To organize your photos we need access to your photo gallery"),
         "garden_tag": MessageLookupByLibrary.simpleMessage("Garden"),
         "gelato_tag": MessageLookupByLibrary.simpleMessage("Gelato"),
         "gerbil_tag": MessageLookupByLibrary.simpleMessage("Gerbil"),
@@ -303,8 +271,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "icing_tag": MessageLookupByLibrary.simpleMessage("Icing"),
         "icon_tag": MessageLookupByLibrary.simpleMessage("Icon"),
         "infinite_tags": MessageLookupByLibrary.simpleMessage("Infinite tags"),
-        "infrastructure_tag":
-            MessageLookupByLibrary.simpleMessage("Infrastructure"),
+        "infrastructure_tag": MessageLookupByLibrary.simpleMessage("Infrastructure"),
         "insect_tag": MessageLookupByLibrary.simpleMessage("Insect"),
         "interaction_tag": MessageLookupByLibrary.simpleMessage("Interaction"),
         "jacket_tag": MessageLookupByLibrary.simpleMessage("Jacket"),
@@ -333,10 +300,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "lighthouse_tag": MessageLookupByLibrary.simpleMessage("Lighthouse"),
         "lightning_tag": MessageLookupByLibrary.simpleMessage("Lightning"),
         "lipstick_tag": MessageLookupByLibrary.simpleMessage("Lipstick"),
-        "lock_with_pin": MessageLookupByLibrary.simpleMessage(
-            "Lock down your private photos with a PIN passcode."),
-        "lock_your_photos":
-            MessageLookupByLibrary.simpleMessage("Lock your photos"),
+        "lock_with_pin": MessageLookupByLibrary.simpleMessage("Lock down your private photos with a PIN passcode."),
+        "lock_your_photos": MessageLookupByLibrary.simpleMessage("Lock your photos"),
         "longboard_tag": MessageLookupByLibrary.simpleMessage("Longboard"),
         "love_tag": MessageLookupByLibrary.simpleMessage("Love"),
         "loveseat_tag": MessageLookupByLibrary.simpleMessage("Loveseat"),
@@ -348,8 +313,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "metal_tag": MessageLookupByLibrary.simpleMessage("Metal"),
         "militia_tag": MessageLookupByLibrary.simpleMessage("Militia"),
         "miniature_tag": MessageLookupByLibrary.simpleMessage("Miniature"),
-        "mobile_phone_tag":
-            MessageLookupByLibrary.simpleMessage("Mobile phone"),
+        "mobile_phone_tag": MessageLookupByLibrary.simpleMessage("Mobile phone"),
         "model_tag": MessageLookupByLibrary.simpleMessage("Model"),
         "money_tag": MessageLookupByLibrary.simpleMessage("Money"),
         "monochrome_tag": MessageLookupByLibrary.simpleMessage("Monochrome"),
@@ -365,8 +329,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "mufti_tag": MessageLookupByLibrary.simpleMessage("Mufti"),
         "muscle_tag": MessageLookupByLibrary.simpleMessage("Muscle"),
         "museum_tag": MessageLookupByLibrary.simpleMessage("Museum"),
-        "musical_instrument_tag":
-            MessageLookupByLibrary.simpleMessage("Musical instrument"),
+        "musical_instrument_tag": MessageLookupByLibrary.simpleMessage("Musical instrument"),
         "musical_tag": MessageLookupByLibrary.simpleMessage("Musical"),
         "musician_tag": MessageLookupByLibrary.simpleMessage("Musician"),
         "nail_tag": MessageLookupByLibrary.simpleMessage("Nail"),
@@ -375,34 +338,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "needlework_tag": MessageLookupByLibrary.simpleMessage("Needlework"),
         "neon_tag": MessageLookupByLibrary.simpleMessage("Neon"),
         "net_tag": MessageLookupByLibrary.simpleMessage("Net"),
-        "new_secret_key":
-            MessageLookupByLibrary.simpleMessage("New secret key"),
+        "new_secret_key": MessageLookupByLibrary.simpleMessage("New secret key"),
         "news_tag": MessageLookupByLibrary.simpleMessage("News"),
         "newspaper_tag": MessageLookupByLibrary.simpleMessage("Newspaper"),
         "next": MessageLookupByLibrary.simpleMessage("Next"),
         "nightclub_tag": MessageLookupByLibrary.simpleMessage("Nightclub"),
         "no": MessageLookupByLibrary.simpleMessage("No"),
         "no_ads": MessageLookupByLibrary.simpleMessage("No Ads"),
-        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
-            "There are no more photos to organize."),
-        "no_previous_purchase":
-            MessageLookupByLibrary.simpleMessage("No Previous Purchase"),
-        "no_tagged_photos": MessageLookupByLibrary.simpleMessage(
-            "You don't have any tagged photos yet"),
+        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage("There are no more photos to organize."),
+        "no_previous_purchase": MessageLookupByLibrary.simpleMessage("No Previous Purchase"),
+        "no_tagged_photos": MessageLookupByLibrary.simpleMessage("You don't have any tagged photos yet"),
         "no_tags_found": MessageLookupByLibrary.simpleMessage("No tags found"),
-        "no_valid_subscription": MessageLookupByLibrary.simpleMessage(
-            "Could not find a valid subscription purchase."),
-        "notification_time":
-            MessageLookupByLibrary.simpleMessage("Notification time"),
+        "no_valid_subscription": MessageLookupByLibrary.simpleMessage("Could not find a valid subscription purchase."),
+        "notification_time": MessageLookupByLibrary.simpleMessage("Notification time"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
         "ny_tag": MessageLookupByLibrary.simpleMessage("NY"),
         "odometer_tag": MessageLookupByLibrary.simpleMessage("Odometer"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open_gallery": MessageLookupByLibrary.simpleMessage("Open gallery"),
-        "organized_photos_description": MessageLookupByLibrary.simpleMessage(
-            "Photos that have already been tagged"),
-        "organized_photos_title":
-            MessageLookupByLibrary.simpleMessage("Organized Photos"),
+        "organized_photos_description": MessageLookupByLibrary.simpleMessage("Photos that have already been tagged"),
+        "organized_photos_title": MessageLookupByLibrary.simpleMessage("Organized Photos"),
         "outerwear_tag": MessageLookupByLibrary.simpleMessage("Outerwear"),
         "palace_tag": MessageLookupByLibrary.simpleMessage("Palace"),
         "paper_tag": MessageLookupByLibrary.simpleMessage("Paper"),
@@ -419,18 +374,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "pets_tag": MessageLookupByLibrary.simpleMessage("Pets"),
         "pho_tag": MessageLookupByLibrary.simpleMessage("Pho"),
         "photo_gallery_count": m1,
-        "photo_gallery_description":
-            MessageLookupByLibrary.simpleMessage("Photos not yet organized"),
-        "photo_gallery_title":
-            MessageLookupByLibrary.simpleMessage("Photo Gallery"),
-        "photo_location":
-            MessageLookupByLibrary.simpleMessage("Photo location"),
-        "photos_always_organized": MessageLookupByLibrary.simpleMessage(
-            "Now your photos will be always organized"),
+        "photo_gallery_description": MessageLookupByLibrary.simpleMessage("Photos not yet organized"),
+        "photo_gallery_title": MessageLookupByLibrary.simpleMessage("Photo Gallery"),
+        "photo_location": MessageLookupByLibrary.simpleMessage("Photo location"),
+        "photos_always_organized": MessageLookupByLibrary.simpleMessage("Now your photos will be always organized"),
         "piano_tag": MessageLookupByLibrary.simpleMessage("Piano"),
         "picnic_tag": MessageLookupByLibrary.simpleMessage("Picnic"),
-        "picpics_photo_manager":
-            MessageLookupByLibrary.simpleMessage("picPics - Photo Manager"),
+        "picpics_photo_manager": MessageLookupByLibrary.simpleMessage("picPics - Photo Manager"),
         "pie_tag": MessageLookupByLibrary.simpleMessage("Pie"),
         "pier_tag": MessageLookupByLibrary.simpleMessage("Pier"),
         "pillow_tag": MessageLookupByLibrary.simpleMessage("Pillow"),
@@ -443,19 +393,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "plush_tag": MessageLookupByLibrary.simpleMessage("Plush"),
         "pocket_tag": MessageLookupByLibrary.simpleMessage("Pocket"),
         "polo_tag": MessageLookupByLibrary.simpleMessage("Polo"),
-        "pomacentridae_tag":
-            MessageLookupByLibrary.simpleMessage("Pomacentridae"),
+        "pomacentridae_tag": MessageLookupByLibrary.simpleMessage("Pomacentridae"),
         "pool_tag": MessageLookupByLibrary.simpleMessage("Pool"),
         "pop_music_tag": MessageLookupByLibrary.simpleMessage("Pop music"),
         "porcelain_tag": MessageLookupByLibrary.simpleMessage("Porcelain"),
         "poster_tag": MessageLookupByLibrary.simpleMessage("Poster"),
         "prairie_tag": MessageLookupByLibrary.simpleMessage("Prairie"),
-        "presentation_tag":
-            MessageLookupByLibrary.simpleMessage("Presentation"),
-        "privacy_policy":
-            MessageLookupByLibrary.simpleMessage("Privacy Policy"),
-        "private_photos":
-            MessageLookupByLibrary.simpleMessage("Private Photos"),
+        "presentation_tag": MessageLookupByLibrary.simpleMessage("Presentation"),
+        "privacy_policy": MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+        "private_photos": MessageLookupByLibrary.simpleMessage("Private Photos"),
         "product_tag": MessageLookupByLibrary.simpleMessage("Product"),
         "prom_tag": MessageLookupByLibrary.simpleMessage("Prom"),
         "protect_with_encryption": MessageLookupByLibrary.simpleMessage(
@@ -472,10 +418,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "recent_tags": MessageLookupByLibrary.simpleMessage("Recent Tags"),
         "reef_tag": MessageLookupByLibrary.simpleMessage("Reef"),
         "rein_tag": MessageLookupByLibrary.simpleMessage("Rein"),
-        "require_secret_key":
-            MessageLookupByLibrary.simpleMessage("Require secret key"),
-        "restore_purchase":
-            MessageLookupByLibrary.simpleMessage("Restore purchase"),
+        "require_secret_key": MessageLookupByLibrary.simpleMessage("Require secret key"),
+        "restore_purchase": MessageLookupByLibrary.simpleMessage("Restore purchase"),
         "rickshaw_tag": MessageLookupByLibrary.simpleMessage("Rickshaw"),
         "ring_tag": MessageLookupByLibrary.simpleMessage("Ring"),
         "river_tag": MessageLookupByLibrary.simpleMessage("River"),
@@ -502,26 +446,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "school_tag": MessageLookupByLibrary.simpleMessage("School"),
         "screenshot_tag": MessageLookupByLibrary.simpleMessage("Screenshot"),
         "screenshots_tag": MessageLookupByLibrary.simpleMessage("Screenshots"),
-        "scuba_diving_tag":
-            MessageLookupByLibrary.simpleMessage("Scuba diving"),
+        "scuba_diving_tag": MessageLookupByLibrary.simpleMessage("Scuba diving"),
         "seal_tag": MessageLookupByLibrary.simpleMessage("Seal"),
         "search": MessageLookupByLibrary.simpleMessage("Search..."),
-        "search_all_tags_not_found": MessageLookupByLibrary.simpleMessage(
-            "No pictures were found with all tags on it."),
-        "search_results":
-            MessageLookupByLibrary.simpleMessage("Search results"),
-        "secret_key_created": MessageLookupByLibrary.simpleMessage(
-            "Secret key successfully created!"),
+        "search_all_tags_not_found":
+            MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
+        "search_results": MessageLookupByLibrary.simpleMessage("Search results"),
+        "secret_key_created": MessageLookupByLibrary.simpleMessage("Secret key successfully created!"),
         "secret_photos": MessageLookupByLibrary.simpleMessage("Secret Photos"),
         "selfie_tag": MessageLookupByLibrary.simpleMessage("Selfie"),
         "selfies_tag": MessageLookupByLibrary.simpleMessage("Selfies"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
-        "share_with_friends":
-            MessageLookupByLibrary.simpleMessage("Share with friends"),
+        "share_with_friends": MessageLookupByLibrary.simpleMessage("Share with friends"),
         "shelf_tag": MessageLookupByLibrary.simpleMessage("Shelf"),
         "shell_tag": MessageLookupByLibrary.simpleMessage("Shell"),
-        "shetland_sheepdog_tag":
-            MessageLookupByLibrary.simpleMessage("Shetland sheepdog"),
+        "shetland_sheepdog_tag": MessageLookupByLibrary.simpleMessage("Shetland sheepdog"),
         "shikoku_tag": MessageLookupByLibrary.simpleMessage("Shikoku"),
         "shipwreck_tag": MessageLookupByLibrary.simpleMessage("Shipwreck"),
         "shoe_tag": MessageLookupByLibrary.simpleMessage("Shoe"),
@@ -531,8 +470,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sink_tag": MessageLookupByLibrary.simpleMessage("Sink"),
         "sitting_tag": MessageLookupByLibrary.simpleMessage("Sitting"),
         "skateboard_tag": MessageLookupByLibrary.simpleMessage("Skateboard"),
-        "skateboarder_tag":
-            MessageLookupByLibrary.simpleMessage("Skateboarder"),
+        "skateboarder_tag": MessageLookupByLibrary.simpleMessage("Skateboarder"),
         "skiff_tag": MessageLookupByLibrary.simpleMessage("Skiff"),
         "skiing_tag": MessageLookupByLibrary.simpleMessage("Skiing"),
         "skin_tag": MessageLookupByLibrary.simpleMessage("Skin"),
@@ -545,8 +483,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "smile_tag": MessageLookupByLibrary.simpleMessage("Smile"),
         "sneakers_tag": MessageLookupByLibrary.simpleMessage("Sneakers"),
         "snorkeling_tag": MessageLookupByLibrary.simpleMessage("Snorkeling"),
-        "snowboarding_tag":
-            MessageLookupByLibrary.simpleMessage("Snowboarding"),
+        "snowboarding_tag": MessageLookupByLibrary.simpleMessage("Snowboarding"),
         "soccer_tag": MessageLookupByLibrary.simpleMessage("Soccer"),
         "softball_tag": MessageLookupByLibrary.simpleMessage("Softball"),
         "soil_tag": MessageLookupByLibrary.simpleMessage("Soil"),
@@ -574,8 +511,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sunset_tag": MessageLookupByLibrary.simpleMessage("Sunset"),
         "superhero_tag": MessageLookupByLibrary.simpleMessage("Superhero"),
         "superman_tag": MessageLookupByLibrary.simpleMessage("Superman"),
-        "supervillain_tag":
-            MessageLookupByLibrary.simpleMessage("Supervillain"),
+        "supervillain_tag": MessageLookupByLibrary.simpleMessage("Supervillain"),
         "supper_tag": MessageLookupByLibrary.simpleMessage("Supper"),
         "surfboard_tag": MessageLookupByLibrary.simpleMessage("Surfboard"),
         "surfing_tag": MessageLookupByLibrary.simpleMessage("Surfing"),
@@ -586,10 +522,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "swing_tag": MessageLookupByLibrary.simpleMessage("Swing"),
         "tablecloth_tag": MessageLookupByLibrary.simpleMessage("Tablecloth"),
         "tableware_tag": MessageLookupByLibrary.simpleMessage("Tableware"),
-        "tag_multiple_photos_at_once":
-            MessageLookupByLibrary.simpleMessage("Tag multiple photos at once"),
-        "take_a_look":
-            MessageLookupByLibrary.simpleMessage("Take a look at this app!"),
+        "tag_multiple_photos_at_once": MessageLookupByLibrary.simpleMessage("Tag multiple photos at once"),
+        "take_a_look": MessageLookupByLibrary.simpleMessage("Take a look at this app!"),
         "take_a_look_description": m2,
         "tattoo_tag": MessageLookupByLibrary.simpleMessage("Tattoo"),
         "team_tag": MessageLookupByLibrary.simpleMessage("Team"),
@@ -597,8 +531,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "temple_tag": MessageLookupByLibrary.simpleMessage("Temple"),
         "terms_of_use": MessageLookupByLibrary.simpleMessage("Terms of Use"),
         "textile_tag": MessageLookupByLibrary.simpleMessage("Textile"),
-        "thanksgiving_tag":
-            MessageLookupByLibrary.simpleMessage("Thanksgiving"),
+        "thanksgiving_tag": MessageLookupByLibrary.simpleMessage("Thanksgiving"),
         "tie_tag": MessageLookupByLibrary.simpleMessage("Tie"),
         "tights_tag": MessageLookupByLibrary.simpleMessage("Tights"),
         "tile_tag": MessageLookupByLibrary.simpleMessage("Tile"),
@@ -634,8 +567,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "umbrella_tag": MessageLookupByLibrary.simpleMessage("Umbrella"),
         "underwater_tag": MessageLookupByLibrary.simpleMessage("Underwater"),
         "unicycle_tag": MessageLookupByLibrary.simpleMessage("Unicycle"),
-        "unlimited_private_pics":
-            MessageLookupByLibrary.simpleMessage("Unlimited private photos"),
+        "unlimited_private_pics": MessageLookupByLibrary.simpleMessage("Unlimited private photos"),
         "vacation_tag": MessageLookupByLibrary.simpleMessage("Vacation"),
         "van_tag": MessageLookupByLibrary.simpleMessage("Van"),
         "vegetable_tag": MessageLookupByLibrary.simpleMessage("Vegetable"),
@@ -644,11 +576,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_hidden_photos": MessageLookupByLibrary.simpleMessage(
             "To view your hidden photos, release the lock in the application settings. You can unlock them with your PIN."),
         "volcano_tag": MessageLookupByLibrary.simpleMessage("Volcano"),
-        "wakeboarding_tag":
-            MessageLookupByLibrary.simpleMessage("Wakeboarding"),
+        "wakeboarding_tag": MessageLookupByLibrary.simpleMessage("Wakeboarding"),
         "wall_tag": MessageLookupByLibrary.simpleMessage("Wall"),
-        "watercolor_paint_tag":
-            MessageLookupByLibrary.simpleMessage("Watercolor paint"),
+        "watercolor_paint_tag": MessageLookupByLibrary.simpleMessage("Watercolor paint"),
         "waterfall_tag": MessageLookupByLibrary.simpleMessage("Waterfall"),
         "waterfowl_tag": MessageLookupByLibrary.simpleMessage("Waterfowl"),
         "waterskiing_tag": MessageLookupByLibrary.simpleMessage("Waterskiing"),
@@ -668,7 +598,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("20 min"),
         "year": MessageLookupByLibrary.simpleMessage("year"),
         "yes": MessageLookupByLibrary.simpleMessage("Yes"),
-        "your_secret_key":
-            MessageLookupByLibrary.simpleMessage("Your secret key")
+        "your_secret_key": MessageLookupByLibrary.simpleMessage("Your secret key")
       };
 }

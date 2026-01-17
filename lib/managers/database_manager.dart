@@ -17,6 +17,7 @@ class DatabaseManager extends ChangeNotifier {
 
   static DatabaseManager? _instance;
 
+  // ignore: prefer_constructors_over_static_methods
   static DatabaseManager get instance {
     return _instance ??= DatabaseManager._();
   }
@@ -39,7 +40,7 @@ class DatabaseManager extends ChangeNotifier {
   bool showShowAdAfterReload = false; */
 
   Future<void> requestNotification() async {
-    // TODO: commented below line
+    // TODO(picpics): commented below line
     //var userBox = Hive.box('user');
 
     userSettings = (await database.getSingleMoorUser())!;
@@ -49,8 +50,7 @@ class DatabaseManager extends ChangeNotifier {
 
     if (Platform.isIOS) {
       final firebaseMessaging = FirebaseMessaging.instance;
-      await firebaseMessaging.requestPermission(
-          );
+      await firebaseMessaging.requestPermission();
 
       // _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
       // });
@@ -163,8 +163,10 @@ AppLogger.d('got token this mean it did accept notification');
     }
   }
  */
-  Future<void> changeUserLanguage(String appLanguage,
-      {bool notify = true,}) async {
+  Future<void> changeUserLanguage(
+    String appLanguage, {
+    bool notify = true,
+  }) async {
     await database.updateMoorUser(
       userSettings.copyWith(
         appLanguage: Value(appLanguage),
@@ -175,7 +177,7 @@ AppLogger.d('got token this mean it did accept notification');
     //userSettings.appLanguage = appLanguage;
     //userBox.putAt(0, userSettings);
 
-    if (notify = true) {
+    if (notify) {
       await Analytics.sendEvent(Event.changed_language);
       notifyListeners();
     }
@@ -188,7 +190,7 @@ AppLogger.d('got token this mean it did accept notification');
   }
 
   void gridScale(double multiplier) {
-    scale = scale;
+    scale = multiplier;
     AppLogger.d('new scale value: $scale');
   }
 

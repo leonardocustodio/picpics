@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
@@ -7,7 +8,6 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
 class ColorAnimatedBackground extends StatefulWidget {
-
   const ColorAnimatedBackground({
     super.key,
     this.moveByX = 30.0,
@@ -22,8 +22,7 @@ class ColorAnimatedBackground extends StatefulWidget {
   ColorAnimatedBackgroundState createState() => ColorAnimatedBackgroundState();
 }
 
-class ColorAnimatedBackgroundState extends State<ColorAnimatedBackground>
-    with AnimationMixin {
+class ColorAnimatedBackgroundState extends State<ColorAnimatedBackground> with AnimationMixin {
   late AnimationController widthController;
   late AnimationController heightController;
   late Animation<double> xAnimation;
@@ -32,8 +31,10 @@ class ColorAnimatedBackgroundState extends State<ColorAnimatedBackground>
   @override
   void initState() {
     super.initState();
-    widthController = createController()..mirror(duration: 3.seconds);
-    heightController = createController()..mirror(duration: 3.seconds);
+    widthController = createController();
+    unawaited(widthController.mirror(duration: 3.seconds));
+    heightController = createController();
+    unawaited(heightController.mirror(duration: 3.seconds));
     xAnimation = 0.0.tweenTo(widget.moveByX).animatedBy(widthController);
     yAnimation = 0.0.tweenTo(widget.moveByY).animatedBy(heightController);
   }

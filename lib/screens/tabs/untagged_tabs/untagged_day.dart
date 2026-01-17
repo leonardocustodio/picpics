@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/providers/blur_hash_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/screens/photo_screen.dart';
 import 'package:picpics/widgets/date_header.dart';
 import 'package:picpics/widgets/photo_widget.dart';
@@ -30,8 +30,7 @@ class UntaggedTabDay extends ConsumerWidget {
       crossAxisCount: 3,
       staggeredTileBuilder: (int index) {
         if (tabsState.allUnTaggedPicsDay[index] is DateTime) {
-          if (index + 1 < tabsState.allUnTaggedPicsDay.length &&
-              tabsState.allUnTaggedPicsDay[index + 1] is DateTime) {
+          if (index + 1 < tabsState.allUnTaggedPicsDay.length && tabsState.allUnTaggedPicsDay[index + 1] is DateTime) {
             return const StaggeredTile.extent(3, 0);
           }
           return const StaggeredTile.extent(3, 40);
@@ -48,11 +47,8 @@ class UntaggedTabDay extends ConsumerWidget {
                 var i = index + 1;
                 isSelected = true;
 
-                while (i < tabsState.allUnTaggedPicsDay.length &&
-                    tabsState.allUnTaggedPicsDay[i] is String) {
-                  if (taggedState
-                          .selectedMultiBarPics[tabsState.allUnTaggedPicsDay[i]] ==
-                      null) {
+                while (i < tabsState.allUnTaggedPicsDay.length && tabsState.allUnTaggedPicsDay[i] is String) {
+                  if (taggedState.selectedMultiBarPics[tabsState.allUnTaggedPicsDay[i]] == null) {
                     isSelected = false;
                     break;
                   }
@@ -64,16 +60,14 @@ class UntaggedTabDay extends ConsumerWidget {
                   if (tabsState.multiPicBar) {
                     var i = index + 1;
                     if (isSelected) {
-                      while (i < tabsState.allUnTaggedPicsDay.length &&
-                          tabsState.allUnTaggedPicsDay[i] is String) {
+                      while (i < tabsState.allUnTaggedPicsDay.length && tabsState.allUnTaggedPicsDay[i] is String) {
                         taggedNotifier.removeSelectedMultiBarPic(
                           tabsState.allUnTaggedPicsDay[i] as String,
                         );
                         i++;
                       }
                     } else {
-                      while (i < tabsState.allUnTaggedPicsDay.length &&
-                          tabsState.allUnTaggedPicsDay[i] is String) {
+                      while (i < tabsState.allUnTaggedPicsDay.length && tabsState.allUnTaggedPicsDay[i] is String) {
                         taggedNotifier.addSelectedMultiBarPic(
                           tabsState.allUnTaggedPicsDay[i] as String,
                         );
@@ -96,7 +90,7 @@ class UntaggedTabDay extends ConsumerWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(6),
                 child: CupertinoButton(
-                  padding: const EdgeInsets.all(0),
+                  padding: EdgeInsets.zero,
                   onPressed: () async {
                     if (tabsState.multiPicBar) {
                       if (taggedState.selectedMultiBarPics[object] == null) {
@@ -117,8 +111,8 @@ class UntaggedTabDay extends ConsumerWidget {
                   },
                   child: GestureDetector(
                     onLongPress: () {
-                      if (tabsState.multiPicBar == false) {
-                        tabsNotifier.setMultiPicBar(true);
+                      if (!tabsState.multiPicBar) {
+                        tabsNotifier.setMultiPicBar(value: true);
                       }
                       taggedNotifier.addSelectedMultiBarPic(object as String);
                     },
@@ -130,9 +124,7 @@ class UntaggedTabDay extends ConsumerWidget {
                             hash: blurHash,
                           ),
                         ),
-                        if (tabsState.multiPicBar &&
-                            taggedState.selectedMultiBarPics[object] !=
-                                null) ...[
+                        if (tabsState.multiPicBar && taggedState.selectedMultiBarPics[object] != null) ...[
                           Container(
                             constraints: const BoxConstraints.expand(),
                             decoration: BoxDecoration(
@@ -153,8 +145,7 @@ class UntaggedTabDay extends ConsumerWidget {
                                 gradient: kSecondaryGradient,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child:
-                                  Image.asset('lib/images/checkwhiteico.png'),
+                              child: Image.asset('lib/images/checkwhiteico.png'),
                             ),
                           ),
                         ],

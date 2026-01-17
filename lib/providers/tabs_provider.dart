@@ -14,19 +14,51 @@ import 'package:picpics/constants.dart';
 import 'package:picpics/database/app_database.dart';
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/managers/widget_manager.dart';
+import 'package:picpics/providers/percentage_dialog_provider.dart';
 import 'package:picpics/providers/pic_store_provider.dart';
-import 'package:picpics/providers/user_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/private_photos_provider.dart';
 import 'package:picpics/providers/swiper_tab_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
-import 'package:picpics/providers/percentage_dialog_provider.dart';
+import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Tabs state for managing tab navigation, photo selection, and photo management
 class TabsState {
+  const TabsState({
+    // UI controllers
+    required this.expandableController,
+    required this.expandablePaddingController, // Core tab state
+    this.currentIndex = 0,
+    this.isTagging = false,
+    this.isMultiSelecting = false,
+    this.selectedPhotos = const [],
+    this.multiTagSheet = false,
+    this.multiPicBar = false,
+    // Core photo management
+    this.assetMap = const {},
+    this.assetEntityList = const [],
+    this.picStoreMap = const {},
+    this.starredPicMap = const {},
+    this.status = Status.loading,
+    // Untagged photos
+    this.allUnTaggedPics = const {},
+    this.allUnTaggedPicsMonth = const [],
+    this.allUnTaggedPicsDay = const [],
+    // UI state
+    this.toggleIndexUntagged = 1,
+    this.toggleIndexTagged = 1,
+    this.topOffsetFirstTab = 64.0,
+    this.tutorialIndex = 0,
+    this.showDeleteSecretModal = false,
+    this.isScrolling = false,
+    this.isToggleBarVisible = true,
+    this.isLoading = false,
+    this.isUntaggedPicsLoaded = false,
+    this.modalCard = false,
+  });
   // Core tab state (6 properties - existing)
   final int currentIndex;
   final bool isTagging;
@@ -62,40 +94,6 @@ class TabsState {
   // UI controllers (2 properties)
   final ExpandableController expandableController;
   final ExpandableController expandablePaddingController;
-
-  const TabsState({
-    // Core tab state
-    this.currentIndex = 0,
-    this.isTagging = false,
-    this.isMultiSelecting = false,
-    this.selectedPhotos = const [],
-    this.multiTagSheet = false,
-    this.multiPicBar = false,
-    // Core photo management
-    this.assetMap = const {},
-    this.assetEntityList = const [],
-    this.picStoreMap = const {},
-    this.starredPicMap = const {},
-    this.status = Status.loading,
-    // Untagged photos
-    this.allUnTaggedPics = const {},
-    this.allUnTaggedPicsMonth = const [],
-    this.allUnTaggedPicsDay = const [],
-    // UI state
-    this.toggleIndexUntagged = 1,
-    this.toggleIndexTagged = 1,
-    this.topOffsetFirstTab = 64.0,
-    this.tutorialIndex = 0,
-    this.showDeleteSecretModal = false,
-    this.isScrolling = false,
-    this.isToggleBarVisible = true,
-    this.isLoading = false,
-    this.isUntaggedPicsLoaded = false,
-    this.modalCard = false,
-    // UI controllers
-    required this.expandableController,
-    required this.expandablePaddingController,
-  });
 
   TabsState copyWith({
     // Core tab state
@@ -169,13 +167,14 @@ class TabsState {
 /// Notifier for tabs state
 /// Manages tab navigation, photo selection, and photo operations
 class TabsNotifier extends StateNotifier<TabsState> {
-  final Ref _ref;
-
   TabsNotifier(this._ref)
-      : super(TabsState(
-          expandableController: ExpandableController(initialExpanded: false),
-          expandablePaddingController: ExpandableController(initialExpanded: false),
-        ));
+      : super(
+          TabsState(
+            expandableController: ExpandableController(initialExpanded: false),
+            expandablePaddingController: ExpandableController(initialExpanded: false),
+          ),
+        );
+  final Ref _ref;
 
   // Scroll controllers (instance variables, not state)
   ScrollController untaggedScrollControllerMonth = ScrollController();
@@ -213,11 +212,11 @@ class TabsNotifier extends StateNotifier<TabsState> {
       (String taskId) async {
         AppLogger.d('[BackgroundFetch] Event received $taskId');
         await WidgetManager.sendAndUpdate();
-        BackgroundFetch.finish(taskId);
+        unawaited(BackgroundFetch.finish(taskId));
       },
       (String taskId) async {
         AppLogger.d('[BackgroundFetch] TIMEOUT: $taskId');
-        BackgroundFetch.finish(taskId);
+        unawaited(BackgroundFetch.finish(taskId));
       },
     );
   }
@@ -234,21 +233,19 @@ class TabsNotifier extends StateNotifier<TabsState> {
     final permitted = _ref.read(userProvider).hasGalleryPermission;
     AppLogger.d('[TabsProvider] Gallery permission: $permitted');
 
-    if (permitted == false) {
+    if (!permitted) {
       AppLogger.w('[TabsProvider] No gallery permission, aborting load');
-      setIsUntaggedPicsLoaded(true);
+      setIsUntaggedPicsLoaded(value: true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
       return;
     }
 
-    setIsUntaggedPicsLoaded(false);
+    setIsUntaggedPicsLoaded(value: false);
 
     try {
       final filterOptionGroup = FilterOptionGroup()
         ..addOrderOption(
-          const OrderOption(
-            type: OrderOptionType.createDate,
-            asc: false,
-          ),
+          const OrderOption(),
         );
 
       AppLogger.d('[TabsProvider] Fetching asset paths from PhotoManager...');
@@ -260,10 +257,11 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.d('[TabsProvider] Got ${assets.length} asset paths');
 
       await loadEntities(assets);
-    } catch (e, stackTrace) {
+    } on Exception catch (e, stackTrace) {
       AppLogger.e('[TabsProvider] Error in loadAssetPath: $e');
       AppLogger.e('[TabsProvider] Stack trace: $stackTrace');
-      setIsUntaggedPicsLoaded(true);
+      setIsUntaggedPicsLoaded(value: true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
     }
   }
 
@@ -271,7 +269,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (assetsPath.isEmpty) {
       AppLogger.w('[TabsProvider] No asset paths found - device has no photos');
       state = state.copyWith(status: Status.deviceHasNoPics);
-      setIsUntaggedPicsLoaded(true);
+      setIsUntaggedPicsLoaded(value: true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
       return;
     }
 
@@ -282,7 +281,8 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (assetCount == 0) {
       AppLogger.w('[TabsProvider] Asset count is 0 - device has no photos');
       state = state.copyWith(status: Status.deviceHasNoPics);
-      setIsUntaggedPicsLoaded(true);
+      setIsUntaggedPicsLoaded(value: true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
       return;
     }
 
@@ -294,11 +294,11 @@ class TabsNotifier extends StateNotifier<TabsState> {
   }
 
   void sortAssetEntityList() {
-    final sorted = List<AssetEntity>.from(state.assetEntityList);
-    sorted.sort((a, b) {
-      return DateTime(b.createDateTime.year, b.createDateTime.month, b.createDateTime.day)
-          .compareTo(DateTime(a.createDateTime.year, a.createDateTime.month, a.createDateTime.day));
-    });
+    final sorted = List<AssetEntity>.from(state.assetEntityList)
+      ..sort((a, b) {
+        return DateTime(b.createDateTime.year, b.createDateTime.month, b.createDateTime.day)
+            .compareTo(DateTime(a.createDateTime.year, a.createDateTime.month, a.createDateTime.day));
+      });
     state = state.copyWith(assetEntityList: sorted);
   }
 
@@ -348,7 +348,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.d('[TabsProvider] Refreshing tagged photos...');
       await _ref.read(taggedProvider.notifier).refreshTaggedPhotos();
       AppLogger.d('[TabsProvider] Tagged photos refreshed');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.e('[TabsProvider] Error refreshing tagged photos: $e');
     }
 
@@ -356,7 +356,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.d('[TabsProvider] Refreshing private photos...');
       await _ref.read(privatePhotosProvider.notifier).refreshPrivatePics();
       AppLogger.d('[TabsProvider] Private photos refreshed');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.e('[TabsProvider] Error refreshing private photos: $e');
     }
 
@@ -375,8 +375,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       // Check if photo is untagged and not private
       final taggedState = _ref.read(taggedProvider);
       final privateState = _ref.read(privatePhotosProvider);
-      if (taggedState.allTaggedPicIdList[entity.id] == null &&
-          privateState.privateMap[entity.id] == null) {
+      if (taggedState.allTaggedPicIdList[entity.id] == null && privateState.privateMap[entity.id] == null) {
         final dateTime = DateTime.utc(
           entity.createDateTime.year,
           entity.createDateTime.month,
@@ -439,19 +438,19 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
   Future<void> refreshUntaggedList() async {
     AppLogger.d('[TabsProvider] Starting refreshUntaggedList');
-    setIsUntaggedPicsLoaded(false);
-    _ref.read(swiperTabProvider.notifier).setLoaded(false);
+    setIsUntaggedPicsLoaded(value: false);
+    _ref.read(swiperTabProvider.notifier).setLoaded(loaded: false);
     try {
       sortAssetEntityList();
       await filterUntaggedPhotos();
       AppLogger.d('[TabsProvider] refreshUntaggedList completed successfully');
-    } catch (e, stackTrace) {
+    } on Exception catch (e, stackTrace) {
       AppLogger.e('[TabsProvider] Error in refreshUntaggedList: $e');
       AppLogger.e('[TabsProvider] Stack trace: $stackTrace');
     } finally {
       // Always set loaded to true to stop the loading indicator
-      setIsUntaggedPicsLoaded(true);
-      _ref.read(swiperTabProvider.notifier).setLoaded(true);
+      setIsUntaggedPicsLoaded(value: true);
+      _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
     }
   }
 
@@ -497,22 +496,22 @@ class TabsNotifier extends StateNotifier<TabsState> {
     state = state.copyWith(currentIndex: index);
   }
 
-  void setIsTagging(bool value) {
+  void setIsTagging({required bool value}) {
     state = state.copyWith(isTagging: value);
   }
 
-  void setIsMultiSelecting(bool value) {
+  void setIsMultiSelecting({required bool value}) {
     state = state.copyWith(isMultiSelecting: value);
     if (!value) {
       clearSelectedPhotos();
     }
   }
 
-  void setMultiTagSheet(bool value) {
+  void setMultiTagSheet({required bool value}) {
     state = state.copyWith(multiTagSheet: value);
   }
 
-  void setMultiPicBar(bool value) {
+  void setMultiPicBar({required bool value}) {
     state = state.copyWith(multiPicBar: value);
   }
 
@@ -542,11 +541,11 @@ class TabsNotifier extends StateNotifier<TabsState> {
   // UI STATE SETTERS
   // ============================================================
 
-  void setIsLoading(bool value) {
+  void setIsLoading({required bool value}) {
     state = state.copyWith(isLoading: value);
   }
 
-  void setModalCard(bool value) {
+  void setModalCard({required bool value}) {
     state = state.copyWith(modalCard: value);
   }
 
@@ -558,15 +557,15 @@ class TabsNotifier extends StateNotifier<TabsState> {
     state = state.copyWith(topOffsetFirstTab: value);
   }
 
-  void setShowDeleteSecretModal(bool value) {
+  void setShowDeleteSecretModal({required bool value}) {
     state = state.copyWith(showDeleteSecretModal: value);
   }
 
-  void setIsScrolling(bool value) {
+  void setIsScrolling({required bool value}) {
     state = state.copyWith(isScrolling: value);
   }
 
-  void setIsToggleBarVisible(bool value) {
+  void setIsToggleBarVisible({required bool value}) {
     state = state.copyWith(isToggleBarVisible: value);
   }
 
@@ -578,7 +577,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     state = state.copyWith(toggleIndexTagged: value);
   }
 
-  void setIsUntaggedPicsLoaded(bool value) {
+  void setIsUntaggedPicsLoaded({required bool value}) {
     state = state.copyWith(isUntaggedPicsLoaded: value);
   }
 
@@ -598,7 +597,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
   }
 
   void tagAction() {
-    setMultiTagSheet(true);
+    setMultiTagSheet(value: true);
     Future.delayed(const Duration(milliseconds: 200), () {
       state.expandableController.expanded = true;
     });
@@ -610,7 +609,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (state.multiTagSheet) {
       AppLogger.d('WillPopScope multiTagSheet');
       _ref.read(tagsProvider.notifier).clearMultiPicTags();
-      setMultiTagSheet(false);
+      setMultiTagSheet(value: false);
       return false;
     }
 
@@ -621,7 +620,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
     if (state.multiPicBar) {
       AppLogger.d('WillPopScope multiPicBar');
-      setMultiPicBar(false);
+      setMultiPicBar(value: false);
       return false;
     }
 
@@ -650,8 +649,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
   Future<void> trashMultiplePics(Set<String> selectedPicsIds) async {
     var deleted = false;
-    final percentageNotifier = _ref.read(percentageDialogProvider.notifier);
-    percentageNotifier.hide();
+    final percentageNotifier = _ref.read(percentageDialogProvider.notifier)..hide();
 
     // Delete photos from device using PhotoManager
     final result = await PhotoManager.editor.deleteWithIds(selectedPicsIds.toList());
@@ -661,8 +659,9 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
     if (deleted) {
       final database = AppDatabase();
-      percentageNotifier.show('Deleting photos');
-      percentageNotifier.updateProgress(0.0);
+      percentageNotifier
+        ..show('Deleting photos')
+        ..updateProgress(0);
 
       await Future.forEach(selectedPicsIds.toList(), (String picId) async {
         final picStore = state.picStoreMap[picId] ?? explorPicStore(picId);
@@ -700,7 +699,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
         }
       }).then((_) {
         percentageNotifier.hide();
-        refreshUntaggedList();
+        unawaited(refreshUntaggedList());
         // SwiperTabController refresh will be handled separately
       });
 
@@ -719,7 +718,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     await Analytics.sendEvent(Event.deleted_photo);
   }
 
-  void deletePic(String picId, bool removeFromGallery) {
+  void deletePic(String picId, {required bool removeFromGallery}) {
     removePicFromUI(picId);
   }
 
@@ -729,9 +728,9 @@ class TabsNotifier extends StateNotifier<TabsState> {
     }
 
     AppLogger.d('sharing selected pics....');
-    setIsLoading(true);
+    setIsLoading(value: true);
     await _sharePics(picKeys: state.selectedPhotos);
-    setIsLoading(false);
+    setIsLoading(value: false);
   }
 
   Future<void> _sharePics({required List<String> picKeys}) async {
@@ -766,7 +765,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (state.selectedPhotos.isEmpty) {
       return;
     }
-    trashMultiplePics(state.selectedPhotos.toSet());
+    unawaited(trashMultiplePics(state.selectedPhotos.toSet()));
   }
 
   void clearSelectedPics() {

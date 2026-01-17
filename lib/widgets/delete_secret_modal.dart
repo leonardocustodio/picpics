@@ -7,9 +7,11 @@ import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 class DeleteSecretModal extends ConsumerStatefulWidget {
-
   const DeleteSecretModal({
-    required this.onPressedClose, required this.onPressedDelete, required this.onPressedOk, super.key,
+    required this.onPressedClose,
+    required this.onPressedDelete,
+    required this.onPressedOk,
+    super.key,
   });
   final void Function() onPressedClose;
   final void Function() onPressedDelete;
@@ -29,9 +31,8 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: width < 360
-          ? const EdgeInsets.symmetric(horizontal: 20)
-          : const EdgeInsets.symmetric(horizontal: 40),
+      insetPadding:
+          width < 360 ? const EdgeInsets.symmetric(horizontal: 20) : const EdgeInsets.symmetric(horizontal: 40),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: const BoxDecoration(
@@ -127,9 +128,7 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                                     ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                            child: keepAsking
-                                ? Image.asset('lib/images/checkwhiteico.png')
-                                : null,
+                            child: keepAsking ? Image.asset('lib/images/checkwhiteico.png') : null,
                           ),
                           Text(
                             s.keep_asking,
@@ -179,9 +178,7 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                                     ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                            child: !keepAsking
-                                ? Image.asset('lib/images/checkwhiteico.png')
-                                : null,
+                            child: !keepAsking ? Image.asset('lib/images/checkwhiteico.png') : null,
                           ),
                           Text(
                             s.dont_ask_again,
@@ -206,24 +203,23 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                   children: [
                     Expanded(
                       child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (keepAsking == false) {
-                            ref.read(userProvider.notifier).setKeepAskingToDelete(false);
+                          if (!keepAsking) {
+                            ref.read(userProvider.notifier).setKeepAskingToDelete(value: false);
                           }
                           widget.onPressedDelete();
                         },
                         child: Container(
                           height: 44,
                           decoration: BoxDecoration(
-                            border:
-                                Border.all(color: kSecondaryColor),
+                            border: Border.all(color: kSecondaryColor),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
                             child: Text(
                               s.no,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: const TextStyle(
                                 color: kSecondaryColor,
                                 fontWeight: FontWeight.w700,
@@ -241,10 +237,10 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                     ),
                     Expanded(
                       child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (keepAsking == false) {
-                            ref.read(userProvider.notifier).setKeepAskingToDelete(false);
+                          if (!keepAsking) {
+                            ref.read(userProvider.notifier).setKeepAskingToDelete(value: false);
                           }
                           widget.onPressedOk();
                         },
@@ -257,7 +253,7 @@ class _DeleteSecretModalState extends ConsumerState<DeleteSecretModal> {
                           child: Center(
                             child: Text(
                               s.yes,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: kLoginButtonTextStyle,
                             ),
                           ),

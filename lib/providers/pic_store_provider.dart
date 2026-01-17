@@ -1,15 +1,20 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:convert/convert.dart';
+import 'package:cryptography/cryptography.dart' as cryptography;
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:googleapis/translate/v3.dart';
+import 'package:googleapis_auth/auth_io.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:picpics/constants.dart';
 import 'package:picpics/database/app_database.dart';
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/managers/crypto_manager.dart';
@@ -18,15 +23,34 @@ import 'package:picpics/providers/private_photos_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
-import 'package:picpics/constants.dart';
 import 'package:picpics/utils/helpers.dart';
 import 'package:picpics/utils/labels.dart';
-import 'package:googleapis/translate/v3.dart';
-import 'package:googleapis_auth/auth_io.dart';
-import 'package:cryptography/cryptography.dart' as cryptography;
+import 'package:share_plus/share_plus.dart';
 
 /// Immutable state for a single photo store
 class PicStoreState {
+  const PicStoreState({
+    required this.photoId,
+    required this.photoPath,
+    required this.thumbPath,
+    required this.createdAt,
+    this.entity,
+    this.isStarred = false,
+    this.isPrivate = false,
+    this.latitude,
+    this.longitude,
+    this.specificLocation,
+    this.generalLocation,
+    this.tags = const {},
+    this.searchText = '',
+    this.tagsSuggestions = const [],
+    this.aiTags = false,
+    this.aiTagsLoaded = false,
+    this.nonce = '',
+    this.originalLatitude,
+    this.originalLongitude,
+    this.deletedFromCameraRoll = false,
+  });
   // Photo identification
   final String photoId;
   final AssetEntity? entity;
@@ -56,29 +80,6 @@ class PicStoreState {
   final double? originalLatitude;
   final double? originalLongitude;
   final bool deletedFromCameraRoll;
-
-  const PicStoreState({
-    required this.photoId,
-    this.entity,
-    this.isStarred = false,
-    this.isPrivate = false,
-    this.latitude,
-    this.longitude,
-    this.specificLocation,
-    this.generalLocation,
-    this.tags = const {},
-    this.searchText = '',
-    this.tagsSuggestions = const [],
-    this.aiTags = false,
-    this.aiTagsLoaded = false,
-    required this.photoPath,
-    required this.thumbPath,
-    this.nonce = '',
-    required this.createdAt,
-    this.originalLatitude,
-    this.originalLongitude,
-    this.deletedFromCameraRoll = false,
-  });
 
   PicStoreState copyWith({
     String? photoId,
@@ -122,17 +123,13 @@ class PicStoreState {
       createdAt: createdAt ?? this.createdAt,
       originalLatitude: originalLatitude ?? this.originalLatitude,
       originalLongitude: originalLongitude ?? this.originalLongitude,
-      deletedFromCameraRoll:
-          deletedFromCameraRoll ?? this.deletedFromCameraRoll,
+      deletedFromCameraRoll: deletedFromCameraRoll ?? this.deletedFromCameraRoll,
     );
   }
 }
 
 /// State notifier for managing a single photo's state
 class PicStoreNotifier extends StateNotifier<PicStoreState> {
-  final Ref ref;
-  late final AppDatabase database;
-
   PicStoreNotifier(
     this.ref, {
     required AssetEntity entityValue,
@@ -143,20 +140,23 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     double? originalLatitude,
     double? originalLongitude,
     bool deletedFromCameraRoll = false,
-  }) : super(PicStoreState(
-          photoId: photoId,
-          entity: entityValue,
-          photoPath: photoPath,
-          thumbPath: thumbPath,
-          nonce: '',
-          createdAt: createdAt,
-          originalLatitude: originalLatitude,
-          originalLongitude: originalLongitude,
-          deletedFromCameraRoll: deletedFromCameraRoll,
-        )) {
+  }) : super(
+          PicStoreState(
+            photoId: photoId,
+            entity: entityValue,
+            photoPath: photoPath,
+            thumbPath: thumbPath,
+            createdAt: createdAt,
+            originalLatitude: originalLatitude,
+            originalLongitude: originalLongitude,
+            deletedFromCameraRoll: deletedFromCameraRoll,
+          ),
+        ) {
     database = AppDatabase();
-    _initialize();
+    unawaited(_initialize());
   }
+  final Ref ref;
+  late final AppDatabase database;
 
   /// Initialize state by loading photo data
   Future<void> _initialize() async {
@@ -164,8 +164,8 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     await loadPicInfo();
   }
 
-  /// Get encryption key from pin provider or user controller
-  /// TODO: Migrate UserController to find where encryptionKey is stored
+  /// Get encryption key from pin provider or user controller.
+  // TODO(picpics): Migrate UserController to find where encryptionKey is stored
   /// For now, returning null - encryption features will need to be connected
   /// after UserController migration is complete
   cryptography.SecretKey? get _encryptionKey {
@@ -230,7 +230,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
   }
 
   /// Set deleted from camera roll status
-  Future<void> setDeletedFromCameraRoll(bool value) async {
+  Future<void> setDeletedFromCameraRoll({required bool value}) async {
     final pic = await database.getPhotoByPhotoId(state.photoId);
     if (pic != null) {
       await database.updatePhoto(pic.copyWith(deletedFromCameraRoll: value));
@@ -270,17 +270,16 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
       if (Platform.isAndroid) {
         await PhotoManager.editor.deleteWithIds([state.entity!.id]);
       } else {
-        final result =
-            await PhotoManager.editor.deleteWithIds([state.entity!.id]);
+        final result = await PhotoManager.editor.deleteWithIds([state.entity!.id]);
         if (result.isEmpty) {
           return false;
         }
       }
-      await setDeletedFromCameraRoll(true);
-      state = state.copyWith(entity: null);
+      await setDeletedFromCameraRoll(value: true);
+      state = state.copyWith();
       return null;
     }
-    await setDeletedFromCameraRoll(false);
+    await setDeletedFromCameraRoll(value: false);
     return null;
   }
 
@@ -382,7 +381,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
   }
 
   /// Set private status
-  Future<void> setIsPrivate(bool value) async {
+  Future<void> setIsPrivate({required bool value}) async {
     if (value) {
       await addSecretTagToPic();
     } else {
@@ -422,8 +421,8 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
   /// Set search text for tag suggestions
   void setSearchText(String value) {
     state = state.copyWith(searchText: value.trim());
-    setAiTags(false);
-    tagsSuggestionsCalculate();
+    setAiTags(value: false);
+    unawaited(tagsSuggestionsCalculate());
   }
 
   /// Calculate tag suggestions based on search text
@@ -440,9 +439,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
       final showPrivate = ref.read(privatePhotosProvider).showPrivate;
 
       for (final recent in recentTags) {
-        if (tagsKeys.contains(recent) ||
-            suggestionTags.contains(recent) ||
-            (!showPrivate && recent == kSecretTagKey)) {
+        if (tagsKeys.contains(recent) || suggestionTags.contains(recent) || (!showPrivate && recent == kSecretTagKey)) {
           continue;
         }
         suggestionTags.add(recent);
@@ -492,7 +489,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
         doCustomisedSearching(
           tagName,
           listOfLetters,
-          (matched) {
+          ({required bool matched}) {
             if (matched && allTags[tagKey] != null) {
               suggestions.add(allTags[tagKey]!);
             }
@@ -508,8 +505,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
   }
 
   /// Remove photo ID from label
-  Future<String> _removePhotoIdFromLabel(
-      Map<String, String> selectedTags) async {
+  Future<String> _removePhotoIdFromLabel(Map<String, String> selectedTags) async {
     final list = <String>[];
     for (final entry in selectedTags.entries) {
       final getTag = await database.getLabelByLabelKey(entry.key);
@@ -525,7 +521,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
   }
 
   /// Create photo object
-  Photo photoObject(Map<String, String> tagsMap, bool isPrivate) {
+  Photo photoObject(Map<String, String> tagsMap, {required bool isPrivate}) {
     return Photo(
       id: state.photoId,
       createdAt: state.createdAt,
@@ -597,8 +593,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     AppLogger.d('this picture is not in db, adding it...');
     AppLogger.d('Photo Id: ${state.photoId}');
 
-    final pic =
-        photoObject(acceptedTagKeys, acceptedTagKeys[kSecretTagKey] != null);
+    final pic = photoObject(acceptedTagKeys, isPrivate: acceptedTagKeys[kSecretTagKey] != null);
 
     await database.createPhoto(pic);
 
@@ -618,9 +613,9 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     final tempDir = await getTemporaryDirectory();
     final imageFile = File(
       '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg',
-    );
-    imageFile.createSync(recursive: true);
-    imageFile.writeAsBytesSync(byteData);
+    )
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(byteData);
     return imageFile.path;
   }
 
@@ -629,9 +624,8 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     String? path;
 
     if (Platform.isAndroid) {
-      path = await _writeByteToImageFile(state.entity == null
-          ? await assetOriginBytes
-          : await state.entity!.originBytes);
+      path =
+          await _writeByteToImageFile(state.entity == null ? await assetOriginBytes : await state.entity!.originBytes);
     } else {
       if (state.entity == null) {
         final bytes = await assetOriginBytes;
@@ -666,8 +660,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     if (Platform.isAndroid) {
       await PhotoManager.editor.deleteWithIds([state.entity!.id]);
     } else {
-      final result =
-          await PhotoManager.editor.deleteWithIds([state.entity!.id]);
+      final result = await PhotoManager.editor.deleteWithIds([state.entity!.id]);
       if (result.isEmpty) {
         return false;
       }
@@ -707,8 +700,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
       await database.updatePhoto(getPic);
 
       // Update local tags state
-      final updatedTags = Map<String, TagModel>.from(state.tags);
-      updatedTags.removeWhere((key, _) => acceptedTags[key] != null);
+      final updatedTags = Map<String, TagModel>.from(state.tags)..removeWhere((key, _) => acceptedTags[key] != null);
       state = state.copyWith(tags: updatedTags);
 
       if (acceptedTags[kSecretTagKey] != null) {
@@ -774,7 +766,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
   }
 
   /// Set AI tags mode
-  void setAiTags(bool value) {
+  void setAiTags({required bool value}) {
     state = state.copyWith(aiTags: value);
   }
 
@@ -784,13 +776,13 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
   }
 
   /// Set AI tags loaded status
-  void setAiTagsLoaded(bool value) {
+  void setAiTagsLoaded({required bool value}) {
     state = state.copyWith(aiTagsLoaded: value);
   }
 
-  /// Translate tags to user's language
-  /// Note: This method requires BuildContext, so it should be called from widget layer
-  /// TODO: Consider refactoring to avoid BuildContext dependency
+  /// Translate tags to user's language.
+  /// Note: This method requires BuildContext, so it should be called from widget layer.
+  // TODO(picpics): Consider refactoring to avoid BuildContext dependency
   Future<List<String>> translateTags(
     List<String> tagsText,
     WidgetRef widgetRef,
@@ -798,9 +790,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     final lang = ref.read(userProvider).appLanguage.split('_')[0];
     if (lang == 'pt' || lang == 'es' || lang == 'de' || lang == 'ja') {
       AppLogger.d('Offline translating it...');
-      return tagsText
-          .map((e) => PredefinedLabels.labelTranslation(e, widgetRef))
-          .toList();
+      return tagsText.map((e) => PredefinedLabels.labelTranslation(e, widgetRef)).toList();
     }
 
     final credentials = ServiceAccountCredentials.fromJson(r'''
@@ -823,16 +813,14 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
 
     await clientViaServiceAccount(credentials, scopes).then((httpClient) async {
       final translate = TranslateApi(httpClient);
-      final request = TranslateTextRequest();
-      request.contents = tagsText;
-      request.mimeType = 'text/plain';
-      request.sourceLanguageCode = 'en-US';
-      request.targetLanguageCode =
-          ref.read(userProvider).appLanguage.replaceAll('_', '-');
-      request.model = 'projects/picpics/locations/global/models/general/nmt';
+      final request = TranslateTextRequest()
+        ..contents = tagsText
+        ..mimeType = 'text/plain'
+        ..sourceLanguageCode = 'en-US'
+        ..targetLanguageCode = ref.read(userProvider).appLanguage.replaceAll('_', '-')
+        ..model = 'projects/picpics/locations/global/models/general/nmt';
 
-      final response =
-          await translate.projects.translateText(request, 'projects/picpics');
+      final response = await translate.projects.translateText(request, 'projects/picpics');
       final translations = response.translations;
       if (translations != null) {
         for (final element in translations) {
@@ -849,7 +837,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
 
 // Note: PicStore instances are managed by tabs_provider in a picStoreMap
 // This provider declaration is for reference but instances are created directly
-final picStoreProvider =
+final StateNotifierProviderFamily<PicStoreNotifier, PicStoreState, String> picStoreProvider =
     StateNotifierProvider.family<PicStoreNotifier, PicStoreState, String>(
   (ref, photoId) {
     throw UnimplementedError(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:picpics/constants.dart';
@@ -7,17 +9,6 @@ import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/helpers.dart';
 
 class TagsState {
-  final Map<String, TagModel> allTags;
-  final Map<String, String> mostUsedTags;
-  final Map<String, String> lastWeekUsedTags;
-  final Map<String, String> lastMonthUsedTags;
-  final Map<String, String> recentTagKeyList;
-  final Map<String, String> multiPicTags;
-  final List<TagModel> searchTagsResults;
-  final String searchText;
-  final Map<String, String> selectedFilteringTagsKeys;
-  final bool isSearching;
-
   TagsState({
     this.allTags = const {},
     this.mostUsedTags = const {},
@@ -30,6 +21,16 @@ class TagsState {
     this.selectedFilteringTagsKeys = const {},
     this.isSearching = false,
   });
+  final Map<String, TagModel> allTags;
+  final Map<String, String> mostUsedTags;
+  final Map<String, String> lastWeekUsedTags;
+  final Map<String, String> lastMonthUsedTags;
+  final Map<String, String> recentTagKeyList;
+  final Map<String, String> multiPicTags;
+  final List<TagModel> searchTagsResults;
+  final String searchText;
+  final Map<String, String> selectedFilteringTagsKeys;
+  final bool isSearching;
 
   TagsState copyWith({
     Map<String, TagModel>? allTags,
@@ -59,10 +60,9 @@ class TagsState {
 }
 
 class TagsNotifier extends StateNotifier<TagsState> {
+  TagsNotifier(this.ref) : super(TagsState());
   final AppDatabase _database = AppDatabase();
   final Ref ref;
-
-  TagsNotifier(this.ref) : super(TagsState());
 
   Future<void> initialize() async {
     // Create default tags and load all tags
@@ -73,7 +73,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
   Future<void> loadAllTags() async {
     final tags = await _database.getAllLabel();
     final allTagsMap = <String, TagModel>{};
-    
+
     for (final tag in tags) {
       allTagsMap[tag.key] = TagModel(
         key: tag.key,
@@ -82,11 +82,11 @@ class TagsNotifier extends StateNotifier<TagsState> {
         time: tag.lastUsedAt,
       );
     }
-    
+
     state = state.copyWith(allTags: allTagsMap);
   }
 
-  void setIsSearching(bool val) {
+  void setIsSearching({required bool val}) {
     state = state.copyWith(isSearching: val);
     if (!val) {
       state = state.copyWith(selectedFilteringTagsKeys: {});
@@ -99,37 +99,36 @@ class TagsNotifier extends StateNotifier<TagsState> {
       newFiltering[tagKey] = '';
     }
     state = state.copyWith(selectedFilteringTagsKeys: newFiltering);
-    tagsSuggestionsCalculate();
+    unawaited(tagsSuggestionsCalculate());
   }
 
   void removeTagKeyFromFiltering(String tagKey) {
-    final newFiltering = Map<String, String>.from(state.selectedFilteringTagsKeys);
-    newFiltering.remove(tagKey);
+    final newFiltering = Map<String, String>.from(state.selectedFilteringTagsKeys)..remove(tagKey);
     state = state.copyWith(selectedFilteringTagsKeys: newFiltering);
-    tagsSuggestionsCalculate();
+    unawaited(tagsSuggestionsCalculate());
   }
 
   void setSearchText(String text) {
     state = state.copyWith(searchText: text);
-    tagsSuggestionsCalculate();
+    unawaited(tagsSuggestionsCalculate());
   }
 
   Future<List<TagModel>> tagsSuggestionsCalculate() async {
     final tagsList = await _database.getAllLabel();
     final getUser = await _database.getSingleMoorUser();
-    
+
     final suggestionTags = <String>[];
     final text = state.searchText.trim();
-    
+
     if (text.isEmpty) {
       // Add recent tags to suggestions
-      for (final String recent in getUser?.recentTags ?? <String>[]) {
+      for (final recent in getUser?.recentTags ?? <String>[]) {
         if (state.multiPicTags.containsKey(recent)) {
           continue;
         }
         suggestionTags.add(recent);
       }
-      
+
       // Fill remaining suggestions with other tags
       if (suggestionTags.length < kMaxNumOfSuggestions) {
         for (final tag in tagsList) {
@@ -152,7 +151,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
         if (state.selectedFilteringTagsKeys.containsKey(tagKey)) {
           continue;
         }
-        
+
         final tagModel = state.allTags[tagKey];
         if (tagModel != null) {
           // Perform custom searching logic here
@@ -162,7 +161,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
         }
       }
     }
-    
+
     // Convert tag keys to TagModel objects
     final searchResults = <TagModel>[];
     for (final tagKey in suggestionTags) {
@@ -171,7 +170,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
         searchResults.add(tagModel);
       }
     }
-    
+
     state = state.copyWith(searchTagsResults: searchResults);
     return searchResults;
   }
@@ -191,8 +190,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
   }
 
   void removeMultiPicTag(String tagKey) {
-    final newMulti = Map<String, String>.from(state.multiPicTags);
-    newMulti.remove(tagKey);
+    final newMulti = Map<String, String>.from(state.multiPicTags)..remove(tagKey);
     state = state.copyWith(multiPicTags: newMulti);
   }
 
@@ -205,7 +203,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
   }
 
   Future<String> createTag(String title) async {
-    // TODO: Full implementation for creating a new tag
+    // TODO(picpics): Full implementation for creating a new tag
     // For now, generate a simple key
     final key = 'tag_${DateTime.now().millisecondsSinceEpoch}';
     await loadAllTags(); // Reload tags after creation
@@ -236,7 +234,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
       await loadAllTags();
 
       AppLogger.d('Tag updated: $key -> $newTagKey ($newTitle)');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.e('Error updating tag: $e');
     }
   }
@@ -264,7 +262,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
       await loadAllTags();
 
       AppLogger.d('Tag deleted: $key');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.e('Error deleting tag: $e');
     }
   }
@@ -279,13 +277,13 @@ class TagsNotifier extends StateNotifier<TagsState> {
     required String picId,
     required String tagKey,
   }) async {
-    // TODO: Implement removing a tag from a specific picture
+    // TODO(picpics): Implement removing a tag from a specific picture
     AppLogger.d('Removing tag $tagKey from pic $picId (stub implementation)');
     await Future<void>.delayed(Duration.zero);
   }
 
   Future<void> addTagsToSelectedPics() async {
-    // TODO: Implement adding tags to selected pictures
+    // TODO(picpics): Implement adding tags to selected pictures
     // This should take the multiPicTags and apply them to selected photos
     // For now, this is a placeholder to prevent compilation errors
     AppLogger.d('Adding tags to selected pictures (stub implementation)');

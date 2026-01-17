@@ -14,9 +14,9 @@ import 'package:picpics/constants.dart';
 import 'package:picpics/fade_image_builder.dart';
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/search/search_map_place.dart';
-import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
@@ -52,49 +52,56 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
       String? city;
       String? country;
 
-      for (final components
-          in selectedGeolocation!.fullJSON!['address_components'] as List<dynamic>) {
-        final types = components['types'] as List<dynamic>;
+      for (final component in selectedGeolocation!.fullJSON!['address_components'] as List<dynamic>) {
+        final componentMap = component as Map<String, dynamic>;
+        final types = componentMap['types'] as List<dynamic>;
+        final longName = componentMap['long_name'] as String?;
         if (types.contains('establishment')) {
-          AppLogger.d('find establishment: ${components["long_name"]}');
-          location = components['long_name'] as String?;
+          AppLogger.d('find establishment: $longName');
+          location = longName;
           continue;
         } else if (types.contains('locality')) {
-          AppLogger.d('locality: ${components["long_name"]}');
-          city = components['long_name'] as String?;
+          AppLogger.d('locality: $longName');
+          city = longName;
           continue;
         } else if (types.contains('administrative_area_level_2')) {
-          AppLogger.d(
-              'find administrative_area_level_2: ${components["long_name"]}');
-          city = components['long_name'] as String?;
+          AppLogger.d('find administrative_area_level_2: $longName');
+          city = longName;
           continue;
         } else if (types.contains('administrative_area_level_1')) {
-          AppLogger.d(
-              'find administrative_area_level_1: ${components["long_name"]}');
+          AppLogger.d('find administrative_area_level_1: $longName');
           continue;
         } else if (types.contains('country')) {
-          AppLogger.d('country: ${components["long_name"]}');
-          country = components['long_name'] as String?;
+          AppLogger.d('country: $longName');
+          country = longName;
           break;
         }
       }
 
       if (location != null) {
-        final latLng = selectedGeolocation!.coordinates as LatLng;
-        picStore.saveLocation(
-          lat: latLng.latitude,
-          long: latLng.longitude,
-          specific: location,
-          general: city,
-        );
+        final latLng = selectedGeolocation!.coordinates;
+        if (latLng is LatLng) {
+          unawaited(
+            picStore.saveLocation(
+              lat: latLng.latitude,
+              long: latLng.longitude,
+              specific: location,
+              general: city,
+            ),
+          );
+        }
       } else {
-        final latLng = selectedGeolocation!.coordinates as LatLng;
-        picStore.saveLocation(
-          lat: latLng.latitude,
-          long: latLng.longitude,
-          specific: city,
-          general: country,
-        );
+        final latLng = selectedGeolocation!.coordinates;
+        if (latLng is LatLng) {
+          unawaited(
+            picStore.saveLocation(
+              lat: latLng.latitude,
+              long: latLng.longitude,
+              specific: city,
+              general: country,
+            ),
+          );
+        }
       }
     }
 
@@ -131,8 +138,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
 
     if (picStore.state.latitude != null && picStore.state.longitude != null) {
       latLng = LatLng(picStore.state.latitude!, picStore.state.longitude!);
-    } else if (picStore.state.originalLatitude != null &&
-        picStore.state.originalLongitude != null) {
+    } else if (picStore.state.originalLatitude != null && picStore.state.originalLongitude != null) {
       latLng = LatLng(picStore.state.originalLatitude!, picStore.state.originalLongitude!);
     }
 
@@ -165,13 +171,13 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
   @override
   void initState() {
     super.initState();
-    Analytics.sendCurrentScreen(Screen.add_location_screen);
+    unawaited(Analytics.sendCurrentScreen(Screen.add_location_screen));
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    findInitialCamera();
+    unawaited(findInitialCamera());
   }
 
   @override
@@ -212,7 +218,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
                         CupertinoButton(
-                          padding: const EdgeInsets.all(0),
+                          padding: EdgeInsets.zero,
                           onPressed: () => Navigator.of(context).pop(),
                           child: SizedBox(
                             width: height * 0.17,
@@ -229,17 +235,14 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                                       loader = const ColoredBox(
                                         color: kGreyPlaceholder,
                                       );
-                                      break;
                                     case LoadState.completed:
                                       loader = FadeImageBuilder(
                                         child: RepaintBoundary(
                                           child: state.completedWidget,
                                         ),
                                       );
-                                      break;
                                     case LoadState.failed:
                                       loader = Container();
-                                      break;
                                   }
                                   return loader;
                                 },
@@ -255,7 +258,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                       ],
                     ),
                     CupertinoButton(
-                      padding: const EdgeInsets.all(0),
+                      padding: EdgeInsets.zero,
                       onPressed: () {
                         AppLogger.d('saving location...');
                         saveLocation(context);
@@ -270,7 +273,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                         child: Center(
                           child: Text(
                             s.save_location,
-                            textScaler: const TextScaler.linear(1),
+                            textScaler: TextScaler.noScaling,
                             style: const TextStyle(
                               fontFamily: 'Lato',
                               color: kWhiteColor,
@@ -304,7 +307,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                         const ImageConfiguration(devicePixelRatio: 2.5),
                         'lib/images/pin.png',
                       ),
-                      position: geolocation.coordinates as LatLng,
+                      position: geolocation.coordinates!,
                     );
 
                     final controller = await _mapController.future;
@@ -314,11 +317,11 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                     });
 
                     await controller.animateCamera(
-                      CameraUpdate.newLatLng(geolocation.coordinates as LatLng),
+                      CameraUpdate.newLatLng(geolocation.coordinates!),
                     );
                     await controller.animateCamera(
                       CameraUpdate.newLatLngBounds(
-                        geolocation.bounds as LatLngBounds,
+                        geolocation.bounds!,
                         0,
                       ),
                     );

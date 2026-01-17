@@ -22,9 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) => "Kode akses telah dikirim ke ${email}";
 
   static String m1(howMany) => Intl.plural(howMany,
-      zero: 'Tidak ada foto yang dipilih',
-      one: '1 foto dipilih',
-      other: '${howMany} foto dipilih');
+      zero: 'Tidak ada foto yang dipilih', one: '1 foto dipilih', other: '${howMany} foto dipilih');
 
   static String m2(url) => "Untuk mengatur semua foto Anda, buka ${url}";
 
@@ -32,172 +30,121 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "access_code": MessageLookupByLibrary.simpleMessage("Kode akses"),
         "access_code_sent": m0,
-        "add_multiple_tags":
-            MessageLookupByLibrary.simpleMessage("Tambahkan beberapa tag"),
+        "add_multiple_tags": MessageLookupByLibrary.simpleMessage("Tambahkan beberapa tag"),
         "add_tag": MessageLookupByLibrary.simpleMessage("Tambahkan tag"),
         "add_tags": MessageLookupByLibrary.simpleMessage("Tambahkan tag"),
         "allTags": MessageLookupByLibrary.simpleMessage("All Tags"),
-        "all_at_once":
-            MessageLookupByLibrary.simpleMessage("Atur banyak foto sekaligus"),
-        "all_search_tags":
-            MessageLookupByLibrary.simpleMessage("Semua Tag Pencarian"),
+        "all_at_once": MessageLookupByLibrary.simpleMessage("Atur banyak foto sekaligus"),
+        "all_search_tags": MessageLookupByLibrary.simpleMessage("Semua Tag Pencarian"),
         "always": MessageLookupByLibrary.simpleMessage("Selalu"),
         "ask_photo_library_permission": MessageLookupByLibrary.simpleMessage(
             "Kami membutuhkan akses ke perpustakaan foto Anda sehingga Anda dapat mulai mengatur foto-foto Anda dengan picPics. Jangan khawatir data Anda tidak akan pernah meninggalkan perangkat Anda!"),
-        "auto_renewable_first_part":
-            MessageLookupByLibrary.simpleMessage("Berlangganan ini "),
-        "auto_renewable_second_part": MessageLookupByLibrary.simpleMessage(
-            "diperpanjang secara otomatis."),
+        "auto_renewable_first_part": MessageLookupByLibrary.simpleMessage("Berlangganan ini "),
+        "auto_renewable_second_part": MessageLookupByLibrary.simpleMessage("diperpanjang secara otomatis."),
         "cancel": MessageLookupByLibrary.simpleMessage("Batal"),
-        "cancel_anytime":
-            MessageLookupByLibrary.simpleMessage("Batalkan kapan saja"),
+        "cancel_anytime": MessageLookupByLibrary.simpleMessage("Batalkan kapan saja"),
         "close": MessageLookupByLibrary.simpleMessage("Tutup"),
-        "confirm_email": MessageLookupByLibrary.simpleMessage(
-            "Konfirmasikan email pendaftaran Anda untuk menerima kode akses Anda"),
-        "confirm_secret_key":
-            MessageLookupByLibrary.simpleMessage("Konfirmasikan kode rahasia"),
+        "confirm_email":
+            MessageLookupByLibrary.simpleMessage("Konfirmasikan email pendaftaran Anda untuk menerima kode akses Anda"),
+        "confirm_secret_key": MessageLookupByLibrary.simpleMessage("Konfirmasikan kode rahasia"),
         "continue_string": MessageLookupByLibrary.simpleMessage("Lanjutkan"),
         "country": MessageLookupByLibrary.simpleMessage("negara"),
-        "daily_challenge":
-            MessageLookupByLibrary.simpleMessage("Tantangan harian"),
-        "daily_challenge_permission_description":
-            MessageLookupByLibrary.simpleMessage(
-                "Agar kami dapat mengirimkan tantangan harian, kami memerlukan izin untuk mengirim notifikasi. Karena itu, Anda harus mengizinkan notifikasi pada opsi ponsel Anda."),
+        "daily_challenge": MessageLookupByLibrary.simpleMessage("Tantangan harian"),
+        "daily_challenge_permission_description": MessageLookupByLibrary.simpleMessage(
+            "Agar kami dapat mengirimkan tantangan harian, kami memerlukan izin untuk mengirim notifikasi. Karena itu, Anda harus mengizinkan notifikasi pada opsi ponsel Anda."),
         "daily_goal": MessageLookupByLibrary.simpleMessage("Misi harian"),
-        "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It's time to complete your picPics daily challenge!"),
-        "daily_notification_title":
-            MessageLookupByLibrary.simpleMessage("Daily challenge"),
+        "daily_notification_description":
+            MessageLookupByLibrary.simpleMessage("It's time to complete your picPics daily challenge!"),
+        "daily_notification_title": MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "delete": MessageLookupByLibrary.simpleMessage("Hapus"),
         "device_has_no_pics": MessageLookupByLibrary.simpleMessage(
             "Perangkat ini tidak memiliki foto di galeri, jadi tidak ada foto yang dapat diberi tag."),
-        "disable_secret": MessageLookupByLibrary.simpleMessage(
-            "Apakah Anda ingin menampilkan foto ini?"),
-        "dont_ask_again":
-            MessageLookupByLibrary.simpleMessage("Jangan tanya lagi"),
+        "disable_secret": MessageLookupByLibrary.simpleMessage("Apakah Anda ingin menampilkan foto ini?"),
+        "dont_ask_again": MessageLookupByLibrary.simpleMessage("Jangan tanya lagi"),
         "edit_tag": MessageLookupByLibrary.simpleMessage("Edit tag"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
-        "enable_faceid":
-            MessageLookupByLibrary.simpleMessage("Aktifkan Face ID"),
-        "enable_fingerprint":
-            MessageLookupByLibrary.simpleMessage("Aktifkan Sidik Jari"),
-        "enable_irisscanner":
-            MessageLookupByLibrary.simpleMessage("Aktifkan Iris Scanner"),
-        "enable_touchid":
-            MessageLookupByLibrary.simpleMessage("Aktifkan Touch ID"),
-        "export_all_gallery":
-            MessageLookupByLibrary.simpleMessage("Ekspor semua galeri"),
-        "export_library":
-            MessageLookupByLibrary.simpleMessage("Ekspor Koleksi"),
+        "enable_faceid": MessageLookupByLibrary.simpleMessage("Aktifkan Face ID"),
+        "enable_fingerprint": MessageLookupByLibrary.simpleMessage("Aktifkan Sidik Jari"),
+        "enable_irisscanner": MessageLookupByLibrary.simpleMessage("Aktifkan Iris Scanner"),
+        "enable_touchid": MessageLookupByLibrary.simpleMessage("Aktifkan Touch ID"),
+        "export_all_gallery": MessageLookupByLibrary.simpleMessage("Ekspor semua galeri"),
+        "export_library": MessageLookupByLibrary.simpleMessage("Ekspor Koleksi"),
         "family_tag": MessageLookupByLibrary.simpleMessage("Keluarga"),
-        "feedback_bug_report":
-            MessageLookupByLibrary.simpleMessage("Umpan balik & laporan bug"),
-        "find_easily": MessageLookupByLibrary.simpleMessage(
-            "Temukan foto Anda dengan mudah"),
+        "feedback_bug_report": MessageLookupByLibrary.simpleMessage("Umpan balik & laporan bug"),
+        "find_easily": MessageLookupByLibrary.simpleMessage("Temukan foto Anda dengan mudah"),
         "finishing": MessageLookupByLibrary.simpleMessage("Finishing..."),
         "foods_tag": MessageLookupByLibrary.simpleMessage("Makanan"),
-        "forgot_secret_key":
-            MessageLookupByLibrary.simpleMessage("Lupa kode rahasia?"),
+        "forgot_secret_key": MessageLookupByLibrary.simpleMessage("Lupa kode rahasia?"),
         "full_screen": MessageLookupByLibrary.simpleMessage("Layar penuh"),
-        "gallery_access_permission":
-            MessageLookupByLibrary.simpleMessage("Izin akses"),
+        "gallery_access_permission": MessageLookupByLibrary.simpleMessage("Izin akses"),
         "gallery_access_permission_description":
-            MessageLookupByLibrary.simpleMessage(
-                "Untuk mulai mengatur foto Anda, kami butuh izin untuk mengaksesnya"),
-        "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
-            "Untuk mengatur foto, kami memerlukan akses ke galeri foto Anda"),
+            MessageLookupByLibrary.simpleMessage("Untuk mulai mengatur foto Anda, kami butuh izin untuk mengaksesnya"),
+        "gallery_access_reason":
+            MessageLookupByLibrary.simpleMessage("Untuk mengatur foto, kami memerlukan akses ke galeri foto Anda"),
         "home_tag": MessageLookupByLibrary.simpleMessage("Rumah"),
-        "how_many_pics":
-            MessageLookupByLibrary.simpleMessage("Berapa banyak foto"),
-        "infinite_tags":
-            MessageLookupByLibrary.simpleMessage("Tag tanpa batas"),
+        "how_many_pics": MessageLookupByLibrary.simpleMessage("Berapa banyak foto"),
+        "infinite_tags": MessageLookupByLibrary.simpleMessage("Tag tanpa batas"),
         "keep_asking": MessageLookupByLibrary.simpleMessage("Tetap tanyakan"),
         "keep_safe": MessageLookupByLibrary.simpleMessage(
             "Foto Anda kini aman di picPics. Apakah Anda ingin menghapusnya dari rol kamera Anda?"),
         "language": MessageLookupByLibrary.simpleMessage("Bahasa"),
-        "lock_with_pin": MessageLookupByLibrary.simpleMessage(
-            "Kunci foto pribadi Anda dengan kode sandi PIN."),
-        "lock_your_photos":
-            MessageLookupByLibrary.simpleMessage("Kunci foto Anda"),
+        "lock_with_pin": MessageLookupByLibrary.simpleMessage("Kunci foto pribadi Anda dengan kode sandi PIN."),
+        "lock_your_photos": MessageLookupByLibrary.simpleMessage("Kunci foto Anda"),
         "month": MessageLookupByLibrary.simpleMessage("bulan"),
-        "new_secret_key":
-            MessageLookupByLibrary.simpleMessage("Kode rahasia baru"),
+        "new_secret_key": MessageLookupByLibrary.simpleMessage("Kode rahasia baru"),
         "next": MessageLookupByLibrary.simpleMessage("Berikutnya"),
         "no": MessageLookupByLibrary.simpleMessage("Tidak"),
         "no_ads": MessageLookupByLibrary.simpleMessage("Tanpa iklan"),
-        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
-            "There are no more photos to organize."),
-        "no_previous_purchase": MessageLookupByLibrary.simpleMessage(
-            "Tidak Ada Pembelian Sebelumnya"),
-        "no_tagged_photos": MessageLookupByLibrary.simpleMessage(
-            "Anda belum memiliki foto yang diberi tag"),
-        "no_tags_found": MessageLookupByLibrary.simpleMessage(
-            "Tidak ada tag yang ditemukan"),
-        "no_valid_subscription": MessageLookupByLibrary.simpleMessage(
-            "Tidak dapat menemukan pembelian berlangganan yang valid."),
-        "notification_time":
-            MessageLookupByLibrary.simpleMessage("Waktu notifikasi"),
+        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage("There are no more photos to organize."),
+        "no_previous_purchase": MessageLookupByLibrary.simpleMessage("Tidak Ada Pembelian Sebelumnya"),
+        "no_tagged_photos": MessageLookupByLibrary.simpleMessage("Anda belum memiliki foto yang diberi tag"),
+        "no_tags_found": MessageLookupByLibrary.simpleMessage("Tidak ada tag yang ditemukan"),
+        "no_valid_subscription":
+            MessageLookupByLibrary.simpleMessage("Tidak dapat menemukan pembelian berlangganan yang valid."),
+        "notification_time": MessageLookupByLibrary.simpleMessage("Waktu notifikasi"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifikasi"),
         "ny_tag": MessageLookupByLibrary.simpleMessage("NY"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open_gallery": MessageLookupByLibrary.simpleMessage("Buka galeri"),
-        "organized_photos_description":
-            MessageLookupByLibrary.simpleMessage("Foto yang telah diberi tag"),
-        "organized_photos_title":
-            MessageLookupByLibrary.simpleMessage("Foto yang Diatur"),
+        "organized_photos_description": MessageLookupByLibrary.simpleMessage("Foto yang telah diberi tag"),
+        "organized_photos_title": MessageLookupByLibrary.simpleMessage("Foto yang Diatur"),
         "parties_tag": MessageLookupByLibrary.simpleMessage("Pesta"),
         "pets_tag": MessageLookupByLibrary.simpleMessage("Hewan peliharaan"),
         "photo_gallery_count": m1,
-        "photo_gallery_description":
-            MessageLookupByLibrary.simpleMessage("Foto belum diatur"),
-        "photo_gallery_title":
-            MessageLookupByLibrary.simpleMessage("Galeri foto"),
+        "photo_gallery_description": MessageLookupByLibrary.simpleMessage("Foto belum diatur"),
+        "photo_gallery_title": MessageLookupByLibrary.simpleMessage("Galeri foto"),
         "photo_location": MessageLookupByLibrary.simpleMessage("Lokasi foto"),
-        "photos_always_organized": MessageLookupByLibrary.simpleMessage(
-            "Kini, foto Anda akan selalu teratur"),
-        "picpics_photo_manager":
-            MessageLookupByLibrary.simpleMessage("picPics - Pengatur Foto"),
-        "privacy_policy":
-            MessageLookupByLibrary.simpleMessage("Kebijakan Privasi"),
+        "photos_always_organized": MessageLookupByLibrary.simpleMessage("Kini, foto Anda akan selalu teratur"),
+        "picpics_photo_manager": MessageLookupByLibrary.simpleMessage("picPics - Pengatur Foto"),
+        "privacy_policy": MessageLookupByLibrary.simpleMessage("Kebijakan Privasi"),
         "private_photos": MessageLookupByLibrary.simpleMessage("Foto Pribadi"),
         "protect_with_encryption": MessageLookupByLibrary.simpleMessage(
             "Lindungi foto pribadi Anda dengan enkripsi yang hanya dapat diakses dengan kata sandi PIN."),
-        "rate_this_app":
-            MessageLookupByLibrary.simpleMessage("Beri peringkat aplikasi ini"),
+        "rate_this_app": MessageLookupByLibrary.simpleMessage("Beri peringkat aplikasi ini"),
         "recent_tags": MessageLookupByLibrary.simpleMessage("Tag Terbaru"),
-        "require_secret_key":
-            MessageLookupByLibrary.simpleMessage("Memerlukan kode rahasia"),
-        "restore_purchase":
-            MessageLookupByLibrary.simpleMessage("Pulihkan pembelian"),
+        "require_secret_key": MessageLookupByLibrary.simpleMessage("Memerlukan kode rahasia"),
+        "restore_purchase": MessageLookupByLibrary.simpleMessage("Pulihkan pembelian"),
         "save": MessageLookupByLibrary.simpleMessage("simpan"),
-        "save_location":
-            MessageLookupByLibrary.simpleMessage("Lokasi penyimpanan"),
-        "screenshots_tag":
-            MessageLookupByLibrary.simpleMessage("Tangkapan layar"),
+        "save_location": MessageLookupByLibrary.simpleMessage("Lokasi penyimpanan"),
+        "screenshots_tag": MessageLookupByLibrary.simpleMessage("Tangkapan layar"),
         "search": MessageLookupByLibrary.simpleMessage("Cari..."),
-        "search_all_tags_not_found": MessageLookupByLibrary.simpleMessage(
-            "Tidak ada gambar yang ditemukan dengan semua tag-nya"),
-        "search_results":
-            MessageLookupByLibrary.simpleMessage("Hasil pencarian"),
-        "secret_key_created": MessageLookupByLibrary.simpleMessage(
-            "Kode rahasia berhasil dibuat!"),
+        "search_all_tags_not_found":
+            MessageLookupByLibrary.simpleMessage("Tidak ada gambar yang ditemukan dengan semua tag-nya"),
+        "search_results": MessageLookupByLibrary.simpleMessage("Hasil pencarian"),
+        "secret_key_created": MessageLookupByLibrary.simpleMessage("Kode rahasia berhasil dibuat!"),
         "secret_photos": MessageLookupByLibrary.simpleMessage("Foto Rahasia"),
         "selfies_tag": MessageLookupByLibrary.simpleMessage("Selfie"),
         "settings": MessageLookupByLibrary.simpleMessage("Pengaturan"),
-        "share_with_friends":
-            MessageLookupByLibrary.simpleMessage("Bagikan dengan teman"),
+        "share_with_friends": MessageLookupByLibrary.simpleMessage("Bagikan dengan teman"),
         "sign": MessageLookupByLibrary.simpleMessage("Tanda"),
         "sports_tag": MessageLookupByLibrary.simpleMessage("Olah raga"),
         "start": MessageLookupByLibrary.simpleMessage("Mulai"),
         "start_tagging": MessageLookupByLibrary.simpleMessage("Mulai beri tag"),
         "suggestions": MessageLookupByLibrary.simpleMessage("Saran"),
-        "tag_multiple_photos_at_once": MessageLookupByLibrary.simpleMessage(
-            "Beri tag banyak foto sekaligus"),
-        "take_a_look":
-            MessageLookupByLibrary.simpleMessage("Lihatlah aplikasi ini!"),
+        "tag_multiple_photos_at_once": MessageLookupByLibrary.simpleMessage("Beri tag banyak foto sekaligus"),
+        "take_a_look": MessageLookupByLibrary.simpleMessage("Lihatlah aplikasi ini!"),
         "take_a_look_description": m2,
-        "terms_of_use":
-            MessageLookupByLibrary.simpleMessage("Ketentuan Penggunaan"),
+        "terms_of_use": MessageLookupByLibrary.simpleMessage("Ketentuan Penggunaan"),
         "time": MessageLookupByLibrary.simpleMessage("Waktu"),
         "toggle_date": MessageLookupByLibrary.simpleMessage("Tanggal"),
         "toggle_days": MessageLookupByLibrary.simpleMessage("Hari"),
@@ -215,8 +162,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Anda dapat \"mengetuk & menahan\" foto Anda untuk menandai beberapa foto sekaligus."),
         "tutorial_secret": MessageLookupByLibrary.simpleMessage(
             "Sembunyikan foto pribadi Anda dengan perlindungan kode pin, jaga agar tetap aman."),
-        "unlimited_private_pics":
-            MessageLookupByLibrary.simpleMessage("Foto pribadi tanpa batas"),
+        "unlimited_private_pics": MessageLookupByLibrary.simpleMessage("Foto pribadi tanpa batas"),
         "vacation_tag": MessageLookupByLibrary.simpleMessage("Liburan"),
         "view_hidden_photos": MessageLookupByLibrary.simpleMessage(
             "Untuk menampilkan foto tersembunyi Anda, lepaskan kunci pada pengaturan aplikasi. Anda dapat membukanya dengan PIN Anda."),
@@ -225,7 +171,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("20 mnt"),
         "year": MessageLookupByLibrary.simpleMessage("tahun"),
         "yes": MessageLookupByLibrary.simpleMessage("Ya"),
-        "your_secret_key":
-            MessageLookupByLibrary.simpleMessage("Kode rahasia Anda")
+        "your_secret_key": MessageLookupByLibrary.simpleMessage("Kode rahasia Anda")
       };
 }

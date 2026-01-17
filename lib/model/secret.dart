@@ -1,5 +1,4 @@
 class Secret {
-
   Secret({
     required this.photoId,
     required this.photoPath,
@@ -9,8 +8,11 @@ class Secret {
     required this.originalLongitude,
     required this.nonce,
   });
-  String photoId, photoPath, thumbPath;
+  String photoId;
+  String photoPath;
+  String thumbPath;
   final DateTime createDateTime;
-  final double originalLatitude, originalLongitude;
+  final double originalLatitude;
+  final double originalLongitude;
   final String nonce;
 }

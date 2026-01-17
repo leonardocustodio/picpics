@@ -11,14 +11,15 @@ import 'package:picpics/utils/app_logger.dart';
 
 @immutable
 class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
-
   const AssetEntityImageProvider(
     this.picStore, {
     this.scale = 1.0,
     this.thumbSize = kDefaultPreviewThumbSize,
     this.isOriginal = true,
-  }) : assert(isOriginal || thumbSize.length == 2,
-            'thumbSize must contain and only contain two integers when it\'s not original',);
+  }) : assert(
+          isOriginal || thumbSize.length == 2,
+          "thumbSize must contain and only contain two integers when it's not original",
+        );
   final PicStoreNotifier picStore;
 
   /// Scale for image provider.
@@ -45,7 +46,9 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   @override
   ImageStreamCompleter loadImage(
-      AssetEntityImageProvider key, ImageDecoderCallback decode,) {
+    AssetEntityImageProvider key,
+    ImageDecoderCallback decode,
+  ) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -67,14 +70,13 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     AssetEntityImageProvider key,
     ImageDecoderCallback decode,
   ) async {
-    assert(key == this);
+    assert(key == this, 'AssetEntityImageProvider key mismatch');
     Uint8List? data;
 
     if (isOriginal) {
       AppLogger.d('Loading original...');
-      data = picStore.state.isPrivate
-          ? await key.picStore.assetOriginBytes
-          : await key.picStore.state.entity?.originBytes;
+      data =
+          picStore.state.isPrivate ? await key.picStore.assetOriginBytes : await key.picStore.state.entity?.originBytes;
     } else {
       AppLogger.d('Loading thumbnail...');
       if (picStore.state.entity == null) {
@@ -83,9 +85,10 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       data = picStore.state.isPrivate
           ? await key.picStore.assetThumbBytes
           : await key.picStore.state.entity?.thumbnailDataWithSize(
-              ThumbnailSize(thumbSize[0], thumbSize[1]),);
+              ThumbnailSize(thumbSize[0], thumbSize[1]),
+            );
 
-      // TODO: Blur hash generation needs to be moved to a provider-aware context
+      // TODO(picpics): Blur hash generation needs to be moved to a provider-aware context
       // Cannot access Riverpod provider from ImageProvider
       // if (data != null) {
       //   await createBlurHash(picStore.photoId.value, data);
@@ -129,22 +132,16 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
         case 'jpg':
         case 'jpeg':
           type = ImageFileType.jpg;
-          break;
         case 'png':
           type = ImageFileType.png;
-          break;
         case 'gif':
           type = ImageFileType.gif;
-          break;
         case 'tiff':
           type = ImageFileType.tiff;
-          break;
         case 'heic':
           type = ImageFileType.heic;
-          break;
         default:
           type = ImageFileType.other;
-          break;
       }
     }
     return type;
@@ -153,10 +150,10 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other.runtimeType != runtimeType) {
+    if (other is! AssetEntityImageProvider) {
       return false;
     }
-    final typedOther = other as AssetEntityImageProvider;
+    final typedOther = other;
 
     if (picStore.state.entity == null) {
       return picStore.state.photoPath == typedOther.picStore.state.photoPath;

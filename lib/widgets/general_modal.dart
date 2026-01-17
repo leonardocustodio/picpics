@@ -5,9 +5,11 @@ import 'package:picpics/constants.dart';
 import 'package:picpics/providers/language_provider.dart';
 
 class GeneralModal extends ConsumerWidget {
-
   const GeneralModal({
-    required this.message, required this.onPressedDelete, required this.onPressedOk, super.key,
+    required this.message,
+    required this.onPressedDelete,
+    required this.onPressedOk,
+    super.key,
   });
   final String message;
   final void Function() onPressedDelete;
@@ -65,7 +67,7 @@ class GeneralModal extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.all(16),
               child: CupertinoButton(
-                padding: const EdgeInsets.all(0),
+                padding: EdgeInsets.zero,
                 onPressed: onPressedOk,
                 child: Container(
                   height: 44,
@@ -76,7 +78,7 @@ class GeneralModal extends ConsumerWidget {
                   child: Center(
                     child: Text(
                       s.continue_string,
-                      textScaler: const TextScaler.linear(1),
+                      textScaler: TextScaler.noScaling,
                       style: kLoginButtonTextStyle,
                     ),
                   ),

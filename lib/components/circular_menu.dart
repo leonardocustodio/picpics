@@ -1,17 +1,18 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:picpics/components/circular_menu_item.dart';
 
 class CircularMenu extends StatefulWidget {
-
-  /// creates a circular menu with specific [radius] and [alignment] .
-  /// [toggleButtonElevation] ,[toggleButtonPadding] and [toggleButtonMargin] must be
+  /// Creates a circular menu with specific [radius] and [alignment].
+  /// [toggleButtonPadding] and [toggleButtonMargin] must be
   /// equal or greater than zero.
-  /// [items] must not be null and it must contains two elements at least.
+  /// [items] must not be null and it must contain two elements at least.
   const CircularMenu({
     required this.items,
-    required this.toggleButtonBoxShadow, this.alignment = Alignment.bottomCenter,
+    required this.toggleButtonBoxShadow,
+    this.alignment = Alignment.bottomCenter,
     this.radius = 100,
     this.backgroundWidget,
     this.animationDuration = const Duration(milliseconds: 500),
@@ -29,6 +30,7 @@ class CircularMenu extends StatefulWidget {
   })  : //assert(items != null, 'items can not be empty list'),
         assert(items.length > 1, 'if you have one item no need to use a Menu'),
         super(key: key);
+
   /// use global key to control animation anywhere in the code
   @override
   // ignore: overridden_fields
@@ -71,19 +73,18 @@ class CircularMenu extends StatefulWidget {
   CircularMenuState createState() => CircularMenuState();
 }
 
-class CircularMenuState extends State<CircularMenu>
-    with SingleTickerProviderStateMixin {
+class CircularMenuState extends State<CircularMenu> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
 
   /// forward animation
   void forwardAnimation() {
-    _animationController.forward();
+    unawaited(_animationController.forward());
   }
 
   /// reverse animation
   void reverseAnimation() {
-    _animationController.reverse();
+    unawaited(_animationController.reverse());
   }
 
   @override
@@ -96,13 +97,14 @@ class CircularMenuState extends State<CircularMenu>
         setState(() {});
       });
     _animation = Tween(
-            begin: widget.isExpanded ? 1.0 : 0.0,
-            end: widget.isExpanded ? 0.0 : 1.0,)
-        .animate(
+      begin: widget.isExpanded ? 1.0 : 0.0,
+      end: widget.isExpanded ? 0.0 : 1.0,
+    ).animate(
       CurvedAnimation(
-          parent: _animationController,
-          curve: widget.curve,
-          reverseCurve: widget.reverseCurve,),
+        parent: _animationController,
+        curve: widget.curve,
+        reverseCurve: widget.reverseCurve,
+      ),
     );
   }
 
@@ -117,12 +119,12 @@ class CircularMenuState extends State<CircularMenu>
               offset: widget.useInHorizontal
                   ? Offset.fromDirection(
                       -1.0 * math.pi,
-                      _animation.value * widget.radius +
-                          (index * widget.radius),)
+                      _animation.value * widget.radius + (index * widget.radius),
+                    )
                   : Offset.fromDirection(
                       -0.5 * math.pi,
-                      _animation.value * widget.radius +
-                          (index * widget.radius),),
+                      _animation.value * widget.radius + (index * widget.radius),
+                    ),
               child: Transform.scale(
                 scale: _animation.value,
                 child: item,
@@ -145,8 +147,8 @@ class CircularMenuState extends State<CircularMenu>
 //          padding: (-_animation.value * widget.toggleButtonPadding * 0.5) + widget.toggleButtonPadding,
           onTap: () {
             _animationController.status == AnimationStatus.dismissed
-                ? _animationController.forward()
-                : _animationController.reverse();
+                ? unawaited(_animationController.forward())
+                : unawaited(_animationController.reverse());
             widget.toggleButtonOnPressed?.call();
           },
           boxShadow: widget.toggleButtonBoxShadow,

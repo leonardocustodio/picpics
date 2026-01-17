@@ -2,17 +2,16 @@ import 'package:flutter_riverpod/legacy.dart';
 
 /// Progress dialog state for showing loading/progress indicators
 class ProgressState {
-  final double total;
-  final double value;
-  final bool show;
-  final String? text;
-
   const ProgressState({
     this.total = 0.0,
     this.value = 0.0,
     this.show = false,
     this.text,
   });
+  final double total;
+  final double value;
+  final bool show;
+  final String? text;
 
   ProgressState copyWith({
     double? total,
@@ -38,7 +37,7 @@ class ProgressNotifier extends StateNotifier<ProgressState> {
     if (!state.show) {
       state = state.copyWith(
         text: showingText,
-        value: 0.0,
+        value: 0,
         total: totalLength,
         show: true,
       );
@@ -57,13 +56,12 @@ class ProgressNotifier extends StateNotifier<ProgressState> {
     if (state.show) {
       state = state.copyWith(
         show: false,
-        value: 0.0,
+        value: 0,
       );
     }
   }
 }
 
-final progressProvider =
-    StateNotifierProvider<ProgressNotifier, ProgressState>((ref) {
+final progressProvider = StateNotifierProvider<ProgressNotifier, ProgressState>((ref) {
   return ProgressNotifier();
 });

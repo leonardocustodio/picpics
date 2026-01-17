@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/providers/blur_hash_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/screens/photo_screen.dart';
 import 'package:picpics/widgets/date_header.dart';
 import 'package:picpics/widgets/photo_widget.dart';
@@ -48,11 +48,8 @@ class UntaggedTabMonth extends ConsumerWidget {
                 var i = index + 1;
                 isSelected = true;
 
-                while (i < tabsState.allUnTaggedPicsMonth.length &&
-                    tabsState.allUnTaggedPicsMonth[i] is String) {
-                  if (taggedState
-                          .selectedMultiBarPics[tabsState.allUnTaggedPicsMonth[i]] ==
-                      null) {
+                while (i < tabsState.allUnTaggedPicsMonth.length && tabsState.allUnTaggedPicsMonth[i] is String) {
+                  if (taggedState.selectedMultiBarPics[tabsState.allUnTaggedPicsMonth[i]] == null) {
                     isSelected = false;
                     break;
                   }
@@ -64,16 +61,14 @@ class UntaggedTabMonth extends ConsumerWidget {
                   if (tabsState.multiPicBar) {
                     var i = index + 1;
                     if (isSelected) {
-                      while (i < tabsState.allUnTaggedPicsMonth.length &&
-                          tabsState.allUnTaggedPicsMonth[i] is String) {
+                      while (i < tabsState.allUnTaggedPicsMonth.length && tabsState.allUnTaggedPicsMonth[i] is String) {
                         taggedNotifier.removeSelectedMultiBarPic(
                           tabsState.allUnTaggedPicsMonth[i] as String,
                         );
                         i++;
                       }
                     } else {
-                      while (i < tabsState.allUnTaggedPicsMonth.length &&
-                          tabsState.allUnTaggedPicsMonth[i] is String) {
+                      while (i < tabsState.allUnTaggedPicsMonth.length && tabsState.allUnTaggedPicsMonth[i] is String) {
                         taggedNotifier.addSelectedMultiBarPic(
                           tabsState.allUnTaggedPicsMonth[i] as String,
                         );
@@ -96,7 +91,7 @@ class UntaggedTabMonth extends ConsumerWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(6),
                 child: CupertinoButton(
-                  padding: const EdgeInsets.all(0),
+                  padding: EdgeInsets.zero,
                   onPressed: () async {
                     if (tabsState.multiPicBar) {
                       if (taggedState.selectedMultiBarPics[object] == null) {
@@ -117,8 +112,8 @@ class UntaggedTabMonth extends ConsumerWidget {
                   },
                   child: GestureDetector(
                     onLongPress: () {
-                      if (tabsState.multiPicBar == false) {
-                        tabsNotifier.setMultiPicBar(true);
+                      if (!tabsState.multiPicBar) {
+                        tabsNotifier.setMultiPicBar(value: true);
                       }
                       taggedNotifier.addSelectedMultiBarPic(object as String);
                     },
@@ -130,9 +125,7 @@ class UntaggedTabMonth extends ConsumerWidget {
                             hash: blurHash,
                           ),
                         ),
-                        if (tabsState.multiPicBar &&
-                            taggedState.selectedMultiBarPics[object] !=
-                                null) ...[
+                        if (tabsState.multiPicBar && taggedState.selectedMultiBarPics[object] != null) ...[
                           Container(
                             constraints: const BoxConstraints.expand(),
                             decoration: BoxDecoration(
@@ -153,8 +146,7 @@ class UntaggedTabMonth extends ConsumerWidget {
                                 gradient: kSecondaryGradient,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child:
-                                  Image.asset('lib/images/checkwhiteico.png'),
+                              child: Image.asset('lib/images/checkwhiteico.png'),
                             ),
                           ),
                         ],

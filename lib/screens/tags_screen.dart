@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:picpics/constants.dart';
 
 class TagsScreen extends StatefulWidget {
-
   const TagsScreen({super.key});
   static String id = 'tags_screen';
 
@@ -27,62 +26,59 @@ class _TagsScreenState extends State<TagsScreen> {
                 child: Row(
                   children: <Widget>[
                     CupertinoButton(
-                        padding: const EdgeInsets.only(left: 5, right: 10),
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: Image.asset('lib/images/backarrowgray.png'),
-                      ),
-                      Image.asset('lib/images/searchico.png'),
-                      const SizedBox(width: 10),
-                      const Expanded(
-                        child: TextField(
-                          // focusNode: _fn,
-                          textAlignVertical: TextAlignVertical.center,
-                          style: TextStyle(
+                      padding: const EdgeInsets.only(left: 5, right: 10),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Image.asset('lib/images/backarrowgray.png'),
+                    ),
+                    Image.asset('lib/images/searchico.png'),
+                    const SizedBox(width: 10),
+                    const Expanded(
+                      child: TextField(
+                        // focusNode: _fn,
+                        textAlignVertical: TextAlignVertical.center,
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          color: Color(0xff606566),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.normal,
+                          letterSpacing: -0.4099999964237213,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          border: OutlineInputBorder(borderSide: BorderSide.none),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                          hintText: 'Search...',
+                          hintStyle: TextStyle(
                             fontFamily: 'Lato',
-                            color: Color(0xff606566),
+                            color: kGrayColor,
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
                             fontStyle: FontStyle.normal,
                             letterSpacing: -0.4099999964237213,
                           ),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(0),
-                            border:
-                                OutlineInputBorder(borderSide: BorderSide.none),
-                            enabledBorder:
-                                OutlineInputBorder(borderSide: BorderSide.none),
-                            focusedBorder:
-                                OutlineInputBorder(borderSide: BorderSide.none),
-                            hintText: 'Search...',
-                            hintStyle: TextStyle(
-                              fontFamily: 'Lato',
-                              color: kGrayColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
-                              letterSpacing: -0.4099999964237213,
-                            ),
-                          ),
                         ),
                       ),
-                      Container(width: 15),
-                      // if (widget.hasClearButton)
-                      //   GestureDetector(
-                      //     onTap: () {
-                      //       if (_crossFadeState == CrossFadeState.showSecond) _textEditingController.clear();
-                      //     },
-                      //     // child: Icon(_inputIcon, color: this.widget.iconColor),
-                      //     child: AnimatedCrossFade(
-                      //       crossFadeState: _crossFadeState,
-                      //       duration: Duration(milliseconds: 300),
-                      //       firstChild: Container(),
-                      //       secondChild: Icon(Icons.clear, color: widget.iconColor),
-                      //     ),
-                      //   ),
-                      // if (!widget.hasClearButton) Container()
-                    ],
-                  ),
+                    ),
+                    Container(width: 15),
+                    // if (widget.hasClearButton)
+                    //   GestureDetector(
+                    //     onTap: () {
+                    //       if (_crossFadeState == CrossFadeState.showSecond) _textEditingController.clear();
+                    //     },
+                    //     // child: Icon(_inputIcon, color: this.widget.iconColor),
+                    //     child: AnimatedCrossFade(
+                    //       crossFadeState: _crossFadeState,
+                    //       duration: Duration(milliseconds: 300),
+                    //       firstChild: Container(),
+                    //       secondChild: Icon(Icons.clear, color: widget.iconColor),
+                    //     ),
+                    //   ),
+                    // if (!widget.hasClearButton) Container()
+                  ],
                 ),
+              ),
             ],
           ),
         ),

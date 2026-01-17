@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -97,9 +98,7 @@ class _TagsListState extends ConsumerState<TagsList> {
 
       /// We'll have to avoid the tags whose tag name is null and
       /// also if the tags is [kSecretTagKey] and showPrivate is False
-      if (tagsState.allTags[tagKey]?.title == null ||
-          (privatePhotosState.showPrivate == false &&
-              tagKey == kSecretTagKey)) {
+      if (tagsState.allTags[tagKey]?.title == null || (!privatePhotosState.showPrivate && tagKey == kSecretTagKey)) {
         continue;
       }
 
@@ -109,22 +108,21 @@ class _TagsListState extends ConsumerState<TagsList> {
             if (widget.shouldChangeToSwipeMode) {
               setState(() {
                 if (showSwiperInIndex == null) {
-                  showSwiperInIndex =
-                      tags.indexWhere((element) => element == tagKey);
+                  showSwiperInIndex = tags.indexWhere((element) => element == tagKey);
                 } else {
                   showSwiperInIndex = null;
                 }
               });
             }
-            HapticFeedback.lightImpact();
+            unawaited(HapticFeedback.lightImpact());
             widget.onTap?.call(tagKey);
           },
           onDoubleTap: () {
-            HapticFeedback.lightImpact();
+            unawaited(HapticFeedback.lightImpact());
             widget.onDoubleTap?.call(tagKey);
           },
           onLongPress: () {
-            showEditTagModal(tagKey, context, ref);
+            unawaited(showEditTagModal(tagKey, context, ref));
           },
           onPanStart: (details) {
             AppLogger.d('Started pan on tag: $tagKey');
@@ -144,7 +142,7 @@ class _TagsListState extends ConsumerState<TagsList> {
           onPanEnd: (details) {
             if (swipedRightDirection) {
               showSwiperInIndex = null;
-              HapticFeedback.lightImpact();
+              unawaited(HapticFeedback.lightImpact());
               widget.onPanEnd?.call(tagKey);
               swipedRightDirection = false;
             }
@@ -153,24 +151,27 @@ class _TagsListState extends ConsumerState<TagsList> {
             decoration: widget.tagStyle == TagStyle.multiColored
                 ? BoxDecoration(
                     gradient: getGradient(i % 4),
-                    borderRadius: BorderRadius.circular(19),)
+                    borderRadius: BorderRadius.circular(19),
+                  )
                 : kGrayBoxDecoration,
             child: showSwiperInIndex != i
                 ? tagKey != kSecretTagKey
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16,),
+                          vertical: 8,
+                          horizontal: 16,
+                        ),
                         child: Text(
                           tagsState.allTags[tagKey]?.title ?? '',
-                          textScaler: const TextScaler.linear(1),
-                          style: widget.tagStyle == TagStyle.multiColored
-                              ? kWhiteTextStyle
-                              : kGrayTextStyle,
+                          textScaler: TextScaler.noScaling,
+                          style: widget.tagStyle == TagStyle.multiColored ? kWhiteTextStyle : kGrayTextStyle,
                         ),
                       )
                     : Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 5.2, horizontal: 19,),
+                          vertical: 5.2,
+                          horizontal: 19,
+                        ),
                         child: widget.tagStyle == TagStyle.multiColored
                             ? Image.asset('lib/images/locktagwhite.png')
                             : Image.asset('lib/images/locktaggray.png'),
@@ -227,13 +228,13 @@ class _TagsListState extends ConsumerState<TagsList> {
                             opacity: firstOpct,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16,),
+                                vertical: 8,
+                                horizontal: 16,
+                              ),
                               child: Text(
                                 tagsState.allTags[tagKey]?.title ?? '',
-                                textScaler: const TextScaler.linear(1),
-                                style: widget.tagStyle == TagStyle.multiColored
-                                    ? kWhiteTextStyle
-                                    : kGrayTextStyle,
+                                textScaler: TextScaler.noScaling,
+                                style: widget.tagStyle == TagStyle.multiColored ? kWhiteTextStyle : kGrayTextStyle,
                               ),
                             ),
                           ),
@@ -256,10 +257,8 @@ class _TagsListState extends ConsumerState<TagsList> {
                             opacity: thirdOpct,
                             child: Text(
                               s.delete,
-                              textScaler: const TextScaler.linear(1),
-                              style: widget.tagStyle == TagStyle.multiColored
-                                  ? kWhiteTextStyle
-                                  : kGrayTextStyle,
+                              textScaler: TextScaler.noScaling,
+                              style: widget.tagStyle == TagStyle.multiColored ? kWhiteTextStyle : kGrayTextStyle,
                             ),
                           ),
                         ],
@@ -272,41 +271,43 @@ class _TagsListState extends ConsumerState<TagsList> {
     }
 
     if (widget.addTagButton != null) {
-      tagsWidgets.add(CupertinoButton(
-        padding: const EdgeInsets.all(0),
-        onPressed: widget.addTagButton,
-        minimumSize: const Size(30, 30),
-        child: Container(
-          height: 30,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF1F3F5),
-            border: Border.all(color: kLightGrayColor),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Image.asset('lib/images/smalladdtag.png'),
-              const SizedBox(
-                width: 4,
-              ),
-              Text(
-                s.add_tag,
-                textScaler: const TextScaler.linear(1),
-                style: const TextStyle(
-                  fontFamily: 'Lato',
-                  color: kGrayColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  letterSpacing: -0.4099999964237213,
+      tagsWidgets.add(
+        CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: widget.addTagButton,
+          minimumSize: const Size(30, 30),
+          child: Container(
+            height: 30,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF1F3F5),
+              border: Border.all(color: kLightGrayColor),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Image.asset('lib/images/smalladdtag.png'),
+                const SizedBox(
+                  width: 4,
                 ),
-              ),
-            ],
+                Text(
+                  s.add_tag,
+                  textScaler: TextScaler.noScaling,
+                  style: const TextStyle(
+                    fontFamily: 'Lato',
+                    color: kGrayColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    letterSpacing: -0.4099999964237213,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),);
+      );
     }
 
     if (widget.addTagField) {
@@ -346,11 +347,14 @@ class _TagsListState extends ConsumerState<TagsList> {
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.only(left: 6),
                             enabledBorder: const OutlineInputBorder(
-                                borderSide: BorderSide.none,),
+                              borderSide: BorderSide.none,
+                            ),
                             focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide.none,),
+                              borderSide: BorderSide.none,
+                            ),
                             border: const OutlineInputBorder(
-                                borderSide: BorderSide.none,),
+                              borderSide: BorderSide.none,
+                            ),
                             hintText: s.add_tags,
                             hintStyle: const TextStyle(
                               fontFamily: 'Lato',
@@ -365,12 +369,11 @@ class _TagsListState extends ConsumerState<TagsList> {
                       ),
                       if (widget.addButtonVisible)
                         CupertinoButton(
-                          padding: const EdgeInsets.all(0),
+                          padding: EdgeInsets.zero,
                           onPressed: () {
-                            if (widget.onSubmitted != null) {
-                              widget.onSubmitted!(
-                                  widget.textEditingController!.text,);
-                            }
+                            widget.onSubmitted?.call(
+                              widget.textEditingController!.text,
+                            );
                           },
                           minimumSize: const Size(30, 30),
                           child: const Icon(
@@ -391,11 +394,14 @@ class _TagsListState extends ConsumerState<TagsList> {
                     children: [
                       Text(
                         widget.aiButtonTitle!,
-                        textScaler: const TextScaler.linear(1),
+                        textScaler: TextScaler.noScaling,
                         style: kGrayTextStyle.copyWith(fontSize: 15),
                       ),
-                      const Icon(Icons.arrow_forward_ios_rounded,
-                          size: 18, color: Colors.grey,),
+                      const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
                     ],
                   ),
                 ),
@@ -413,7 +419,7 @@ class _TagsListState extends ConsumerState<TagsList> {
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
               widget.title!,
-              textScaler: const TextScaler.linear(1),
+              textScaler: TextScaler.noScaling,
               style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),

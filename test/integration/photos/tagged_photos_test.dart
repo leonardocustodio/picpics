@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:picpics/providers/tagged_provider.dart';
 
 /// Integration tests for tagged photos functionality
@@ -45,35 +45,29 @@ void main() {
     });
 
     test('Adding to multi-bar selection should update state', () {
-      final notifier = container.read(taggedProvider.notifier);
-
       // Add a photo to selection
-      notifier.addSelectedMultiBarPic('test_photo_id');
+      container.read(taggedProvider.notifier).addSelectedMultiBarPic('test_photo_id');
 
       final taggedState = container.read(taggedProvider);
       expect(taggedState.selectedMultiBarPics.containsKey('test_photo_id'), isTrue);
     });
 
     test('Removing from multi-bar selection should update state', () {
-      final notifier = container.read(taggedProvider.notifier);
-
       // Add then remove
-      notifier.addSelectedMultiBarPic('test_photo_id');
-      notifier.removeSelectedMultiBarPic('test_photo_id');
+      container.read(taggedProvider.notifier)
+        ..addSelectedMultiBarPic('test_photo_id')
+        ..removeSelectedMultiBarPic('test_photo_id');
 
       final taggedState = container.read(taggedProvider);
       expect(taggedState.selectedMultiBarPics.containsKey('test_photo_id'), isFalse);
     });
 
     test('Clearing multi-bar selection should empty the selection', () {
-      final notifier = container.read(taggedProvider.notifier);
-
-      // Add multiple photos
-      notifier.addSelectedMultiBarPic('photo1');
-      notifier.addSelectedMultiBarPic('photo2');
-
-      // Clear selection
-      notifier.clearSelectedMultiBarPics();
+      // Add multiple photos then clear selection
+      container.read(taggedProvider.notifier)
+        ..addSelectedMultiBarPic('photo1')
+        ..addSelectedMultiBarPic('photo2')
+        ..clearSelectedMultiBarPics();
 
       final taggedState = container.read(taggedProvider);
       expect(taggedState.selectedMultiBarPics.isEmpty, isTrue);
@@ -130,11 +124,10 @@ void main() {
     });
 
     test('Adding duplicate photo to selection should not cause errors', () {
-      final notifier = container.read(taggedProvider.notifier);
-
       // Add same photo twice
-      notifier.addSelectedMultiBarPic('photo1');
-      notifier.addSelectedMultiBarPic('photo1');
+      container.read(taggedProvider.notifier)
+        ..addSelectedMultiBarPic('photo1')
+        ..addSelectedMultiBarPic('photo1');
 
       final taggedState = container.read(taggedProvider);
       // Should still contain the photo
@@ -164,27 +157,23 @@ void main() {
     });
 
     test('Can select multiple photos', () {
-      final notifier = container.read(taggedProvider.notifier);
-
       // Add multiple photos
-      notifier.addSelectedMultiBarPic('photo1');
-      notifier.addSelectedMultiBarPic('photo2');
-      notifier.addSelectedMultiBarPic('photo3');
+      container.read(taggedProvider.notifier)
+        ..addSelectedMultiBarPic('photo1')
+        ..addSelectedMultiBarPic('photo2')
+        ..addSelectedMultiBarPic('photo3');
 
       final taggedState = container.read(taggedProvider);
       expect(taggedState.selectedMultiBarPics.length, 3);
     });
 
     test('Can remove specific photo from selection', () {
-      final notifier = container.read(taggedProvider.notifier);
-
-      // Add three photos
-      notifier.addSelectedMultiBarPic('photo1');
-      notifier.addSelectedMultiBarPic('photo2');
-      notifier.addSelectedMultiBarPic('photo3');
-
-      // Remove middle one
-      notifier.removeSelectedMultiBarPic('photo2');
+      // Add three photos then remove middle one
+      container.read(taggedProvider.notifier)
+        ..addSelectedMultiBarPic('photo1')
+        ..addSelectedMultiBarPic('photo2')
+        ..addSelectedMultiBarPic('photo3')
+        ..removeSelectedMultiBarPic('photo2');
 
       final taggedState = container.read(taggedProvider);
       expect(taggedState.selectedMultiBarPics.length, 2);
@@ -197,7 +186,7 @@ void main() {
       final notifier = container.read(taggedProvider.notifier);
 
       // Add many photos
-      for (int i = 0; i < 10; i++) {
+      for (var i = 0; i < 10; i++) {
         notifier.addSelectedMultiBarPic('photo$i');
       }
 

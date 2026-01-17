@@ -14,10 +14,9 @@ class Geocoding {
     if (json['error_message'] == null) {
       return Geolocation.fromJSON(json);
     } else {
-      var error = json['error_message'];
+      var error = json['error_message'] as String;
       if (error == 'This API project is not authorized to use this API.') {
-        error +=
-            ' Make sure both the Geolocation and Geocoding APIs are activated on your Google Cloud Platform';
+        error += ' Make sure both the Geolocation and Geocoding APIs are activated on your Google Cloud Platform';
       }
       throw Exception(error);
     }

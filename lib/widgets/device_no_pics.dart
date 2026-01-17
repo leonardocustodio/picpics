@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 class DeviceHasNoPics extends StatelessWidget {
-
   const DeviceHasNoPics({required this.message, super.key});
   final String message;
 
@@ -32,7 +31,7 @@ class DeviceHasNoPics extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
               message,
-              textScaler: const TextScaler.linear(1),
+              textScaler: TextScaler.noScaling,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontFamily: 'Lato',
@@ -47,7 +46,7 @@ class DeviceHasNoPics extends StatelessWidget {
 //            height: 17.0,
 //          ),
 //          CupertinoButton(
-//            padding: const EdgeInsets.all(0),
+//            padding: EdgeInsets.zero,
 //            onPressed: () {
 //              PhotoManager.openSetting()
 //            },

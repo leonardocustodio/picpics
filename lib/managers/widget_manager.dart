@@ -4,8 +4,9 @@ import 'package:picpics/providers/pic_store_provider.dart';
 
 class WidgetManager {
   static AppDatabase appDatabase = AppDatabase();
-  static Future<void> saveData(
-      {List<PicStoreNotifier> picsStores = const <PicStoreNotifier>[],}) async {
+  static Future<void> saveData({
+    List<PicStoreNotifier> picsStores = const <PicStoreNotifier>[],
+  }) async {
     for (final store in picsStores) {
       await store.switchIsStarred();
     }
@@ -53,7 +54,7 @@ class WidgetManager {
       await Future.wait(
           [HomeWidget.saveWidgetData<String>('imageEncoded', baseString)]); */
       return;
-    } catch (exception) {
+    } on Exception {
       //AppLogger.d('Error Sending Data. $exception');
     }
   }
@@ -67,7 +68,7 @@ class WidgetManager {
         iOSName: 'PicsWidget',
       );
       return;
-    } catch (exception) {
+    } on Exception {
       //AppLogger.d('Error Updating Widget. $exception');
     }
     //AppLogger.d('After return in update widget');

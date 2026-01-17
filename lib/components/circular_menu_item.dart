@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CircularMenuItem extends StatelessWidget {
-
   /// creates a menu item .
   /// [onTap] must not be null.
   /// [padding] and [margin]  must be equal or greater than zero.
   const CircularMenuItem({
-    required this.onTap, super.key,
+    required this.onTap,
+    super.key,
     this.image,
     this.color,
     this.iconSize = 30,
@@ -15,8 +15,9 @@ class CircularMenuItem extends StatelessWidget {
     this.animatedIcon,
     this.padding = 8.0,
     this.margin = 12.0,
-  })  : assert(padding >= 0.0),
-        assert(margin >= 0.0);
+  })  : assert(padding >= 0.0, 'padding must be >= 0.0'),
+        assert(margin >= 0.0, 'margin must be >= 0.0');
+
   /// if icon and animatedIcon are passed, icon will be ignored
   final Image? image;
   final Color? color;

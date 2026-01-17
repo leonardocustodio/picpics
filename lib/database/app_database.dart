@@ -59,8 +59,7 @@ class Photos extends Table {
   RealColumn get longitude => real().nullable()();
 
   BoolColumn get isPrivate => boolean().withDefault(const Constant(false))();
-  BoolColumn get deletedFromCameraRoll =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get deletedFromCameraRoll => boolean().withDefault(const Constant(false))();
   BoolColumn get isStarred => boolean().withDefault(const Constant(false))();
 
   TextColumn get tags => text().map(MapStringConvertor())();
@@ -75,8 +74,7 @@ class Labels extends Table {
   @override
   Set<Column> get primaryKey => {key};
   IntColumn get counter => integer().withDefault(const Constant(1))();
-  DateTimeColumn get lastUsedAt =>
-      dateTime().withDefault(Constant(DateTime.now()))();
+  DateTimeColumn get lastUsedAt => dateTime().withDefault(Constant(DateTime.now()))();
   TextColumn get title => text().withDefault(const Constant(''))();
   TextColumn get photoId => text().map(MapStringConvertor())();
 }
@@ -111,8 +109,7 @@ class MoorUsers extends Table {
   TextColumn get email => text().nullable()();
   TextColumn get password => text().nullable()();
   BoolColumn get notification => boolean().withDefault(const Constant(false))();
-  BoolColumn get dailyChallenges =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get dailyChallenges => boolean().withDefault(const Constant(false))();
   TextColumn get recentTags => text().map(ListStringConvertor())();
   TextColumn get appLanguage => text().nullable()();
   TextColumn get appVersion => text().nullable()();
@@ -125,25 +122,17 @@ class MoorUsers extends Table {
   IntColumn get minuteOfDay => integer().withDefault(const Constant(0))();
   IntColumn get picsTaggedToday => integer().withDefault(const Constant(0))();
 
-  BoolColumn get tutorialCompleted =>
-      boolean().withDefault(const Constant(false))();
-  BoolColumn get hasGalleryPermission =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get tutorialCompleted => boolean().withDefault(const Constant(false))();
+  BoolColumn get hasGalleryPermission => boolean().withDefault(const Constant(false))();
   BoolColumn get loggedIn => boolean().withDefault(const Constant(false))();
   BoolColumn get secretPhotos => boolean().withDefault(const Constant(false))();
-  BoolColumn get isPinRegistered =>
-      boolean().withDefault(const Constant(false))();
-  BoolColumn get keepAskingToDelete =>
-      boolean().withDefault(const Constant(true))();
-  BoolColumn get shouldDeleteOnPrivate =>
-      boolean().withDefault(const Constant(false))();
-  BoolColumn get tourCompleted =>
-      boolean().withDefault(const Constant(false))();
-  BoolColumn get isBiometricActivated =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get isPinRegistered => boolean().withDefault(const Constant(false))();
+  BoolColumn get keepAskingToDelete => boolean().withDefault(const Constant(true))();
+  BoolColumn get shouldDeleteOnPrivate => boolean().withDefault(const Constant(false))();
+  BoolColumn get tourCompleted => boolean().withDefault(const Constant(false))();
+  BoolColumn get isBiometricActivated => boolean().withDefault(const Constant(false))();
 
-  DateTimeColumn get lastTaggedPicDate =>
-      dateTime().withDefault(Constant(DateTime.now()))();
+  DateTimeColumn get lastTaggedPicDate => dateTime().withDefault(Constant(DateTime.now()))();
 }
 
 class MapStringConvertor extends TypeConverter<Map<String, String>, String> {
@@ -188,15 +177,17 @@ LazyDatabase _openConnection() {
     //final path = p.join(dbFolder.path, 'db.sqlite');
     //AppLogger.d('db:path:-$path');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return NativeDatabase(file, setup: (rawDb) {
-      rawDb.execute("PRAGMA key = 'Leonardo';");
-    },);
+    return NativeDatabase(
+      file,
+      setup: (rawDb) {
+        rawDb.execute("PRAGMA key = 'Leonardo';");
+      },
+    );
   });
 }
 
 @DriftDatabase(tables: [Photos, PicBlurHashs, Privates, Labels, MoorUsers])
 class AppDatabase extends _$AppDatabase {
-
   factory AppDatabase() {
     return _singleton;
   }
@@ -211,16 +202,17 @@ class AppDatabase extends _$AppDatabase {
   ///Blur Hash operations Start
   ///
   ///
-  Future<int> createBlurHash(PicBlurHash newBlurHash) =>
-      into(picBlurHashs).insert(newBlurHash);
+  Future<int> createBlurHash(PicBlurHash newBlurHash) => into(picBlurHashs).insert(newBlurHash);
 
   Future<List<PicBlurHash>> getAllPicBlurHash() => select(picBlurHashs).get();
 
   Future<PicBlurHash?> getSinglePicBlurHash(
-          String photoId,) =>
+    String photoId,
+  ) =>
       (select(picBlurHashs)
-            ..where((l) =>
-                l.photoId.equals(photoId), /* ?? const Constant(false) */))
+            ..where(
+              (l) => l.photoId.equals(photoId), /* ?? const Constant(false) */
+            ))
           .getSingleOrNull();
 
   ///
@@ -230,15 +222,16 @@ class AppDatabase extends _$AppDatabase {
   ///
   Future<int> createLabel(Label newLabel) => into(labels).insert(newLabel);
 
-  Future<Label?> getLabelByLabelKey(String labelKey) => (select(labels)
-        ..where((l) => l.key.equals(labelKey) /* ?? const Constant(false) */))
-      .getSingleOrNull();
+  Future<Label?> getLabelByLabelKey(String labelKey) =>
+      (select(labels)..where((l) => l.key.equals(labelKey) /* ?? const Constant(false) */)).getSingleOrNull();
 
   Future<void> incrementLabelByKey(String labelKey) async {
     final label = await getLabelByLabelKey(labelKey);
     if (label != null) {
       final updatedLabel = label.copyWith(
-          counter: label.counter + 1, lastUsedAt: DateTime.now(),);
+        counter: label.counter + 1,
+        lastUsedAt: DateTime.now(),
+      );
       await updateLabel(updatedLabel);
     }
   }
@@ -248,17 +241,15 @@ class AppDatabase extends _$AppDatabase {
     if (label != null) {
       var count = label.counter - 1;
       if (count < 1) count = 1;
-      final updatedLabel =
-          label.copyWith(counter: count, lastUsedAt: DateTime.now());
+      final updatedLabel = label.copyWith(counter: count, lastUsedAt: DateTime.now());
       await updateLabel(updatedLabel);
     }
   }
 
   Future<List<Label>> getAllLabel() => select(labels).get();
 
-  Future<int> deleteLabelByLabelId(String labelKey) => (delete(labels)
-        ..where((l) => l.key.equals(labelKey) /* ?? const Constant(false) */))
-      .go();
+  Future<int> deleteLabelByLabelId(String labelKey) =>
+      (delete(labels)..where((l) => l.key.equals(labelKey) /* ?? const Constant(false) */)).go();
 
   Future<bool> updateLabel(Label oldLabel) => update(labels).replace(oldLabel);
 
@@ -310,9 +301,8 @@ class AppDatabase extends _$AppDatabase {
   ///
   Future<int> createPhoto(Photo newPhoto) => into(photos).insert(newPhoto);
 
-  Future<Photo?> getPhotoByPhotoId(String photoId) => (select(photos)
-        ..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */))
-      .getSingleOrNull();
+  Future<Photo?> getPhotoByPhotoId(String photoId) =>
+      (select(photos)..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */)).getSingleOrNull();
 
   /* Future<List<Photo>> getAllTaggedPhotoIdList() {
     var convertor = ListStringConvertor();
@@ -327,16 +317,16 @@ class AppDatabase extends _$AppDatabase {
         .get();
   } */
 
-  Future<List<Photo>> getPrivatePhotoList() =>
-      (select(photos)..where((tbl) => tbl.isPrivate.equals(true))).get();
+  Future<List<Photo>> getPrivatePhotoList() => (select(photos)..where((tbl) => tbl.isPrivate.equals(true))).get();
 
   Future<List<Photo>> getAllPhoto() => select(photos).get();
 
   Future<bool> updatePhoto(Photo oldPhoto) => update(photos).replace(oldPhoto);
 
   Future<int> deletePhotoByPhotoId(String photoId) => (delete(photos)
-        ..where((picture) =>
-            picture.id.equals(photoId), /* ?? const Constant(false) */))
+        ..where(
+          (picture) => picture.id.equals(photoId), /* ?? const Constant(false) */
+        ))
       .go();
 
   Future<int> deletePhoto(Photo oldPhoto) => delete(photos).delete(oldPhoto);
@@ -354,17 +344,14 @@ class AppDatabase extends _$AppDatabase {
   ///
   Future<int> createPrivate(Private newPrivate) => into(privates).insert(newPrivate);
 
-  Future<Private?> getPrivateByPhotoId(String photoId) => (select(privates)
-        ..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */))
-      .getSingleOrNull();
+  Future<Private?> getPrivateByPhotoId(String photoId) =>
+      (select(privates)..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */)).getSingleOrNull();
 
   Future<List<Private>> getAllPrivate() => select(privates).get();
 
-  Future<bool> updatePrivate(Private oldPrivate) =>
-      update(privates).replace(oldPrivate);
+  Future<bool> updatePrivate(Private oldPrivate) => update(privates).replace(oldPrivate);
 
-  Future<int> deletePrivate(Private oldPrivate) =>
-      delete(privates).delete(oldPrivate);
+  Future<int> deletePrivate(Private oldPrivate) => delete(privates).delete(oldPrivate);
 
   ///
   ///
@@ -420,7 +407,8 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> deleteMoorUser(MoorUser newMoorUser) => (delete(moorUsers)
         ..where(
-            (u) => u.customPrimaryKey.equals(0), /* ?? const Constant(false) */))
+          (u) => u.customPrimaryKey.equals(0), /* ?? const Constant(false) */
+        ))
       .delete(newMoorUser);
 
   ///
@@ -435,8 +423,7 @@ class AppDatabase extends _$AppDatabase {
   ///
   ///
 
-  Future<int> createPicBlurHash(PicBlurHash newPicBlurHash) =>
-      into(picBlurHashs).insert(
+  Future<int> createPicBlurHash(PicBlurHash newPicBlurHash) => into(picBlurHashs).insert(
         newPicBlurHash,
         mode: InsertMode.insertOrReplace,
       );
@@ -445,8 +432,12 @@ class AppDatabase extends _$AppDatabase {
     final blurHashedCompanion = <PicBlurHashsCompanion>[];
 
     for (final blurHash in blurHashes) {
-      blurHashedCompanion.add(PicBlurHashsCompanion.insert(
-          photoId: blurHash.photoId, blurHash: blurHash.blurHash,),);
+      blurHashedCompanion.add(
+        PicBlurHashsCompanion.insert(
+          photoId: blurHash.photoId,
+          blurHash: blurHash.blurHash,
+        ),
+      );
     }
 
     await batch((Batch batch) {
@@ -588,21 +579,22 @@ class AppDatabase extends _$AppDatabase {
       photosTags[pic.photoId] = pic.tags;
       photosCompanions.add(
         PhotosCompanion.insert(
-            id: pic.photoId,
-            createdAt: pic.createdAt,
-            originalLatitude: pic.originalLatitude.moorValue /* ?? 0.0 */,
-            originalLongitude: pic.originalLongitude.moorValue /* ?? 0.0 */,
-            latitude: pic.latitude.moorValue,
-            longitude: pic.longitude.moorValue,
-            specificLocation: pic.specificLocation.moorValue,
-            generalLocation: pic.generalLocation.moorValue,
-            isPrivate: pic.isPrivate.moorValue,
-            deletedFromCameraRoll: pic.deletedFromCameraRoll.moorValue,
-            isStarred: pic.isStarred.moorValue,
-            base64encoded: pic.base64encoded.moorValue,
-            tags: <String, String>{
-              for (final t in pic.tags) t: '',
-            },),
+          id: pic.photoId,
+          createdAt: pic.createdAt,
+          originalLatitude: pic.originalLatitude.moorValue /* ?? 0.0 */,
+          originalLongitude: pic.originalLongitude.moorValue /* ?? 0.0 */,
+          latitude: pic.latitude.moorValue,
+          longitude: pic.longitude.moorValue,
+          specificLocation: pic.specificLocation.moorValue,
+          generalLocation: pic.generalLocation.moorValue,
+          isPrivate: pic.isPrivate.moorValue,
+          deletedFromCameraRoll: pic.deletedFromCameraRoll.moorValue,
+          isStarred: pic.isStarred.moorValue,
+          base64encoded: pic.base64encoded.moorValue,
+          tags: <String, String>{
+            for (final t in pic.tags) t: '',
+          },
+        ),
       );
     }
 

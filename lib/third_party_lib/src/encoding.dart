@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:picpics/third_party_lib/src/exception.dart';
 
 int decode83(String text, int from, int to) {
-  assert(from >= 0 && to <= text.length);
+  assert(from >= 0 && to <= text.length, 'Range must be valid within text length');
 
   var result = 0;
   for (var i = from; i < to; ++i) {
@@ -19,7 +19,7 @@ int decode83(String text, int from, int to) {
 }
 
 String encode83(int value, int length) {
-  assert(value >= 0 && length >= 0);
+  assert(value >= 0 && length >= 0, 'Value and length must be non-negative');
 
   final buffer = StringBuffer();
   final chars = _encoding.keys.toList().asMap();

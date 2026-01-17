@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +37,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
     final s = ref.watch(sProvider);
     String title;
 
-    if (pinState.isWaitingRecoveryKey == true) {
+    if (pinState.isWaitingRecoveryKey) {
       if (index == 0) {
         title = 'Recovery Code';
       } else if (index == 1) {
@@ -74,46 +76,47 @@ class _PinScreenState extends ConsumerState<PinScreen> {
             flex: 2,
           ),
           Shake(
-            preferences:
-                const AnimationPreferences(autoPlay: AnimationPlayStates.None),
-            child: Builder(builder: (context) {
-              int filledPositions = 0;
+            preferences: const AnimationPreferences(autoPlay: AnimationPlayStates.None),
+            child: Builder(
+              builder: (context) {
+                var filledPositions = 0;
 
-              if (pinState.isWaitingRecoveryKey == true) {
-                if (index == 0) {
-                  filledPositions = pinState.recoveryCode.length;
-                } else if (index == 1) {
-                  filledPositions = pinState.pinTemp.length;
+                if (pinState.isWaitingRecoveryKey) {
+                  if (index == 0) {
+                    filledPositions = pinState.recoveryCode.length;
+                  } else if (index == 1) {
+                    filledPositions = pinState.pinTemp.length;
+                  } else {
+                    filledPositions = pinState.confirmPinTemp.length;
+                  }
                 } else {
-                  filledPositions = pinState.confirmPinTemp.length;
+                  if (index == 0) {
+                    filledPositions = pinState.pinTemp.length;
+                  } else {
+                    filledPositions = pinState.confirmPinTemp.length;
+                  }
                 }
-              } else {
-                if (index == 0) {
-                  filledPositions = pinState.pinTemp.length;
-                } else {
-                  filledPositions = pinState.confirmPinTemp.length;
-                }
-              }
 
-              return PinPlaceholder(
-                filledPositions: filledPositions,
-              );
-            }),
+                return PinPlaceholder(
+                  filledPositions: filledPositions,
+                );
+              },
+            ),
           ),
           const Spacer(),
           NumberPad(
             onPinTapped: pinTapped,
           ),
           const Spacer(),
-          if (pinState.isWaitingRecoveryKey != true) ...[
+          if (!pinState.isWaitingRecoveryKey) ...[
             CupertinoButton(
               onPressed: () {
                 final userState = ref.read(userProvider);
                 if (userState.email == null) {
-                  ref.read<PinFullNotifier>(pinFullProvider.notifier).askEmail(context);
+                  unawaited(ref.read<PinFullNotifier>(pinFullProvider.notifier).askEmail(context));
                   return;
                 }
-                ref.read<PinFullNotifier>(pinFullProvider.notifier).recoverPin();
+                unawaited(ref.read<PinFullNotifier>(pinFullProvider.notifier).recoverPin());
               },
               child: const Text(
                 'Already have an account?',
@@ -135,13 +138,13 @@ class _PinScreenState extends ConsumerState<PinScreen> {
     );
   }
 
-  Future<void> pinTapped(String value, bool backspace) async {
+  Future<void> pinTapped(String value, {required bool backspace}) async {
     final pinNotifier = ref.read<PinFullNotifier>(pinFullProvider.notifier);
     final pinState = ref.read<PinFullState>(pinFullProvider);
     final userState = ref.read(userProvider);
 
     AppLogger.d('Value: ${pinState.recoveryCode}$value');
-    if (pinState.isWaitingRecoveryKey == true) {
+    if (pinState.isWaitingRecoveryKey) {
       if (carouselPage == 0) {
         if (backspace) {
           pinNotifier.setRecoveryCode(
@@ -201,12 +204,13 @@ class _PinScreenState extends ConsumerState<PinScreen> {
           // Set email before saving pin (used when saving the pin)
           ref.read<UserNotifier>(userProvider.notifier).setEmail(pinState.email);
           await pinNotifier.saveNewPin();
-          ref.read<UserNotifier>(userProvider.notifier).setIsPinRegistered(true);
+          ref.read<UserNotifier>(userProvider.notifier).setIsPinRegistered(value: true);
           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
-          pinNotifier.setPinTemp('');
-          pinNotifier.setConfirmPinTemp('');
-          ref.read<UserNotifier>(userProvider.notifier).setWaitingAccessCode(false);
+          pinNotifier
+            ..setPinTemp('')
+            ..setConfirmPinTemp('');
+          ref.read<UserNotifier>(userProvider.notifier).setWaitingAccessCode(value: false);
           await carouselController.animateToPage(0);
 
           if (mounted) {
@@ -214,19 +218,25 @@ class _PinScreenState extends ConsumerState<PinScreen> {
           }
         } else {
           pinNotifier.shakeKeyConfirm.currentState?.forward();
-          Future.delayed(const Duration(seconds: 1, milliseconds: 300), () {
-            carouselPage = 1;
-            pinNotifier.setPinTemp('');
-            pinNotifier.setConfirmPinTemp('');
-            carouselController.animateToPage(1);
-          });
+          unawaited(
+            Future.delayed(
+              const Duration(seconds: 1, milliseconds: 300),
+              () {
+                carouselPage = 1;
+                pinNotifier
+                  ..setPinTemp('')
+                  ..setConfirmPinTemp('');
+                unawaited(carouselController.animateToPage(1));
+              },
+            ),
+          );
         }
       }
 
       return;
     }
 
-    if (userState.isPinRegistered == true) {
+    if (userState.isPinRegistered) {
       if (backspace) {
         pinNotifier.setPinTemp(Helpers.removeLastCharacter(pinState.pinTemp));
         return;
@@ -239,26 +249,28 @@ class _PinScreenState extends ConsumerState<PinScreen> {
 
         if (valid) {
           await pinNotifier.activateBiometric();
-          ref.read<UserNotifier>(userProvider.notifier).setIsBiometricActivated(true);
+          ref.read<UserNotifier>(userProvider.notifier).setIsBiometricActivated(value: true);
 
           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
-          pinNotifier.setPinTemp('');
-          pinNotifier.setConfirmPinTemp('');
+          pinNotifier
+            ..setPinTemp('')
+            ..setConfirmPinTemp('');
           if (mounted) {
             Navigator.of(context).pop();
           }
           return;
         }
 
-        pinNotifier.shakeKey.currentState?.forward();
-        pinNotifier.setPinTemp('');
-        pinNotifier.setConfirmPinTemp('');
+        pinNotifier
+          ..shakeKey.currentState?.forward()
+          ..setPinTemp('')
+          ..setConfirmPinTemp('');
       }
       return;
     }
 
-    if (userState.waitingAccessCode == true) {
+    if (userState.waitingAccessCode) {
       if (backspace) {
         pinNotifier.setAccessCode(
           Helpers.removeLastCharacter(pinState.accessCode),
@@ -299,21 +311,28 @@ class _PinScreenState extends ConsumerState<PinScreen> {
     if (pinState.confirmPinTemp.length == 6) {
       if (pinState.pinTemp == pinState.confirmPinTemp) {
         carouselPage = 0;
-        pinNotifier.setPin(pinState.pinTemp);
-        pinNotifier.setPinTemp('');
-        pinNotifier.setConfirmPinTemp('');
+        pinNotifier
+          ..setPin(pinState.pinTemp)
+          ..setPinTemp('')
+          ..setConfirmPinTemp('');
         await carouselController.animateToPage(0);
         if (mounted) {
           await Navigator.of(context).pushNamed(EmailScreen.id);
         }
       } else {
         pinNotifier.shakeKeyConfirm.currentState?.forward();
-        Future.delayed(const Duration(seconds: 1, milliseconds: 300), () {
-          carouselPage = 0;
-          pinNotifier.setPinTemp('');
-          pinNotifier.setConfirmPinTemp('');
-          carouselController.animateToPage(0);
-        });
+        unawaited(
+          Future.delayed(
+            const Duration(seconds: 1, milliseconds: 300),
+            () {
+              carouselPage = 0;
+              pinNotifier
+                ..setPinTemp('')
+                ..setConfirmPinTemp('');
+              unawaited(carouselController.animateToPage(0));
+            },
+          ),
+        );
       }
     }
   }
@@ -347,8 +366,8 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                           vertical: 10,
                         ),
                         onPressed: () {
-                          if (pinState.isWaitingRecoveryKey == true) {
-                            pinNotifier.setIsWaitingRecoveryKey(false);
+                          if (pinState.isWaitingRecoveryKey) {
+                            pinNotifier.setIsWaitingRecoveryKey(value: false);
                           }
                           Navigator.of(context).pop();
                         },
@@ -359,46 +378,114 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                     ],
                   ),
                   Expanded(
-                    child: Builder(builder: (context) {
-                      if (pinState.isWaitingRecoveryKey == true) {
-                        return CarouselSlider.builder(
-                          carouselController: carouselController,
-                          itemCount: 3,
-                          itemBuilder:
-                              (BuildContext context, int index, int _) {
-                            return _buildPinPad(context, index);
-                          },
-                          options: CarouselOptions(
-                            enableInfiniteScroll: false,
-                            height: double.maxFinite,
-                            viewportFraction: 1,
-                            scrollPhysics:
-                                const NeverScrollableScrollPhysics(),
-                          ),
-                        );
-                      }
-
-                      if (userState.isPinRegistered == true) {
-                        String? assetImage;
-
-                        if (userState.isBiometricActivated == true) {
-                          if (userState.availableBiometrics
-                              .contains(BiometricType.face)) {
-                            assetImage = 'lib/images/faceidwhiteico.png';
-                          } else if (userState.availableBiometrics
-                              .contains(BiometricType.iris)) {
-                            assetImage = 'lib/images/irisscannerwhiteico.png';
-                          } else if (userState.availableBiometrics
-                              .contains(BiometricType.fingerprint)) {
-                            assetImage = 'lib/images/fingerprintwhiteico.png';
-                          }
+                    child: Builder(
+                      builder: (context) {
+                        if (pinState.isWaitingRecoveryKey) {
+                          return CarouselSlider.builder(
+                            carouselController: carouselController,
+                            itemCount: 3,
+                            itemBuilder: (BuildContext context, int index, int _) {
+                              return _buildPinPad(context, index);
+                            },
+                            options: CarouselOptions(
+                              enableInfiniteScroll: false,
+                              height: double.maxFinite,
+                              viewportFraction: 1,
+                              scrollPhysics: const NeverScrollableScrollPhysics(),
+                            ),
+                          );
                         }
 
+                        if (userState.isPinRegistered) {
+                          String? assetImage;
+
+                          if (userState.isBiometricActivated) {
+                            if (userState.availableBiometrics.contains(BiometricType.face)) {
+                              assetImage = 'lib/images/faceidwhiteico.png';
+                            } else if (userState.availableBiometrics.contains(BiometricType.iris)) {
+                              assetImage = 'lib/images/irisscannerwhiteico.png';
+                            } else if (userState.availableBiometrics.contains(BiometricType.fingerprint)) {
+                              assetImage = 'lib/images/fingerprintwhiteico.png';
+                            }
+                          }
+
+                          return Column(
+                            children: [
+                              const Spacer(),
+                              Text(
+                                s.your_secret_key,
+                                style: const TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: kSecondaryColor,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
+                              ),
+                              const Spacer(
+                                flex: 2,
+                              ),
+                              Shake(
+                                key: pinNotifier.shakeKey,
+                                preferences: const AnimationPreferences(
+                                  autoPlay: AnimationPlayStates.None,
+                                ),
+                                child: PinPlaceholder(
+                                  filledPositions: pinState.pinTemp.length,
+                                ),
+                              ),
+                              const Spacer(),
+                              NumberPad(
+                                onPinTapped: pinTapped,
+                              ),
+                              const Spacer(),
+                              if (assetImage != null)
+                                CupertinoButton(
+                                  onPressed: pinNotifier.authenticate,
+                                  child: Image.asset(assetImage),
+                                ),
+                              const SizedBox(height: 16),
+                              CupertinoButton(
+                                onPressed: pinNotifier.recoverPin,
+                                child: Text(
+                                  s.forgot_secret_key,
+                                  style: const TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: kWhiteColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                  ),
+                                ),
+                              ),
+                              const Spacer(
+                                flex: 2,
+                              ),
+                            ],
+                          );
+                        }
+
+                        if (!userState.waitingAccessCode) {
+                          return CarouselSlider.builder(
+                            carouselController: carouselController,
+                            itemCount: 2,
+                            itemBuilder: (BuildContext context, int index, int _) {
+                              return _buildPinPad(context, index);
+                            },
+                            options: CarouselOptions(
+                              enableInfiniteScroll: false,
+                              height: double.maxFinite,
+                              viewportFraction: 1,
+                              scrollPhysics: const NeverScrollableScrollPhysics(),
+                            ),
+                          );
+                        }
                         return Column(
                           children: [
                             const Spacer(),
                             Text(
-                              s.your_secret_key,
+                              (pinState.invalidAccessCode) ? 'Invalid Access Code' : s.access_code,
                               style: const TextStyle(
                                 fontFamily: 'Lato',
                                 color: kSecondaryColor,
@@ -408,37 +495,13 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                                 letterSpacing: -0.4099999964237213,
                               ),
                             ),
-                            const Spacer(
-                              flex: 2,
-                            ),
-                            Shake(
-                              key: pinNotifier.shakeKey,
-                              preferences: const AnimationPreferences(
-                                autoPlay: AnimationPlayStates.None,
-                              ),
-                              child: PinPlaceholder(
-                                filledPositions: pinState.pinTemp.length,
-                              ),
-                            ),
-                            const Spacer(),
-                            NumberPad(
-                              onPinTapped: pinTapped,
-                            ),
-                            const Spacer(),
-                            if (assetImage != null)
-                              CupertinoButton(
-                                onPressed: () {
-                                  pinNotifier.authenticate();
-                                },
-                                child: Image.asset(assetImage),
-                              ),
-                            const SizedBox(height: 16),
-                            CupertinoButton(
-                              onPressed: () {
-                                pinNotifier.recoverPin();
-                              },
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16),
                               child: Text(
-                                s.forgot_secret_key,
+                                s.access_code_sent(
+                                  pinState.email.isEmpty ? 'user@email.com' : pinState.email,
+                                ),
+                                textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   fontFamily: 'Lato',
                                   color: kWhiteColor,
@@ -448,87 +511,30 @@ class _PinScreenState extends ConsumerState<PinScreen> {
                                 ),
                               ),
                             ),
-                            const Spacer(
-                              flex: 2,
+                            const Spacer(),
+                            Shake(
+                              key: pinNotifier.shakeKey,
+                              preferences: const AnimationPreferences(
+                                autoPlay: AnimationPlayStates.None,
+                              ),
+                              child: PinPlaceholder(
+                                filledPositions: pinState.accessCode.length,
+                              ),
                             ),
+                            const Spacer(),
+                            NumberPad(
+                              onPinTapped: pinTapped,
+                            ),
+                            const Spacer(),
                           ],
                         );
-                      }
-
-                      if (userState.waitingAccessCode == false) {
-                        return CarouselSlider.builder(
-                          carouselController: carouselController,
-                          itemCount: 2,
-                          itemBuilder:
-                              (BuildContext context, int index, int _) {
-                            return _buildPinPad(context, index);
-                          },
-                          options: CarouselOptions(
-                            enableInfiniteScroll: false,
-                            height: double.maxFinite,
-                            viewportFraction: 1,
-                            scrollPhysics:
-                                const NeverScrollableScrollPhysics(),
-                          ),
-                        );
-                      }
-                      return Column(
-                        children: [
-                          const Spacer(),
-                          Text(
-                            (pinState.invalidAccessCode == true)
-                                ? 'Invalid Access Code'
-                                : s.access_code,
-                            style: const TextStyle(
-                              fontFamily: 'Lato',
-                              color: kSecondaryColor,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
-                              letterSpacing: -0.4099999964237213,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Text(
-                              s.access_code_sent(
-                                pinState.email.isEmpty
-                                    ? 'user@email.com'
-                                    : pinState.email,
-                              ),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontFamily: 'Lato',
-                                color: kWhiteColor,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                              ),
-                            ),
-                          ),
-                          const Spacer(),
-                          Shake(
-                            key: pinNotifier.shakeKey,
-                            preferences: const AnimationPreferences(
-                              autoPlay: AnimationPlayStates.None,
-                            ),
-                            child: PinPlaceholder(
-                              filledPositions: pinState.accessCode.length,
-                            ),
-                          ),
-                          const Spacer(),
-                          NumberPad(
-                            onPinTapped: pinTapped,
-                          ),
-                          const Spacer(),
-                        ],
-                      );
-                    }),
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
-            if (pinState.isLoading == true)
+            if (pinState.isLoading)
               ColoredBox(
                 color: Colors.black.withValues(alpha: 0.7),
                 child: const Center(
@@ -591,7 +597,7 @@ class NumberPad extends StatelessWidget {
     required this.onPinTapped,
     super.key,
   });
-  final Future<void> Function(String, bool) onPinTapped;
+  final Future<void> Function(String, {required bool backspace}) onPinTapped;
 
   List<Widget> _buildPinNumbers() {
     final items = <Widget>[];
@@ -605,7 +611,7 @@ class NumberPad extends StatelessWidget {
             Expanded(
               child: CupertinoButton(
                 onPressed: () {
-                  onPinTapped('', true);
+                  unawaited(onPinTapped('', backspace: true));
                 },
                 child: Container(
                   margin: const EdgeInsets.all(2),
@@ -617,19 +623,21 @@ class NumberPad extends StatelessWidget {
           continue;
         }
         if (pin == 12) {
-          number.add(Expanded(
-            child: Container(
-              margin: const EdgeInsets.all(2),
+          number.add(
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.all(2),
+              ),
             ),
-          ),);
+          );
           continue;
         }
         number.add(
           Expanded(
             child: CupertinoButton(
-              padding: const EdgeInsets.all(0),
+              padding: EdgeInsets.zero,
               onPressed: () {
-                onPinTapped('${pin == 11 ? '0' : pin}', false);
+                unawaited(onPinTapped('${pin == 11 ? '0' : pin}', backspace: false));
               },
               child: Container(
                 margin: const EdgeInsets.all(2),

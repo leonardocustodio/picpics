@@ -22,8 +22,8 @@ const kMaxNumOfSuggestions = 6;
 const kMaxNumOfRecentTags = 5;
 
 // Bottom bar heights
-const double kBottomBarHeight = 60.0;
-const double kMultiPicBottomBarHeight = 60.0;
+const double kBottomBarHeight = 60;
+const double kMultiPicBottomBarHeight = 60;
 
 const kSecretTagKey = 'XXXXXXXXXYYYYYYYYYZZZZZZZZZZZZ';
 List<String> kRequireOptions = [

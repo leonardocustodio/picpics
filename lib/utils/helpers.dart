@@ -22,9 +22,7 @@ class Helpers {
     if (isMonth) {
       formatter = DateFormat.yMMMM();
     } else {
-      formatter = dateTime.year == DateTime.now().year
-          ? DateFormat.MMMEd()
-          : DateFormat.yMMMEd();
+      formatter = dateTime.year == DateTime.now().year ? DateFormat.MMMEd() : DateFormat.yMMMEd();
     }
     return formatter.format(dateTime);
   }
@@ -78,23 +76,26 @@ LinearGradient getGradient(int index) {
   }
 }
 
-typedef CallBack = void Function(bool);
+typedef CallBack = void Function({required bool matched});
 
 void doCustomisedSearching(
-    dynamic tag, List<String> listOfLetters, CallBack callback,) {
+  dynamic tag,
+  List<String> listOfLetters,
+  CallBack callback,
+) {
   if (tag == null) {
-    callback(false);
+    callback(matched: false);
     return;
   }
 
   var matched = true;
   final titleNullable = tag is TagModel ? tag.title : tag?.toString();
   if (titleNullable == null) {
-    callback(false);
+    callback(matched: false);
     return;
   }
   final title = titleNullable.toLowerCase();
-  
+
   var i = 0;
   for (var index = 0; index < listOfLetters.length; index++) {
     var found = false;
@@ -111,5 +112,5 @@ void doCustomisedSearching(
       break;
     }
   }
-  callback(matched);
+  callback(matched: matched);
 }

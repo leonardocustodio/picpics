@@ -13,33 +13,6 @@ import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/languages.dart';
 
 class UserState {
-  final String appVersion;
-  final String deviceLocale;
-  final bool notifications;
-  final bool dailyChallenges;
-  final bool isPinRegistered;
-  final bool keepAskingToDelete;
-  final bool shouldDeleteOnPrivate;
-  final int picsTaggedToday;
-  final DateTime? lastTaggedPicDate;
-  final bool loggedIn;
-  final bool tutorialCompleted;
-  final bool hasGalleryPermission;
-  final bool waitingAccessCode;
-  final bool isMenuExpanded;
-  final bool isBiometricActivated;
-  final bool tourCompleted;
-  final int requireSecret;
-  final int hourOfDay;
-  final int minutesOfDay;
-  final double photoHeightInCardWidget;
-  final String appLanguage;
-  final String currentLanguage;
-  final List<String> recentTags;
-  final List<BiometricType> availableBiometrics;
-  final String appLocale;
-  final String? email;
-
   UserState({
     this.appVersion = '',
     this.deviceLocale = '',
@@ -68,6 +41,32 @@ class UserState {
     this.appLocale = 'en',
     this.email,
   });
+  final String appVersion;
+  final String deviceLocale;
+  final bool notifications;
+  final bool dailyChallenges;
+  final bool isPinRegistered;
+  final bool keepAskingToDelete;
+  final bool shouldDeleteOnPrivate;
+  final int picsTaggedToday;
+  final DateTime? lastTaggedPicDate;
+  final bool loggedIn;
+  final bool tutorialCompleted;
+  final bool hasGalleryPermission;
+  final bool waitingAccessCode;
+  final bool isMenuExpanded;
+  final bool isBiometricActivated;
+  final bool tourCompleted;
+  final int requireSecret;
+  final int hourOfDay;
+  final int minutesOfDay;
+  final double photoHeightInCardWidget;
+  final String appLanguage;
+  final String currentLanguage;
+  final List<String> recentTags;
+  final List<BiometricType> availableBiometrics;
+  final String appLocale;
+  final String? email;
 
   UserState copyWith({
     String? appVersion,
@@ -129,36 +128,35 @@ class UserState {
 }
 
 class UserNotifier extends StateNotifier<UserState> {
+  UserNotifier(this.ref) : super(UserState());
   final LocalAuthentication biometricAuth = LocalAuthentication();
   final AppDatabase database = AppDatabase();
   final Ref ref;
 
-  UserNotifier(this.ref) : super(UserState());
-
   Future<void> initialize() async {
     AppLogger.i('[UserNotifier] Starting initialization...');
-    
+
     // Get device locale
     final locale = await Devicelocale.currentLocale ?? 'en';
     state = state.copyWith(deviceLocale: locale);
-    
+
     // Get app version
     final packageInfo = await PackageInfo.fromPlatform();
     state = state.copyWith(appVersion: packageInfo.version);
-    
+
     // Load user from database
     final databaseController = DatabaseController();
     final user = await databaseController.getUser(deviceLocale: locale);
-    
+
     // Create default tags if needed
     await createDefaultTags();
-    
+
     AppLogger.i('[UserNotifier] User loaded from database:');
     AppLogger.d('  - tutorialCompleted: ${user.tutorialCompleted}');
     AppLogger.d('  - hasGalleryPermission (from DB): ${user.hasGalleryPermission}');
     AppLogger.d('  - isPinRegistered: ${user.isPinRegistered}');
     AppLogger.d('  - appLanguage: ${user.appLanguage}');
-    
+
     // Update state with user data
     state = state.copyWith(
       notifications: user.notification,
@@ -176,17 +174,17 @@ class UserNotifier extends StateNotifier<UserState> {
       tourCompleted: user.tourCompleted,
       isBiometricActivated: user.isBiometricActivated,
     );
-    
+
     // Set current language
     _updateCurrentLanguage(state.appLanguage);
-    
+
     // Load recent tags
-    // TODO: Uncomment when tags provider is fully implemented
+    // TODO(picpics): Uncomment when tags provider is fully implemented
     // final tagsController = ref.read(tagsProvider.notifier);
     // for (final tagKey in user.recentTags) {
     //   tagsController.addRecentTag(tagKey);
     // }
-    
+
     // Check gallery permissions if tutorial is completed
     if (user.tutorialCompleted) {
       await checkGalleryPermissions();
@@ -196,15 +194,15 @@ class UserNotifier extends StateNotifier<UserState> {
   Future<void> checkGalleryPermissions() async {
     AppLogger.i('[UserNotifier] Checking actual gallery permission status...');
     final permissionStatus = await PhotoManager.requestPermissionExtend();
-    
+
     AppLogger.i('[UserNotifier] PhotoManager permission status:');
     AppLogger.d('  - isAuth: ${permissionStatus.isAuth}');
     AppLogger.d('  - hasAccess: ${permissionStatus.hasAccess}');
-    
+
     if (permissionStatus.isAuth || permissionStatus.hasAccess) {
       AppLogger.i('[UserNotifier] Permission granted! Setting hasGalleryPermission to true');
       state = state.copyWith(hasGalleryPermission: true);
-      
+
       // Update database if permission status changed
       if (!state.hasGalleryPermission) {
         AppLogger.i('[UserNotifier] Updating database with new permission status...');
@@ -222,7 +220,7 @@ class UserNotifier extends StateNotifier<UserState> {
       lang = 'en';
     }
     state = state.copyWith(appLocale: lang);
-    
+
     final local = LanguageLocal();
     final langName = local.getDisplayLanguage(lang)['nativeName'] ?? '';
     state = state.copyWith(currentLanguage: langName);
@@ -231,15 +229,15 @@ class UserNotifier extends StateNotifier<UserState> {
   void setAppLanguage(String language) {
     state = state.copyWith(appLanguage: language);
     _updateCurrentLanguage(language);
-    // TODO: Update language controller when fully migrated
+    // TODO(picpics): Update language controller when fully migrated
     // ref.read(languageProvider.notifier).changeLanguageTo(language);
   }
 
-  void setNotifications(bool value) {
+  void setNotifications({required bool value}) {
     state = state.copyWith(notifications: value);
   }
 
-  void setDailyChallenges(bool value) {
+  void setDailyChallenges({required bool value}) {
     state = state.copyWith(dailyChallenges: value);
   }
 
@@ -251,17 +249,15 @@ class UserNotifier extends StateNotifier<UserState> {
     state = state.copyWith(minutesOfDay: value);
   }
 
-  Future<void> setTutorialCompleted(bool value) async {
+  Future<void> setTutorialCompleted({required bool value}) async {
     state = state.copyWith(tutorialCompleted: value);
-    
+
     // Update database
     final currentUser = await database.getSingleMoorUser();
     if (currentUser != null) {
-      await database.updateMoorUser(
-        currentUser.copyWith(tutorialCompleted: value)
-      );
+      await database.updateMoorUser(currentUser.copyWith(tutorialCompleted: value));
     }
-    
+
     // Request gallery permission if tutorial is complete
     if (value) {
       await checkGalleryPermissions();
@@ -269,23 +265,23 @@ class UserNotifier extends StateNotifier<UserState> {
     }
   }
 
-  void setHasGalleryPermission(bool value) {
+  void setHasGalleryPermission({required bool value}) {
     state = state.copyWith(hasGalleryPermission: value);
   }
 
-  void setLoggedIn(bool value) {
+  void setLoggedIn({required bool value}) {
     state = state.copyWith(loggedIn: value);
   }
 
-  void setIsPinRegistered(bool value) {
+  void setIsPinRegistered({required bool value}) {
     state = state.copyWith(isPinRegistered: value);
   }
 
-  void setKeepAskingToDelete(bool value) {
+  void setKeepAskingToDelete({required bool value}) {
     state = state.copyWith(keepAskingToDelete: value);
   }
 
-  void setShouldDeleteOnPrivate(bool value) {
+  void setShouldDeleteOnPrivate({required bool value}) {
     state = state.copyWith(shouldDeleteOnPrivate: value);
   }
 
@@ -293,19 +289,19 @@ class UserNotifier extends StateNotifier<UserState> {
     state = state.copyWith(email: value);
   }
 
-  void setTourCompleted(bool value) {
+  void setTourCompleted({required bool value}) {
     state = state.copyWith(tourCompleted: value);
   }
 
-  void setIsBiometricActivated(bool value) {
+  void setIsBiometricActivated({required bool value}) {
     state = state.copyWith(isBiometricActivated: value);
   }
 
-  void setIsMenuExpanded(bool value) {
+  void setIsMenuExpanded({required bool value}) {
     state = state.copyWith(isMenuExpanded: value);
   }
 
-  void setWaitingAccessCode(bool value) {
+  void setWaitingAccessCode({required bool value}) {
     state = state.copyWith(waitingAccessCode: value);
   }
 
@@ -330,8 +326,7 @@ class UserNotifier extends StateNotifier<UserState> {
   }
 
   void removeRecentTag(String tag) {
-    final tags = List<String>.from(state.recentTags);
-    tags.remove(tag);
+    final tags = List<String>.from(state.recentTags)..remove(tag);
     state = state.copyWith(recentTags: tags);
   }
 
@@ -367,9 +362,7 @@ class UserNotifier extends StateNotifier<UserState> {
       // Update database
       final currentUser = await database.getSingleMoorUser();
       if (currentUser != null) {
-        await database.updateMoorUser(
-          currentUser.copyWith(hasGalleryPermission: true)
-        );
+        await database.updateMoorUser(currentUser.copyWith(hasGalleryPermission: true));
       }
     } else {
       AppLogger.i('[UserNotifier] Gallery permission denied');
@@ -383,15 +376,14 @@ class UserNotifier extends StateNotifier<UserState> {
     // Check if permission was granted
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     final granted = await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
           alert: true,
           badge: true,
           sound: true,
         );
 
-    if (granted == true) {
+    if (granted ?? false) {
       AppLogger.i('[UserNotifier] Notification permission granted');
       state = state.copyWith(notifications: true);
     }
@@ -399,7 +391,7 @@ class UserNotifier extends StateNotifier<UserState> {
 
   Future<void> checkNotificationPermission({bool firstPermissionCheck = false}) async {
     AppLogger.i('[UserNotifier] Checking notification permission...');
-    // TODO: Implement notification permission check
+    // TODO(picpics): Implement notification permission check
     // This is a placeholder to prevent compilation errors
   }
 }

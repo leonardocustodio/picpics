@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/utils/enum.dart';
 
@@ -58,38 +58,33 @@ void main() {
     });
 
     test('Enabling multi-selection should update state', () {
-      final notifier = container.read(tabsProvider.notifier);
-
-      notifier.setMultiPicBar(true);
+      container.read(tabsProvider.notifier).setMultiPicBar(value: true);
       final tabsState = container.read(tabsProvider);
 
       expect(tabsState.multiPicBar, isTrue);
     });
 
     test('Disabling multi-selection should update state', () {
-      final notifier = container.read(tabsProvider.notifier);
-
       // Enable then disable
-      notifier.setMultiPicBar(true);
-      notifier.setMultiPicBar(false);
+      container.read(tabsProvider.notifier)
+        ..setMultiPicBar(value: true)
+        ..setMultiPicBar(value: false);
       final tabsState = container.read(tabsProvider);
 
       expect(tabsState.multiPicBar, isFalse);
     });
 
     test('Toggle index can be changed between month/day/year views', () {
-      final notifier = container.read(tabsProvider.notifier);
-
       // Test month view (0)
-      notifier.setToggleIndexUntagged(0);
+      container.read(tabsProvider.notifier).setToggleIndexUntagged(0);
       expect(container.read(tabsProvider).toggleIndexUntagged, 0);
 
       // Test day view (1)
-      notifier.setToggleIndexUntagged(1);
+      container.read(tabsProvider.notifier).setToggleIndexUntagged(1);
       expect(container.read(tabsProvider).toggleIndexUntagged, 1);
 
       // Test year view (2)
-      notifier.setToggleIndexUntagged(2);
+      container.read(tabsProvider.notifier).setToggleIndexUntagged(2);
       expect(container.read(tabsProvider).toggleIndexUntagged, 2);
     });
 
@@ -100,12 +95,10 @@ void main() {
     });
 
     test('Scrolling state can be toggled', () {
-      final notifier = container.read(tabsProvider.notifier);
-
-      notifier.setIsScrolling(true);
+      container.read(tabsProvider.notifier).setIsScrolling(value: true);
       expect(container.read(tabsProvider).isScrolling, isTrue);
 
-      notifier.setIsScrolling(false);
+      container.read(tabsProvider.notifier).setIsScrolling(value: false);
       expect(container.read(tabsProvider).isScrolling, isFalse);
     });
 
@@ -171,7 +164,7 @@ void main() {
       final container2 = ProviderContainer();
 
       // Modify first container
-      container.read(tabsProvider.notifier).setMultiPicBar(true);
+      container.read(tabsProvider.notifier).setMultiPicBar(value: true);
 
       // Second container should be unaffected
       final state1 = container.read(tabsProvider);

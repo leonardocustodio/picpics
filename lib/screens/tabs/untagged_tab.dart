@@ -1,15 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/generated/l10n.dart' as language;
 import 'package:picpics/providers/language_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
-import 'package:picpics/screens/settings_screen.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/screens/tabs/untagged_tabs/untagged_day.dart';
 import 'package:picpics/screens/tabs/untagged_tabs/untagged_month.dart';
 import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/widgets/app_header.dart';
 import 'package:picpics/widgets/device_no_pics.dart';
 import 'package:picpics/widgets/toggle_bar.dart';
 
@@ -39,11 +39,11 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
         /// Hiding Months on days from here by listening to the scrollNotification
         if (scrollNotification is ScrollStartNotification) {
           AppLogger.d('Start scrolling');
-          tabsNotifier.setIsScrolling(true);
+          tabsNotifier.setIsScrolling(value: true);
           return false;
         } else if (scrollNotification is ScrollEndNotification) {
           AppLogger.d('End scrolling');
-          tabsNotifier.setIsScrolling(false);
+          tabsNotifier.setIsScrolling(value: false);
           return true;
         }
         return true;
@@ -133,7 +133,7 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
                           },
                           child: buildDateHeader(
                             controller.allUnTaggedPicsMonth[index],
-                            isSelected,
+                            isSelected: isSelected,
                           ),
                         );
                       }
@@ -265,8 +265,8 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
                             },
                             child: buildDateHeader(
                               controller.allUnTaggedPicsDay[index],
-                              isSelected,
-                            ));
+                              isSelected: isSelected,
+                            ),);
                       }
                       var blurHash = BlurHashController
                           .to.blurHash[controller.allUnTaggedPicsDay[index]];
@@ -344,14 +344,12 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
     if (ref.read(tabsProvider).toggleIndexUntagged == 0) {
       formatter = DateFormat.yMMMM();
     } else {
-      formatter = dateTime.year == DateTime.now().year
-          ? DateFormat.MMMEd()
-          : DateFormat.yMMMEd();
+      formatter = dateTime.year == DateTime.now().year ? DateFormat.MMMEd() : DateFormat.yMMMEd();
     }
     return formatter.format(dateTime);
   }
 
-  Widget buildDateHeader(DateTime date, bool isSelected) {
+  Widget buildDateHeader(DateTime date, {required bool isSelected}) {
     final tabsState = ref.watch(tabsProvider);
 
     return Container(
@@ -373,13 +371,11 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: Colors.grey),
                     ),
-              child: isSelected
-                  ? Image.asset('lib/images/checkwhiteico.png')
-                  : null,
+              child: isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
             ),
           Text(
             dateFormat(date),
-            textScaler: const TextScaler.linear(1),
+            textScaler: TextScaler.noScaling,
             style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),
@@ -402,165 +398,77 @@ class _UntaggedTabState extends ConsumerState<UntaggedTab> {
     final s = ref.watch(sProvider);
 
     return ColoredBox(
-      //constraints: BoxConstraints.expand(),
       color: kWhiteColor,
       child: SafeArea(
-        child: Builder(builder: (context) {
-          final hasPics = tabsState.allUnTaggedPicsMonth.isNotEmpty ||
-              tabsState.allUnTaggedPicsDay.isNotEmpty;
-          if (tabsState.isUntaggedPicsLoaded == false) {
-            return const Center(
-              child: CircularProgressIndicator(
-                  // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
-                  ),
-            );
-          } else if (!hasPics) {
-            return Stack(
-              children: <Widget>[
-                Container(
-                  height: 56,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      CupertinoButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (context) => const SettingsScreen(),
-                            ),
-                          );
-                        },
-                        child: Image.asset('lib/images/settings.png'),
-                      ),
-                    ],
-                  ),
-                ),
-                DeviceHasNoPics(
-                  message: s.device_has_no_pics,
-                ),
-              ],
-            );
-          } else if (tabsState.isUntaggedPicsLoaded && !hasPics) {
-            return Stack(
-              children: <Widget>[
-                Container(
-                  height: 56,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      CupertinoButton(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (context) => const SettingsScreen(),
-                            ),
-                          );
-                        },
-                        child: Image.asset('lib/images/settings.png'),
-                      ),
-                    ],
-                  ),
-                ),
-                DeviceHasNoPics(
-                  message: s.no_photos_were_tagged,
-                ),
-              ],
-            );
-          } else if (tabsState.isUntaggedPicsLoaded && hasPics) {
-            return Stack(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 48),
-                  child:
-                      /* GestureDetector( 
-                              onScaleUpdate: (update) { 
-                                AppLogger.d(update.scale); 
-                                //DatabaseManager.instance.gridScale(update.scale);
-                              },
-                       child: */
-                      _buildGridView(context),
-                  /*  ), */
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      CupertinoButton(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (context) => const SettingsScreen(),
-                            ),
-                          );
-                        },
-                        child: Image.asset('lib/images/settings.png'),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  left: 16,
-                  top: 10,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        tabsState.multiPicBar
-                            ? s.photo_gallery_count(
-                                taggedState.selectedMultiBarPics.length,
-                              )
-                            : s.photo_gallery_description,
-                        textScaler: const TextScaler.linear(1),
-                        style: const TextStyle(
-                          fontFamily: 'Lato',
-                          color: Color(0xff979a9b),
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                AnimatedOpacity(
-                  opacity: tabsState.isScrolling ? 0.0 : 1.0,
-                  duration: const Duration(milliseconds: 300),
-                  onEnd: () {
-                    tabsNotifier.setIsToggleBarVisible(
-                      tabsState.isScrolling ? false : true,
-                    );
-                  },
-                  child: Visibility(
-                    visible: tabsState.isScrolling
-                        ? tabsState.isToggleBarVisible
-                        : true,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: ToggleBar(
-                          titleLeft: s.toggle_months,
-                          titleRight: s.toggle_days,
-                          activeToggle: tabsState.toggleIndexUntagged,
-                          onToggle: (int index) {
-                            tabsNotifier.setToggleIndexUntagged(index);
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }
-          return Container();
-        }),
+        child: Column(
+          children: <Widget>[
+            const AppHeader(),
+            Expanded(
+              child: _buildContent(
+                context,
+                tabsState,
+                tabsNotifier,
+                taggedState,
+                s,
+              ),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    TabsState tabsState,
+    TabsNotifier tabsNotifier,
+    TaggedState taggedState,
+    language.S s,
+  ) {
+    final hasPics = tabsState.allUnTaggedPicsMonth.isNotEmpty || tabsState.allUnTaggedPicsDay.isNotEmpty;
+
+    if (!tabsState.isUntaggedPicsLoaded) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (!hasPics) {
+      return DeviceHasNoPics(
+        message: s.device_has_no_pics,
+      );
+    }
+
+    return Stack(
+      children: <Widget>[
+        _buildGridView(context),
+        AnimatedOpacity(
+          opacity: tabsState.isScrolling ? 0.0 : 1.0,
+          duration: const Duration(milliseconds: 300),
+          onEnd: () {
+            tabsNotifier.setIsToggleBarVisible(
+              value: !tabsState.isScrolling,
+            );
+          },
+          child: Visibility(
+            visible: !tabsState.isScrolling || tabsState.isToggleBarVisible,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: ToggleBar(
+                  titleLeft: s.toggle_months,
+                  titleRight: s.toggle_days,
+                  activeToggle: tabsState.toggleIndexUntagged,
+                  onToggle: (int index) {
+                    tabsNotifier.setToggleIndexUntagged(index);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -7,7 +9,6 @@ import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 enum Board {
-  introduction,
   createTags,
   swipeRight,
   keepSecret,
@@ -15,15 +16,14 @@ enum Board {
 }
 
 class LoginState {
-  final int slideIndex;
-  final List<Board> boards;
-  final bool isLoading;
-
   LoginState({
     this.slideIndex = 0,
     List<Board>? boards,
     this.isLoading = false,
   }) : boards = boards ?? Board.values;
+  final int slideIndex;
+  final List<Board> boards;
+  final bool isLoading;
 
   int get totalSlides => boards.length;
 
@@ -40,8 +40,6 @@ class LoginState {
 
   String _getImagePath(Board board) {
     switch (board) {
-      case Board.introduction:
-        return '';
       case Board.createTags:
         return 'lib/images/onboardtagging.png';
       case Board.swipeRight:
@@ -58,8 +56,6 @@ class LoginState {
     final board = boards[index];
     // These will be replaced with actual translations
     switch (board) {
-      case Board.introduction:
-        return 'Welcome';
       case Board.createTags:
         return 'Organize however you want';
       case Board.swipeRight:
@@ -75,8 +71,6 @@ class LoginState {
     if (index < 0 || index >= boards.length) return null;
     final board = boards[index];
     switch (board) {
-      case Board.introduction:
-        return null;
       case Board.createTags:
         return Image.asset('lib/images/onboardtagging.png');
       case Board.swipeRight:
@@ -102,10 +96,9 @@ class LoginState {
 }
 
 class LoginNotifier extends StateNotifier<LoginState> {
+  LoginNotifier(this.ref) : super(LoginState());
   final Ref ref;
   final AppDatabase _database = AppDatabase();
-
-  LoginNotifier(this.ref) : super(LoginState());
 
   void initializeScreens() {
     // Initialize with default boards
@@ -131,12 +124,11 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
   Future<void> _completeOnboarding() async {
     state = state.copyWith(isLoading: true);
-    
+
     try {
       // Update user state
-      final userNotifier = ref.read(userProvider.notifier);
-      userNotifier.setTutorialCompleted(true);
-      
+      unawaited(ref.read(userProvider.notifier).setTutorialCompleted(value: true));
+
       // Update database
       final user = await _database.getSingleMoorUser();
       if (user != null) {
@@ -144,9 +136,9 @@ class LoginNotifier extends StateNotifier<LoginState> {
           user.copyWith(tutorialCompleted: true),
         );
       }
-      
+
       AppLogger.i('Onboarding completed successfully');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.e('Error completing onboarding: $e');
     } finally {
       state = state.copyWith(isLoading: false);

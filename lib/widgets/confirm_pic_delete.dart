@@ -6,9 +6,9 @@ import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 class ConfirmPicDelete extends ConsumerWidget {
-
   const ConfirmPicDelete({
-    required this.onPressedDelete, super.key,
+    required this.onPressedDelete,
+    super.key,
     this.deleteText = 'Are you sure you want to delete photo ?',
     this.onPressedClose,
   });
@@ -23,9 +23,8 @@ class ConfirmPicDelete extends ConsumerWidget {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: width < 360
-          ? const EdgeInsets.symmetric(horizontal: 20)
-          : const EdgeInsets.symmetric(horizontal: 40),
+      insetPadding:
+          width < 360 ? const EdgeInsets.symmetric(horizontal: 20) : const EdgeInsets.symmetric(horizontal: 40),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: const BoxDecoration(
@@ -98,7 +97,7 @@ class ConfirmPicDelete extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         onPressed: () {
                           /* if (keepAsking == false) {
                             UserController.to.setKeepAskingToDelete(false);
@@ -115,7 +114,7 @@ class ConfirmPicDelete extends ConsumerWidget {
                           child: Center(
                             child: Text(
                               s.cancel,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: kLoginButtonTextStyle,
                             ),
                           ),
@@ -127,19 +126,18 @@ class ConfirmPicDelete extends ConsumerWidget {
                     ),
                     Expanded(
                       child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         onPressed: onPressedDelete,
                         child: Container(
                           height: 44,
                           decoration: BoxDecoration(
-                            border:
-                                Border.all(color: kSecondaryColor),
+                            border: Border.all(color: kSecondaryColor),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
                             child: Text(
                               s.delete,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: const TextStyle(
                                 color: kSecondaryColor,
                                 fontWeight: FontWeight.w700,

@@ -2,16 +2,15 @@ import 'dart:typed_data';
 import 'package:flutter_riverpod/legacy.dart';
 
 class BlurHashState {
+  BlurHashState({
+    this.blurHashes = const {},
+    this.isEnabled = true,
+  });
   final Map<String, String> blurHashes;
   final bool isEnabled;
 
   // Alias for compatibility with GetX code
   Map<String, String> get blurHash => blurHashes;
-
-  BlurHashState({
-    this.blurHashes = const {},
-    this.isEnabled = true,
-  });
 
   BlurHashState copyWith({
     Map<String, String>? blurHashes,
@@ -41,12 +40,12 @@ class BlurHashNotifier extends StateNotifier<BlurHashState> {
     state = state.copyWith(blurHashes: {});
   }
 
-  void setEnabled(bool enabled) {
+  void setEnabled({required bool enabled}) {
     state = state.copyWith(isEnabled: enabled);
   }
 
   Future<void> createBlurHash(String imageId, Uint8List imageData) async {
-    // TODO: Implement actual blur hash generation
+    // TODO(picpics): Implement actual blur hash generation
     // For now, just add a placeholder
     addBlurHash(imageId, 'placeholder_blur_hash');
   }

@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
+
 import 'performance_test_utils.dart';
 
 /// Performance benchmarks for Riverpod providers
@@ -15,17 +16,16 @@ void main() {
         name: 'Tabs Provider Initialization',
         setup: () async {},
         action: () async {
-          final container = ProviderContainer();
-          container.read(tabsProvider);
-          container.dispose();
+          ProviderContainer()
+            ..read(tabsProvider)
+            ..dispose();
         },
         teardown: () async {},
-        iterations: 100,
       );
 
       debugPrint(result.summary);
       expect(result.average.inMilliseconds, lessThan(10),
-          reason: 'Provider initialization should be under 10ms');
+          reason: 'Provider initialization should be under 10ms',);
     });
 
     test('Tagged provider initialization performance', () async {
@@ -33,12 +33,11 @@ void main() {
         name: 'Tagged Provider Initialization',
         setup: () async {},
         action: () async {
-          final container = ProviderContainer();
-          container.read(taggedProvider);
-          container.dispose();
+          ProviderContainer()
+            ..read(taggedProvider)
+            ..dispose();
         },
         teardown: () async {},
-        iterations: 100,
       );
 
       debugPrint(result.summary);
@@ -50,12 +49,11 @@ void main() {
         name: 'Tags Provider Initialization',
         setup: () async {},
         action: () async {
-          final container = ProviderContainer();
-          container.read(tagsProvider);
-          container.dispose();
+          ProviderContainer()
+            ..read(tagsProvider)
+            ..dispose();
         },
         teardown: () async {},
-        iterations: 100,
       );
 
       debugPrint(result.summary);
@@ -69,9 +67,9 @@ void main() {
         name: 'Multi-selection Toggle',
         setup: () async {},
         action: () async {
-          final notifier = container.read(tabsProvider.notifier);
-          notifier.setMultiPicBar(true);
-          notifier.setMultiPicBar(false);
+          container.read(tabsProvider.notifier)
+            ..setMultiPicBar(value: true)
+            ..setMultiPicBar(value: false);
         },
         teardown: () async {},
         iterations: 1000,
@@ -79,7 +77,7 @@ void main() {
 
       debugPrint(result.summary);
       expect(result.average.inMicroseconds, lessThan(1000),
-          reason: 'Toggle should be under 1ms');
+          reason: 'Toggle should be under 1ms',);
 
       container.dispose();
     });
@@ -91,9 +89,9 @@ void main() {
         name: 'Photo Selection',
         setup: () async {},
         action: () async {
-          final notifier = container.read(taggedProvider.notifier);
-          notifier.addSelectedMultiBarPic('photo_test');
-          notifier.removeSelectedMultiBarPic('photo_test');
+          container.read(taggedProvider.notifier)
+            ..addSelectedMultiBarPic('photo_test')
+            ..removeSelectedMultiBarPic('photo_test');
         },
         teardown: () async {},
         iterations: 1000,
@@ -101,7 +99,7 @@ void main() {
 
       debugPrint(result.summary);
       expect(result.average.inMicroseconds, lessThan(500),
-          reason: 'Selection should be under 0.5ms');
+          reason: 'Selection should be under 0.5ms',);
 
       container.dispose();
     });
@@ -112,14 +110,14 @@ void main() {
 
       final duration = await PerformanceTestUtils.measureExecutionTime(() async {
         // Select 100 photos
-        for (int i = 0; i < 100; i++) {
+        for (var i = 0; i < 100; i++) {
           notifier.addSelectedMultiBarPic('photo_$i');
         }
       });
 
       debugPrint('Bulk selection (100 photos): ${duration.inMilliseconds}ms');
       expect(duration.inMilliseconds, lessThan(100),
-          reason: 'Selecting 100 photos should be under 100ms');
+          reason: 'Selecting 100 photos should be under 100ms',);
 
       container.dispose();
     });
@@ -131,12 +129,12 @@ void main() {
         container,
         tabsProvider,
         () {
-          container.read(tabsProvider.notifier).setMultiPicBar(true);
+          container.read(tabsProvider.notifier).setMultiPicBar(value: true);
         },
       );
 
       expect(rebuildCount, equals(1),
-          reason: 'Single update should trigger exactly 1 rebuild');
+          reason: 'Single update should trigger exactly 1 rebuild',);
 
       container.dispose();
     });
@@ -148,15 +146,15 @@ void main() {
         container,
         tabsProvider,
         () {
-          final notifier = container.read(tabsProvider.notifier);
-          notifier.setMultiPicBar(true);
-          notifier.setMultiTagSheet(true);
-          notifier.setToggleIndexUntagged(1);
+          container.read(tabsProvider.notifier)
+            ..setMultiPicBar(value: true)
+            ..setMultiTagSheet(value: true)
+            ..setToggleIndexUntagged(1);
         },
       );
 
       expect(rebuildCount, equals(3),
-          reason: '3 updates should trigger 3 rebuilds');
+          reason: '3 updates should trigger 3 rebuilds',);
 
       container.dispose();
     });
@@ -169,7 +167,7 @@ void main() {
       debugPrint('Empty state memory: $memoryUsage bytes');
 
       expect(memoryUsage, lessThan(1000),
-          reason: 'Empty state should use minimal memory');
+          reason: 'Empty state should use minimal memory',);
 
       container.dispose();
     });
@@ -179,7 +177,7 @@ void main() {
       final notifier = container.read(taggedProvider.notifier);
 
       // Add 100 selections
-      for (int i = 0; i < 100; i++) {
+      for (var i = 0; i < 100; i++) {
         notifier.addSelectedMultiBarPic('photo_$i');
       }
 
@@ -190,7 +188,7 @@ void main() {
 
       debugPrint('100 selections memory: $memoryUsage bytes');
       expect(memoryUsage, lessThan(50000),
-          reason: '100 selections should use less than 50KB');
+          reason: '100 selections should use less than 50KB',);
 
       container.dispose();
     });
@@ -209,7 +207,7 @@ void main() {
 
     test('State read performance target: < 1ms', () {
       final duration = PerformanceTestUtils.measureSyncExecutionTime(() {
-        for (int i = 0; i < 1000; i++) {
+        for (var i = 0; i < 1000; i++) {
           container.read(tabsProvider);
         }
       });
@@ -218,12 +216,12 @@ void main() {
       debugPrint('Average state read: ${avgPerRead.toStringAsFixed(2)}μs');
 
       expect(avgPerRead, lessThan(1000),
-          reason: 'State read should be under 1ms average');
+          reason: 'State read should be under 1ms average',);
     });
 
     test('Notifier access performance target: < 1ms', () {
       final duration = PerformanceTestUtils.measureSyncExecutionTime(() {
-        for (int i = 0; i < 1000; i++) {
+        for (var i = 0; i < 1000; i++) {
           container.read(tabsProvider.notifier);
         }
       });
@@ -238,8 +236,8 @@ void main() {
       final notifier = container.read(tabsProvider.notifier);
 
       final duration = await PerformanceTestUtils.measureExecutionTime(() async {
-        for (int i = 0; i < 100; i++) {
-          notifier.setMultiPicBar(i % 2 == 0);
+        for (var i = 0; i < 100; i++) {
+          notifier.setMultiPicBar(value: i.isEven);
         }
       });
 
@@ -247,7 +245,7 @@ void main() {
       debugPrint('Average state update: ${avgPerUpdate.toStringAsFixed(2)}μs');
 
       expect(avgPerUpdate, lessThan(5000),
-          reason: 'State update should be under 5ms average');
+          reason: 'State update should be under 5ms average',);
     });
   });
 
@@ -257,34 +255,31 @@ void main() {
 
       // Tabs provider
       results['tabs'] = await PerformanceTestUtils.measureExecutionTime(() async {
-        final container = ProviderContainer();
-        container.read(tabsProvider);
-        container.dispose();
+        ProviderContainer()
+          ..read(tabsProvider)
+          ..dispose();
       });
 
       // Tagged provider
       results['tagged'] = await PerformanceTestUtils.measureExecutionTime(() async {
-        final container = ProviderContainer();
-        container.read(taggedProvider);
-        container.dispose();
+        ProviderContainer()
+          ..read(taggedProvider)
+          ..dispose();
       });
 
       // Tags provider
       results['tags'] = await PerformanceTestUtils.measureExecutionTime(() async {
-        final container = ProviderContainer();
-        container.read(tagsProvider);
-        container.dispose();
+        ProviderContainer()
+          ..read(tagsProvider)
+          ..dispose();
       });
 
       debugPrint('\n=== Provider Creation Baseline ===');
+      // Print timing and verify all should be under 10ms
       results.forEach((provider, duration) {
         debugPrint('$provider: ${duration.inMicroseconds}μs');
-      });
-
-      // All should be under 10ms
-      results.forEach((provider, duration) {
         expect(duration.inMilliseconds, lessThan(10),
-            reason: '$provider creation should be under 10ms');
+            reason: '$provider creation should be under 10ms',);
       });
     });
 
@@ -294,7 +289,7 @@ void main() {
 
       // Multi-selection enable
       timings['enable_multi_select'] = PerformanceTestUtils.measureSyncExecutionTime(() {
-        container.read(tabsProvider.notifier).setMultiPicBar(true);
+        container.read(tabsProvider.notifier).setMultiPicBar(value: true);
       });
 
       // Photo selection

@@ -10,54 +10,41 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
   $PhotosTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>('created_at', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _originalLatitudeMeta =
-      const VerificationMeta('originalLatitude');
+  static const VerificationMeta _originalLatitudeMeta = const VerificationMeta('originalLatitude');
   @override
-  late final GeneratedColumn<double> originalLatitude = GeneratedColumn<double>(
-      'original_latitude', aliasedName, true,
+  late final GeneratedColumn<double> originalLatitude = GeneratedColumn<double>('original_latitude', aliasedName, true,
       type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _originalLongitudeMeta =
-      const VerificationMeta('originalLongitude');
+  static const VerificationMeta _originalLongitudeMeta = const VerificationMeta('originalLongitude');
   @override
-  late final GeneratedColumn<double> originalLongitude =
-      GeneratedColumn<double>('original_longitude', aliasedName, true,
-          type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _latitudeMeta =
-      const VerificationMeta('latitude');
-  @override
-  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
-      'latitude', aliasedName, true,
+  late final GeneratedColumn<double> originalLongitude = GeneratedColumn<double>(
+      'original_longitude', aliasedName, true,
       type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _longitudeMeta =
-      const VerificationMeta('longitude');
+  static const VerificationMeta _latitudeMeta = const VerificationMeta('latitude');
   @override
-  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
-      'longitude', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _isPrivateMeta =
-      const VerificationMeta('isPrivate');
+  late final GeneratedColumn<double> latitude =
+      GeneratedColumn<double>('latitude', aliasedName, true, type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _longitudeMeta = const VerificationMeta('longitude');
   @override
-  late final GeneratedColumn<bool> isPrivate =
-      GeneratedColumn<bool>('is_private', aliasedName, false,
-          type: DriftSqlType.bool,
-          requiredDuringInsert: false,
-          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
-            SqlDialect.sqlite: 'CHECK ("is_private" IN (0, 1))',
-            SqlDialect.mysql: '',
-            SqlDialect.postgres: '',
-          }),
-          defaultValue: const Constant(false));
-  static const VerificationMeta _deletedFromCameraRollMeta =
-      const VerificationMeta('deletedFromCameraRoll');
+  late final GeneratedColumn<double> longitude =
+      GeneratedColumn<double>('longitude', aliasedName, true, type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _isPrivateMeta = const VerificationMeta('isPrivate');
+  @override
+  late final GeneratedColumn<bool> isPrivate = GeneratedColumn<bool>('is_private', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+        SqlDialect.sqlite: 'CHECK ("is_private" IN (0, 1))',
+        SqlDialect.mysql: '',
+        SqlDialect.postgres: '',
+      }),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _deletedFromCameraRollMeta = const VerificationMeta('deletedFromCameraRoll');
   @override
   late final GeneratedColumn<bool> deletedFromCameraRoll =
       GeneratedColumn<bool>('deleted_from_camera_roll', aliasedName, false,
@@ -69,42 +56,33 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
             SqlDialect.postgres: '',
           }),
           defaultValue: const Constant(false));
-  static const VerificationMeta _isStarredMeta =
-      const VerificationMeta('isStarred');
+  static const VerificationMeta _isStarredMeta = const VerificationMeta('isStarred');
   @override
-  late final GeneratedColumn<bool> isStarred =
-      GeneratedColumn<bool>('is_starred', aliasedName, false,
-          type: DriftSqlType.bool,
-          requiredDuringInsert: false,
-          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
-            SqlDialect.sqlite: 'CHECK ("is_starred" IN (0, 1))',
-            SqlDialect.mysql: '',
-            SqlDialect.postgres: '',
-          }),
-          defaultValue: const Constant(false));
+  late final GeneratedColumn<bool> isStarred = GeneratedColumn<bool>('is_starred', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+        SqlDialect.sqlite: 'CHECK ("is_starred" IN (0, 1))',
+        SqlDialect.mysql: '',
+        SqlDialect.postgres: '',
+      }),
+      defaultValue: const Constant(false));
   static const VerificationMeta _tagsMeta = const VerificationMeta('tags');
   @override
-  late final GeneratedColumnWithTypeConverter<Map<String, String>, String>
-      tags = GeneratedColumn<String>('tags', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
+  late final GeneratedColumnWithTypeConverter<Map<String, String>, String> tags =
+      GeneratedColumn<String>('tags', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<Map<String, String>>($PhotosTable.$convertertags);
-  static const VerificationMeta _specificLocationMeta =
-      const VerificationMeta('specificLocation');
+  static const VerificationMeta _specificLocationMeta = const VerificationMeta('specificLocation');
   @override
-  late final GeneratedColumn<String> specificLocation = GeneratedColumn<String>(
-      'specific_location', aliasedName, true,
+  late final GeneratedColumn<String> specificLocation = GeneratedColumn<String>('specific_location', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _generalLocationMeta =
-      const VerificationMeta('generalLocation');
+  static const VerificationMeta _generalLocationMeta = const VerificationMeta('generalLocation');
   @override
-  late final GeneratedColumn<String> generalLocation = GeneratedColumn<String>(
-      'general_location', aliasedName, true,
+  late final GeneratedColumn<String> generalLocation = GeneratedColumn<String>('general_location', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _base64encodedMeta =
-      const VerificationMeta('base64encoded');
+  static const VerificationMeta _base64encodedMeta = const VerificationMeta('base64encoded');
   @override
-  late final GeneratedColumn<String> base64encoded = GeneratedColumn<String>(
-      'base64encoded', aliasedName, true,
+  late final GeneratedColumn<String> base64encoded = GeneratedColumn<String>('base64encoded', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
@@ -127,8 +105,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
   @override
   String get actualTableName => 'photos';
   @override
-  VerificationContext validateIntegrity(Insertable<Photo> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(Insertable<Photo> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -137,63 +114,46 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
       context.missing(_idMeta);
     }
     if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+      context.handle(_createdAtMeta, createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
     if (data.containsKey('original_latitude')) {
-      context.handle(
-          _originalLatitudeMeta,
-          originalLatitude.isAcceptableOrUnknown(
-              data['original_latitude']!, _originalLatitudeMeta));
+      context.handle(_originalLatitudeMeta,
+          originalLatitude.isAcceptableOrUnknown(data['original_latitude']!, _originalLatitudeMeta));
     }
     if (data.containsKey('original_longitude')) {
-      context.handle(
-          _originalLongitudeMeta,
-          originalLongitude.isAcceptableOrUnknown(
-              data['original_longitude']!, _originalLongitudeMeta));
+      context.handle(_originalLongitudeMeta,
+          originalLongitude.isAcceptableOrUnknown(data['original_longitude']!, _originalLongitudeMeta));
     }
     if (data.containsKey('latitude')) {
-      context.handle(_latitudeMeta,
-          latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta));
+      context.handle(_latitudeMeta, latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta));
     }
     if (data.containsKey('longitude')) {
-      context.handle(_longitudeMeta,
-          longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta));
+      context.handle(_longitudeMeta, longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta));
     }
     if (data.containsKey('is_private')) {
-      context.handle(_isPrivateMeta,
-          isPrivate.isAcceptableOrUnknown(data['is_private']!, _isPrivateMeta));
+      context.handle(_isPrivateMeta, isPrivate.isAcceptableOrUnknown(data['is_private']!, _isPrivateMeta));
     }
     if (data.containsKey('deleted_from_camera_roll')) {
-      context.handle(
-          _deletedFromCameraRollMeta,
-          deletedFromCameraRoll.isAcceptableOrUnknown(
-              data['deleted_from_camera_roll']!, _deletedFromCameraRollMeta));
+      context.handle(_deletedFromCameraRollMeta,
+          deletedFromCameraRoll.isAcceptableOrUnknown(data['deleted_from_camera_roll']!, _deletedFromCameraRollMeta));
     }
     if (data.containsKey('is_starred')) {
-      context.handle(_isStarredMeta,
-          isStarred.isAcceptableOrUnknown(data['is_starred']!, _isStarredMeta));
+      context.handle(_isStarredMeta, isStarred.isAcceptableOrUnknown(data['is_starred']!, _isStarredMeta));
     }
     context.handle(_tagsMeta, const VerificationResult.success());
     if (data.containsKey('specific_location')) {
-      context.handle(
-          _specificLocationMeta,
-          specificLocation.isAcceptableOrUnknown(
-              data['specific_location']!, _specificLocationMeta));
+      context.handle(_specificLocationMeta,
+          specificLocation.isAcceptableOrUnknown(data['specific_location']!, _specificLocationMeta));
     }
     if (data.containsKey('general_location')) {
       context.handle(
-          _generalLocationMeta,
-          generalLocation.isAcceptableOrUnknown(
-              data['general_location']!, _generalLocationMeta));
+          _generalLocationMeta, generalLocation.isAcceptableOrUnknown(data['general_location']!, _generalLocationMeta));
     }
     if (data.containsKey('base64encoded')) {
       context.handle(
-          _base64encodedMeta,
-          base64encoded.isAcceptableOrUnknown(
-              data['base64encoded']!, _base64encodedMeta));
+          _base64encodedMeta, base64encoded.isAcceptableOrUnknown(data['base64encoded']!, _base64encodedMeta));
     }
     return context;
   }
@@ -204,33 +164,25 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
   Photo map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Photo(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-      originalLatitude: attachedDatabase.typeMapping.read(
-          DriftSqlType.double, data['${effectivePrefix}original_latitude']),
-      originalLongitude: attachedDatabase.typeMapping.read(
-          DriftSqlType.double, data['${effectivePrefix}original_longitude']),
-      latitude: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}latitude']),
-      longitude: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}longitude']),
-      isPrivate: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_private'])!,
-      deletedFromCameraRoll: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool,
-          data['${effectivePrefix}deleted_from_camera_roll'])!,
-      isStarred: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_starred'])!,
-      tags: $PhotosTable.$convertertags.fromSql(attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}tags'])!),
-      specificLocation: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}specific_location']),
-      generalLocation: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}general_location']),
-      base64encoded: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}base64encoded']),
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      originalLatitude:
+          attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}original_latitude']),
+      originalLongitude:
+          attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}original_longitude']),
+      latitude: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}latitude']),
+      longitude: attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}longitude']),
+      isPrivate: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_private'])!,
+      deletedFromCameraRoll:
+          attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}deleted_from_camera_roll'])!,
+      isStarred: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_starred'])!,
+      tags: $PhotosTable.$convertertags
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}tags'])!),
+      specificLocation:
+          attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}specific_location']),
+      generalLocation:
+          attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}general_location']),
+      base64encoded: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}base64encoded']),
     );
   }
 
@@ -239,8 +191,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     return $PhotosTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Map<String, String>, String> $convertertags =
-      MapStringConvertor();
+  static TypeConverter<Map<String, String>, String> $convertertags = MapStringConvertor();
 }
 
 class Photo extends DataClass implements Insertable<Photo> {
@@ -311,48 +262,31 @@ class Photo extends DataClass implements Insertable<Photo> {
     return PhotosCompanion(
       id: Value(id),
       createdAt: Value(createdAt),
-      originalLatitude: originalLatitude == null && nullToAbsent
-          ? const Value.absent()
-          : Value(originalLatitude),
-      originalLongitude: originalLongitude == null && nullToAbsent
-          ? const Value.absent()
-          : Value(originalLongitude),
-      latitude: latitude == null && nullToAbsent
-          ? const Value.absent()
-          : Value(latitude),
-      longitude: longitude == null && nullToAbsent
-          ? const Value.absent()
-          : Value(longitude),
+      originalLatitude: originalLatitude == null && nullToAbsent ? const Value.absent() : Value(originalLatitude),
+      originalLongitude: originalLongitude == null && nullToAbsent ? const Value.absent() : Value(originalLongitude),
+      latitude: latitude == null && nullToAbsent ? const Value.absent() : Value(latitude),
+      longitude: longitude == null && nullToAbsent ? const Value.absent() : Value(longitude),
       isPrivate: Value(isPrivate),
       deletedFromCameraRoll: Value(deletedFromCameraRoll),
       isStarred: Value(isStarred),
       tags: Value(tags),
-      specificLocation: specificLocation == null && nullToAbsent
-          ? const Value.absent()
-          : Value(specificLocation),
-      generalLocation: generalLocation == null && nullToAbsent
-          ? const Value.absent()
-          : Value(generalLocation),
-      base64encoded: base64encoded == null && nullToAbsent
-          ? const Value.absent()
-          : Value(base64encoded),
+      specificLocation: specificLocation == null && nullToAbsent ? const Value.absent() : Value(specificLocation),
+      generalLocation: generalLocation == null && nullToAbsent ? const Value.absent() : Value(generalLocation),
+      base64encoded: base64encoded == null && nullToAbsent ? const Value.absent() : Value(base64encoded),
     );
   }
 
-  factory Photo.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory Photo.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Photo(
       id: serializer.fromJson<String>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       originalLatitude: serializer.fromJson<double?>(json['originalLatitude']),
-      originalLongitude:
-          serializer.fromJson<double?>(json['originalLongitude']),
+      originalLongitude: serializer.fromJson<double?>(json['originalLongitude']),
       latitude: serializer.fromJson<double?>(json['latitude']),
       longitude: serializer.fromJson<double?>(json['longitude']),
       isPrivate: serializer.fromJson<bool>(json['isPrivate']),
-      deletedFromCameraRoll:
-          serializer.fromJson<bool>(json['deletedFromCameraRoll']),
+      deletedFromCameraRoll: serializer.fromJson<bool>(json['deletedFromCameraRoll']),
       isStarred: serializer.fromJson<bool>(json['isStarred']),
       tags: serializer.fromJson<Map<String, String>>(json['tags']),
       specificLocation: serializer.fromJson<String?>(json['specificLocation']),
@@ -397,27 +331,17 @@ class Photo extends DataClass implements Insertable<Photo> {
       Photo(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
-        originalLatitude: originalLatitude.present
-            ? originalLatitude.value
-            : this.originalLatitude,
-        originalLongitude: originalLongitude.present
-            ? originalLongitude.value
-            : this.originalLongitude,
+        originalLatitude: originalLatitude.present ? originalLatitude.value : this.originalLatitude,
+        originalLongitude: originalLongitude.present ? originalLongitude.value : this.originalLongitude,
         latitude: latitude.present ? latitude.value : this.latitude,
         longitude: longitude.present ? longitude.value : this.longitude,
         isPrivate: isPrivate ?? this.isPrivate,
-        deletedFromCameraRoll:
-            deletedFromCameraRoll ?? this.deletedFromCameraRoll,
+        deletedFromCameraRoll: deletedFromCameraRoll ?? this.deletedFromCameraRoll,
         isStarred: isStarred ?? this.isStarred,
         tags: tags ?? this.tags,
-        specificLocation: specificLocation.present
-            ? specificLocation.value
-            : this.specificLocation,
-        generalLocation: generalLocation.present
-            ? generalLocation.value
-            : this.generalLocation,
-        base64encoded:
-            base64encoded.present ? base64encoded.value : this.base64encoded,
+        specificLocation: specificLocation.present ? specificLocation.value : this.specificLocation,
+        generalLocation: generalLocation.present ? generalLocation.value : this.generalLocation,
+        base64encoded: base64encoded.present ? base64encoded.value : this.base64encoded,
       );
   @override
   String toString() {
@@ -440,20 +364,8 @@ class Photo extends DataClass implements Insertable<Photo> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      id,
-      createdAt,
-      originalLatitude,
-      originalLongitude,
-      latitude,
-      longitude,
-      isPrivate,
-      deletedFromCameraRoll,
-      isStarred,
-      tags,
-      specificLocation,
-      generalLocation,
-      base64encoded);
+  int get hashCode => Object.hash(id, createdAt, originalLatitude, originalLongitude, latitude, longitude, isPrivate,
+      deletedFromCameraRoll, isStarred, tags, specificLocation, generalLocation, base64encoded);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -546,8 +458,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
       if (latitude != null) 'latitude': latitude,
       if (longitude != null) 'longitude': longitude,
       if (isPrivate != null) 'is_private': isPrivate,
-      if (deletedFromCameraRoll != null)
-        'deleted_from_camera_roll': deletedFromCameraRoll,
+      if (deletedFromCameraRoll != null) 'deleted_from_camera_roll': deletedFromCameraRoll,
       if (isStarred != null) 'is_starred': isStarred,
       if (tags != null) 'tags': tags,
       if (specificLocation != null) 'specific_location': specificLocation,
@@ -580,8 +491,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       isPrivate: isPrivate ?? this.isPrivate,
-      deletedFromCameraRoll:
-          deletedFromCameraRoll ?? this.deletedFromCameraRoll,
+      deletedFromCameraRoll: deletedFromCameraRoll ?? this.deletedFromCameraRoll,
       isStarred: isStarred ?? this.isStarred,
       tags: tags ?? this.tags,
       specificLocation: specificLocation ?? this.specificLocation,
@@ -616,8 +526,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
       map['is_private'] = Variable<bool>(isPrivate.value);
     }
     if (deletedFromCameraRoll.present) {
-      map['deleted_from_camera_roll'] =
-          Variable<bool>(deletedFromCameraRoll.value);
+      map['deleted_from_camera_roll'] = Variable<bool>(deletedFromCameraRoll.value);
     }
     if (isStarred.present) {
       map['is_starred'] = Variable<bool>(isStarred.value);
@@ -663,24 +572,19 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
   }
 }
 
-class $PicBlurHashsTable extends PicBlurHashs
-    with TableInfo<$PicBlurHashsTable, PicBlurHash> {
+class $PicBlurHashsTable extends PicBlurHashs with TableInfo<$PicBlurHashsTable, PicBlurHash> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $PicBlurHashsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _photoIdMeta =
-      const VerificationMeta('photoId');
+  static const VerificationMeta _photoIdMeta = const VerificationMeta('photoId');
   @override
-  late final GeneratedColumn<String> photoId = GeneratedColumn<String>(
-      'photo_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _blurHashMeta =
-      const VerificationMeta('blurHash');
+  late final GeneratedColumn<String> photoId =
+      GeneratedColumn<String>('photo_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _blurHashMeta = const VerificationMeta('blurHash');
   @override
-  late final GeneratedColumn<String> blurHash = GeneratedColumn<String>(
-      'blur_hash', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> blurHash =
+      GeneratedColumn<String>('blur_hash', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [photoId, blurHash];
   @override
@@ -688,19 +592,16 @@ class $PicBlurHashsTable extends PicBlurHashs
   @override
   String get actualTableName => 'pic_blur_hashs';
   @override
-  VerificationContext validateIntegrity(Insertable<PicBlurHash> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(Insertable<PicBlurHash> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('photo_id')) {
-      context.handle(_photoIdMeta,
-          photoId.isAcceptableOrUnknown(data['photo_id']!, _photoIdMeta));
+      context.handle(_photoIdMeta, photoId.isAcceptableOrUnknown(data['photo_id']!, _photoIdMeta));
     } else if (isInserting) {
       context.missing(_photoIdMeta);
     }
     if (data.containsKey('blur_hash')) {
-      context.handle(_blurHashMeta,
-          blurHash.isAcceptableOrUnknown(data['blur_hash']!, _blurHashMeta));
+      context.handle(_blurHashMeta, blurHash.isAcceptableOrUnknown(data['blur_hash']!, _blurHashMeta));
     } else if (isInserting) {
       context.missing(_blurHashMeta);
     }
@@ -713,10 +614,8 @@ class $PicBlurHashsTable extends PicBlurHashs
   PicBlurHash map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return PicBlurHash(
-      photoId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}photo_id'])!,
-      blurHash: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}blur_hash'])!,
+      photoId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}photo_id'])!,
+      blurHash: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}blur_hash'])!,
     );
   }
 
@@ -745,8 +644,7 @@ class PicBlurHash extends DataClass implements Insertable<PicBlurHash> {
     );
   }
 
-  factory PicBlurHash.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory PicBlurHash.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return PicBlurHash(
       photoId: serializer.fromJson<String>(json['photoId']),
@@ -780,9 +678,7 @@ class PicBlurHash extends DataClass implements Insertable<PicBlurHash> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is PicBlurHash &&
-          other.photoId == this.photoId &&
-          other.blurHash == this.blurHash);
+      (other is PicBlurHash && other.photoId == this.photoId && other.blurHash == this.blurHash);
 }
 
 class PicBlurHashsCompanion extends UpdateCompanion<PicBlurHash> {
@@ -812,8 +708,7 @@ class PicBlurHashsCompanion extends UpdateCompanion<PicBlurHash> {
     });
   }
 
-  PicBlurHashsCompanion copyWith(
-      {Value<String>? photoId, Value<String>? blurHash, Value<int>? rowid}) {
+  PicBlurHashsCompanion copyWith({Value<String>? photoId, Value<String>? blurHash, Value<int>? rowid}) {
     return PicBlurHashsCompanion(
       photoId: photoId ?? this.photoId,
       blurHash: blurHash ?? this.blurHash,
@@ -854,60 +749,42 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
   $PrivatesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> id =
+      GeneratedColumn<String>('id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _pathMeta = const VerificationMeta('path');
   @override
-  late final GeneratedColumn<String> path = GeneratedColumn<String>(
-      'path', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> path =
+      GeneratedColumn<String>('path', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _nonceMeta = const VerificationMeta('nonce');
   @override
-  late final GeneratedColumn<String> nonce = GeneratedColumn<String>(
-      'nonce', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _thumbPathMeta =
-      const VerificationMeta('thumbPath');
+  late final GeneratedColumn<String> nonce =
+      GeneratedColumn<String>('nonce', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _thumbPathMeta = const VerificationMeta('thumbPath');
   @override
-  late final GeneratedColumn<String> thumbPath = GeneratedColumn<String>(
-      'thumb_path', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _createDateTimeMeta =
-      const VerificationMeta('createDateTime');
+  late final GeneratedColumn<String> thumbPath =
+      GeneratedColumn<String>('thumb_path', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _createDateTimeMeta = const VerificationMeta('createDateTime');
   @override
-  late final GeneratedColumn<DateTime> createDateTime =
-      GeneratedColumn<DateTime>('create_date_time', aliasedName, true,
-          type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _originalLatitudeMeta =
-      const VerificationMeta('originalLatitude');
+  late final GeneratedColumn<DateTime> createDateTime = GeneratedColumn<DateTime>('create_date_time', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _originalLatitudeMeta = const VerificationMeta('originalLatitude');
   @override
-  late final GeneratedColumn<double> originalLatitude = GeneratedColumn<double>(
-      'original_latitude', aliasedName, true,
+  late final GeneratedColumn<double> originalLatitude = GeneratedColumn<double>('original_latitude', aliasedName, true,
       type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _originalLongitudeMeta =
-      const VerificationMeta('originalLongitude');
+  static const VerificationMeta _originalLongitudeMeta = const VerificationMeta('originalLongitude');
   @override
-  late final GeneratedColumn<double> originalLongitude =
-      GeneratedColumn<double>('original_longitude', aliasedName, true,
-          type: DriftSqlType.double, requiredDuringInsert: false);
+  late final GeneratedColumn<double> originalLongitude = GeneratedColumn<double>(
+      'original_longitude', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        path,
-        nonce,
-        thumbPath,
-        createDateTime,
-        originalLatitude,
-        originalLongitude
-      ];
+  List<GeneratedColumn> get $columns =>
+      [id, path, nonce, thumbPath, createDateTime, originalLatitude, originalLongitude];
   @override
   String get aliasedName => _alias ?? 'privates';
   @override
   String get actualTableName => 'privates';
   @override
-  VerificationContext validateIntegrity(Insertable<Private> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(Insertable<Private> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -916,38 +793,29 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
       context.missing(_idMeta);
     }
     if (data.containsKey('path')) {
-      context.handle(
-          _pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
+      context.handle(_pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
     } else if (isInserting) {
       context.missing(_pathMeta);
     }
     if (data.containsKey('nonce')) {
-      context.handle(
-          _nonceMeta, nonce.isAcceptableOrUnknown(data['nonce']!, _nonceMeta));
+      context.handle(_nonceMeta, nonce.isAcceptableOrUnknown(data['nonce']!, _nonceMeta));
     } else if (isInserting) {
       context.missing(_nonceMeta);
     }
     if (data.containsKey('thumb_path')) {
-      context.handle(_thumbPathMeta,
-          thumbPath.isAcceptableOrUnknown(data['thumb_path']!, _thumbPathMeta));
+      context.handle(_thumbPathMeta, thumbPath.isAcceptableOrUnknown(data['thumb_path']!, _thumbPathMeta));
     }
     if (data.containsKey('create_date_time')) {
       context.handle(
-          _createDateTimeMeta,
-          createDateTime.isAcceptableOrUnknown(
-              data['create_date_time']!, _createDateTimeMeta));
+          _createDateTimeMeta, createDateTime.isAcceptableOrUnknown(data['create_date_time']!, _createDateTimeMeta));
     }
     if (data.containsKey('original_latitude')) {
-      context.handle(
-          _originalLatitudeMeta,
-          originalLatitude.isAcceptableOrUnknown(
-              data['original_latitude']!, _originalLatitudeMeta));
+      context.handle(_originalLatitudeMeta,
+          originalLatitude.isAcceptableOrUnknown(data['original_latitude']!, _originalLatitudeMeta));
     }
     if (data.containsKey('original_longitude')) {
-      context.handle(
-          _originalLongitudeMeta,
-          originalLongitude.isAcceptableOrUnknown(
-              data['original_longitude']!, _originalLongitudeMeta));
+      context.handle(_originalLongitudeMeta,
+          originalLongitude.isAcceptableOrUnknown(data['original_longitude']!, _originalLongitudeMeta));
     }
     return context;
   }
@@ -958,20 +826,16 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
   Private map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Private(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      path: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
-      nonce: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}nonce'])!,
-      thumbPath: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}thumb_path']),
-      createDateTime: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}create_date_time']),
-      originalLatitude: attachedDatabase.typeMapping.read(
-          DriftSqlType.double, data['${effectivePrefix}original_latitude']),
-      originalLongitude: attachedDatabase.typeMapping.read(
-          DriftSqlType.double, data['${effectivePrefix}original_longitude']),
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      path: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}path'])!,
+      nonce: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}nonce'])!,
+      thumbPath: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}thumb_path']),
+      createDateTime:
+          attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}create_date_time']),
+      originalLatitude:
+          attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}original_latitude']),
+      originalLongitude:
+          attachedDatabase.typeMapping.read(DriftSqlType.double, data['${effectivePrefix}original_longitude']),
     );
   }
 
@@ -1023,23 +887,14 @@ class Private extends DataClass implements Insertable<Private> {
       id: Value(id),
       path: Value(path),
       nonce: Value(nonce),
-      thumbPath: thumbPath == null && nullToAbsent
-          ? const Value.absent()
-          : Value(thumbPath),
-      createDateTime: createDateTime == null && nullToAbsent
-          ? const Value.absent()
-          : Value(createDateTime),
-      originalLatitude: originalLatitude == null && nullToAbsent
-          ? const Value.absent()
-          : Value(originalLatitude),
-      originalLongitude: originalLongitude == null && nullToAbsent
-          ? const Value.absent()
-          : Value(originalLongitude),
+      thumbPath: thumbPath == null && nullToAbsent ? const Value.absent() : Value(thumbPath),
+      createDateTime: createDateTime == null && nullToAbsent ? const Value.absent() : Value(createDateTime),
+      originalLatitude: originalLatitude == null && nullToAbsent ? const Value.absent() : Value(originalLatitude),
+      originalLongitude: originalLongitude == null && nullToAbsent ? const Value.absent() : Value(originalLongitude),
     );
   }
 
-  factory Private.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory Private.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Private(
       id: serializer.fromJson<String>(json['id']),
@@ -1048,8 +903,7 @@ class Private extends DataClass implements Insertable<Private> {
       thumbPath: serializer.fromJson<String?>(json['thumbPath']),
       createDateTime: serializer.fromJson<DateTime?>(json['createDateTime']),
       originalLatitude: serializer.fromJson<double?>(json['originalLatitude']),
-      originalLongitude:
-          serializer.fromJson<double?>(json['originalLongitude']),
+      originalLongitude: serializer.fromJson<double?>(json['originalLongitude']),
     );
   }
   @override
@@ -1079,14 +933,9 @@ class Private extends DataClass implements Insertable<Private> {
         path: path ?? this.path,
         nonce: nonce ?? this.nonce,
         thumbPath: thumbPath.present ? thumbPath.value : this.thumbPath,
-        createDateTime:
-            createDateTime.present ? createDateTime.value : this.createDateTime,
-        originalLatitude: originalLatitude.present
-            ? originalLatitude.value
-            : this.originalLatitude,
-        originalLongitude: originalLongitude.present
-            ? originalLongitude.value
-            : this.originalLongitude,
+        createDateTime: createDateTime.present ? createDateTime.value : this.createDateTime,
+        originalLatitude: originalLatitude.present ? originalLatitude.value : this.originalLatitude,
+        originalLongitude: originalLongitude.present ? originalLongitude.value : this.originalLongitude,
       );
   @override
   String toString() {
@@ -1103,8 +952,7 @@ class Private extends DataClass implements Insertable<Private> {
   }
 
   @override
-  int get hashCode => Object.hash(id, path, nonce, thumbPath, createDateTime,
-      originalLatitude, originalLongitude);
+  int get hashCode => Object.hash(id, path, nonce, thumbPath, createDateTime, originalLatitude, originalLongitude);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1245,70 +1093,46 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
   $LabelsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _keyMeta = const VerificationMeta('key');
   @override
-  late final GeneratedColumn<String> key = GeneratedColumn<String>(
-      'key', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: Constant(Uuid().v4()));
-  static const VerificationMeta _counterMeta =
-      const VerificationMeta('counter');
+  late final GeneratedColumn<String> key = GeneratedColumn<String>('key', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: false, defaultValue: Constant(Uuid().v4()));
+  static const VerificationMeta _counterMeta = const VerificationMeta('counter');
   @override
-  late final GeneratedColumn<int> counter = GeneratedColumn<int>(
-      'counter', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(1));
-  static const VerificationMeta _lastUsedAtMeta =
-      const VerificationMeta('lastUsedAt');
+  late final GeneratedColumn<int> counter = GeneratedColumn<int>('counter', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(1));
+  static const VerificationMeta _lastUsedAtMeta = const VerificationMeta('lastUsedAt');
   @override
-  late final GeneratedColumn<DateTime> lastUsedAt = GeneratedColumn<DateTime>(
-      'last_used_at', aliasedName, false,
-      type: DriftSqlType.dateTime,
-      requiredDuringInsert: false,
-      defaultValue: Constant(DateTime.now()));
+  late final GeneratedColumn<DateTime> lastUsedAt = GeneratedColumn<DateTime>('last_used_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false, defaultValue: Constant(DateTime.now()));
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
-  late final GeneratedColumn<String> title = GeneratedColumn<String>(
-      'title', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(''));
-  static const VerificationMeta _photoIdMeta =
-      const VerificationMeta('photoId');
+  late final GeneratedColumn<String> title = GeneratedColumn<String>('title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: false, defaultValue: const Constant(''));
+  static const VerificationMeta _photoIdMeta = const VerificationMeta('photoId');
   @override
-  late final GeneratedColumnWithTypeConverter<Map<String, String>, String>
-      photoId = GeneratedColumn<String>('photo_id', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
+  late final GeneratedColumnWithTypeConverter<Map<String, String>, String> photoId =
+      GeneratedColumn<String>('photo_id', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<Map<String, String>>($LabelsTable.$converterphotoId);
   @override
-  List<GeneratedColumn> get $columns =>
-      [key, counter, lastUsedAt, title, photoId];
+  List<GeneratedColumn> get $columns => [key, counter, lastUsedAt, title, photoId];
   @override
   String get aliasedName => _alias ?? 'labels';
   @override
   String get actualTableName => 'labels';
   @override
-  VerificationContext validateIntegrity(Insertable<Label> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(Insertable<Label> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('key')) {
-      context.handle(
-          _keyMeta, key.isAcceptableOrUnknown(data['key']!, _keyMeta));
+      context.handle(_keyMeta, key.isAcceptableOrUnknown(data['key']!, _keyMeta));
     }
     if (data.containsKey('counter')) {
-      context.handle(_counterMeta,
-          counter.isAcceptableOrUnknown(data['counter']!, _counterMeta));
+      context.handle(_counterMeta, counter.isAcceptableOrUnknown(data['counter']!, _counterMeta));
     }
     if (data.containsKey('last_used_at')) {
-      context.handle(
-          _lastUsedAtMeta,
-          lastUsedAt.isAcceptableOrUnknown(
-              data['last_used_at']!, _lastUsedAtMeta));
+      context.handle(_lastUsedAtMeta, lastUsedAt.isAcceptableOrUnknown(data['last_used_at']!, _lastUsedAtMeta));
     }
     if (data.containsKey('title')) {
-      context.handle(
-          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+      context.handle(_titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
     }
     context.handle(_photoIdMeta, const VerificationResult.success());
     return context;
@@ -1320,17 +1144,12 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
   Label map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Label(
-      key: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}key'])!,
-      counter: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}counter'])!,
-      lastUsedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}last_used_at'])!,
-      title: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
-      photoId: $LabelsTable.$converterphotoId.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}photo_id'])!),
+      key: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}key'])!,
+      counter: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}counter'])!,
+      lastUsedAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}last_used_at'])!,
+      title: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      photoId: $LabelsTable.$converterphotoId
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}photo_id'])!),
     );
   }
 
@@ -1339,8 +1158,7 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
     return $LabelsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<Map<String, String>, String> $converterphotoId =
-      MapStringConvertor();
+  static TypeConverter<Map<String, String>, String> $converterphotoId = MapStringConvertor();
 }
 
 class Label extends DataClass implements Insertable<Label> {
@@ -1350,11 +1168,7 @@ class Label extends DataClass implements Insertable<Label> {
   final String title;
   final Map<String, String> photoId;
   const Label(
-      {required this.key,
-      required this.counter,
-      required this.lastUsedAt,
-      required this.title,
-      required this.photoId});
+      {required this.key, required this.counter, required this.lastUsedAt, required this.title, required this.photoId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1379,8 +1193,7 @@ class Label extends DataClass implements Insertable<Label> {
     );
   }
 
-  factory Label.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory Label.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Label(
       key: serializer.fromJson<String>(json['key']),
@@ -1402,12 +1215,7 @@ class Label extends DataClass implements Insertable<Label> {
     };
   }
 
-  Label copyWith(
-          {String? key,
-          int? counter,
-          DateTime? lastUsedAt,
-          String? title,
-          Map<String, String>? photoId}) =>
+  Label copyWith({String? key, int? counter, DateTime? lastUsedAt, String? title, Map<String, String>? photoId}) =>
       Label(
         key: key ?? this.key,
         counter: counter ?? this.counter,
@@ -1537,141 +1345,99 @@ class LabelsCompanion extends UpdateCompanion<Label> {
   }
 }
 
-class $MoorUsersTable extends MoorUsers
-    with TableInfo<$MoorUsersTable, MoorUser> {
+class $MoorUsersTable extends MoorUsers with TableInfo<$MoorUsersTable, MoorUser> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $MoorUsersTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _customPrimaryKeyMeta =
-      const VerificationMeta('customPrimaryKey');
+  static const VerificationMeta _customPrimaryKeyMeta = const VerificationMeta('customPrimaryKey');
   @override
-  late final GeneratedColumn<int> customPrimaryKey = GeneratedColumn<int>(
-      'custom_primary_key', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
+  late final GeneratedColumn<int> customPrimaryKey = GeneratedColumn<int>('custom_primary_key', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(0));
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: Constant(Uuid().v4()));
+  late final GeneratedColumn<String> id = GeneratedColumn<String>('id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: false, defaultValue: Constant(Uuid().v4()));
   static const VerificationMeta _emailMeta = const VerificationMeta('email');
   @override
-  late final GeneratedColumn<String> email = GeneratedColumn<String>(
-      'email', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _passwordMeta =
-      const VerificationMeta('password');
+  late final GeneratedColumn<String> email =
+      GeneratedColumn<String>('email', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _passwordMeta = const VerificationMeta('password');
   @override
-  late final GeneratedColumn<String> password = GeneratedColumn<String>(
-      'password', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _notificationMeta =
-      const VerificationMeta('notification');
+  late final GeneratedColumn<String> password =
+      GeneratedColumn<String>('password', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _notificationMeta = const VerificationMeta('notification');
   @override
-  late final GeneratedColumn<bool> notification =
-      GeneratedColumn<bool>('notification', aliasedName, false,
-          type: DriftSqlType.bool,
-          requiredDuringInsert: false,
-          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
-            SqlDialect.sqlite: 'CHECK ("notification" IN (0, 1))',
-            SqlDialect.mysql: '',
-            SqlDialect.postgres: '',
-          }),
-          defaultValue: const Constant(false));
-  static const VerificationMeta _dailyChallengesMeta =
-      const VerificationMeta('dailyChallenges');
+  late final GeneratedColumn<bool> notification = GeneratedColumn<bool>('notification', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+        SqlDialect.sqlite: 'CHECK ("notification" IN (0, 1))',
+        SqlDialect.mysql: '',
+        SqlDialect.postgres: '',
+      }),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _dailyChallengesMeta = const VerificationMeta('dailyChallenges');
   @override
-  late final GeneratedColumn<bool> dailyChallenges =
-      GeneratedColumn<bool>('daily_challenges', aliasedName, false,
-          type: DriftSqlType.bool,
-          requiredDuringInsert: false,
-          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
-            SqlDialect.sqlite: 'CHECK ("daily_challenges" IN (0, 1))',
-            SqlDialect.mysql: '',
-            SqlDialect.postgres: '',
-          }),
-          defaultValue: const Constant(false));
-  static const VerificationMeta _recentTagsMeta =
-      const VerificationMeta('recentTags');
+  late final GeneratedColumn<bool> dailyChallenges = GeneratedColumn<bool>('daily_challenges', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+        SqlDialect.sqlite: 'CHECK ("daily_challenges" IN (0, 1))',
+        SqlDialect.mysql: '',
+        SqlDialect.postgres: '',
+      }),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _recentTagsMeta = const VerificationMeta('recentTags');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String> recentTags =
-      GeneratedColumn<String>('recent_tags', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
+      GeneratedColumn<String>('recent_tags', aliasedName, false, type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<List<String>>($MoorUsersTable.$converterrecentTags);
-  static const VerificationMeta _appLanguageMeta =
-      const VerificationMeta('appLanguage');
+  static const VerificationMeta _appLanguageMeta = const VerificationMeta('appLanguage');
   @override
-  late final GeneratedColumn<String> appLanguage = GeneratedColumn<String>(
-      'app_language', aliasedName, true,
+  late final GeneratedColumn<String> appLanguage = GeneratedColumn<String>('app_language', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _appVersionMeta =
-      const VerificationMeta('appVersion');
+  static const VerificationMeta _appVersionMeta = const VerificationMeta('appVersion');
   @override
-  late final GeneratedColumn<String> appVersion = GeneratedColumn<String>(
-      'app_version', aliasedName, true,
+  late final GeneratedColumn<String> appVersion =
+      GeneratedColumn<String>('app_version', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _secretKeyMeta = const VerificationMeta('secretKey');
+  @override
+  late final GeneratedColumn<String> secretKey =
+      GeneratedColumn<String>('secret_key', aliasedName, true, type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _defaultWidgetImageMeta = const VerificationMeta('defaultWidgetImage');
+  @override
+  late final GeneratedColumn<String> defaultWidgetImage = GeneratedColumn<String>(
+      'default_widget_image', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _secretKeyMeta =
-      const VerificationMeta('secretKey');
-  @override
-  late final GeneratedColumn<String> secretKey = GeneratedColumn<String>(
-      'secret_key', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _defaultWidgetImageMeta =
-      const VerificationMeta('defaultWidgetImage');
-  @override
-  late final GeneratedColumn<String> defaultWidgetImage =
-      GeneratedColumn<String>('default_widget_image', aliasedName, true,
-          type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _goalMeta = const VerificationMeta('goal');
   @override
-  late final GeneratedColumn<int> goal = GeneratedColumn<int>(
-      'goal', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(20));
-  static const VerificationMeta _hourOfDayMeta =
-      const VerificationMeta('hourOfDay');
+  late final GeneratedColumn<int> goal = GeneratedColumn<int>('goal', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(20));
+  static const VerificationMeta _hourOfDayMeta = const VerificationMeta('hourOfDay');
   @override
-  late final GeneratedColumn<int> hourOfDay = GeneratedColumn<int>(
-      'hour_of_day', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(20));
-  static const VerificationMeta _minuteOfDayMeta =
-      const VerificationMeta('minuteOfDay');
+  late final GeneratedColumn<int> hourOfDay = GeneratedColumn<int>('hour_of_day', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(20));
+  static const VerificationMeta _minuteOfDayMeta = const VerificationMeta('minuteOfDay');
   @override
-  late final GeneratedColumn<int> minuteOfDay = GeneratedColumn<int>(
-      'minute_of_day', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _picsTaggedTodayMeta =
-      const VerificationMeta('picsTaggedToday');
+  late final GeneratedColumn<int> minuteOfDay = GeneratedColumn<int>('minute_of_day', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(0));
+  static const VerificationMeta _picsTaggedTodayMeta = const VerificationMeta('picsTaggedToday');
   @override
-  late final GeneratedColumn<int> picsTaggedToday = GeneratedColumn<int>(
-      'pics_tagged_today', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _tutorialCompletedMeta =
-      const VerificationMeta('tutorialCompleted');
+  late final GeneratedColumn<int> picsTaggedToday = GeneratedColumn<int>('pics_tagged_today', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false, defaultValue: const Constant(0));
+  static const VerificationMeta _tutorialCompletedMeta = const VerificationMeta('tutorialCompleted');
   @override
-  late final GeneratedColumn<bool> tutorialCompleted =
-      GeneratedColumn<bool>('tutorial_completed', aliasedName, false,
-          type: DriftSqlType.bool,
-          requiredDuringInsert: false,
-          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
-            SqlDialect.sqlite: 'CHECK ("tutorial_completed" IN (0, 1))',
-            SqlDialect.mysql: '',
-            SqlDialect.postgres: '',
-          }),
-          defaultValue: const Constant(false));
-  static const VerificationMeta _hasGalleryPermissionMeta =
-      const VerificationMeta('hasGalleryPermission');
+  late final GeneratedColumn<bool> tutorialCompleted = GeneratedColumn<bool>('tutorial_completed', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+        SqlDialect.sqlite: 'CHECK ("tutorial_completed" IN (0, 1))',
+        SqlDialect.mysql: '',
+        SqlDialect.postgres: '',
+      }),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _hasGalleryPermissionMeta = const VerificationMeta('hasGalleryPermission');
   @override
   late final GeneratedColumn<bool> hasGalleryPermission =
       GeneratedColumn<bool>('has_gallery_permission', aliasedName, false,
@@ -1683,47 +1449,40 @@ class $MoorUsersTable extends MoorUsers
             SqlDialect.postgres: '',
           }),
           defaultValue: const Constant(false));
-  static const VerificationMeta _loggedInMeta =
-      const VerificationMeta('loggedIn');
+  static const VerificationMeta _loggedInMeta = const VerificationMeta('loggedIn');
   @override
-  late final GeneratedColumn<bool> loggedIn =
-      GeneratedColumn<bool>('logged_in', aliasedName, false,
-          type: DriftSqlType.bool,
-          requiredDuringInsert: false,
-          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
-            SqlDialect.sqlite: 'CHECK ("logged_in" IN (0, 1))',
-            SqlDialect.mysql: '',
-            SqlDialect.postgres: '',
-          }),
-          defaultValue: const Constant(false));
-  static const VerificationMeta _secretPhotosMeta =
-      const VerificationMeta('secretPhotos');
+  late final GeneratedColumn<bool> loggedIn = GeneratedColumn<bool>('logged_in', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+        SqlDialect.sqlite: 'CHECK ("logged_in" IN (0, 1))',
+        SqlDialect.mysql: '',
+        SqlDialect.postgres: '',
+      }),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _secretPhotosMeta = const VerificationMeta('secretPhotos');
   @override
-  late final GeneratedColumn<bool> secretPhotos =
-      GeneratedColumn<bool>('secret_photos', aliasedName, false,
-          type: DriftSqlType.bool,
-          requiredDuringInsert: false,
-          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
-            SqlDialect.sqlite: 'CHECK ("secret_photos" IN (0, 1))',
-            SqlDialect.mysql: '',
-            SqlDialect.postgres: '',
-          }),
-          defaultValue: const Constant(false));
-  static const VerificationMeta _isPinRegisteredMeta =
-      const VerificationMeta('isPinRegistered');
+  late final GeneratedColumn<bool> secretPhotos = GeneratedColumn<bool>('secret_photos', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+        SqlDialect.sqlite: 'CHECK ("secret_photos" IN (0, 1))',
+        SqlDialect.mysql: '',
+        SqlDialect.postgres: '',
+      }),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _isPinRegisteredMeta = const VerificationMeta('isPinRegistered');
   @override
-  late final GeneratedColumn<bool> isPinRegistered =
-      GeneratedColumn<bool>('is_pin_registered', aliasedName, false,
-          type: DriftSqlType.bool,
-          requiredDuringInsert: false,
-          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
-            SqlDialect.sqlite: 'CHECK ("is_pin_registered" IN (0, 1))',
-            SqlDialect.mysql: '',
-            SqlDialect.postgres: '',
-          }),
-          defaultValue: const Constant(false));
-  static const VerificationMeta _keepAskingToDeleteMeta =
-      const VerificationMeta('keepAskingToDelete');
+  late final GeneratedColumn<bool> isPinRegistered = GeneratedColumn<bool>('is_pin_registered', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+        SqlDialect.sqlite: 'CHECK ("is_pin_registered" IN (0, 1))',
+        SqlDialect.mysql: '',
+        SqlDialect.postgres: '',
+      }),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _keepAskingToDeleteMeta = const VerificationMeta('keepAskingToDelete');
   @override
   late final GeneratedColumn<bool> keepAskingToDelete =
       GeneratedColumn<bool>('keep_asking_to_delete', aliasedName, false,
@@ -1735,8 +1494,7 @@ class $MoorUsersTable extends MoorUsers
             SqlDialect.postgres: '',
           }),
           defaultValue: const Constant(true));
-  static const VerificationMeta _shouldDeleteOnPrivateMeta =
-      const VerificationMeta('shouldDeleteOnPrivate');
+  static const VerificationMeta _shouldDeleteOnPrivateMeta = const VerificationMeta('shouldDeleteOnPrivate');
   @override
   late final GeneratedColumn<bool> shouldDeleteOnPrivate =
       GeneratedColumn<bool>('should_delete_on_private', aliasedName, false,
@@ -1748,21 +1506,18 @@ class $MoorUsersTable extends MoorUsers
             SqlDialect.postgres: '',
           }),
           defaultValue: const Constant(false));
-  static const VerificationMeta _tourCompletedMeta =
-      const VerificationMeta('tourCompleted');
+  static const VerificationMeta _tourCompletedMeta = const VerificationMeta('tourCompleted');
   @override
-  late final GeneratedColumn<bool> tourCompleted =
-      GeneratedColumn<bool>('tour_completed', aliasedName, false,
-          type: DriftSqlType.bool,
-          requiredDuringInsert: false,
-          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
-            SqlDialect.sqlite: 'CHECK ("tour_completed" IN (0, 1))',
-            SqlDialect.mysql: '',
-            SqlDialect.postgres: '',
-          }),
-          defaultValue: const Constant(false));
-  static const VerificationMeta _isBiometricActivatedMeta =
-      const VerificationMeta('isBiometricActivated');
+  late final GeneratedColumn<bool> tourCompleted = GeneratedColumn<bool>('tour_completed', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
+        SqlDialect.sqlite: 'CHECK ("tour_completed" IN (0, 1))',
+        SqlDialect.mysql: '',
+        SqlDialect.postgres: '',
+      }),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _isBiometricActivatedMeta = const VerificationMeta('isBiometricActivated');
   @override
   late final GeneratedColumn<bool> isBiometricActivated =
       GeneratedColumn<bool>('is_biometric_activated', aliasedName, false,
@@ -1774,14 +1529,11 @@ class $MoorUsersTable extends MoorUsers
             SqlDialect.postgres: '',
           }),
           defaultValue: const Constant(false));
-  static const VerificationMeta _lastTaggedPicDateMeta =
-      const VerificationMeta('lastTaggedPicDate');
+  static const VerificationMeta _lastTaggedPicDateMeta = const VerificationMeta('lastTaggedPicDate');
   @override
-  late final GeneratedColumn<DateTime> lastTaggedPicDate =
-      GeneratedColumn<DateTime>('last_tagged_pic_date', aliasedName, false,
-          type: DriftSqlType.dateTime,
-          requiredDuringInsert: false,
-          defaultValue: Constant(DateTime.now()));
+  late final GeneratedColumn<DateTime> lastTaggedPicDate = GeneratedColumn<DateTime>(
+      'last_tagged_pic_date', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false, defaultValue: Constant(DateTime.now()));
   @override
   List<GeneratedColumn> get $columns => [
         customPrimaryKey,
@@ -1815,141 +1567,93 @@ class $MoorUsersTable extends MoorUsers
   @override
   String get actualTableName => 'moor_users';
   @override
-  VerificationContext validateIntegrity(Insertable<MoorUser> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(Insertable<MoorUser> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('custom_primary_key')) {
-      context.handle(
-          _customPrimaryKeyMeta,
-          customPrimaryKey.isAcceptableOrUnknown(
-              data['custom_primary_key']!, _customPrimaryKeyMeta));
+      context.handle(_customPrimaryKeyMeta,
+          customPrimaryKey.isAcceptableOrUnknown(data['custom_primary_key']!, _customPrimaryKeyMeta));
     }
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('email')) {
-      context.handle(
-          _emailMeta, email.isAcceptableOrUnknown(data['email']!, _emailMeta));
+      context.handle(_emailMeta, email.isAcceptableOrUnknown(data['email']!, _emailMeta));
     }
     if (data.containsKey('password')) {
-      context.handle(_passwordMeta,
-          password.isAcceptableOrUnknown(data['password']!, _passwordMeta));
+      context.handle(_passwordMeta, password.isAcceptableOrUnknown(data['password']!, _passwordMeta));
     }
     if (data.containsKey('notification')) {
-      context.handle(
-          _notificationMeta,
-          notification.isAcceptableOrUnknown(
-              data['notification']!, _notificationMeta));
+      context.handle(_notificationMeta, notification.isAcceptableOrUnknown(data['notification']!, _notificationMeta));
     }
     if (data.containsKey('daily_challenges')) {
       context.handle(
-          _dailyChallengesMeta,
-          dailyChallenges.isAcceptableOrUnknown(
-              data['daily_challenges']!, _dailyChallengesMeta));
+          _dailyChallengesMeta, dailyChallenges.isAcceptableOrUnknown(data['daily_challenges']!, _dailyChallengesMeta));
     }
     context.handle(_recentTagsMeta, const VerificationResult.success());
     if (data.containsKey('app_language')) {
-      context.handle(
-          _appLanguageMeta,
-          appLanguage.isAcceptableOrUnknown(
-              data['app_language']!, _appLanguageMeta));
+      context.handle(_appLanguageMeta, appLanguage.isAcceptableOrUnknown(data['app_language']!, _appLanguageMeta));
     }
     if (data.containsKey('app_version')) {
-      context.handle(
-          _appVersionMeta,
-          appVersion.isAcceptableOrUnknown(
-              data['app_version']!, _appVersionMeta));
+      context.handle(_appVersionMeta, appVersion.isAcceptableOrUnknown(data['app_version']!, _appVersionMeta));
     }
     if (data.containsKey('secret_key')) {
-      context.handle(_secretKeyMeta,
-          secretKey.isAcceptableOrUnknown(data['secret_key']!, _secretKeyMeta));
+      context.handle(_secretKeyMeta, secretKey.isAcceptableOrUnknown(data['secret_key']!, _secretKeyMeta));
     }
     if (data.containsKey('default_widget_image')) {
-      context.handle(
-          _defaultWidgetImageMeta,
-          defaultWidgetImage.isAcceptableOrUnknown(
-              data['default_widget_image']!, _defaultWidgetImageMeta));
+      context.handle(_defaultWidgetImageMeta,
+          defaultWidgetImage.isAcceptableOrUnknown(data['default_widget_image']!, _defaultWidgetImageMeta));
     }
     if (data.containsKey('goal')) {
-      context.handle(
-          _goalMeta, goal.isAcceptableOrUnknown(data['goal']!, _goalMeta));
+      context.handle(_goalMeta, goal.isAcceptableOrUnknown(data['goal']!, _goalMeta));
     }
     if (data.containsKey('hour_of_day')) {
-      context.handle(
-          _hourOfDayMeta,
-          hourOfDay.isAcceptableOrUnknown(
-              data['hour_of_day']!, _hourOfDayMeta));
+      context.handle(_hourOfDayMeta, hourOfDay.isAcceptableOrUnknown(data['hour_of_day']!, _hourOfDayMeta));
     }
     if (data.containsKey('minute_of_day')) {
-      context.handle(
-          _minuteOfDayMeta,
-          minuteOfDay.isAcceptableOrUnknown(
-              data['minute_of_day']!, _minuteOfDayMeta));
+      context.handle(_minuteOfDayMeta, minuteOfDay.isAcceptableOrUnknown(data['minute_of_day']!, _minuteOfDayMeta));
     }
     if (data.containsKey('pics_tagged_today')) {
-      context.handle(
-          _picsTaggedTodayMeta,
-          picsTaggedToday.isAcceptableOrUnknown(
-              data['pics_tagged_today']!, _picsTaggedTodayMeta));
+      context.handle(_picsTaggedTodayMeta,
+          picsTaggedToday.isAcceptableOrUnknown(data['pics_tagged_today']!, _picsTaggedTodayMeta));
     }
     if (data.containsKey('tutorial_completed')) {
-      context.handle(
-          _tutorialCompletedMeta,
-          tutorialCompleted.isAcceptableOrUnknown(
-              data['tutorial_completed']!, _tutorialCompletedMeta));
+      context.handle(_tutorialCompletedMeta,
+          tutorialCompleted.isAcceptableOrUnknown(data['tutorial_completed']!, _tutorialCompletedMeta));
     }
     if (data.containsKey('has_gallery_permission')) {
-      context.handle(
-          _hasGalleryPermissionMeta,
-          hasGalleryPermission.isAcceptableOrUnknown(
-              data['has_gallery_permission']!, _hasGalleryPermissionMeta));
+      context.handle(_hasGalleryPermissionMeta,
+          hasGalleryPermission.isAcceptableOrUnknown(data['has_gallery_permission']!, _hasGalleryPermissionMeta));
     }
     if (data.containsKey('logged_in')) {
-      context.handle(_loggedInMeta,
-          loggedIn.isAcceptableOrUnknown(data['logged_in']!, _loggedInMeta));
+      context.handle(_loggedInMeta, loggedIn.isAcceptableOrUnknown(data['logged_in']!, _loggedInMeta));
     }
     if (data.containsKey('secret_photos')) {
-      context.handle(
-          _secretPhotosMeta,
-          secretPhotos.isAcceptableOrUnknown(
-              data['secret_photos']!, _secretPhotosMeta));
+      context.handle(_secretPhotosMeta, secretPhotos.isAcceptableOrUnknown(data['secret_photos']!, _secretPhotosMeta));
     }
     if (data.containsKey('is_pin_registered')) {
-      context.handle(
-          _isPinRegisteredMeta,
-          isPinRegistered.isAcceptableOrUnknown(
-              data['is_pin_registered']!, _isPinRegisteredMeta));
+      context.handle(_isPinRegisteredMeta,
+          isPinRegistered.isAcceptableOrUnknown(data['is_pin_registered']!, _isPinRegisteredMeta));
     }
     if (data.containsKey('keep_asking_to_delete')) {
-      context.handle(
-          _keepAskingToDeleteMeta,
-          keepAskingToDelete.isAcceptableOrUnknown(
-              data['keep_asking_to_delete']!, _keepAskingToDeleteMeta));
+      context.handle(_keepAskingToDeleteMeta,
+          keepAskingToDelete.isAcceptableOrUnknown(data['keep_asking_to_delete']!, _keepAskingToDeleteMeta));
     }
     if (data.containsKey('should_delete_on_private')) {
-      context.handle(
-          _shouldDeleteOnPrivateMeta,
-          shouldDeleteOnPrivate.isAcceptableOrUnknown(
-              data['should_delete_on_private']!, _shouldDeleteOnPrivateMeta));
+      context.handle(_shouldDeleteOnPrivateMeta,
+          shouldDeleteOnPrivate.isAcceptableOrUnknown(data['should_delete_on_private']!, _shouldDeleteOnPrivateMeta));
     }
     if (data.containsKey('tour_completed')) {
       context.handle(
-          _tourCompletedMeta,
-          tourCompleted.isAcceptableOrUnknown(
-              data['tour_completed']!, _tourCompletedMeta));
+          _tourCompletedMeta, tourCompleted.isAcceptableOrUnknown(data['tour_completed']!, _tourCompletedMeta));
     }
     if (data.containsKey('is_biometric_activated')) {
-      context.handle(
-          _isBiometricActivatedMeta,
-          isBiometricActivated.isAcceptableOrUnknown(
-              data['is_biometric_activated']!, _isBiometricActivatedMeta));
+      context.handle(_isBiometricActivatedMeta,
+          isBiometricActivated.isAcceptableOrUnknown(data['is_biometric_activated']!, _isBiometricActivatedMeta));
     }
     if (data.containsKey('last_tagged_pic_date')) {
-      context.handle(
-          _lastTaggedPicDateMeta,
-          lastTaggedPicDate.isAcceptableOrUnknown(
-              data['last_tagged_pic_date']!, _lastTaggedPicDateMeta));
+      context.handle(_lastTaggedPicDateMeta,
+          lastTaggedPicDate.isAcceptableOrUnknown(data['last_tagged_pic_date']!, _lastTaggedPicDateMeta));
     }
     return context;
   }
@@ -1960,59 +1664,43 @@ class $MoorUsersTable extends MoorUsers
   MoorUser map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return MoorUser(
-      customPrimaryKey: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}custom_primary_key'])!,
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      email: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}email']),
-      password: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}password']),
-      notification: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}notification'])!,
-      dailyChallenges: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}daily_challenges'])!,
-      recentTags: $MoorUsersTable.$converterrecentTags.fromSql(attachedDatabase
-          .typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}recent_tags'])!),
-      appLanguage: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}app_language']),
-      appVersion: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}app_version']),
-      secretKey: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}secret_key']),
-      defaultWidgetImage: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}default_widget_image']),
-      goal: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}goal'])!,
-      hourOfDay: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}hour_of_day'])!,
-      minuteOfDay: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}minute_of_day'])!,
-      picsTaggedToday: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}pics_tagged_today'])!,
-      tutorialCompleted: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}tutorial_completed'])!,
-      hasGalleryPermission: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}has_gallery_permission'])!,
-      loggedIn: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}logged_in'])!,
-      secretPhotos: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}secret_photos'])!,
-      isPinRegistered: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}is_pin_registered'])!,
-      keepAskingToDelete: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}keep_asking_to_delete'])!,
-      shouldDeleteOnPrivate: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool,
-          data['${effectivePrefix}should_delete_on_private'])!,
-      tourCompleted: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}tour_completed'])!,
-      isBiometricActivated: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}is_biometric_activated'])!,
-      lastTaggedPicDate: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime,
-          data['${effectivePrefix}last_tagged_pic_date'])!,
+      customPrimaryKey:
+          attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}custom_primary_key'])!,
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      email: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}email']),
+      password: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}password']),
+      notification: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}notification'])!,
+      dailyChallenges:
+          attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}daily_challenges'])!,
+      recentTags: $MoorUsersTable.$converterrecentTags
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}recent_tags'])!),
+      appLanguage: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}app_language']),
+      appVersion: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}app_version']),
+      secretKey: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}secret_key']),
+      defaultWidgetImage:
+          attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}default_widget_image']),
+      goal: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}goal'])!,
+      hourOfDay: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}hour_of_day'])!,
+      minuteOfDay: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}minute_of_day'])!,
+      picsTaggedToday:
+          attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}pics_tagged_today'])!,
+      tutorialCompleted:
+          attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}tutorial_completed'])!,
+      hasGalleryPermission:
+          attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}has_gallery_permission'])!,
+      loggedIn: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}logged_in'])!,
+      secretPhotos: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}secret_photos'])!,
+      isPinRegistered:
+          attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_pin_registered'])!,
+      keepAskingToDelete:
+          attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}keep_asking_to_delete'])!,
+      shouldDeleteOnPrivate:
+          attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}should_delete_on_private'])!,
+      tourCompleted: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}tour_completed'])!,
+      isBiometricActivated:
+          attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_biometric_activated'])!,
+      lastTaggedPicDate:
+          attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}last_tagged_pic_date'])!,
     );
   }
 
@@ -2021,8 +1709,7 @@ class $MoorUsersTable extends MoorUsers
     return $MoorUsersTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<String>, String> $converterrecentTags =
-      ListStringConvertor();
+  static TypeConverter<List<String>, String> $converterrecentTags = ListStringConvertor();
 }
 
 class MoorUser extends DataClass implements Insertable<MoorUser> {
@@ -2127,26 +1814,15 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
     return MoorUsersCompanion(
       customPrimaryKey: Value(customPrimaryKey),
       id: Value(id),
-      email:
-          email == null && nullToAbsent ? const Value.absent() : Value(email),
-      password: password == null && nullToAbsent
-          ? const Value.absent()
-          : Value(password),
+      email: email == null && nullToAbsent ? const Value.absent() : Value(email),
+      password: password == null && nullToAbsent ? const Value.absent() : Value(password),
       notification: Value(notification),
       dailyChallenges: Value(dailyChallenges),
       recentTags: Value(recentTags),
-      appLanguage: appLanguage == null && nullToAbsent
-          ? const Value.absent()
-          : Value(appLanguage),
-      appVersion: appVersion == null && nullToAbsent
-          ? const Value.absent()
-          : Value(appVersion),
-      secretKey: secretKey == null && nullToAbsent
-          ? const Value.absent()
-          : Value(secretKey),
-      defaultWidgetImage: defaultWidgetImage == null && nullToAbsent
-          ? const Value.absent()
-          : Value(defaultWidgetImage),
+      appLanguage: appLanguage == null && nullToAbsent ? const Value.absent() : Value(appLanguage),
+      appVersion: appVersion == null && nullToAbsent ? const Value.absent() : Value(appVersion),
+      secretKey: secretKey == null && nullToAbsent ? const Value.absent() : Value(secretKey),
+      defaultWidgetImage: defaultWidgetImage == null && nullToAbsent ? const Value.absent() : Value(defaultWidgetImage),
       goal: Value(goal),
       hourOfDay: Value(hourOfDay),
       minuteOfDay: Value(minuteOfDay),
@@ -2164,8 +1840,7 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
     );
   }
 
-  factory MoorUser.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory MoorUser.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return MoorUser(
       customPrimaryKey: serializer.fromJson<int>(json['customPrimaryKey']),
@@ -2178,26 +1853,21 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       appLanguage: serializer.fromJson<String?>(json['appLanguage']),
       appVersion: serializer.fromJson<String?>(json['appVersion']),
       secretKey: serializer.fromJson<String?>(json['secretKey']),
-      defaultWidgetImage:
-          serializer.fromJson<String?>(json['defaultWidgetImage']),
+      defaultWidgetImage: serializer.fromJson<String?>(json['defaultWidgetImage']),
       goal: serializer.fromJson<int>(json['goal']),
       hourOfDay: serializer.fromJson<int>(json['hourOfDay']),
       minuteOfDay: serializer.fromJson<int>(json['minuteOfDay']),
       picsTaggedToday: serializer.fromJson<int>(json['picsTaggedToday']),
       tutorialCompleted: serializer.fromJson<bool>(json['tutorialCompleted']),
-      hasGalleryPermission:
-          serializer.fromJson<bool>(json['hasGalleryPermission']),
+      hasGalleryPermission: serializer.fromJson<bool>(json['hasGalleryPermission']),
       loggedIn: serializer.fromJson<bool>(json['loggedIn']),
       secretPhotos: serializer.fromJson<bool>(json['secretPhotos']),
       isPinRegistered: serializer.fromJson<bool>(json['isPinRegistered']),
       keepAskingToDelete: serializer.fromJson<bool>(json['keepAskingToDelete']),
-      shouldDeleteOnPrivate:
-          serializer.fromJson<bool>(json['shouldDeleteOnPrivate']),
+      shouldDeleteOnPrivate: serializer.fromJson<bool>(json['shouldDeleteOnPrivate']),
       tourCompleted: serializer.fromJson<bool>(json['tourCompleted']),
-      isBiometricActivated:
-          serializer.fromJson<bool>(json['isBiometricActivated']),
-      lastTaggedPicDate:
-          serializer.fromJson<DateTime>(json['lastTaggedPicDate']),
+      isBiometricActivated: serializer.fromJson<bool>(json['isBiometricActivated']),
+      lastTaggedPicDate: serializer.fromJson<DateTime>(json['lastTaggedPicDate']),
     );
   }
   @override
@@ -2269,9 +1939,7 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
         appLanguage: appLanguage.present ? appLanguage.value : this.appLanguage,
         appVersion: appVersion.present ? appVersion.value : this.appVersion,
         secretKey: secretKey.present ? secretKey.value : this.secretKey,
-        defaultWidgetImage: defaultWidgetImage.present
-            ? defaultWidgetImage.value
-            : this.defaultWidgetImage,
+        defaultWidgetImage: defaultWidgetImage.present ? defaultWidgetImage.value : this.defaultWidgetImage,
         goal: goal ?? this.goal,
         hourOfDay: hourOfDay ?? this.hourOfDay,
         minuteOfDay: minuteOfDay ?? this.minuteOfDay,
@@ -2282,8 +1950,7 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
         secretPhotos: secretPhotos ?? this.secretPhotos,
         isPinRegistered: isPinRegistered ?? this.isPinRegistered,
         keepAskingToDelete: keepAskingToDelete ?? this.keepAskingToDelete,
-        shouldDeleteOnPrivate:
-            shouldDeleteOnPrivate ?? this.shouldDeleteOnPrivate,
+        shouldDeleteOnPrivate: shouldDeleteOnPrivate ?? this.shouldDeleteOnPrivate,
         tourCompleted: tourCompleted ?? this.tourCompleted,
         isBiometricActivated: isBiometricActivated ?? this.isBiometricActivated,
         lastTaggedPicDate: lastTaggedPicDate ?? this.lastTaggedPicDate,
@@ -2497,25 +2164,20 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
       if (appLanguage != null) 'app_language': appLanguage,
       if (appVersion != null) 'app_version': appVersion,
       if (secretKey != null) 'secret_key': secretKey,
-      if (defaultWidgetImage != null)
-        'default_widget_image': defaultWidgetImage,
+      if (defaultWidgetImage != null) 'default_widget_image': defaultWidgetImage,
       if (goal != null) 'goal': goal,
       if (hourOfDay != null) 'hour_of_day': hourOfDay,
       if (minuteOfDay != null) 'minute_of_day': minuteOfDay,
       if (picsTaggedToday != null) 'pics_tagged_today': picsTaggedToday,
       if (tutorialCompleted != null) 'tutorial_completed': tutorialCompleted,
-      if (hasGalleryPermission != null)
-        'has_gallery_permission': hasGalleryPermission,
+      if (hasGalleryPermission != null) 'has_gallery_permission': hasGalleryPermission,
       if (loggedIn != null) 'logged_in': loggedIn,
       if (secretPhotos != null) 'secret_photos': secretPhotos,
       if (isPinRegistered != null) 'is_pin_registered': isPinRegistered,
-      if (keepAskingToDelete != null)
-        'keep_asking_to_delete': keepAskingToDelete,
-      if (shouldDeleteOnPrivate != null)
-        'should_delete_on_private': shouldDeleteOnPrivate,
+      if (keepAskingToDelete != null) 'keep_asking_to_delete': keepAskingToDelete,
+      if (shouldDeleteOnPrivate != null) 'should_delete_on_private': shouldDeleteOnPrivate,
       if (tourCompleted != null) 'tour_completed': tourCompleted,
-      if (isBiometricActivated != null)
-        'is_biometric_activated': isBiometricActivated,
+      if (isBiometricActivated != null) 'is_biometric_activated': isBiometricActivated,
       if (lastTaggedPicDate != null) 'last_tagged_pic_date': lastTaggedPicDate,
     });
   }
@@ -2568,8 +2230,7 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
       secretPhotos: secretPhotos ?? this.secretPhotos,
       isPinRegistered: isPinRegistered ?? this.isPinRegistered,
       keepAskingToDelete: keepAskingToDelete ?? this.keepAskingToDelete,
-      shouldDeleteOnPrivate:
-          shouldDeleteOnPrivate ?? this.shouldDeleteOnPrivate,
+      shouldDeleteOnPrivate: shouldDeleteOnPrivate ?? this.shouldDeleteOnPrivate,
       tourCompleted: tourCompleted ?? this.tourCompleted,
       isBiometricActivated: isBiometricActivated ?? this.isBiometricActivated,
       lastTaggedPicDate: lastTaggedPicDate ?? this.lastTaggedPicDate,
@@ -2629,8 +2290,7 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
       map['tutorial_completed'] = Variable<bool>(tutorialCompleted.value);
     }
     if (hasGalleryPermission.present) {
-      map['has_gallery_permission'] =
-          Variable<bool>(hasGalleryPermission.value);
+      map['has_gallery_permission'] = Variable<bool>(hasGalleryPermission.value);
     }
     if (loggedIn.present) {
       map['logged_in'] = Variable<bool>(loggedIn.value);
@@ -2645,15 +2305,13 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
       map['keep_asking_to_delete'] = Variable<bool>(keepAskingToDelete.value);
     }
     if (shouldDeleteOnPrivate.present) {
-      map['should_delete_on_private'] =
-          Variable<bool>(shouldDeleteOnPrivate.value);
+      map['should_delete_on_private'] = Variable<bool>(shouldDeleteOnPrivate.value);
     }
     if (tourCompleted.present) {
       map['tour_completed'] = Variable<bool>(tourCompleted.value);
     }
     if (isBiometricActivated.present) {
-      map['is_biometric_activated'] =
-          Variable<bool>(isBiometricActivated.value);
+      map['is_biometric_activated'] = Variable<bool>(isBiometricActivated.value);
     }
     if (lastTaggedPicDate.present) {
       map['last_tagged_pic_date'] = Variable<DateTime>(lastTaggedPicDate.value);
@@ -2702,9 +2360,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LabelsTable labels = $LabelsTable(this);
   late final $MoorUsersTable moorUsers = $MoorUsersTable(this);
   @override
-  Iterable<TableInfo<Table, Object?>> get allTables =>
-      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+  Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [photos, picBlurHashs, privates, labels, moorUsers];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [photos, picBlurHashs, privates, labels, moorUsers];
 }

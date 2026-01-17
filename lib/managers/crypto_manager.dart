@@ -17,21 +17,27 @@ import 'package:uuid/uuid.dart';
 
 class Crypto {
   static Future<String> encryptAccessKey(
-      String accessCode, String email, String randomIv,) async {
+    String accessCode,
+    String email,
+    String randomIv,
+  ) async {
     /// preparing the algorithm
     final algorithm = cryptography.AesCtr.with256bits(
-        macAlgorithm: cryptography.Hmac.sha256(),);
+      macAlgorithm: cryptography.Hmac.sha256(),
+    );
 
     /// preparing the cryptography.SecretKey
-    final picKey = await algorithm
-        .newSecretKeyFromBytes(utf8.encode('bQeThWmZq3t6w9z9CxF0JLNcRfUjXn2r'));
+    final picKey = await algorithm.newSecretKeyFromBytes(utf8.encode('bQeThWmZq3t6w9z9CxF0JLNcRfUjXn2r'));
 
     final ivString = '$randomIv$randomIv${randomIv.substring(0, 4)}';
     final ivKey = utf8.encode(ivString);
 
     final encryptValue = '$accessCode:$email';
-    final encryptedData = await algorithm.encrypt(utf8.encode(encryptValue),
-        secretKey: picKey, nonce: ivKey,);
+    final encryptedData = await algorithm.encrypt(
+      utf8.encode(encryptValue),
+      secretKey: picKey,
+      nonce: ivKey,
+    );
 
     final hexData = hex.encode(encryptedData.cipherText);
 
@@ -42,7 +48,11 @@ class Crypto {
   }
 
   static Future<void> reSaveSpKey(
-      String userPin, String email, String tempEncryptionKey, cryptography.SecretKey encryptionKey,) async {
+    String userPin,
+    String email,
+    String tempEncryptionKey,
+    cryptography.SecretKey encryptionKey,
+  ) async {
     const storage = FlutterSecureStorage();
 
     // final ppkey = await storage.read(key: 'ppkey') ?? '';
@@ -52,13 +62,14 @@ class Crypto {
 
     /// preparing the algorithm
     final algorithm = cryptography.AesCtr.with256bits(
-        macAlgorithm: cryptography.Hmac.sha256(),);
+      macAlgorithm: cryptography.Hmac.sha256(),
+    );
 
     final picKey = await _retrieveSecretKey(
-        algorithm,); //await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
+      algorithm,
+    ); //await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
 
-    final ivString =
-        stringToBase64.encode('$userPin$email').substring(0, 16);
+    final ivString = stringToBase64.encode('$userPin$email').substring(0, 16);
 
     AppLogger.d('New generated IV for encryption: $ivString');
     final ivKey = utf8.encode(ivString);
@@ -75,27 +86,32 @@ class Crypto {
     AppLogger.d('New key saved to storage!');
   }
 
-  static Future<String?> checkRecoveryKey(String encryptedRecoveryKey,
-      String recoveryCode, String randomIv,) async {
+  static Future<String?> checkRecoveryKey(
+    String encryptedRecoveryKey,
+    String recoveryCode,
+    String randomIv,
+  ) async {
     try {
       const storage = FlutterSecureStorage();
       final hpkey = await storage.read(key: 'hpkey');
 
       final generatedIv = '$randomIv$randomIv${randomIv.substring(0, 4)}';
-      final recoveryIv =
-          '$recoveryCode${recoveryCode.substring(0, 4)}$recoveryCode';
+      final recoveryIv = '$recoveryCode${recoveryCode.substring(0, 4)}$recoveryCode';
 
       /// preparing the algorithm
       final algorithm = cryptography.AesCtr.with256bits(
-          macAlgorithm: cryptography.Hmac.sha256(),);
+        macAlgorithm: cryptography.Hmac.sha256(),
+      );
 
       final picKey = await algorithm.newSecretKeyFromBytes(
-          utf8.encode('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4'),);
+        utf8.encode('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4'),
+      );
       final ivRecovery = utf8.encode(recoveryIv);
 
       final encryptedValue = hex.decode(encryptedRecoveryKey);
       AppLogger.d(
-          'Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv - Generated IV: $generatedIv',);
+        'Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv - Generated IV: $generatedIv',
+      );
 
       final firstStepMac = await cryptography.Hmac.sha256().calculateMac(
         encryptedValue,
@@ -108,11 +124,11 @@ class Crypto {
         mac: firstStepMac,
       );
 
-      final decryptedFirstData =
-          await algorithm.decrypt(secretBoxFirstStep, secretKey: picKey);
+      final decryptedFirstData = await algorithm.decrypt(secretBoxFirstStep, secretKey: picKey);
 
       AppLogger.d(
-          'First Step Decrypted: $decryptedFirstData : ${decryptedFirstData.length}',);
+        'First Step Decrypted: $decryptedFirstData : ${decryptedFirstData.length}',
+      );
 
       final ivGenerated = utf8.encode(generatedIv);
 
@@ -128,17 +144,16 @@ class Crypto {
         nonce: ivGenerated,
       );
 
-      final decryptedFinal =
-          await algorithm.decrypt(secretBoxFinalStep, secretKey: picKey);
+      final decryptedFinal = await algorithm.decrypt(secretBoxFinalStep, secretKey: picKey);
 
       AppLogger.d(
-          'Final decryptedFinal: $decryptedFinal :${decryptedFinal.length}',);
+        'Final decryptedFinal: $decryptedFinal :${decryptedFinal.length}',
+      );
       final decryptedData = utf8.decode(decryptedFinal);
       AppLogger.d('Final decrypted value: $decryptedData');
       AppLogger.d('Hp Key: $hpkey');
 
-      final digest =
-          hex.encode((await cryptography.Sha256().hash(decryptedFinal)).bytes);
+      final digest = hex.encode((await cryptography.Sha256().hash(decryptedFinal)).bytes);
       AppLogger.d('Final key hashed: $digest');
       AppLogger.d('Saved hash: $hpkey');
 
@@ -154,7 +169,7 @@ class Crypto {
 
       AppLogger.d('Not the real key');
       return null;
-    } catch (error) {
+    } on Exception catch (error) {
       AppLogger.d('Not the real key: $error');
       return null;
     }
@@ -168,39 +183,39 @@ class Crypto {
 
     final stringToBase64 = utf8.fuse(base64);
 
-    final ivString = stringToBase64
-        .encode('$userPin$email')
-        .substring(0, 16);
+    final ivString = stringToBase64.encode('$userPin$email').substring(0, 16);
 
     /// preparing the algorithm
     final algorithm = cryptography.AesCtr.with256bits(
-        macAlgorithm: cryptography.Hmac.sha256(),);
+      macAlgorithm: cryptography.Hmac.sha256(),
+    );
 
     final picKey = await _retrieveSecretKey(
-        algorithm,); // await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
+      algorithm,
+    ); // await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
 
     final iv = utf8.encode(ivString);
 
     try {
       final encryptedValue = hex.decode(spkey);
 
-      final secretBox = cryptography.SecretBox(encryptedValue,
+      final secretBox = cryptography.SecretBox(
+        encryptedValue,
+        nonce: iv,
+        mac: await cryptography.Hmac.sha256().calculateMac(
+          encryptedValue,
+          secretKey: picKey,
           nonce: iv,
-          mac: await cryptography.Hmac.sha256().calculateMac(
-            encryptedValue,
-            secretKey: picKey,
-            nonce: iv,
-          ),);
+        ),
+      );
 
-      final decryptedData =
-          await algorithm.decrypt(secretBox, secretKey: picKey);
+      final decryptedData = await algorithm.decrypt(secretBox, secretKey: picKey);
       final decryptedString = hex.encode(decryptedData);
 
       AppLogger.d('Server key after decrypt: $decryptedString');
 
       AppLogger.d('Hasing it to check if it is the correct key');
-      final digest =
-          hex.encode((await cryptography.Sha256().hash(decryptedData)).bytes);
+      final digest = hex.encode((await cryptography.Sha256().hash(decryptedData)).bytes);
       AppLogger.d('Hashed key is: $digest');
 
       if (digest == hpkey) {
@@ -212,7 +227,7 @@ class Crypto {
 
       AppLogger.d('The key is invalid');
       return null;
-    } catch (error) {
+    } on Exception catch (error) {
       AppLogger.d('Failed to decrypt key invalid padblock!: $error');
       return null;
     }
@@ -230,25 +245,27 @@ class Crypto {
 
       /// preparing the algorithm
       final algorithm = cryptography.AesCtr.with256bits(
-          macAlgorithm: cryptography.Hmac.sha256(),);
+        macAlgorithm: cryptography.Hmac.sha256(),
+      );
 
       final sec = hex.decode(secretString);
 
       final picKey = await algorithm.newSecretKeyFromBytes(sec);
       final ivKey = hex.decode(nounceString);
       final encryptedValue = hex.decode(encryptedPin);
-      final secretBox = cryptography.SecretBox(encryptedValue,
+      final secretBox = cryptography.SecretBox(
+        encryptedValue,
+        nonce: ivKey,
+        mac: await algorithm.macAlgorithm.calculateMac(
+          encryptedValue,
+          secretKey: picKey,
           nonce: ivKey,
-          mac: await algorithm.macAlgorithm.calculateMac(
-            encryptedValue,
-            secretKey: picKey,
-            nonce: ivKey,
-          ),);
-      final decryptedData =
-          await algorithm.decrypt(secretBox, secretKey: picKey);
+        ),
+      );
+      final decryptedData = await algorithm.decrypt(secretBox, secretKey: picKey);
       AppLogger.d('Pin: ${hex.encode(decryptedData)}');
       return hex.encode(decryptedData);
-    } catch (error) {
+    } on Exception catch (error) {
       AppLogger.d('error: $error');
       return null;
     }
@@ -266,13 +283,17 @@ class Crypto {
 
     /// preparing the algorithm
     final algorithm = cryptography.AesCtr.with256bits(
-        macAlgorithm: cryptography.Hmac.sha256(),);
+      macAlgorithm: cryptography.Hmac.sha256(),
+    );
 
     final secretKey = await algorithm.newSecretKey();
     final ivKey = algorithm.newNonce();
 
-    final encryptedData = await algorithm.encrypt(hex.decode(userPin),
-        secretKey: secretKey, nonce: ivKey,);
+    final encryptedData = await algorithm.encrypt(
+      hex.decode(userPin),
+      secretKey: secretKey,
+      nonce: ivKey,
+    );
 
     /// hex.encode is necessary here.
     final encryptedBytes = encryptedData.cipherText;
@@ -317,14 +338,17 @@ class Crypto {
   static Future<void> saveSaltKey() async {
     const storage = FlutterSecureStorage();
     final stringToBase64 = utf8.fuse(base64);
-    final secretSalt =
-        stringToBase64.encode(const Uuid().v4()).substring(0, 16);
+    final secretSalt = stringToBase64.encode(const Uuid().v4()).substring(0, 16);
     await storage.write(key: 'ppkey', value: secretSalt);
     AppLogger.d('Secret salt: $secretSalt');
   }
 
-  static Future<cryptography.SecretKey> saveSpKey(String accessKey, String spKey, String userPin,
-      String userEmail,) async {
+  static Future<cryptography.SecretKey> saveSpKey(
+    String accessKey,
+    String spKey,
+    String userPin,
+    String userEmail,
+  ) async {
     const storage = FlutterSecureStorage();
     // final ppkey = await storage.read(key: 'ppkey');
     final stringToBase64 = utf8.fuse(base64);
@@ -333,10 +357,10 @@ class Crypto {
 
     /// preparing the algorithm
     final algorithm = cryptography.AesCtr.with256bits(
-        macAlgorithm: cryptography.Hmac.sha256(),);
+      macAlgorithm: cryptography.Hmac.sha256(),
+    );
 
-    final picAccessKey = await algorithm
-        .newSecretKeyFromBytes(utf8.encode('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4'));
+    final picAccessKey = await algorithm.newSecretKeyFromBytes(utf8.encode('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4'));
     final ivAccess = utf8.encode(generateIv);
 
     AppLogger.d('SpKey: $spKey');
@@ -353,30 +377,27 @@ class Crypto {
       ),
     );
 
-    final decryptedKey =
-        await algorithm.decrypt(secretBox, secretKey: picAccessKey);
+    final decryptedKey = await algorithm.decrypt(secretBox, secretKey: picAccessKey);
     final hexData = hex.encode(decryptedKey);
 
     AppLogger.d('Decrypted spKey is: $hexData');
     final encryptionKey = await algorithm.newSecretKeyFromBytes(decryptedKey);
 
     AppLogger.d('Before digest....');
-    final digest =
-        hex.encode((await cryptography.Sha256().hash(decryptedKey)).bytes);
+    final digest = hex.encode((await cryptography.Sha256().hash(decryptedKey)).bytes);
 
     AppLogger.d('Saving hashed spKey: $digest');
     await storage.write(key: 'hpkey', value: digest);
 
     final picKey = await _retrieveSecretKey(
-        algorithm,); //await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
+      algorithm,
+    ); //await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
 
-    final ivString =
-        stringToBase64.encode('$userPin$userEmail').substring(0, 16);
+    final ivString = stringToBase64.encode('$userPin$userEmail').substring(0, 16);
     AppLogger.d('New generated IV for encryption: $ivString');
 
     final ivKey = utf8.encode(ivString);
-    final encrypted =
-        await algorithm.encrypt(decryptedKey, secretKey: picKey, nonce: ivKey);
+    final encrypted = await algorithm.encrypt(decryptedKey, secretKey: picKey, nonce: ivKey);
     final encryptedData = hex.encode(encrypted.cipherText);
 
     AppLogger.d('New key encrypted with pin: $encryptedData');
@@ -392,25 +413,25 @@ class Crypto {
   /// A replacer function to generate on device key in order to protect the decryption of every possible device
   /// replaced static by 1HxMbQeThWmZq3t6
   static Future<cryptography.SecretKey> _retrieveSecretKey(
-      cryptography.AesCtr algorithm,) async {
-    cryptography.SecretKey? secretKey;
-
-    secretKey = await algorithm.newSecretKeyFromBytes(hex.decode(
-        '6f61309cf8f3e233f9a15670d8e6ca4db8ca76b6cb868924c04de28c374276c8',),);
-    return secretKey;
+    cryptography.AesCtr algorithm,
+  ) async {
+    return algorithm.newSecretKeyFromBytes(
+      hex.decode(
+        '6f61309cf8f3e233f9a15670d8e6ca4db8ca76b6cb868924c04de28c374276c8',
+      ),
+    );
   }
 
   static Future<void> encryptImage(
-      PicStoreNotifier picStore, cryptography.SecretKey secretKey,) async {
+    PicStoreNotifier picStore,
+    cryptography.SecretKey secretKey,
+  ) async {
     AppLogger.d('Going to encrypt image with encryption key');
 
     final assetData = await picStore.state.entity?.originBytes;
-    final thumbData = await picStore.state.entity
-        ?.thumbnailDataWithSize(const ThumbnailSize.square(150), quality: 90);
+    final thumbData = await picStore.state.entity?.thumbnailDataWithSize(const ThumbnailSize.square(150), quality: 90);
 
-    final title = Platform.isAndroid
-        ? picStore.state.entity?.title
-        : await picStore.state.entity?.titleAsync;
+    final title = Platform.isAndroid ? picStore.state.entity?.title : await picStore.state.entity?.titleAsync;
 
     AppLogger.d('Asset Name: ${picStore.state.entity?.id}');
     AppLogger.d('Origin file: $title');
@@ -424,8 +445,7 @@ class Crypto {
     final photosPath = p.join('photos', title);
     final thumbnailsPath = p.join('thumbnails', title);
 
-    final dirExists =
-        await Directory(p.join(appDocumentsDir.path, 'photos')).exists();
+    final dirExists = Directory(p.join(appDocumentsDir.path, 'photos')).existsSync();
     if (!dirExists) {
       await Directory(p.join(appDocumentsDir.path, 'photos')).create();
       await Directory(p.join(appDocumentsDir.path, 'thumbnails')).create();
@@ -446,19 +466,17 @@ class Crypto {
     /// Select whether to using it on android or on iOS !!
     if (Platform.isAndroid) {
       algorithm = cryptography.AesCtr.with256bits(
-          macAlgorithm: cryptography.Hmac.sha256(),);
+        macAlgorithm: cryptography.Hmac.sha256(),
+      );
     } else {
-      // TODO: Check if this will work
-      algorithm =
-          cryptography.AesGcm.with256bits() as cryptography.StreamingCipher;
+      // TODO(picpics): Check if this will work
+      algorithm = cryptography.AesGcm.with256bits() as cryptography.StreamingCipher;
     }
 
     /// Let's start processing the image files to start encrypting.
     ///
-    encryptedPicData =
-        await algorithm.encrypt(assetData, secretKey: secretKey, nonce: nonce);
-    encryptedThumbData =
-        await algorithm.encrypt(thumbData, secretKey: secretKey, nonce: nonce);
+    encryptedPicData = await algorithm.encrypt(assetData, secretKey: secretKey, nonce: nonce);
+    encryptedThumbData = await algorithm.encrypt(thumbData, secretKey: secretKey, nonce: nonce);
 
     final savedPicFile = File(finalPhotoPath);
     final savedThumbFile = File(finalThumbPath);
@@ -472,11 +490,17 @@ class Crypto {
     // AppLogger.d('File sizes: ${savedPicFile.lengthSync()} - Thumb Size: ${savedThumbFile.lengthSync()}');
 
     await picStore.setPrivatePath(
-        photosPath, thumbnailsPath, hex.encode(nonce.toList()),);
+      photosPath,
+      thumbnailsPath,
+      hex.encode(nonce.toList()),
+    );
   }
 
-  static Future<Uint8List> decryptImage(String imagePath,
-      cryptography.SecretKey secretKey, List<int> nonce,) async {
+  static Future<Uint8List> decryptImage(
+    String imagePath,
+    cryptography.SecretKey secretKey,
+    List<int> nonce,
+  ) async {
     final appDocumentsDir = await getApplicationDocumentsDirectory();
     final filePath = p.join(appDocumentsDir.path, imagePath);
 
@@ -484,17 +508,17 @@ class Crypto {
 
     AppLogger.d('Secret Key: $secretKey');
     AppLogger.d('Nonce: $nonce');
-    AppLogger.d('File exists: ${await file.exists()}');
+    AppLogger.d('File exists: ${file.existsSync()}');
     AppLogger.d(
-        'App Support Dir: ${(await getApplicationDocumentsDirectory()).path}',);
+      'App Support Dir: ${(await getApplicationDocumentsDirectory()).path}',
+    );
 
     final encryptedValue = file.readAsBytesSync();
 
     final secretBox = cryptography.SecretBox(
       encryptedValue,
       nonce: nonce,
-      mac: await cryptography.MacAlgorithm.empty
-          .calculateMac(encryptedValue, secretKey: secretKey),
+      mac: await cryptography.MacAlgorithm.empty.calculateMac(encryptedValue, secretKey: secretKey),
     );
 
     List<int> decryptedData;
@@ -502,7 +526,8 @@ class Crypto {
     if (Platform.isAndroid) {
       /// preparing the algorithm
       final algorithm = cryptography.AesCtr.with256bits(
-          macAlgorithm: cryptography.Hmac.sha256(),);
+        macAlgorithm: cryptography.Hmac.sha256(),
+      );
       decryptedData = await algorithm.decrypt(secretBox, secretKey: secretKey);
     } else {
       /// preparing the algorithm

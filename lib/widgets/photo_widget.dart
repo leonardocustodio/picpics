@@ -20,8 +20,7 @@ class PhotoWidget extends StatelessWidget {
         return const ColoredBox(color: kGreyPlaceholder);
       }
     }
-    final imageProvider =
-        AssetEntityImageProvider(picStore!, isOriginal: false);
+    final imageProvider = AssetEntityImageProvider(picStore!, isOriginal: false);
     return RepaintBoundary(
       child: ExtendedImage(
         image: imageProvider,

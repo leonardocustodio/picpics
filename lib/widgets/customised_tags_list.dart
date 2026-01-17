@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,13 +12,20 @@ import 'package:picpics/utils/helpers.dart';
 import 'package:picpics/utils/show_edit_label_dialog.dart';
 
 typedef OnTap = void Function(
-    String tagId, String tagName, int counter, DateTime? lastUsedAt,);
+  String tagId,
+  String tagName,
+  int counter,
+  DateTime? lastUsedAt,
+);
 
 // ignore: must_be_immutable
 class CustomisedTagsList extends ConsumerWidget {
-
   CustomisedTagsList({
-    required this.tagsKeyList, required this.selectedTags, required this.onTap, required this.onDoubleTap, super.key,
+    required this.tagsKeyList,
+    required this.selectedTags,
+    required this.onTap,
+    required this.onDoubleTap,
+    super.key,
     this.maxLength,
     this.title,
   });
@@ -25,7 +34,7 @@ class CustomisedTagsList extends ConsumerWidget {
   int? maxLength;
   final String? title;
   final OnTap? onTap;
-  final Function? onDoubleTap;
+  final void Function()? onDoubleTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,7 +49,7 @@ class CustomisedTagsList extends ConsumerWidget {
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
               title!,
-              textScaler: const TextScaler.linear(1),
+              textScaler: TextScaler.noScaling,
               style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),
@@ -72,9 +81,7 @@ class CustomisedTagsList extends ConsumerWidget {
                   ),
                 ]
               : List.generate(
-                  maxLength != null
-                      ? tagsKeyList.length.clamp(0, maxLength!)
-                      : tagsKeyList.length,
+                  maxLength != null ? tagsKeyList.length.clamp(0, maxLength!) : tagsKeyList.length,
                   (index) => _buildItem(context, ref, index, tagsState),
                 ),
         ),
@@ -87,18 +94,18 @@ class CustomisedTagsList extends ConsumerWidget {
     final isColorFull = selectedTags[tag.key] != null;
     return GestureDetector(
       onTap: () {
-        HapticFeedback.lightImpact();
+        unawaited(HapticFeedback.lightImpact());
         /* DatabaseManager.instance.selectedTagKey = tag.key; */
         onTap?.call(tag.key, tag.title, tag.count, tag.time);
       },
       onDoubleTap: () {
-        HapticFeedback.lightImpact();
+        unawaited(HapticFeedback.lightImpact());
         /* DatabaseManager.instance.selectedTagKey = tag.key; */
         onDoubleTap?.call();
       },
       onLongPress: () {
         /* DatabaseManager.instance.selectedTagKey = tag.key; */
-        showEditTagModal(tag.key, context, ref);
+        unawaited(showEditTagModal(tag.key, context, ref));
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
@@ -106,13 +113,13 @@ class CustomisedTagsList extends ConsumerWidget {
         decoration: isColorFull
             ? BoxDecoration(
                 gradient: getGradient(index % 4),
-                borderRadius: BorderRadius.circular(19),)
+                borderRadius: BorderRadius.circular(19),
+              )
             : kGrayBoxDecoration,
         child: Text(
           tag.title,
-          textScaler: const TextScaler.linear(1),
-          style: (isColorFull ? kWhiteTextStyle : kGrayTextStyle)
-              .copyWith(fontSize: 14),
+          textScaler: TextScaler.noScaling,
+          style: (isColorFull ? kWhiteTextStyle : kGrayTextStyle).copyWith(fontSize: 14),
         ),
       ),
     );

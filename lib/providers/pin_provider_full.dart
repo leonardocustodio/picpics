@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_functions/cloud_functions.dart';
@@ -17,18 +18,7 @@ import 'package:picpics/widgets/cupertino_input_dialog.dart';
 import 'package:picpics/widgets/general_modal.dart';
 
 class PinFullState {
-  final String email;
-  final String pinTemp;
-  final String confirmPinTemp;
-  final String accessCode;
-  final bool invalidAccessCode;
-  final bool isWaitingRecoveryKey;
-  final bool isSettingNewPin;
-  final bool isLoading;
-  final String recoveryCode;
-  final String encryptedRecoveryKey;
-  final String generatedIv;
-  final String pin; // Internal pin storage
+  // Internal pin storage
 
   PinFullState({
     this.email = '',
@@ -44,6 +34,18 @@ class PinFullState {
     this.generatedIv = '',
     this.pin = '',
   });
+  final String email;
+  final String pinTemp;
+  final String confirmPinTemp;
+  final String accessCode;
+  final bool invalidAccessCode;
+  final bool isWaitingRecoveryKey;
+  final bool isSettingNewPin;
+  final bool isLoading;
+  final String recoveryCode;
+  final String encryptedRecoveryKey;
+  final String generatedIv;
+  final String pin;
 
   PinFullState copyWith({
     String? email,
@@ -77,21 +79,20 @@ class PinFullState {
 }
 
 class PinFullNotifier extends StateNotifier<PinFullState> {
+  PinFullNotifier(this.ref) : super(PinFullState());
   final Ref ref;
 
   GlobalKey<AnimatorWidgetState> shakeKey = GlobalKey<AnimatorWidgetState>();
   GlobalKey<AnimatorWidgetState> shakeKeyConfirm = GlobalKey<AnimatorWidgetState>();
   GlobalKey<AnimatorWidgetState> shakeRecovery = GlobalKey<AnimatorWidgetState>();
 
-  PinFullNotifier(this.ref) : super(PinFullState());
-
   void setEmail(String value) => state = state.copyWith(email: value);
   void setPinTemp(String value) => state = state.copyWith(pinTemp: value);
   void setConfirmPinTemp(String value) => state = state.copyWith(confirmPinTemp: value);
   void setAccessCode(String value) => state = state.copyWith(accessCode: value);
-  void setInvalidAccessCode(bool value) => state = state.copyWith(invalidAccessCode: value);
-  void setIsWaitingRecoveryKey(bool value) => state = state.copyWith(isWaitingRecoveryKey: value);
-  void setIsSettingNewPin(bool value) => state = state.copyWith(isSettingNewPin: value);
+  void setInvalidAccessCode({required bool value}) => state = state.copyWith(invalidAccessCode: value);
+  void setIsWaitingRecoveryKey({required bool value}) => state = state.copyWith(isWaitingRecoveryKey: value);
+  void setIsSettingNewPin({required bool value}) => state = state.copyWith(isSettingNewPin: value);
   void setRecoveryCode(String value) => state = state.copyWith(recoveryCode: value);
   void setGeneratedIv(String value) => state = state.copyWith(generatedIv: value);
   void setPin(String value) => state = state.copyWith(pin: value);
@@ -117,7 +118,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       if (result.data is Map && (result.data as Map).isNotEmpty) {
         AppLogger.d('Recovery Key Encrypted: ${result.data}');
         state = state.copyWith(encryptedRecoveryKey: result.data as String);
-        setIsWaitingRecoveryKey(true);
+        setIsWaitingRecoveryKey(value: true);
         await Crypto.saveSaltKey();
         return true;
       }
@@ -125,7 +126,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       return false;
     } on FirebaseFunctionsException catch (e) {
       AppLogger.d('caught firebase functions exception: ${e.message}:${e.details}');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.d('caught generic exception: $e');
     }
 
@@ -135,7 +136,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   Future<bool> isRecoveryCodeValid() async {
     AppLogger.d('Typed Recovery Code: ${state.recoveryCode}');
 
-    // TODO(Week 3D): Update Crypto.checkRecoveryKey to accept UserNotifier/UserState
+    // TODO(picpics): Update Crypto.checkRecoveryKey to accept UserNotifier/UserState
     // For now, return false as placeholder until Crypto manager is migrated
     AppLogger.w('Recovery key validation temporarily disabled - requires Crypto manager migration');
     return false;
@@ -152,13 +153,13 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   }
 
   Future<void> saveNewPin() async {
-    // TODO(Week 3D): Update Crypto.reSaveSpKey to accept UserNotifier/UserState
+    // TODO(picpics): Update Crypto.reSaveSpKey to accept UserNotifier/UserState
     // Temporarily skip encryption key operations until Crypto manager is migrated
     AppLogger.w('PIN save temporarily simplified - requires Crypto manager migration');
 
     // Reset state
     setPin('');
-    setIsWaitingRecoveryKey(false);
+    setIsWaitingRecoveryKey(value: false);
     AppLogger.d('Saved new pin (simplified)!!!');
 
     // Original code (commented until Crypto migration):
@@ -181,14 +182,15 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       user = (await auth.createUserWithEmailAndPassword(
         email: state.email,
         password: state.pin,
-      )).user;
+      ))
+          .user;
 
       if (user == null) {
         result['success'] = false;
         result['errorCode'] = 'NULL_USER';
         return result;
       }
-    } catch (error) {
+    } on Exception catch (error) {
       AppLogger.d('Error creating user: $error');
       result['success'] = false;
       result['errorCode'] = error;
@@ -223,7 +225,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       // ignore: unnecessary_type_check
       if (result.data is Map && (result.data as Map).isNotEmpty) {
         await Crypto.saveSaltKey();
-        // TODO(Week 3D): Update Crypto.saveSpKey to accept UserNotifier/UserState
+        // TODO(picpics): Update Crypto.saveSpKey to accept UserNotifier/UserState
         AppLogger.w('Access code validation simplified - requires Crypto manager migration');
         // await Crypto.saveSpKey(
         //   state.accessCode,
@@ -238,7 +240,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       return false;
     } on FirebaseFunctionsException catch (e) {
       AppLogger.d('caught firebase functions exception: ${e.code}:${e.message}:${e.details}');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.d('caught generic exception: $e');
     }
 
@@ -255,12 +257,12 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
     final secretKey = await Crypto.saveEncryptedPin(state.pinTemp);
     if (secretKey != null) {
       // Store the secret key if needed
-      // TODO: Store secretKey in user provider or secure storage
+      // TODO(picpics): Store secretKey in user provider or secure storage
     }
   }
 
   Future<bool> isBiometricValidated() async {
-    // TODO: Get secretString from secure storage or user provider
+    // TODO(picpics): Get secretString from secure storage or user provider
     final pin = await Crypto.getEncryptedPin(null);
     if (pin == null) {
       return false;
@@ -286,7 +288,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       AppLogger.d('Is valid: $valid');
     } else {
       shakeKey.currentState?.forward();
-      setInvalidAccessCode(true);
+      setInvalidAccessCode(value: true);
     }
   }
 
@@ -306,7 +308,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
           onPressedDefault: () {
             setEmail(alertInputController.text);
             Navigator.of(buildContext).pop();
-            recoverPin();
+            unawaited(recoverPin());
           },
         );
       },
@@ -321,16 +323,16 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   }
 
   Future<void> setPinAndPop(BuildContext context, {String? popToId}) async {
-    final userNotifier = ref.read(userProvider.notifier);
-    userNotifier.setEmail(state.email);
-    userNotifier.setIsPinRegistered(true);
+    ref.read(userProvider.notifier)
+      ..setEmail(state.email)
+      ..setIsPinRegistered(value: true)
+      ..setWaitingAccessCode(value: false);
     ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
-    userNotifier.setWaitingAccessCode(false);
 
     if (popToId != null) {
-      Navigator.of(context).pushNamedAndRemoveUntil(popToId, ModalRoute.withName(popToId));
+      unawaited(Navigator.of(context).pushNamedAndRemoveUntil(popToId, ModalRoute.withName(popToId)));
     } else {
-      Navigator.of(context).pushNamedAndRemoveUntil(TabsScreen.id, (route) => false);
+      unawaited(Navigator.of(context).pushNamedAndRemoveUntil(TabsScreen.id, (route) => false));
     }
   }
 
@@ -371,10 +373,10 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
         localizedReason: 'Scan your fingerprint to authenticate',
       );
 
-      if (authenticated == true) {
+      if (authenticated) {
         final valid = await isBiometricValidated();
 
-        if (valid == true) {
+        if (valid) {
           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
           setPinTemp('');
           setConfirmPinTemp('');

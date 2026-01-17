@@ -1,10 +1,10 @@
 part of '../search_map_place.dart';
 
 class SearchMapPlaceWidget extends StatefulWidget {
-
   const SearchMapPlaceWidget({
     required this.apiKey,
-    required this.onSelected, this.placeholder,
+    required this.onSelected,
+    this.placeholder,
     this.icon = Icons.search,
     this.hasClearButton = true,
     this.clearIcon = Icons.clear,
@@ -17,10 +17,11 @@ class SearchMapPlaceWidget extends StatefulWidget {
     this.placeType,
     this.darkMode = false,
     this.key,
-  })  : assert((location == null && radius == null) ||
-            (location != null && radius != null),),
+  })  : assert(
+          (location == null && radius == null) || (location != null && radius != null),
+          'location and radius must both be null or both be non-null',
+        ),
         super(key: key);
-  // ignore: library_private_types_in_public_api
   @override
   // ignore: overridden_fields
   final Key? key;
@@ -80,8 +81,7 @@ class SearchMapPlaceWidget extends StatefulWidget {
   _SearchMapPlaceWidgetState createState() => _SearchMapPlaceWidgetState();
 }
 
-class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
-    with TickerProviderStateMixin {
+class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with TickerProviderStateMixin {
   final TextEditingController _textEditingController = TextEditingController();
   late AnimationController _animationController;
   // SearchContainer height.
@@ -103,8 +103,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   @override
   void initState() {
     geocode = Geocoding(apiKey: widget.apiKey, language: widget.language);
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     _containerHeight = Tween<double>(begin: 48, end: 420).animate(
       CurvedAnimation(
         curve: const Interval(0, 0.5, curve: Curves.easeInOut),
@@ -151,100 +150,98 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   */
   Widget _searchContainer({required Widget child}) {
     return AnimatedBuilder(
-        animation: _animationController,
-        builder: (context, _) {
-          return Container(
-            color: kWhiteColor,
-            height: _containerHeight.value as double?,
+      animation: _animationController,
+      builder: (context, _) {
+        return Container(
+          color: kWhiteColor,
+          height: _containerHeight.value as double?,
 //            decoration: _containerDecoration(),
-            child: Column(
-              children: <Widget>[
-                child,
-                if (_placePredictions.isNotEmpty)
-                  Opacity(
-                    opacity: _listOpacity.value,
-                    child: Column(
-                      children: <Widget>[
-                        for (final prediction in _placePredictions)
-                          _placeOption(Place.fromJSON(prediction, geocode)),
-                      ],
-                    ),
+          child: Column(
+            children: <Widget>[
+              child,
+              if (_placePredictions.isNotEmpty)
+                Opacity(
+                  opacity: _listOpacity.value,
+                  child: Column(
+                    children: <Widget>[
+                      for (final prediction in _placePredictions)
+                        _placeOption(Place.fromJSON(prediction as Map<String, dynamic>, geocode)),
+                    ],
                   ),
-              ],
-            ),
-          );
-        },);
+                ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _searchInput(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            CupertinoButton(
-              padding: const EdgeInsets.only(left: 5, right: 10),
-              onPressed: () => Navigator.of(context).pop(),
-              child: Image.asset('lib/images/backarrowgray.png'),
-            ),
-            Image.asset('lib/images/searchico.png'),
-            const SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: TextField(
-                controller: _textEditingController,
-                onSubmitted: (_) => _selectPlace(),
-                onEditingComplete: _selectPlace,
-                focusNode: _fn,
-                textAlignVertical: TextAlignVertical.center,
-                style: const TextStyle(
+        children: <Widget>[
+          CupertinoButton(
+            padding: const EdgeInsets.only(left: 5, right: 10),
+            onPressed: () => Navigator.of(context).pop(),
+            child: Image.asset('lib/images/backarrowgray.png'),
+          ),
+          Image.asset('lib/images/searchico.png'),
+          const SizedBox(
+            width: 10,
+          ),
+          Expanded(
+            child: TextField(
+              controller: _textEditingController,
+              onSubmitted: (_) => _selectPlace(),
+              onEditingComplete: _selectPlace,
+              focusNode: _fn,
+              textAlignVertical: TextAlignVertical.center,
+              style: const TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff606566),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.4099999964237213,
+              ),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.zero,
+                border: const OutlineInputBorder(borderSide: BorderSide.none),
+                enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+                focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+                hintText: widget.placeholder,
+                hintStyle: const TextStyle(
                   fontFamily: 'Lato',
-                  color: Color(0xff606566),
+                  color: kGrayColor,
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                   fontStyle: FontStyle.normal,
                   letterSpacing: -0.4099999964237213,
                 ),
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(0),
-                  border: const OutlineInputBorder(borderSide: BorderSide.none),
-                  enabledBorder:
-                      const OutlineInputBorder(borderSide: BorderSide.none),
-                  focusedBorder:
-                      const OutlineInputBorder(borderSide: BorderSide.none),
-                  hintText: widget.placeholder,
-                  hintStyle: const TextStyle(
-                    fontFamily: 'Lato',
-                    color: kGrayColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    letterSpacing: -0.4099999964237213,
-                  ),
-                ),
               ),
             ),
-            Container(width: 15),
-            if (widget.hasClearButton)
-              GestureDetector(
-                onTap: () {
-                  if (_crossFadeState == CrossFadeState.showSecond) {
-                    _textEditingController.clear();
-                  }
-                },
-                // child: Icon(_inputIcon, color: this.widget.iconColor),
-                child: AnimatedCrossFade(
-                  crossFadeState: _crossFadeState,
-                  duration: const Duration(milliseconds: 300),
-                  firstChild: Container(),
-                  secondChild: Icon(Icons.clear, color: widget.iconColor),
-                ),
+          ),
+          Container(width: 15),
+          if (widget.hasClearButton)
+            GestureDetector(
+              onTap: () {
+                if (_crossFadeState == CrossFadeState.showSecond) {
+                  _textEditingController.clear();
+                }
+              },
+              // child: Icon(_inputIcon, color: this.widget.iconColor),
+              child: AnimatedCrossFade(
+                crossFadeState: _crossFadeState,
+                duration: const Duration(milliseconds: 300),
+                firstChild: Container(),
+                secondChild: Icon(Icons.clear, color: widget.iconColor),
               ),
-            if (!widget.hasClearButton) Container(),
-          ],
-        ),
-      );
+            ),
+          if (!widget.hasClearButton) Container(),
+        ],
+      ),
+    );
   }
 
   Widget _placeOption(Place prediction) {
@@ -255,9 +252,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
       onPressed: () => _selectPlace(prediction: prediction),
       child: ListTile(
         title: Text(
-          place.length < 45
-              ? place
-              : "${place.replaceRange(45, place.length, "")} ...",
+          place.length < 45 ? place : "${place.replaceRange(45, place.length, "")} ...",
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.04,
             color: widget.darkMode ? Colors.grey[100] : Colors.grey[850],
@@ -313,7 +308,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
       _textEditingController.removeListener(_autocompletePlace);
 
       if (_currentInput.isEmpty) {
-        if (!_containerHeight.isDismissed) _closeSearch();
+        if (!_containerHeight.isDismissed) unawaited(_closeSearch());
         _textEditingController.addListener(_autocompletePlace);
         return;
       }
@@ -328,10 +323,15 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
         return;
       }
 
-      Future.delayed(const Duration(milliseconds: 500), () {
-        _textEditingController.addListener(_autocompletePlace);
-        if (_isEditing == true) _autocompletePlace();
-      });
+      unawaited(
+        Future.delayed(
+          const Duration(milliseconds: 500),
+          () {
+            _textEditingController.addListener(_autocompletePlace);
+            if (_isEditing) unawaited(_autocompletePlace());
+          },
+        ),
+      );
     }
   }
 
@@ -340,8 +340,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
     var url =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=${widget.apiKey}&language=${widget.language}';
     if (widget.location != null && widget.radius != null) {
-      url +=
-          '&location=${widget.location!.latitude},${widget.location!.longitude}&radius=${widget.radius}';
+      url += '&location=${widget.location!.latitude},${widget.location!.longitude}&radius=${widget.radius}';
       if (widget.strictBounds) {
         url += '&strictbounds';
       }
@@ -351,17 +350,16 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
     }
 
     final response = await http.get(Uri.parse(url));
-    final json = jsonDecode(response.body);
+    final json = jsonDecode(response.body) as Map<String, dynamic>;
 
     if (json['error_message'] != null) {
-      var error = json['error_message'];
+      var error = json['error_message'] as String;
       if (error == 'This API project is not authorized to use this API.') {
-        error +=
-            ' Make sure the Places API is activated on your Google Cloud Platform';
+        error += ' Make sure the Places API is activated on your Google Cloud Platform';
       }
       throw Exception(error);
     } else {
-      final predictions = json['predictions'];
+      final predictions = json['predictions'] as List<dynamic>;
       return predictions;
     }
   }
@@ -380,7 +378,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
     }
 
     // Makes animation
-    _closeSearch();
+    unawaited(_closeSearch());
 
     // Calls the `onSelected` callback
     if (prediction is Place) widget.onSelected(prediction);

@@ -6,9 +6,10 @@ import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
 class UnhideSecretModal extends ConsumerWidget {
-
   const UnhideSecretModal({
-    required this.onPressedDelete, required this.onPressedOk, super.key,
+    required this.onPressedDelete,
+    required this.onPressedOk,
+    super.key,
   });
   final void Function() onPressedDelete;
   final void Function() onPressedOk;
@@ -20,9 +21,8 @@ class UnhideSecretModal extends ConsumerWidget {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: width < 360
-          ? const EdgeInsets.symmetric(horizontal: 20)
-          : const EdgeInsets.symmetric(horizontal: 40),
+      insetPadding:
+          width < 360 ? const EdgeInsets.symmetric(horizontal: 20) : const EdgeInsets.symmetric(horizontal: 40),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: const BoxDecoration(
@@ -90,19 +90,18 @@ class UnhideSecretModal extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         onPressed: onPressedDelete,
                         child: Container(
                           height: 44,
                           decoration: BoxDecoration(
-                            border:
-                                Border.all(color: kSecondaryColor),
+                            border: Border.all(color: kSecondaryColor),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
                             child: Text(
                               s.no,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: const TextStyle(
                                 color: kSecondaryColor,
                                 fontWeight: FontWeight.w700,
@@ -118,7 +117,7 @@ class UnhideSecretModal extends ConsumerWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.zero,
                         onPressed: onPressedOk,
                         child: Container(
                           height: 44,
@@ -129,7 +128,7 @@ class UnhideSecretModal extends ConsumerWidget {
                           child: Center(
                             child: Text(
                               s.yes,
-                              textScaler: const TextScaler.linear(1),
+                              textScaler: TextScaler.noScaling,
                               style: kLoginButtonTextStyle,
                             ),
                           ),

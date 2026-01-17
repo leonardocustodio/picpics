@@ -21,10 +21,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(email) => "アクセスキーが ${email} に送信されました";
 
-  static String m1(howMany) => Intl.plural(howMany,
-      zero: '写真が選択されていません',
-      one: '1 枚の写真を選択しました',
-      other: '${howMany} 枚の写真を選択しました');
+  static String m1(howMany) =>
+      Intl.plural(howMany, zero: '写真が選択されていません', one: '1 枚の写真を選択しました', other: '${howMany} 枚の写真を選択しました');
 
   static String m2(url) => "すべての写真を整理するには、${url} にアクセスしてください";
 
@@ -35,8 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_multiple_tags": MessageLookupByLibrary.simpleMessage("複数のタグを追加"),
         "add_tag": MessageLookupByLibrary.simpleMessage("タグを付ける"),
         "add_tags": MessageLookupByLibrary.simpleMessage("タグを付ける"),
-        "aerospace_engineering_tag":
-            MessageLookupByLibrary.simpleMessage("航空宇宙工学"),
+        "aerospace_engineering_tag": MessageLookupByLibrary.simpleMessage("航空宇宙工学"),
         "aircraft_tag": MessageLookupByLibrary.simpleMessage("航空機"),
         "airliner_tag": MessageLookupByLibrary.simpleMessage("旅客機"),
         "airplane_tag": MessageLookupByLibrary.simpleMessage("飛行機"),
@@ -53,10 +50,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "picPicsで写真の整理を開始できるように、フォトライブラリにアクセスする必要があります。 データがデバイスから離れることがないことを心配しないでください！"),
         "asphalt_tag": MessageLookupByLibrary.simpleMessage("アスファルト"),
         "aurora_tag": MessageLookupByLibrary.simpleMessage("オーロラ"),
-        "auto_renewable_first_part":
-            MessageLookupByLibrary.simpleMessage("サブスクリプションは"),
-        "auto_renewable_second_part":
-            MessageLookupByLibrary.simpleMessage("自動更新可能。"),
+        "auto_renewable_first_part": MessageLookupByLibrary.simpleMessage("サブスクリプションは"),
+        "auto_renewable_second_part": MessageLookupByLibrary.simpleMessage("自動更新可能。"),
         "aviation_tag": MessageLookupByLibrary.simpleMessage("航空"),
         "baby_tag": MessageLookupByLibrary.simpleMessage("赤ちゃん"),
         "backpacking_tag": MessageLookupByLibrary.simpleMessage("バックパッキング"),
@@ -141,14 +136,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "community_tag": MessageLookupByLibrary.simpleMessage("コミュニティ"),
         "computer_tag": MessageLookupByLibrary.simpleMessage("コンピューター"),
         "concert_tag": MessageLookupByLibrary.simpleMessage("コンサート"),
-        "confirm_email":
-            MessageLookupByLibrary.simpleMessage("登録メールを確認してアクセスコードを受け取る"),
+        "confirm_email": MessageLookupByLibrary.simpleMessage("登録メールを確認してアクセスコードを受け取る"),
         "confirm_secret_key": MessageLookupByLibrary.simpleMessage("秘密の鍵を確認"),
         "construction_tag": MessageLookupByLibrary.simpleMessage("建設"),
         "continue_string": MessageLookupByLibrary.simpleMessage("続ける"),
         "cookie_tag": MessageLookupByLibrary.simpleMessage("クッキー"),
-        "cookware_and_bakeware_tag":
-            MessageLookupByLibrary.simpleMessage("調理器具と耐熱皿"),
+        "cookware_and_bakeware_tag": MessageLookupByLibrary.simpleMessage("調理器具と耐熱皿"),
         "cool_tag": MessageLookupByLibrary.simpleMessage("涼しい"),
         "cotton_tag": MessageLookupByLibrary.simpleMessage("コットン"),
         "couch_tag": MessageLookupByLibrary.simpleMessage("ソファー"),
@@ -167,13 +160,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "cycling_tag": MessageLookupByLibrary.simpleMessage("サイクリング"),
         "daily_challenge": MessageLookupByLibrary.simpleMessage("デイリーチャレンジ"),
         "daily_challenge_permission_description":
-            MessageLookupByLibrary.simpleMessage(
-                "デイリーチャレンジをお届けするには、ユーザーの通知受信の許可が必要です。そのため、携帯電話のオプションで通知受信を許可にしてください。"),
+            MessageLookupByLibrary.simpleMessage("デイリーチャレンジをお届けするには、ユーザーの通知受信の許可が必要です。そのため、携帯電話のオプションで通知受信を許可にしてください。"),
         "daily_goal": MessageLookupByLibrary.simpleMessage("デイリーゴール"),
-        "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It's time to complete your picPics daily challenge!"),
-        "daily_notification_title":
-            MessageLookupByLibrary.simpleMessage("Daily challenge"),
+        "daily_notification_description":
+            MessageLookupByLibrary.simpleMessage("It's time to complete your picPics daily challenge!"),
+        "daily_notification_title": MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "dalmatian_tag": MessageLookupByLibrary.simpleMessage("ダルメシアン"),
         "dam_tag": MessageLookupByLibrary.simpleMessage("ダム"),
         "dance_tag": MessageLookupByLibrary.simpleMessage("ダンス"),
@@ -182,14 +173,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "denim_tag": MessageLookupByLibrary.simpleMessage("デニム"),
         "desert_tag": MessageLookupByLibrary.simpleMessage("砂漠"),
         "desk_tag": MessageLookupByLibrary.simpleMessage("机"),
-        "device_has_no_pics": MessageLookupByLibrary.simpleMessage(
-            "このデバイスのギャラリーには写真がないため、タグ付けできる写真はありません。"),
+        "device_has_no_pics": MessageLookupByLibrary.simpleMessage("このデバイスのギャラリーには写真がないため、タグ付けできる写真はありません。"),
         "dinosaur_tag": MessageLookupByLibrary.simpleMessage("恐竜"),
         "disable_secret": MessageLookupByLibrary.simpleMessage("この写真を非表示しますか？"),
         "dog_tag": MessageLookupByLibrary.simpleMessage("犬"),
         "doily_tag": MessageLookupByLibrary.simpleMessage("ドイリー"),
-        "dont_ask_again":
-            MessageLookupByLibrary.simpleMessage("質問はもうしないでください。"),
+        "dont_ask_again": MessageLookupByLibrary.simpleMessage("質問はもうしないでください。"),
         "dragon_tag": MessageLookupByLibrary.simpleMessage("ドラゴン"),
         "drawer_tag": MessageLookupByLibrary.simpleMessage("引き出し"),
         "dress_tag": MessageLookupByLibrary.simpleMessage("ドレス"),
@@ -202,21 +191,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "email": MessageLookupByLibrary.simpleMessage("E メール"),
         "enable_faceid": MessageLookupByLibrary.simpleMessage("Face IDを有効にする"),
         "enable_fingerprint": MessageLookupByLibrary.simpleMessage("指紋を有効にする"),
-        "enable_irisscanner":
-            MessageLookupByLibrary.simpleMessage("アイリススキャナーを有効にする"),
-        "enable_touchid":
-            MessageLookupByLibrary.simpleMessage("Touch IDを有効にする"),
+        "enable_irisscanner": MessageLookupByLibrary.simpleMessage("アイリススキャナーを有効にする"),
+        "enable_touchid": MessageLookupByLibrary.simpleMessage("Touch IDを有効にする"),
         "event_tag": MessageLookupByLibrary.simpleMessage("イベント"),
-        "export_all_gallery":
-            MessageLookupByLibrary.simpleMessage("すべてのギャラリーをエクスポート"),
+        "export_all_gallery": MessageLookupByLibrary.simpleMessage("すべてのギャラリーをエクスポート"),
         "export_library": MessageLookupByLibrary.simpleMessage("ライブラリをエクスポート"),
         "eyelash_tag": MessageLookupByLibrary.simpleMessage("まつげ"),
         "factory_tag": MessageLookupByLibrary.simpleMessage("工場"),
         "family_tag": MessageLookupByLibrary.simpleMessage("家族"),
         "farm_tag": MessageLookupByLibrary.simpleMessage("ファーム"),
         "fast_food_tag": MessageLookupByLibrary.simpleMessage("ファストフード"),
-        "feedback_bug_report":
-            MessageLookupByLibrary.simpleMessage("フィードバックとバグレポート"),
+        "feedback_bug_report": MessageLookupByLibrary.simpleMessage("フィードバックとバグレポート"),
         "ferris_wheel_tag": MessageLookupByLibrary.simpleMessage("観覧車"),
         "fiction_tag": MessageLookupByLibrary.simpleMessage("フィクション"),
         "field_tag": MessageLookupByLibrary.simpleMessage("フィールド"),
@@ -236,20 +221,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "foods_tag": MessageLookupByLibrary.simpleMessage("食べ物"),
         "foot_tag": MessageLookupByLibrary.simpleMessage("足"),
         "forest_tag": MessageLookupByLibrary.simpleMessage("森林"),
-        "forgot_secret_key":
-            MessageLookupByLibrary.simpleMessage("秘密の鍵を忘れましたか？"),
+        "forgot_secret_key": MessageLookupByLibrary.simpleMessage("秘密の鍵を忘れましたか？"),
         "frigate_tag": MessageLookupByLibrary.simpleMessage("フリゲート"),
         "fruit_tag": MessageLookupByLibrary.simpleMessage("フルーツ"),
         "full_screen": MessageLookupByLibrary.simpleMessage("全画面表示"),
         "fun_tag": MessageLookupByLibrary.simpleMessage("楽しい"),
         "fur_tag": MessageLookupByLibrary.simpleMessage("毛皮"),
-        "gallery_access_permission":
-            MessageLookupByLibrary.simpleMessage("アクセス許可"),
+        "gallery_access_permission": MessageLookupByLibrary.simpleMessage("アクセス許可"),
         "gallery_access_permission_description":
-            MessageLookupByLibrary.simpleMessage(
-                "写真の整理を開始するには、写真にアクセスするための許可が必要です"),
-        "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
-            "写真を整理するにはフォトギャラリーにアクセスする必要があります"),
+            MessageLookupByLibrary.simpleMessage("写真の整理を開始するには、写真にアクセスするための許可が必要です"),
+        "gallery_access_reason": MessageLookupByLibrary.simpleMessage("写真を整理するにはフォトギャラリーにアクセスする必要があります"),
         "garden_tag": MessageLookupByLibrary.simpleMessage("庭園"),
         "gelato_tag": MessageLookupByLibrary.simpleMessage("ジェラート"),
         "gerbil_tag": MessageLookupByLibrary.simpleMessage("スナネズミ"),
@@ -296,8 +277,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "junk_tag": MessageLookupByLibrary.simpleMessage("ジャンク"),
         "kayak_tag": MessageLookupByLibrary.simpleMessage("カヤック"),
         "keep_asking": MessageLookupByLibrary.simpleMessage("質問を続ける"),
-        "keep_safe": MessageLookupByLibrary.simpleMessage(
-            "これで写真は picPics で安全になりました。カメラロールから削除しますか？"),
+        "keep_safe": MessageLookupByLibrary.simpleMessage("これで写真は picPics で安全になりました。カメラロールから削除しますか？"),
         "kitchen_tag": MessageLookupByLibrary.simpleMessage("キッチン"),
         "knitting_tag": MessageLookupByLibrary.simpleMessage("編み物"),
         "lake_tag": MessageLookupByLibrary.simpleMessage("湖"),
@@ -312,8 +292,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "lighthouse_tag": MessageLookupByLibrary.simpleMessage("灯台"),
         "lightning_tag": MessageLookupByLibrary.simpleMessage("ライトニング"),
         "lipstick_tag": MessageLookupByLibrary.simpleMessage("口紅"),
-        "lock_with_pin": MessageLookupByLibrary.simpleMessage(
-            "PIN パスコードを使用してプライベートな写真をロックします。"),
+        "lock_with_pin": MessageLookupByLibrary.simpleMessage("PIN パスコードを使用してプライベートな写真をロックします。"),
         "lock_your_photos": MessageLookupByLibrary.simpleMessage("写真をロックする"),
         "longboard_tag": MessageLookupByLibrary.simpleMessage("ロングボード"),
         "love_tag": MessageLookupByLibrary.simpleMessage("愛"),
@@ -356,25 +335,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "nightclub_tag": MessageLookupByLibrary.simpleMessage("ナイトクラブ"),
         "no": MessageLookupByLibrary.simpleMessage("いいえ"),
         "no_ads": MessageLookupByLibrary.simpleMessage("広告なし"),
-        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
-            "There are no more photos to organize."),
-        "no_previous_purchase":
-            MessageLookupByLibrary.simpleMessage("以前の購入はありません"),
-        "no_tagged_photos":
-            MessageLookupByLibrary.simpleMessage("タグ付けされた写真はまだありません"),
+        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage("There are no more photos to organize."),
+        "no_previous_purchase": MessageLookupByLibrary.simpleMessage("以前の購入はありません"),
+        "no_tagged_photos": MessageLookupByLibrary.simpleMessage("タグ付けされた写真はまだありません"),
         "no_tags_found": MessageLookupByLibrary.simpleMessage("タグが見つかりません"),
-        "no_valid_subscription":
-            MessageLookupByLibrary.simpleMessage("有効なサブスクリプション購入が見つかりませんでした。"),
+        "no_valid_subscription": MessageLookupByLibrary.simpleMessage("有効なサブスクリプション購入が見つかりませんでした。"),
         "notification_time": MessageLookupByLibrary.simpleMessage("通知時間"),
         "notifications": MessageLookupByLibrary.simpleMessage("通知"),
         "ny_tag": MessageLookupByLibrary.simpleMessage("NY"),
         "odometer_tag": MessageLookupByLibrary.simpleMessage("オドメーター"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "open_gallery": MessageLookupByLibrary.simpleMessage("ギャラリーを開く"),
-        "organized_photos_description":
-            MessageLookupByLibrary.simpleMessage("タグ付けされている写真"),
-        "organized_photos_title":
-            MessageLookupByLibrary.simpleMessage("整理された写真"),
+        "organized_photos_description": MessageLookupByLibrary.simpleMessage("タグ付けされている写真"),
+        "organized_photos_title": MessageLookupByLibrary.simpleMessage("整理された写真"),
         "outerwear_tag": MessageLookupByLibrary.simpleMessage("アウター"),
         "palace_tag": MessageLookupByLibrary.simpleMessage("宮殿"),
         "paper_tag": MessageLookupByLibrary.simpleMessage("論文"),
@@ -391,16 +364,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "pets_tag": MessageLookupByLibrary.simpleMessage("ペット"),
         "pho_tag": MessageLookupByLibrary.simpleMessage("フォー"),
         "photo_gallery_count": m1,
-        "photo_gallery_description":
-            MessageLookupByLibrary.simpleMessage("写真はまだ整理されていません"),
+        "photo_gallery_description": MessageLookupByLibrary.simpleMessage("写真はまだ整理されていません"),
         "photo_gallery_title": MessageLookupByLibrary.simpleMessage("フォトギャラリー"),
         "photo_location": MessageLookupByLibrary.simpleMessage("写真の場所"),
-        "photos_always_organized":
-            MessageLookupByLibrary.simpleMessage("これでいつでも写真が整理されます"),
+        "photos_always_organized": MessageLookupByLibrary.simpleMessage("これでいつでも写真が整理されます"),
         "piano_tag": MessageLookupByLibrary.simpleMessage("ピアノ"),
         "picnic_tag": MessageLookupByLibrary.simpleMessage("ピクニック"),
-        "picpics_photo_manager":
-            MessageLookupByLibrary.simpleMessage("picPics - フォトマネージャー"),
+        "picpics_photo_manager": MessageLookupByLibrary.simpleMessage("picPics - フォトマネージャー"),
         "pie_tag": MessageLookupByLibrary.simpleMessage("パイ"),
         "pier_tag": MessageLookupByLibrary.simpleMessage("橋脚"),
         "pillow_tag": MessageLookupByLibrary.simpleMessage("枕"),
@@ -424,8 +394,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "private_photos": MessageLookupByLibrary.simpleMessage("プライベート写真"),
         "product_tag": MessageLookupByLibrary.simpleMessage("製品"),
         "prom_tag": MessageLookupByLibrary.simpleMessage("ダンスパーティー"),
-        "protect_with_encryption": MessageLookupByLibrary.simpleMessage(
-            "PIN パスワードでのみアクセスできる暗号化でパーソナルな写真を保護します。"),
+        "protect_with_encryption": MessageLookupByLibrary.simpleMessage("PIN パスワードでのみアクセスできる暗号化でパーソナルな写真を保護します。"),
         "quilting_tag": MessageLookupByLibrary.simpleMessage("キルティング"),
         "race_tag": MessageLookupByLibrary.simpleMessage("人種"),
         "racing_tag": MessageLookupByLibrary.simpleMessage("レーシング"),
@@ -469,11 +438,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "scuba_diving_tag": MessageLookupByLibrary.simpleMessage("スキューバダイビング"),
         "seal_tag": MessageLookupByLibrary.simpleMessage("密閉する"),
         "search": MessageLookupByLibrary.simpleMessage("検索..."),
-        "search_all_tags_not_found":
-            MessageLookupByLibrary.simpleMessage("すべてのタグが付いた画像は見つかりませんでした"),
+        "search_all_tags_not_found": MessageLookupByLibrary.simpleMessage("すべてのタグが付いた画像は見つかりませんでした"),
         "search_results": MessageLookupByLibrary.simpleMessage("結果を検索"),
-        "secret_key_created":
-            MessageLookupByLibrary.simpleMessage("秘密の鍵が正常に作成されました！"),
+        "secret_key_created": MessageLookupByLibrary.simpleMessage("秘密の鍵が正常に作成されました！"),
         "secret_photos": MessageLookupByLibrary.simpleMessage("秘密の写真"),
         "selfie_tag": MessageLookupByLibrary.simpleMessage("セルフィー"),
         "selfies_tag": MessageLookupByLibrary.simpleMessage("自撮り"),
@@ -481,8 +448,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "share_with_friends": MessageLookupByLibrary.simpleMessage("友だちとシェア"),
         "shelf_tag": MessageLookupByLibrary.simpleMessage("棚"),
         "shell_tag": MessageLookupByLibrary.simpleMessage("シェル"),
-        "shetland_sheepdog_tag":
-            MessageLookupByLibrary.simpleMessage("シェットランドシープドッグ"),
+        "shetland_sheepdog_tag": MessageLookupByLibrary.simpleMessage("シェットランドシープドッグ"),
         "shikoku_tag": MessageLookupByLibrary.simpleMessage("四国"),
         "shipwreck_tag": MessageLookupByLibrary.simpleMessage("難破船"),
         "shoe_tag": MessageLookupByLibrary.simpleMessage("靴"),
@@ -543,8 +509,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "swing_tag": MessageLookupByLibrary.simpleMessage("スイング"),
         "tablecloth_tag": MessageLookupByLibrary.simpleMessage("テーブルクロス"),
         "tableware_tag": MessageLookupByLibrary.simpleMessage("食器"),
-        "tag_multiple_photos_at_once":
-            MessageLookupByLibrary.simpleMessage("一度に複数の写真にタグを付ける"),
+        "tag_multiple_photos_at_once": MessageLookupByLibrary.simpleMessage("一度に複数の写真にタグを付ける"),
         "take_a_look": MessageLookupByLibrary.simpleMessage("このアプリを見てください！"),
         "take_a_look_description": m2,
         "tattoo_tag": MessageLookupByLibrary.simpleMessage("入れ墨"),
@@ -574,30 +539,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "tsqr_tag": MessageLookupByLibrary.simpleMessage("タイムズスクエア"),
         "tubing_tag": MessageLookupByLibrary.simpleMessage("チュービング"),
         "turtle_tag": MessageLookupByLibrary.simpleMessage("カメ"),
-        "tutorial_daily_package": MessageLookupByLibrary.simpleMessage(
-            "ライブラリは徐々に整理できるよう、デイリーパッケージをお届けします。"),
-        "tutorial_however_you_want": MessageLookupByLibrary.simpleMessage(
-            "「家族」、「ペット」など、好きなタグを付けて写真を整理できます。"),
-        "tutorial_just_swipe": MessageLookupByLibrary.simpleMessage(
-            "写真にタグを付けた後はスワイプするだけで次の写真に移動できます。"),
-        "tutorial_multiselect": MessageLookupByLibrary.simpleMessage(
-            "写真を「タップアンドホールド」して、一度に複数の写真にタグを付けることができます。"),
-        "tutorial_secret": MessageLookupByLibrary.simpleMessage(
-            "ピンコード保護でプライベート写真を非表示にし、安全に保ちます。"),
+        "tutorial_daily_package": MessageLookupByLibrary.simpleMessage("ライブラリは徐々に整理できるよう、デイリーパッケージをお届けします。"),
+        "tutorial_however_you_want": MessageLookupByLibrary.simpleMessage("「家族」、「ペット」など、好きなタグを付けて写真を整理できます。"),
+        "tutorial_just_swipe": MessageLookupByLibrary.simpleMessage("写真にタグを付けた後はスワイプするだけで次の写真に移動できます。"),
+        "tutorial_multiselect": MessageLookupByLibrary.simpleMessage("写真を「タップアンドホールド」して、一度に複数の写真にタグを付けることができます。"),
+        "tutorial_secret": MessageLookupByLibrary.simpleMessage("ピンコード保護でプライベート写真を非表示にし、安全に保ちます。"),
         "tuxedo_tag": MessageLookupByLibrary.simpleMessage("タキシード"),
         "twig_tag": MessageLookupByLibrary.simpleMessage("小枝"),
         "umbrella_tag": MessageLookupByLibrary.simpleMessage("傘"),
         "underwater_tag": MessageLookupByLibrary.simpleMessage("水中"),
         "unicycle_tag": MessageLookupByLibrary.simpleMessage("一輪車"),
-        "unlimited_private_pics":
-            MessageLookupByLibrary.simpleMessage("無制限のプライベート写真"),
+        "unlimited_private_pics": MessageLookupByLibrary.simpleMessage("無制限のプライベート写真"),
         "vacation_tag": MessageLookupByLibrary.simpleMessage("休暇"),
         "van_tag": MessageLookupByLibrary.simpleMessage("ヴァン"),
         "vegetable_tag": MessageLookupByLibrary.simpleMessage("野菜"),
         "vehicle_tag": MessageLookupByLibrary.simpleMessage("車両"),
         "veil_tag": MessageLookupByLibrary.simpleMessage("ベール"),
-        "view_hidden_photos": MessageLookupByLibrary.simpleMessage(
-            "非表示の写真を表示するには、アプリケーションの設定でロックを解除してください。ロックの解除はお持ちのPIN\nで行うことができます。"),
+        "view_hidden_photos":
+            MessageLookupByLibrary.simpleMessage("非表示の写真を表示するには、アプリケーションの設定でロックを解除してください。ロックの解除はお持ちのPIN\nで行うことができます。"),
         "volcano_tag": MessageLookupByLibrary.simpleMessage("火山"),
         "wakeboarding_tag": MessageLookupByLibrary.simpleMessage("ウェイクボード"),
         "wall_tag": MessageLookupByLibrary.simpleMessage("壁"),

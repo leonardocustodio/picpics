@@ -3,13 +3,17 @@ import 'package:picpics/constants.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
-class SecretSwitch extends StatefulWidget {
+/// Callback type for secret switch value changes
+typedef SecretSwitchCallback = void Function({required bool value});
 
+class SecretSwitch extends StatefulWidget {
   const SecretSwitch({
-    required this.value, required this.onChanged, super.key,
+    required this.value,
+    required this.onChanged,
+    super.key,
   });
   final bool value;
-  final Function onChanged;
+  final SecretSwitchCallback onChanged;
 
   @override
   SecretSwitchState createState() => SecretSwitchState();
@@ -44,11 +48,10 @@ class SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
     return Stack(
       children: [
         CupertinoSwitch(
-          value: widget
-              .value, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
+          value: widget.value, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
           activeTrackColor: kYellowColor,
           onChanged: (value) {
-            widget.onChanged(value);
+            widget.onChanged(value: value);
           },
         ),
         CustomAnimationBuilder<double>(

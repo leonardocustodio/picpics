@@ -4,15 +4,14 @@ import 'package:picpics/model/tag_model.dart';
 import 'package:picpics/utils/helpers.dart';
 
 class AllTagsState {
-  final Map<String, TagModel> selectedTags;
-  final Map<String, TagModel> searchedTags;
-  final String searchedText;
-
   AllTagsState({
     this.selectedTags = const {},
     this.searchedTags = const {},
     this.searchedText = '',
   });
+  final Map<String, TagModel> selectedTags;
+  final Map<String, TagModel> searchedTags;
+  final String searchedText;
 
   AllTagsState copyWith({
     Map<String, TagModel>? selectedTags,
@@ -28,9 +27,8 @@ class AllTagsState {
 }
 
 class AllTagsNotifier extends StateNotifier<AllTagsState> {
-  final Ref ref;
-
   AllTagsNotifier(this.ref) : super(AllTagsState());
+  final Ref ref;
 
   void setSearchedText(String text) {
     state = state.copyWith(searchedText: text.trim());
@@ -46,7 +44,7 @@ class AllTagsNotifier extends StateNotifier<AllTagsState> {
       doCustomisedSearching(
         tagModel,
         listOfLetters,
-        (matched) {
+        ({required bool matched}) {
           if (matched) {
             searched[key] = tagModel;
           }

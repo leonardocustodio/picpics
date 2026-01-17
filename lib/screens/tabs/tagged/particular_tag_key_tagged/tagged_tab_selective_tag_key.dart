@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/providers/language_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key_grid.dart';
 import 'package:picpics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_option_bar.dart';
@@ -12,7 +12,6 @@ import 'package:picpics/widgets/device_no_pics.dart';
 import 'package:picpics/widgets/percentage_dialog.dart';
 import 'package:picpics/widgets/select_all_widget.dart';
 
-// ignore: must_be_immutable
 class TaggedTabSelectiveTagKey extends ConsumerWidget {
   const TaggedTabSelectiveTagKey(this.tagKey, {super.key});
   final String tagKey;
@@ -41,16 +40,15 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
           shadowColor: Colors.transparent,
           foregroundColor: Colors.black,
           actions: [
-            if (taggedState.multiPicBar &&
-                taggedState.selectedMultiBarPics.isNotEmpty)
+            if (taggedState.multiPicBar && taggedState.selectedMultiBarPics.isNotEmpty)
               CupertinoButton(
                 padding: const EdgeInsets.only(right: 10),
                 onPressed: () async {
                   await ref.read(taggedProvider.notifier).untagPicsFromTag(
-                      tagKeyMapToPicId: <String, Map<String, String>>{
-                        tagKey: taggedState.selectedMultiBarPics
-                            .map((key, _) => MapEntry(key, '')),
-                      },);
+                    tagKeyMapToPicId: <String, Map<String, String>>{
+                      tagKey: taggedState.selectedMultiBarPics.map((key, _) => MapEntry(key, '')),
+                    },
+                  );
                 },
                 child: const Text('Untag'),
               ),
@@ -83,7 +81,7 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
           child: SafeArea(
             child: Builder(
               builder: (context) {
-                if (taggedState.isTaggedPicsLoaded == false) {
+                if (!taggedState.isTaggedPicsLoaded) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
@@ -91,8 +89,7 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
                   ///
                   /// Device has pics
                   ///
-                  final hasTaggedPics =
-                      taggedState.taggedPicId[tagKey]?.isNotEmpty ?? false;
+                  final hasTaggedPics = taggedState.taggedPicId[tagKey]?.isNotEmpty ?? false;
                   if (hasTaggedPics) {
                     ///
                     /// Tagged Pics are available
@@ -114,24 +111,23 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
                             children: [
                               if (taggedState.multiPicBar)
                                 GestureDetector(
-                                    onTap: () {
-                                      final taggedNotifier = ref.read(taggedProvider.notifier);
-                                      if (isSelected) {
-                                        for (final picId in taggedState
-                                            .taggedPicId[tagKey]!.keys) {
-                                          taggedNotifier.removeSelectedMultiBarPic(picId);
-                                        }
-                                      } else {
-                                        for (final picId in taggedState
-                                            .taggedPicId[tagKey]!.keys) {
-                                          taggedNotifier.addSelectedMultiBarPic(picId);
-                                        }
-                                      }
-                                    },
-                                    child: SelectAllWidget(
-                                        isSelected: isSelected,),),
+                                  onTap: () {
+                                    final taggedNotifier = ref.read(taggedProvider.notifier);
+                                    if (isSelected) {
+                                      taggedState.taggedPicId[tagKey]!.keys
+                                          .forEach(taggedNotifier.removeSelectedMultiBarPic);
+                                    } else {
+                                      taggedState.taggedPicId[tagKey]!.keys
+                                          .forEach(taggedNotifier.addSelectedMultiBarPic);
+                                    }
+                                  },
+                                  child: SelectAllWidget(
+                                    isSelected: isSelected,
+                                  ),
+                                ),
                               Expanded(
-                                  child: TaggedTabSelectiveTagKeyGrid(tagKey),),
+                                child: TaggedTabSelectiveTagKeyGrid(tagKey),
+                              ),
                             ],
                           ),
                         ),
@@ -144,12 +140,14 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
                   /// No Pics Tagged
                   ///
                   return DeviceHasNoPics(
-                      message: s.no_photos_were_tagged,);
+                    message: s.no_photos_were_tagged,
+                  );
                 }
 
                 /// Device has no Pics
                 return DeviceHasNoPics(
-                    message: s.device_has_no_pics,);
+                  message: s.device_has_no_pics,
+                );
               },
             ),
           ),

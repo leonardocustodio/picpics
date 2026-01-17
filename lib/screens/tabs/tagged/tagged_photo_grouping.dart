@@ -1,16 +1,18 @@
 // ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
 
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picpics/providers/blur_hash_provider.dart';
-import 'package:picpics/providers/tagged_provider.dart';
+import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key.dart';
-import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/photo_widget.dart';
 
@@ -58,12 +60,10 @@ class TaggedPhotosGrouping extends ConsumerWidget {
       },
       itemBuilder: (_, int index) {
         final tagKey = taggedKeys[index];
-        final showingPicId =
-            taggedState.taggedPicId[taggedKeys[index]]?.keys.last;
+        final showingPicId = taggedState.taggedPicId[taggedKeys[index]]?.keys.last;
 
         final blurHash = blurHashState.blurHash[showingPicId];
-        final ignore = tagsState.isSearching &&
-            tagsState.selectedFilteringTagsKeys[tagKey] == null;
+        final ignore = tagsState.isSearching && tagsState.selectedFilteringTagsKeys[tagKey] == null;
         AppLogger.d('$ignore');
 
         return IgnorePointer(
@@ -72,9 +72,11 @@ class TaggedPhotosGrouping extends ConsumerWidget {
             opacity: ignore ? 0.3 : 1.0,
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => TaggedTabSelectiveTagKey(tagKey),
+                unawaited(
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => TaggedTabSelectiveTagKey(tagKey),
+                    ),
                   ),
                 );
               },
@@ -120,16 +122,16 @@ class TaggedPhotosGrouping extends ConsumerWidget {
                                 margin: const EdgeInsets.only(top: 5),
                                 child: AutoSizeText.rich(
                                   TextSpan(
-                                      text: tagsState.allTags[tagKey]?.title ?? '',
-                                      style: const TextStyle(
-                                        color: Colors.black,
+                                    text: tagsState.allTags[tagKey]?.title ?? '',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: ' (${taggedState.taggedPicId[tagKey]?.keys.length ?? 0})',
                                       ),
-                                      children: [
-                                        TextSpan(
-                                          text:
-                                              ' (${taggedState.taggedPicId[tagKey]?.keys.length ?? 0})',
-                                        ),
-                                      ],),
+                                    ],
+                                  ),
                                   maxFontSize: 20,
                                   minFontSize: 5,
                                   maxLines: 1,
@@ -144,8 +146,7 @@ class TaggedPhotosGrouping extends ConsumerWidget {
                           Positioned(
                             left: 6,
                             top: 6,
-                            child:
-                                Image.asset('lib/images/staryellowico.png'),
+                            child: Image.asset('lib/images/staryellowico.png'),
                           ),
                         if (picStore?.state.isPrivate ?? false)
                           Positioned(
@@ -169,7 +170,8 @@ class TaggedPhotosGrouping extends ConsumerWidget {
                                 ),
                               ),
                               child: Image.asset(
-                                  'lib/images/smallwhitelock.png',),
+                                'lib/images/smallwhitelock.png',
+                              ),
                             ),
                           ),
                       ],

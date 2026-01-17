@@ -1,7 +1,6 @@
 part of '../search_map_place.dart';
 
 class Place {
-
   Place(
     this.geocode, {
     this.description = '',
@@ -9,14 +8,14 @@ class Place {
     this.types,
   });
 
-  Place.fromJSON(dynamic place, this.geocode) {
+  Place.fromJSON(Map<String, dynamic> place, this.geocode) {
     try {
       description = place['description'] as String;
       placeId = place['place_id'] as String?;
       types = place['types'] as List<dynamic>?;
       fullJSON = place;
-    } catch (e) {
-      AppLogger.d('The argument you passed for Place is not compatible.');
+    } on Exception catch (e) {
+      AppLogger.d('The argument you passed for Place is not compatible: $e');
     }
   }
   Geocoding geocode;
@@ -28,11 +27,11 @@ class Place {
   String? placeId;
 
   /// Contains an array of types that apply to this place. For example:
-  /// ```
+  /// ```dart
   /// [ "political", "locality" ]
   /// ```
   /// or
-  /// ```
+  /// ```dart
   /// [ "establishment", "geocode", "beauty_salon" ]
   /// ```
   /// The array can contain multiple values. Learn more about [Place types](https://developers.google.com/places/web-service/supported_types).
@@ -41,10 +40,10 @@ class Place {
   /// Has the full JSON response received from the Places API. Can be used to extract extra information. More info on the [Places Autocomplete API documentation](https://developers.google.com/places/web-service/autocomplete)
   ///
   /// All of its information can be accessed like a regular [Map]. For example:
-  /// ```
+  /// ```dart
   /// fullJSON["structured_formating"]["main_text"]
   /// ```
-  dynamic fullJSON;
+  Map<String, dynamic>? fullJSON;
 
   Geolocation? _geolocation;
 

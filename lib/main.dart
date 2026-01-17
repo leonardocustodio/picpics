@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:background_fetch/background_fetch.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -12,6 +14,7 @@ import 'package:picpics/generated/l10n.dart' as lang;
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/managers/widget_manager.dart';
 import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/login_screen.dart';
@@ -23,7 +26,7 @@ import 'package:picpics/utils/app_logger.dart';
 Future<void> backgroundFetchHeadlessTask(String taskId) async {
   AppLogger.d('[BackgroundFetch] Headless event received.');
   await WidgetManager.sendAndUpdate();
-  BackgroundFetch.finish(taskId);
+  unawaited(BackgroundFetch.finish(taskId));
 }
 
 void main() async {
@@ -38,17 +41,16 @@ void main() async {
   );
 
   FlutterError.onError = (errorDetails) {
-    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    unawaited(FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails));
   };
 
   PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    unawaited(FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
     return true;
   };
 
   // Set up Home Widget
-  final setAppGroup =
-      await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
+  final setAppGroup = await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
   AppLogger.d('Has setted app group: $setAppGroup');
 
   await BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
@@ -67,8 +69,7 @@ class PicPicsApp extends ConsumerStatefulWidget {
   ConsumerState<PicPicsApp> createState() => _PicPicsAppState();
 }
 
-class _PicPicsAppState extends ConsumerState<PicPicsApp>
-    with WidgetsBindingObserver {
+class _PicPicsAppState extends ConsumerState<PicPicsApp> with WidgetsBindingObserver {
   String initialRoute = LoginScreen.id;
   bool _initialized = false;
 
@@ -77,10 +78,10 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    unawaited(SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]));
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
-    _initializeApp();
+    unawaited(_initializeApp());
   }
 
   Future<void> _initializeApp() async {
@@ -114,11 +115,29 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       AppLogger.d('&&&& Here lifecycle!');
-      WidgetManager.sendAndUpdate();
+      unawaited(WidgetManager.sendAndUpdate());
     }
 
     if (state == AppLifecycleState.resumed) {
       AppLogger.d('&&&&&&&&& App got back from background');
+      unawaited(_handleAppResume());
+    }
+  }
+
+  Future<void> _handleAppResume() async {
+    final hadPermissionBefore = ref.read(userProvider).hasGalleryPermission;
+
+    // Re-check gallery permission in case user granted it from system dialog
+    await ref.read(userProvider.notifier).checkGalleryPermissions();
+
+    final hasPermissionNow = ref.read(userProvider).hasGalleryPermission;
+
+    // If permission was just granted, load the gallery assets
+    if (!hadPermissionBefore && hasPermissionNow) {
+      AppLogger.i('[Main] Permission granted after resume, loading assets...');
+      // Import needed at top of file
+      final tabsNotifier = ref.read(tabsProvider.notifier);
+      await tabsNotifier.loadAssetPath();
     }
   }
 
@@ -136,8 +155,6 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp>
 
     final userState = ref.watch(userProvider);
 
-    // Removed verbose build logs to prevent log spam
-
     return MaterialApp(
       navigatorKey: NavigationService.navigatorKey,
       localizationsDelegates: const [
@@ -151,18 +168,18 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp>
       initialRoute: initialRoute,
       navigatorObservers: [Analytics.observer],
       routes: {
-        AllTagsScreen.id: (context) => AllTagsScreen(),
+        AllTagsScreen.id: (context) => const AllTagsScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         TabsScreen.id: (context) => const TabsScreen(),
-        PhotoScreen.id: (context) => PhotoScreen(
+        PhotoScreen.id: (context) => const PhotoScreen(
               picId: '',
-              picIdList: const <String>[],
+              picIdList: <String>[],
             ),
         SettingsScreen.id: (context) => const SettingsScreen(),
         AddLocationScreen.id: (context) => const AddLocationScreen(null),
-        PinScreen.id: (context) => PinScreen(),
+        PinScreen.id: (context) => const PinScreen(),
         EmailScreen.id: (context) => const EmailScreen(),
-        AccessCodeScreen.id: (context) => AccessCodeScreen(),
+        AccessCodeScreen.id: (context) => const AccessCodeScreen(),
       },
     );
   }

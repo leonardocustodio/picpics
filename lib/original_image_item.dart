@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class OriginalImageItem extends StatelessWidget {
-
   const OriginalImageItem({
-    required this.backgroundColor, super.key,
+    required this.backgroundColor,
+    super.key,
     this.entity,
     this.size = 64,
     this.fit = BoxFit.cover,
@@ -19,12 +19,15 @@ class OriginalImageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Uint8List?>(
-      future: entity!.thumbnailDataWithSize(ThumbnailSize(
-          entity!.size.width.toInt(), entity!.size.height.toInt(),),),
+      future: entity!.thumbnailDataWithSize(
+        ThumbnailSize(
+          entity!.size.width.toInt(),
+          entity!.size.height.toInt(),
+        ),
+      ),
       builder: (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {
         final futureData = snapshot.data;
-        if (snapshot.connectionState == ConnectionState.done &&
-            futureData != null) {
+        if (snapshot.connectionState == ConnectionState.done && futureData != null) {
           return _buildImageItem(context, futureData);
         }
 

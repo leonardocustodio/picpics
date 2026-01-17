@@ -2,15 +2,14 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:picpics/database/app_database.dart';
 
 class PrivatePhotosState {
-  final bool showPrivate;
-  final List<String> privatePhotoIds;
-  final Map<String, String> privateMap;
-
   PrivatePhotosState({
     this.showPrivate = false,
     this.privatePhotoIds = const [],
     this.privateMap = const {},
   });
+  final bool showPrivate;
+  final List<String> privatePhotoIds;
+  final Map<String, String> privateMap;
 
   PrivatePhotosState copyWith({
     bool? showPrivate,
@@ -32,7 +31,7 @@ class PrivatePhotosNotifier extends StateNotifier<PrivatePhotosState> {
     state = state.copyWith(showPrivate: !state.showPrivate);
   }
 
-  void setShowPrivate(bool value) {
+  void setShowPrivate({required bool value}) {
     state = state.copyWith(showPrivate: value);
   }
 
@@ -45,10 +44,8 @@ class PrivatePhotosNotifier extends StateNotifier<PrivatePhotosState> {
   }
 
   void removePrivatePhoto(String photoId) {
-    final photos = List<String>.from(state.privatePhotoIds);
-    photos.remove(photoId);
-    final map = Map<String, String>.from(state.privateMap);
-    map.remove(photoId);
+    final photos = List<String>.from(state.privatePhotoIds)..remove(photoId);
+    final map = Map<String, String>.from(state.privateMap)..remove(photoId);
     state = state.copyWith(privatePhotoIds: photos, privateMap: map);
   }
 

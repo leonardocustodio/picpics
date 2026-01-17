@@ -4,9 +4,26 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:picpics/database/app_database.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 /// Tagged photos state for managing tagged photo collections
 class TaggedState {
+  const TaggedState({
+    required this.expandableController,
+    required this.expandablePaddingController,
+    this.bottomOptionsBar = 0,
+    this.taggedPicId = const {},
+    this.allTaggedPicIdList = const {},
+    this.picWiseTags = const {},
+    this.isTaggedPicsLoaded = false,
+    this.multiPicBar = false,
+    this.multiTagSheet = false,
+    this.toggleIndexTagged = 1,
+    this.selectedMultiBarPics = const {},
+    this.isScrolling = false,
+    this.hideTitleThirdTab = false,
+    this.allTaggedPicDateWiseList = const [],
+  });
   final int bottomOptionsBar;
 
   /// Map of tagKey to map of picId
@@ -27,23 +44,6 @@ class TaggedState {
 
   final bool hideTitleThirdTab;
   final List<dynamic> allTaggedPicDateWiseList;
-
-  const TaggedState({
-    this.bottomOptionsBar = 0,
-    this.taggedPicId = const {},
-    this.allTaggedPicIdList = const {},
-    this.picWiseTags = const {},
-    this.isTaggedPicsLoaded = false,
-    this.multiPicBar = false,
-    this.multiTagSheet = false,
-    required this.expandableController,
-    required this.expandablePaddingController,
-    this.toggleIndexTagged = 1,
-    this.selectedMultiBarPics = const {},
-    this.isScrolling = false,
-    this.hideTitleThirdTab = false,
-    this.allTaggedPicDateWiseList = const [],
-  });
 
   TaggedState copyWith({
     int? bottomOptionsBar,
@@ -84,10 +84,12 @@ class TaggedState {
 /// Manages tagged photo collections, multi-selection, and photo operations
 class TaggedNotifier extends StateNotifier<TaggedState> {
   TaggedNotifier()
-      : super(TaggedState(
-          expandableController: ExpandableController(initialExpanded: false),
-          expandablePaddingController: ExpandableController(initialExpanded: false),
-        ));
+      : super(
+          TaggedState(
+            expandableController: ExpandableController(initialExpanded: false),
+            expandablePaddingController: ExpandableController(initialExpanded: false),
+          ),
+        );
 
   final AppDatabase _database = AppDatabase();
 
@@ -99,7 +101,7 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
   late ScrollController scrollControllerThirdTab;
   double offsetThirdTab = 0;
 
-  void setMultiPicBar(bool value) {
+  void setMultiPicBar({required bool value}) {
     state = state.copyWith(multiPicBar: value);
   }
 
@@ -110,12 +112,12 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
     );
   }
 
-  void setMultiTagSheet(bool value) {
+  void setMultiTagSheet({required bool value}) {
     state = state.copyWith(multiTagSheet: value);
   }
 
   void tagAction() {
-    setMultiTagSheet(true);
+    setMultiTagSheet(value: true);
     Future.delayed(const Duration(milliseconds: 200), () {
       state.expandableController.expanded = true;
     });
@@ -147,7 +149,7 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
     return true;
   }
 
-  void setHideTitleThirdTab(bool value) {
+  void setHideTitleThirdTab({required bool value}) {
     if (value == state.hideTitleThirdTab) {
       return;
     }
@@ -160,9 +162,9 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
         : scrollControllerThirdTab.initialScrollOffset;
 
     if (offset >= 40) {
-      setHideTitleThirdTab(true);
+      setHideTitleThirdTab(value: true);
     } else if (offset <= 0) {
-      setHideTitleThirdTab(false);
+      setHideTitleThirdTab(value: false);
     }
 
     if (scrollControllerThirdTab.hasClients) {
@@ -170,7 +172,7 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
     }
   }
 
-  void setIsScrolling(bool value) {
+  void setIsScrolling({required bool value}) {
     state = state.copyWith(isScrolling: value);
   }
 
@@ -291,15 +293,14 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
   }
 
   void removeSelectedMultiBarPic(String picId) {
-    final newSelected = Map<String, bool>.from(state.selectedMultiBarPics);
-    newSelected.remove(picId);
+    final newSelected = Map<String, bool>.from(state.selectedMultiBarPics)..remove(picId);
     state = state.copyWith(selectedMultiBarPics: newSelected);
   }
 
   Future<void> untagPicsFromTag({
     required Map<String, Map<String, String>> tagKeyMapToPicId,
   }) async {
-    // TODO: Implement untagPicsFromTag - requires AppDatabase API update
+    // TODO(picpics): Implement untagPicsFromTag - requires AppDatabase API update
     // This method should remove specified tags from photos in the database
     // For now, just refresh to avoid compilation errors
     await refreshTaggedPhotos();
@@ -319,8 +320,9 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
       if (scrollControllerThirdTab.hasClients) {
         scrollControllerThirdTab.dispose();
       }
-    } catch (e) {
+    } on Exception catch (e) {
       // scrollControllerThirdTab was never initialized, skip disposal
+      AppLogger.d('Dispose skipped: $e');
     }
     super.dispose();
   }
