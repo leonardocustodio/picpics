@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:picpics/components/circular_menu_item.dart';
 
 class CircularMenu extends StatefulWidget {
-  /// creates a circular menu with specific [radius] and [alignment] .
-  /// [toggleButtonElevation] ,[toggleButtonPadding] and [toggleButtonMargin] must be
+  /// Creates a circular menu with specific [radius] and [alignment].
+  /// [toggleButtonPadding] and [toggleButtonMargin] must be
   /// equal or greater than zero.
-  /// [items] must not be null and it must contains two elements at least.
+  /// [items] must not be null and it must contain two elements at least.
   const CircularMenu({
     required this.items,
     required this.toggleButtonBoxShadow,

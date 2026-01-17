@@ -114,13 +114,9 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
                                   onTap: () {
                                     final taggedNotifier = ref.read(taggedProvider.notifier);
                                     if (isSelected) {
-                                      for (final picId in taggedState.taggedPicId[tagKey]!.keys) {
-                                        taggedNotifier.removeSelectedMultiBarPic(picId);
-                                      }
+                                      taggedState.taggedPicId[tagKey]!.keys.forEach(taggedNotifier.removeSelectedMultiBarPic);
                                     } else {
-                                      for (final picId in taggedState.taggedPicId[tagKey]!.keys) {
-                                        taggedNotifier.addSelectedMultiBarPic(picId);
-                                      }
+                                      taggedState.taggedPicId[tagKey]!.keys.forEach(taggedNotifier.addSelectedMultiBarPic);
                                     }
                                   },
                                   child: SelectAllWidget(

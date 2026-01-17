@@ -169,7 +169,7 @@ class Crypto {
 
       AppLogger.d('Not the real key');
       return null;
-    } catch (error) {
+    } on Exception catch (error) {
       AppLogger.d('Not the real key: $error');
       return null;
     }
@@ -227,7 +227,7 @@ class Crypto {
 
       AppLogger.d('The key is invalid');
       return null;
-    } catch (error) {
+    } on Exception catch (error) {
       AppLogger.d('Failed to decrypt key invalid padblock!: $error');
       return null;
     }
@@ -265,7 +265,7 @@ class Crypto {
       final decryptedData = await algorithm.decrypt(secretBox, secretKey: picKey);
       AppLogger.d('Pin: ${hex.encode(decryptedData)}');
       return hex.encode(decryptedData);
-    } catch (error) {
+    } on Exception catch (error) {
       AppLogger.d('error: $error');
       return null;
     }
@@ -415,14 +415,11 @@ class Crypto {
   static Future<cryptography.SecretKey> _retrieveSecretKey(
     cryptography.AesCtr algorithm,
   ) async {
-    cryptography.SecretKey? secretKey;
-
-    secretKey = await algorithm.newSecretKeyFromBytes(
+    return algorithm.newSecretKeyFromBytes(
       hex.decode(
         '6f61309cf8f3e233f9a15670d8e6ca4db8ca76b6cb868924c04de28c374276c8',
       ),
     );
-    return secretKey;
   }
 
   static Future<void> encryptImage(
@@ -448,7 +445,7 @@ class Crypto {
     final photosPath = p.join('photos', title);
     final thumbnailsPath = p.join('thumbnails', title);
 
-    final dirExists = await Directory(p.join(appDocumentsDir.path, 'photos')).exists();
+    final dirExists = Directory(p.join(appDocumentsDir.path, 'photos')).existsSync();
     if (!dirExists) {
       await Directory(p.join(appDocumentsDir.path, 'photos')).create();
       await Directory(p.join(appDocumentsDir.path, 'thumbnails')).create();
@@ -511,7 +508,7 @@ class Crypto {
 
     AppLogger.d('Secret Key: $secretKey');
     AppLogger.d('Nonce: $nonce');
-    AppLogger.d('File exists: ${await file.exists()}');
+    AppLogger.d('File exists: ${file.existsSync()}');
     AppLogger.d(
       'App Support Dir: ${(await getApplicationDocumentsDirectory()).path}',
     );

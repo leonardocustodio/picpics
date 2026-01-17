@@ -70,7 +70,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     AssetEntityImageProvider key,
     ImageDecoderCallback decode,
   ) async {
-    assert(key == this);
+    assert(key == this, 'AssetEntityImageProvider key mismatch');
     Uint8List? data;
 
     if (isOriginal) {
@@ -150,10 +150,10 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other.runtimeType != runtimeType) {
+    if (other is! AssetEntityImageProvider) {
       return false;
     }
-    final typedOther = other as AssetEntityImageProvider;
+    final typedOther = other;
 
     if (picStore.state.entity == null) {
       return picStore.state.photoPath == typedOther.picStore.state.photoPath;

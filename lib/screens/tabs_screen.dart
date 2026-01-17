@@ -143,7 +143,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                         MaterialPageRoute<void>(
                           builder: (context) => const SettingsScreen(),
                         ),
-                      ));
+                      ),);
                     },
                     child: Image.asset('lib/images/settings.png'),
                   ),

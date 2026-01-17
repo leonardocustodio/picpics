@@ -19,6 +19,7 @@ class SearchMapPlaceWidget extends StatefulWidget {
     this.key,
   })  : assert(
           (location == null && radius == null) || (location != null && radius != null),
+          'location and radius must both be null or both be non-null',
         ),
         super(key: key);
   @override
@@ -324,7 +325,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
       unawaited(Future.delayed(const Duration(milliseconds: 500), () {
         _textEditingController.addListener(_autocompletePlace);
         if (_isEditing) unawaited(_autocompletePlace());
-      }));
+      },),);
     }
   }
 
@@ -343,16 +344,16 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
     }
 
     final response = await http.get(Uri.parse(url));
-    final json = jsonDecode(response.body);
+    final json = jsonDecode(response.body) as Map<String, dynamic>;
 
     if (json['error_message'] != null) {
-      var error = json['error_message'];
+      var error = json['error_message'] as String;
       if (error == 'This API project is not authorized to use this API.') {
         error += ' Make sure the Places API is activated on your Google Cloud Platform';
       }
       throw Exception(error);
     } else {
-      final predictions = json['predictions'];
+      final predictions = json['predictions'] as List<dynamic>;
       return predictions;
     }
   }
@@ -371,7 +372,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
     }
 
     // Makes animation
-    _closeSearch();
+    unawaited(_closeSearch());
 
     // Calls the `onSelected` callback
     if (prediction is Place) widget.onSelected(prediction);

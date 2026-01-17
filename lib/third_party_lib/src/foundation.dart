@@ -1,7 +1,7 @@
 import 'dart:math';
 
 /// ColorTriplet by default is used to encode colors in linear space.
-/// If you need the color in sRGB see [ColorTripletExtensions.toRgb].
+/// If you need the color in sRGB see the `toRgb` extension method.
 class ColorTriplet {
   /// Construct a new [ColorTriplet].
   const ColorTriplet(this.r, this.g, this.b);

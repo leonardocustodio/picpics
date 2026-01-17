@@ -126,7 +126,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       return false;
     } on FirebaseFunctionsException catch (e) {
       AppLogger.d('caught firebase functions exception: ${e.message}:${e.details}');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.d('caught generic exception: $e');
     }
 
@@ -136,7 +136,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   Future<bool> isRecoveryCodeValid() async {
     AppLogger.d('Typed Recovery Code: ${state.recoveryCode}');
 
-    // TODO(Week 3D): Update Crypto.checkRecoveryKey to accept UserNotifier/UserState
+    // TODO(picpics): Update Crypto.checkRecoveryKey to accept UserNotifier/UserState
     // For now, return false as placeholder until Crypto manager is migrated
     AppLogger.w('Recovery key validation temporarily disabled - requires Crypto manager migration');
     return false;
@@ -153,7 +153,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   }
 
   Future<void> saveNewPin() async {
-    // TODO(Week 3D): Update Crypto.reSaveSpKey to accept UserNotifier/UserState
+    // TODO(picpics): Update Crypto.reSaveSpKey to accept UserNotifier/UserState
     // Temporarily skip encryption key operations until Crypto manager is migrated
     AppLogger.w('PIN save temporarily simplified - requires Crypto manager migration');
 
@@ -190,7 +190,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
         result['errorCode'] = 'NULL_USER';
         return result;
       }
-    } catch (error) {
+    } on Exception catch (error) {
       AppLogger.d('Error creating user: $error');
       result['success'] = false;
       result['errorCode'] = error;
@@ -225,7 +225,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       // ignore: unnecessary_type_check
       if (result.data is Map && (result.data as Map).isNotEmpty) {
         await Crypto.saveSaltKey();
-        // TODO(Week 3D): Update Crypto.saveSpKey to accept UserNotifier/UserState
+        // TODO(picpics): Update Crypto.saveSpKey to accept UserNotifier/UserState
         AppLogger.w('Access code validation simplified - requires Crypto manager migration');
         // await Crypto.saveSpKey(
         //   state.accessCode,
@@ -240,7 +240,7 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       return false;
     } on FirebaseFunctionsException catch (e) {
       AppLogger.d('caught firebase functions exception: ${e.code}:${e.message}:${e.details}');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.d('caught generic exception: $e');
     }
 
@@ -330,9 +330,9 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
     ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
 
     if (popToId != null) {
-      Navigator.of(context).pushNamedAndRemoveUntil(popToId, ModalRoute.withName(popToId));
+      unawaited(Navigator.of(context).pushNamedAndRemoveUntil(popToId, ModalRoute.withName(popToId)));
     } else {
-      Navigator.of(context).pushNamedAndRemoveUntil(TabsScreen.id, (route) => false);
+      unawaited(Navigator.of(context).pushNamedAndRemoveUntil(TabsScreen.id, (route) => false));
     }
   }
 

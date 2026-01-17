@@ -26,7 +26,7 @@ import 'package:picpics/utils/app_logger.dart';
 Future<void> backgroundFetchHeadlessTask(String taskId) async {
   AppLogger.d('[BackgroundFetch] Headless event received.');
   await WidgetManager.sendAndUpdate();
-  BackgroundFetch.finish(taskId);
+  unawaited(BackgroundFetch.finish(taskId));
 }
 
 void main() async {

@@ -76,7 +76,7 @@ class TaggedPhotosGrouping extends ConsumerWidget {
                   MaterialPageRoute<void>(
                     builder: (context) => TaggedTabSelectiveTagKey(tagKey),
                   ),
-                ));
+                ),);
               },
               child: Container(
                 margin: const EdgeInsets.all(4),

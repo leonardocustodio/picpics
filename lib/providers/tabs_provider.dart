@@ -211,11 +211,11 @@ class TabsNotifier extends StateNotifier<TabsState> {
       (String taskId) async {
         AppLogger.d('[BackgroundFetch] Event received $taskId');
         await WidgetManager.sendAndUpdate();
-        BackgroundFetch.finish(taskId);
+        unawaited(BackgroundFetch.finish(taskId));
       },
       (String taskId) async {
         AppLogger.d('[BackgroundFetch] TIMEOUT: $taskId');
-        BackgroundFetch.finish(taskId);
+        unawaited(BackgroundFetch.finish(taskId));
       },
     );
   }
@@ -258,7 +258,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.d('[TabsProvider] Got ${assets.length} asset paths');
 
       await loadEntities(assets);
-    } catch (e, stackTrace) {
+    } on Exception catch (e, stackTrace) {
       AppLogger.e('[TabsProvider] Error in loadAssetPath: $e');
       AppLogger.e('[TabsProvider] Stack trace: $stackTrace');
       setIsUntaggedPicsLoaded(value: true);
@@ -349,7 +349,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.d('[TabsProvider] Refreshing tagged photos...');
       await _ref.read(taggedProvider.notifier).refreshTaggedPhotos();
       AppLogger.d('[TabsProvider] Tagged photos refreshed');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.e('[TabsProvider] Error refreshing tagged photos: $e');
     }
 
@@ -357,7 +357,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.d('[TabsProvider] Refreshing private photos...');
       await _ref.read(privatePhotosProvider.notifier).refreshPrivatePics();
       AppLogger.d('[TabsProvider] Private photos refreshed');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.e('[TabsProvider] Error refreshing private photos: $e');
     }
 
@@ -445,7 +445,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       sortAssetEntityList();
       await filterUntaggedPhotos();
       AppLogger.d('[TabsProvider] refreshUntaggedList completed successfully');
-    } catch (e, stackTrace) {
+    } on Exception catch (e, stackTrace) {
       AppLogger.e('[TabsProvider] Error in refreshUntaggedList: $e');
       AppLogger.e('[TabsProvider] Stack trace: $stackTrace');
     } finally {

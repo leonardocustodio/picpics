@@ -96,7 +96,7 @@ class _TabsScreenBottomNavigatioBarState extends ConsumerState<TabsScreenBottomN
                       CupertinoButton(
                         onPressed: () async {
                           if (tagsState.multiPicTags.containsKey(kSecretTagKey)) {
-                            showDeleteSecretModalForMultiPic(context, ref);
+                            unawaited(showDeleteSecretModalForMultiPic(context, ref));
                             return;
                           }
 

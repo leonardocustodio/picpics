@@ -118,7 +118,7 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
   String? getPicId(int index) {
     try {
       return getPicIdList()[index];
-    } catch (_) {
+    } on Exception {
       return null;
     }
   }

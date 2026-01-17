@@ -236,7 +236,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
       await loadAllTags();
 
       AppLogger.d('Tag updated: $key -> $newTagKey ($newTitle)');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.e('Error updating tag: $e');
     }
   }
@@ -264,7 +264,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
       await loadAllTags();
 
       AppLogger.d('Tag deleted: $key');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.e('Error deleting tag: $e');
     }
   }

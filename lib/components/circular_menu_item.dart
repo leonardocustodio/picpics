@@ -15,8 +15,8 @@ class CircularMenuItem extends StatelessWidget {
     this.animatedIcon,
     this.padding = 8.0,
     this.margin = 12.0,
-  })  : assert(padding >= 0.0),
-        assert(margin >= 0.0);
+  })  : assert(padding >= 0.0, 'padding must be >= 0.0'),
+        assert(margin >= 0.0, 'margin must be >= 0.0');
 
   /// if icon and animatedIcon are passed, icon will be ignored
   final Image? image;

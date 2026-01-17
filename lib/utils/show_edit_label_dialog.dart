@@ -43,7 +43,7 @@ Future<void> showEditTagModal(String tagKey, BuildContext context, WidgetRef ref
                   unawaited(ref.read(tagsProvider.notifier).editTagName(
                         oldTagKey: tagKey,
                         newName: alertInputController.text,
-                      ));
+                      ),);
                 }
                 Navigator.of(context).pop();
               },

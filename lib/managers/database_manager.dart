@@ -17,6 +17,7 @@ class DatabaseManager extends ChangeNotifier {
 
   static DatabaseManager? _instance;
 
+  // ignore: prefer_constructors_over_static_methods
   static DatabaseManager get instance {
     return _instance ??= DatabaseManager._();
   }
@@ -176,7 +177,7 @@ AppLogger.d('got token this mean it did accept notification');
     //userSettings.appLanguage = appLanguage;
     //userBox.putAt(0, userSettings);
 
-    if (notify = true) {
+    if (notify) {
       await Analytics.sendEvent(Event.changed_language);
       notifyListeners();
     }
@@ -189,7 +190,7 @@ AppLogger.d('got token this mean it did accept notification');
   }
 
   void gridScale(double multiplier) {
-    scale = scale;
+    scale = multiplier;
     AppLogger.d('new scale value: $scale');
   }
 

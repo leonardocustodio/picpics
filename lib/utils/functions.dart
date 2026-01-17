@@ -59,7 +59,7 @@ Future<void> showDeleteSecretModal(
   final privatePhotosState = ref.read(privatePhotosProvider);
 
   if (!privatePhotosState.showPrivate) {
-    // TODO(Week 3D): Add popPinScreenToId property to UserState if needed
+    // TODO(picpics): Add popPinScreenToId property to UserState if needed
     // For now, just navigate to PIN screen
     if (!context.mounted) return;
     await Navigator.of(context).push(

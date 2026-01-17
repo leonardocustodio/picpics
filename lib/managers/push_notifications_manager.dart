@@ -72,7 +72,7 @@ class PushNotificationsManager {
     AppLogger.d('FirebaseMessaging token: $token');
     AppLogger.d('subscribed');
 
-    scheduleNotification(
+    await scheduleNotification(
       hourOfDay: hourOfDay,
       minutesOfDay: minutesOfDay,
       title: title,
@@ -103,7 +103,7 @@ AppLogger.d('subscribed to topic: all_users');
       );
 
       await _flutterLocalNotificationsPlugin.cancelAll();
-    } catch (error) {
+    } on Exception catch (error) {
       AppLogger.d(error);
     }
   }

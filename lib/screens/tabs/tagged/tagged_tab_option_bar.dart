@@ -88,7 +88,7 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
                               // }
 
                               if (tagsState.multiPicTags[kSecretTagKey] != null) {
-                                showDeleteSecretModalForMultiPic(context, ref);
+                                unawaited(showDeleteSecretModalForMultiPic(context, ref));
                                 return;
                               }
 
@@ -125,7 +125,7 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
                   expanded: Container(
                     padding: const EdgeInsets.all(24),
 
-                    /// TODO(picpics): Tags List Not Showing
+                    // TODO(picpics): Tags List Not Showing
                     color: const Color(0xFFEFEFF4).withValues(alpha: 0.94),
                     child: SafeArea(
                       child: Column(
@@ -253,10 +253,7 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
         );
       }
       if (!taggedState.multiPicBar) {
-        return const SizedBox(
-          width: 0,
-          height: 0,
-        );
+        return const SizedBox.shrink();
       }
       final listOfBottomNavigationItems = <BottomNavigationBarItem>[
         BottomNavigationBarItem(

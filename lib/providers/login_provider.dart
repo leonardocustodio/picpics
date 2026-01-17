@@ -140,7 +140,7 @@ class LoginNotifier extends StateNotifier<LoginState> {
       }
 
       AppLogger.i('Onboarding completed successfully');
-    } catch (e) {
+    } on Exception catch (e) {
       AppLogger.e('Error completing onboarding: $e');
     } finally {
       state = state.copyWith(isLoading: false);

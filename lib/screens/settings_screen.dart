@@ -476,7 +476,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                                           // TODO(settings): Set wantsToActivateBiometric
                                                           unawaited(Navigator.of(context).push<void>(MaterialPageRoute<void>(
                                                             builder: (_) => const PinScreen(),
-                                                          ),));
+                                                          ),),);
                                                           return;
                                                         }
                                                         ref.read(userProvider.notifier).setIsBiometricActivated(value: false);

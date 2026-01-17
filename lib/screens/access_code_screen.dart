@@ -184,7 +184,7 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
             ..setPinTemp('')
             ..setConfirmPinTemp('');
           unawaited(carouselController.animateToPage(0));
-        }));
+        },),);
       }
     }
   }

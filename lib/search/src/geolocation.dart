@@ -21,7 +21,7 @@ class Geolocation {
   /// Has the full JSON response received from the Geolocation API. Can be used to extract extra information of the location. More info on the [Geolocation API documentation](https://developers.google.com/maps/documentation/geolocation/intro)
   ///
   /// All of its information can be accessed like a regular [Map]. For example:
-  /// ```
+  /// ```dart
   /// fullJSON["adress_components"][2]["short_name"]
   /// ```
   Map<String, dynamic>? fullJSON;

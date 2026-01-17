@@ -222,7 +222,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
               ..setPinTemp('')
               ..setConfirmPinTemp('');
             unawaited(carouselController.animateToPage(1));
-          }));
+          },),);
         }
       }
 
@@ -320,7 +320,7 @@ class _PinScreenState extends ConsumerState<PinScreen> {
             ..setPinTemp('')
             ..setConfirmPinTemp('');
           unawaited(carouselController.animateToPage(0));
-        }));
+        },),);
       }
     }
   }

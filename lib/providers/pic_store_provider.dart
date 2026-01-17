@@ -161,8 +161,8 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     await loadPicInfo();
   }
 
-  /// Get encryption key from pin provider or user controller
-  /// TODO(picpics): Migrate UserController to find where encryptionKey is stored
+  /// Get encryption key from pin provider or user controller.
+  // TODO(picpics): Migrate UserController to find where encryptionKey is stored
   /// For now, returning null - encryption features will need to be connected
   /// after UserController migration is complete
   cryptography.SecretKey? get _encryptionKey {
@@ -778,9 +778,9 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     state = state.copyWith(aiTagsLoaded: value);
   }
 
-  /// Translate tags to user's language
-  /// Note: This method requires BuildContext, so it should be called from widget layer
-  /// TODO(picpics): Consider refactoring to avoid BuildContext dependency
+  /// Translate tags to user's language.
+  /// Note: This method requires BuildContext, so it should be called from widget layer.
+  // TODO(picpics): Consider refactoring to avoid BuildContext dependency
   Future<List<String>> translateTags(
     List<String> tagsText,
     WidgetRef widgetRef,
