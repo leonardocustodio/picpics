@@ -148,10 +148,10 @@ void main() {
     });
 
     test('Search mode can be toggled', () {
-      container.read(tagsProvider.notifier).setIsSearching(true);
+      container.read(tagsProvider.notifier).setIsSearching(val: true);
       expect(container.read(tagsProvider).isSearching, isTrue);
 
-      container.read(tagsProvider.notifier).setIsSearching(false);
+      container.read(tagsProvider.notifier).setIsSearching(val: false);
       expect(container.read(tagsProvider).isSearching, isFalse);
     });
   });

@@ -37,9 +37,9 @@ void main() {
       final duration = PerformanceTestUtils.measureSyncExecutionTime(() {
         // Perform operations on empty state
         container.read(tabsProvider.notifier)
-          ..setMultiPicBar(true)
+          ..setMultiPicBar(value: true)
           ..setToggleIndexUntagged(1)
-          ..setMultiPicBar(false);
+          ..setMultiPicBar(value: false);
       });
 
       expect(duration.inMilliseconds, lessThan(5),
@@ -54,7 +54,7 @@ void main() {
       // Perform many operations
       final notifier = container.read(tabsProvider.notifier);
       for (var i = 0; i < 1000; i++) {
-        notifier.setMultiPicBar(i % 2 == 0);
+        notifier.setMultiPicBar(value: i % 2 == 0);
       }
 
       final memoryAfter = PerformanceTestUtils.estimateMemoryUsage(
@@ -170,7 +170,7 @@ void main() {
 
       final duration = await PerformanceTestUtils.measureExecutionTime(() async {
         await PerformanceTestUtils.rapidStateChanges(
-          changeState: () => notifier.setMultiPicBar(!container.read(tabsProvider).multiPicBar),
+          changeState: () => notifier.setMultiPicBar(value: !container.read(tabsProvider).multiPicBar),
           count: 1000,
         );
       });
@@ -222,7 +222,7 @@ void main() {
         await PerformanceTestUtils.runConcurrentOperations([
           () async {
             for (var i = 0; i < 50; i++) {
-              tabsNotifier.setMultiPicBar(i % 2 == 0);
+              tabsNotifier.setMultiPicBar(value: i % 2 == 0);
             }
           },
           () async {
@@ -322,7 +322,7 @@ void main() {
       // Perform 100 state changes
       for (var i = 0; i < 100; i++) {
         notifier
-          ..setMultiPicBar(i % 2 == 0)
+          ..setMultiPicBar(value: i % 2 == 0)
           ..setToggleIndexUntagged(i % 3);
       }
 
@@ -369,7 +369,7 @@ void main() {
 
       final duration = await PerformanceTestUtils.measureExecutionTime(() async {
         await PerformanceTestUtils.rapidStateChanges(
-          changeState: () => notifier.setMultiPicBar(!container.read(tabsProvider).multiPicBar),
+          changeState: () => notifier.setMultiPicBar(value: !container.read(tabsProvider).multiPicBar),
           count: 100,
           delay: Duration.zero,
         );

@@ -58,7 +58,7 @@ void main() {
     });
 
     test('Enabling multi-selection should update state', () {
-      container.read(tabsProvider.notifier).setMultiPicBar(true);
+      container.read(tabsProvider.notifier).setMultiPicBar(value: true);
       final tabsState = container.read(tabsProvider);
 
       expect(tabsState.multiPicBar, isTrue);
@@ -67,8 +67,8 @@ void main() {
     test('Disabling multi-selection should update state', () {
       // Enable then disable
       container.read(tabsProvider.notifier)
-        ..setMultiPicBar(true)
-        ..setMultiPicBar(false);
+        ..setMultiPicBar(value: true)
+        ..setMultiPicBar(value: false);
       final tabsState = container.read(tabsProvider);
 
       expect(tabsState.multiPicBar, isFalse);
@@ -95,10 +95,10 @@ void main() {
     });
 
     test('Scrolling state can be toggled', () {
-      container.read(tabsProvider.notifier).setIsScrolling(true);
+      container.read(tabsProvider.notifier).setIsScrolling(value: true);
       expect(container.read(tabsProvider).isScrolling, isTrue);
 
-      container.read(tabsProvider.notifier).setIsScrolling(false);
+      container.read(tabsProvider.notifier).setIsScrolling(value: false);
       expect(container.read(tabsProvider).isScrolling, isFalse);
     });
 
@@ -164,7 +164,7 @@ void main() {
       final container2 = ProviderContainer();
 
       // Modify first container
-      container.read(tabsProvider.notifier).setMultiPicBar(true);
+      container.read(tabsProvider.notifier).setMultiPicBar(value: true);
 
       // Second container should be unaffected
       final state1 = container.read(tabsProvider);

@@ -410,7 +410,7 @@ class PinPlaceholder extends StatelessWidget {
 class NumberPad extends StatelessWidget {
   const NumberPad({required this.onPinTapped, super.key});
 
-  final Future<void> Function(String value, bool backspace) onPinTapped;
+  final Future<void> Function(String value, {required bool backspace}) onPinTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -461,7 +461,7 @@ class NumberPad extends StatelessWidget {
   Widget _buildNumberButton(String number) {
     return CupertinoButton(
       padding: EdgeInsets.zero,
-      onPressed: () => onPinTapped(number, false),
+      onPressed: () => onPinTapped(number, backspace: false),
       child: Container(
         width: 64,
         height: 64,
@@ -486,7 +486,7 @@ class NumberPad extends StatelessWidget {
   Widget _buildBackspaceButton() {
     return CupertinoButton(
       padding: EdgeInsets.zero,
-      onPressed: () => onPinTapped('', true),
+      onPressed: () => onPinTapped('', backspace: true),
       child: Container(
         width: 64,
         height: 64,

@@ -234,12 +234,12 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
     if (!permitted) {
       AppLogger.w('[TabsProvider] No gallery permission, aborting load');
-      setIsUntaggedPicsLoaded(true);
+      setIsUntaggedPicsLoaded(value: true);
       _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
       return;
     }
 
-    setIsUntaggedPicsLoaded(false);
+    setIsUntaggedPicsLoaded(value: false);
 
     try {
       final filterOptionGroup = FilterOptionGroup()
@@ -261,7 +261,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     } catch (e, stackTrace) {
       AppLogger.e('[TabsProvider] Error in loadAssetPath: $e');
       AppLogger.e('[TabsProvider] Stack trace: $stackTrace');
-      setIsUntaggedPicsLoaded(true);
+      setIsUntaggedPicsLoaded(value: true);
       _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
     }
   }
@@ -270,7 +270,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (assetsPath.isEmpty) {
       AppLogger.w('[TabsProvider] No asset paths found - device has no photos');
       state = state.copyWith(status: Status.deviceHasNoPics);
-      setIsUntaggedPicsLoaded(true);
+      setIsUntaggedPicsLoaded(value: true);
       _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
       return;
     }
@@ -282,7 +282,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (assetCount == 0) {
       AppLogger.w('[TabsProvider] Asset count is 0 - device has no photos');
       state = state.copyWith(status: Status.deviceHasNoPics);
-      setIsUntaggedPicsLoaded(true);
+      setIsUntaggedPicsLoaded(value: true);
       _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
       return;
     }
@@ -439,7 +439,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
   Future<void> refreshUntaggedList() async {
     AppLogger.d('[TabsProvider] Starting refreshUntaggedList');
-    setIsUntaggedPicsLoaded(false);
+    setIsUntaggedPicsLoaded(value: false);
     _ref.read(swiperTabProvider.notifier).setLoaded(loaded: false);
     try {
       sortAssetEntityList();
@@ -450,7 +450,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
       AppLogger.e('[TabsProvider] Stack trace: $stackTrace');
     } finally {
       // Always set loaded to true to stop the loading indicator
-      setIsUntaggedPicsLoaded(true);
+      setIsUntaggedPicsLoaded(value: true);
       _ref.read(swiperTabProvider.notifier).setLoaded(loaded: true);
     }
   }
@@ -598,7 +598,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
   }
 
   void tagAction() {
-    setMultiTagSheet(true);
+    setMultiTagSheet(value: true);
     Future.delayed(const Duration(milliseconds: 200), () {
       state.expandableController.expanded = true;
     });
@@ -610,7 +610,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (state.multiTagSheet) {
       AppLogger.d('WillPopScope multiTagSheet');
       _ref.read(tagsProvider.notifier).clearMultiPicTags();
-      setMultiTagSheet(false);
+      setMultiTagSheet(value: false);
       return false;
     }
 
@@ -621,7 +621,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
     if (state.multiPicBar) {
       AppLogger.d('WillPopScope multiPicBar');
-      setMultiPicBar(false);
+      setMultiPicBar(value: false);
       return false;
     }
 
@@ -729,9 +729,9 @@ class TabsNotifier extends StateNotifier<TabsState> {
     }
 
     AppLogger.d('sharing selected pics....');
-    setIsLoading(true);
+    setIsLoading(value: true);
     await _sharePics(picKeys: state.selectedPhotos);
-    setIsLoading(false);
+    setIsLoading(value: false);
   }
 
   Future<void> _sharePics({required List<String> picKeys}) async {

@@ -84,14 +84,14 @@ void doCustomisedSearching(
   CallBack callback,
 ) {
   if (tag == null) {
-    callback(false);
+    callback(matched: false);
     return;
   }
 
   var matched = true;
   final titleNullable = tag is TagModel ? tag.title : tag?.toString();
   if (titleNullable == null) {
-    callback(false);
+    callback(matched: false);
     return;
   }
   final title = titleNullable.toLowerCase();
@@ -112,5 +112,5 @@ void doCustomisedSearching(
       break;
     }
   }
-  callback(matched);
+  callback(matched: matched);
 }

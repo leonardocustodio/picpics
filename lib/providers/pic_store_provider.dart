@@ -272,11 +272,11 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
           return false;
         }
       }
-      await setDeletedFromCameraRoll(true);
+      await setDeletedFromCameraRoll(value: true);
       state = state.copyWith();
       return null;
     }
-    await setDeletedFromCameraRoll(false);
+    await setDeletedFromCameraRoll(value: false);
     return null;
   }
 
@@ -418,7 +418,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
   /// Set search text for tag suggestions
   void setSearchText(String value) {
     state = state.copyWith(searchText: value.trim());
-    setAiTags(false);
+    setAiTags(value: false);
     unawaited(tagsSuggestionsCalculate());
   }
 
@@ -486,7 +486,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
         doCustomisedSearching(
           tagName,
           listOfLetters,
-          (matched) {
+          ({required bool matched}) {
             if (matched && allTags[tagKey] != null) {
               suggestions.add(allTags[tagKey]!);
             }

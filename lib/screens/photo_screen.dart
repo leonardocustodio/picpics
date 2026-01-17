@@ -135,16 +135,16 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
     final photoScreenState = ref.read(photoScreenProvider);
 
     if (!photoScreenState.overlay) {
-      photoScreenNotifier.setOverlay(true);
+      photoScreenNotifier.setOverlay(value: true);
       // TODO(picpics): Removing this to compile
       // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     } else {
       if (!photoScreenState.showSlideshow) {
-        photoScreenNotifier.setShowSlideshow(true);
+        photoScreenNotifier.setShowSlideshow(value: true);
       } else {
         photoScreenNotifier
-          ..setShowSlideshow(false)
-          ..setOverlay(false);
+          ..setShowSlideshow(value: false)
+          ..setOverlay(value: false);
         // TODO(picpics): Removing this to compile
         // SystemChrome.setEnabledSystemUIOverlays([]);
       }

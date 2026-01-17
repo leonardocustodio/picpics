@@ -18,7 +18,7 @@ void main() {
     });
 
     test('Multi-selection mode can be enabled', () {
-      container.read(tabsProvider.notifier).setMultiPicBar(true);
+      container.read(tabsProvider.notifier).setMultiPicBar(value: true);
 
       final tabsState = container.read(tabsProvider);
       expect(tabsState.multiPicBar, isTrue);
@@ -26,18 +26,18 @@ void main() {
 
     test('Multi-selection mode can be disabled', () {
       container.read(tabsProvider.notifier)
-        ..setMultiPicBar(true)
-        ..setMultiPicBar(false);
+        ..setMultiPicBar(value: true)
+        ..setMultiPicBar(value: false);
 
       final tabsState = container.read(tabsProvider);
       expect(tabsState.multiPicBar, isFalse);
     });
 
     test('Multi-tag sheet can be toggled', () {
-      container.read(tabsProvider.notifier).setMultiTagSheet(true);
+      container.read(tabsProvider.notifier).setMultiTagSheet(value: true);
       expect(container.read(tabsProvider).multiTagSheet, isTrue);
 
-      container.read(tabsProvider.notifier).setMultiTagSheet(false);
+      container.read(tabsProvider.notifier).setMultiTagSheet(value: false);
       expect(container.read(tabsProvider).multiTagSheet, isFalse);
     });
 
@@ -107,8 +107,8 @@ void main() {
     test('Multi-bar and multi-sheet can be coordinated', () {
       // Enable both
       container.read(tabsProvider.notifier)
-        ..setMultiPicBar(true)
-        ..setMultiTagSheet(true);
+        ..setMultiPicBar(value: true)
+        ..setMultiTagSheet(value: true);
 
       final tabsState = container.read(tabsProvider);
       expect(tabsState.multiPicBar, isTrue);
@@ -118,9 +118,9 @@ void main() {
     test('Disabling multi-bar should work independently of multi-sheet', () {
       // Enable both, then disable only multi-bar
       container.read(tabsProvider.notifier)
-        ..setMultiPicBar(true)
-        ..setMultiTagSheet(true)
-        ..setMultiPicBar(false);
+        ..setMultiPicBar(value: true)
+        ..setMultiTagSheet(value: true)
+        ..setMultiPicBar(value: false);
 
       final tabsState = container.read(tabsProvider);
       expect(tabsState.multiPicBar, isFalse);
@@ -132,7 +132,7 @@ void main() {
       final taggedNotifier = container.read(taggedProvider.notifier);
 
       // Enable multi-selection in tabs
-      tabsNotifier.setMultiPicBar(true);
+      tabsNotifier.setMultiPicBar(value: true);
 
       // Add selections in tagged
       taggedNotifier.addSelectedMultiBarPic('photo1');
@@ -190,7 +190,7 @@ void main() {
 
       // Toggle multiple times rapidly
       for (var i = 0; i < 10; i++) {
-        notifier.setMultiPicBar(i % 2 == 0);
+        notifier.setMultiPicBar(value: i % 2 == 0);
       }
 
       final tabsState = container.read(tabsProvider);
@@ -202,7 +202,7 @@ void main() {
       final taggedNotifier = container.read(taggedProvider.notifier);
 
       // Change tabs state
-      tabsNotifier.setMultiPicBar(true);
+      tabsNotifier.setMultiPicBar(value: true);
 
       // Tagged selections are independent
       taggedNotifier.addSelectedMultiBarPic('photo1');
@@ -232,7 +232,7 @@ void main() {
       final taggedNotifier = container.read(taggedProvider.notifier);
 
       // 1. Enable multi-selection mode
-      tabsNotifier.setMultiPicBar(true);
+      tabsNotifier.setMultiPicBar(value: true);
       expect(container.read(tabsProvider).multiPicBar, isTrue);
 
       // 2. Select multiple photos
@@ -243,7 +243,7 @@ void main() {
       expect(container.read(taggedProvider).selectedMultiBarPics.length, 3);
 
       // 3. Open multi-tag sheet
-      tabsNotifier.setMultiTagSheet(true);
+      tabsNotifier.setMultiTagSheet(value: true);
       expect(container.read(tabsProvider).multiTagSheet, isTrue);
 
       // 4. Clear selections after tagging (simulated)
@@ -251,11 +251,11 @@ void main() {
       expect(container.read(taggedProvider).selectedMultiBarPics.isEmpty, isTrue);
 
       // 5. Close multi-tag sheet
-      tabsNotifier.setMultiTagSheet(false);
+      tabsNotifier.setMultiTagSheet(value: false);
       expect(container.read(tabsProvider).multiTagSheet, isFalse);
 
       // 6. Disable multi-selection mode
-      tabsNotifier.setMultiPicBar(false);
+      tabsNotifier.setMultiPicBar(value: false);
       expect(container.read(tabsProvider).multiPicBar, isFalse);
     });
   });

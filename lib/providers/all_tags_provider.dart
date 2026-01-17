@@ -46,7 +46,7 @@ class AllTagsNotifier extends StateNotifier<AllTagsState> {
       doCustomisedSearching(
         tagModel,
         listOfLetters,
-        (matched) {
+        ({required bool matched}) {
           if (matched) {
             searched[key] = tagModel;
           }

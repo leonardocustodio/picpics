@@ -34,10 +34,10 @@ void main() {
     });
 
     test('Set showPrivate should update state', () {
-      container.read(privatePhotosProvider.notifier).setShowPrivate(true);
+      container.read(privatePhotosProvider.notifier).setShowPrivate(value: true);
       expect(container.read(privatePhotosProvider).showPrivate, isTrue);
 
-      container.read(privatePhotosProvider.notifier).setShowPrivate(false);
+      container.read(privatePhotosProvider.notifier).setShowPrivate(value: false);
       expect(container.read(privatePhotosProvider).showPrivate, isFalse);
     });
 
@@ -111,7 +111,7 @@ void main() {
       final container2 = ProviderContainer();
 
       // Modify first container
-      container.read(privatePhotosProvider.notifier).setShowPrivate(true);
+      container.read(privatePhotosProvider.notifier).setShowPrivate(value: true);
       container.read(privatePhotosProvider.notifier).addPrivatePhoto('photo1');
 
       // Second container should be unaffected
@@ -136,7 +136,7 @@ void main() {
         ..addPrivatePhoto('photo2');
 
       // 3. Enable showing private photos
-      container.read(privatePhotosProvider.notifier).setShowPrivate(true);
+      container.read(privatePhotosProvider.notifier).setShowPrivate(value: true);
       expect(container.read(privatePhotosProvider).showPrivate, isTrue);
 
       // 4. Verify photos are in the list
@@ -144,7 +144,7 @@ void main() {
       expect(state.privatePhotoIds.length, equals(2));
 
       // 5. Hide private photos again
-      container.read(privatePhotosProvider.notifier).setShowPrivate(false);
+      container.read(privatePhotosProvider.notifier).setShowPrivate(value: false);
       expect(container.read(privatePhotosProvider).showPrivate, isFalse);
 
       // 6. Photos should still be in the list (just hidden)

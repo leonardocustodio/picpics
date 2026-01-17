@@ -68,8 +68,8 @@ void main() {
         setup: () async {},
         action: () async {
           container.read(tabsProvider.notifier)
-            ..setMultiPicBar(true)
-            ..setMultiPicBar(false);
+            ..setMultiPicBar(value: true)
+            ..setMultiPicBar(value: false);
         },
         teardown: () async {},
         iterations: 1000,
@@ -129,7 +129,7 @@ void main() {
         container,
         tabsProvider,
         () {
-          container.read(tabsProvider.notifier).setMultiPicBar(true);
+          container.read(tabsProvider.notifier).setMultiPicBar(value: true);
         },
       );
 
@@ -147,8 +147,8 @@ void main() {
         tabsProvider,
         () {
           container.read(tabsProvider.notifier)
-            ..setMultiPicBar(true)
-            ..setMultiTagSheet(true)
+            ..setMultiPicBar(value: true)
+            ..setMultiTagSheet(value: true)
             ..setToggleIndexUntagged(1);
         },
       );
@@ -237,7 +237,7 @@ void main() {
 
       final duration = await PerformanceTestUtils.measureExecutionTime(() async {
         for (var i = 0; i < 100; i++) {
-          notifier.setMultiPicBar(i % 2 == 0);
+          notifier.setMultiPicBar(value: i % 2 == 0);
         }
       });
 
@@ -289,7 +289,7 @@ void main() {
 
       // Multi-selection enable
       timings['enable_multi_select'] = PerformanceTestUtils.measureSyncExecutionTime(() {
-        container.read(tabsProvider.notifier).setMultiPicBar(true);
+        container.read(tabsProvider.notifier).setMultiPicBar(value: true);
       });
 
       // Photo selection

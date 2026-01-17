@@ -583,7 +583,7 @@ class NumberPad extends StatelessWidget {
     required this.onPinTapped,
     super.key,
   });
-  final Future<void> Function(String, bool) onPinTapped;
+  final Future<void> Function(String, {required bool backspace}) onPinTapped;
 
   List<Widget> _buildPinNumbers() {
     final items = <Widget>[];
@@ -597,7 +597,7 @@ class NumberPad extends StatelessWidget {
             Expanded(
               child: CupertinoButton(
                 onPressed: () {
-                  unawaited(onPinTapped('', true));
+                  unawaited(onPinTapped('', backspace: true));
                 },
                 child: Container(
                   margin: const EdgeInsets.all(2),
@@ -623,7 +623,7 @@ class NumberPad extends StatelessWidget {
             child: CupertinoButton(
               padding: EdgeInsets.zero,
               onPressed: () {
-                unawaited(onPinTapped('${pin == 11 ? '0' : pin}', false));
+                unawaited(onPinTapped('${pin == 11 ? '0' : pin}', backspace: false));
               },
               child: Container(
                 margin: const EdgeInsets.all(2),

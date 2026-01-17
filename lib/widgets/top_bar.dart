@@ -59,7 +59,7 @@ class TopBar extends ConsumerWidget {
                       child: GestureDetector(
                         onTap: () {
                           if (!tagsState.isSearching) {
-                            ref.read(tagsProvider.notifier).setIsSearching(true);
+                            ref.read(tagsProvider.notifier).setIsSearching(val: true);
                             unawaited(ref.read(tagsProvider.notifier).tagsSuggestionsCalculate());
                           }
                         },

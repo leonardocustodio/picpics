@@ -113,7 +113,7 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
   }
 
   void tagAction() {
-    setMultiTagSheet(true);
+    setMultiTagSheet(value: true);
     Future.delayed(const Duration(milliseconds: 200), () {
       state.expandableController.expanded = true;
     });
@@ -158,9 +158,9 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
         : scrollControllerThirdTab.initialScrollOffset;
 
     if (offset >= 40) {
-      setHideTitleThirdTab(true);
+      setHideTitleThirdTab(value: true);
     } else if (offset <= 0) {
-      setHideTitleThirdTab(false);
+      setHideTitleThirdTab(value: false);
     }
 
     if (scrollControllerThirdTab.hasClients) {
