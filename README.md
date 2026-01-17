@@ -9,7 +9,7 @@
   [![License](https://img.shields.io/github/license/leonardocustodio/picpics)](LICENSE)
 </div>
 
-#### Important note: The main branch was undergoing a major refactor and is non-functional. If you are looking for the published version, you can find it [here](https://github.com/leonardocustodio/picpics/releases/tag/v1.7.0).
+#### Important note: The main branch is undergoing a major refactor and is non-functional. If you are looking for the published version, you can find it [here](https://github.com/leonardocustodio/picpics/releases/tag/v1.7.0).
 
 ## 📱 About picPics
 
@@ -58,26 +58,6 @@ flutter pub get
 flutter run
 ```
 
-## 📂 Project Structure
-
-```
-picpics/
-├── android/          # Android-specific code
-├── ios/              # iOS-specific code
-├── lib/
-│   ├── components/   # Reusable UI components
-│   ├── database/     # Database models and configurations
-│   ├── generated/    # Generated localization files
-│   ├── managers/     # Business logic managers
-│   ├── model/        # Data models
-│   ├── screens/      # App screens
-│   ├── stores/       # State management stores
-│   ├── utils/        # Utility functions
-│   └── widgets/      # Custom widgets
-├── assets/           # App assets (models, images)
-└── pubspec.yaml      # Project dependencies
-```
-
 ## 🌐 Localization
 
 PicPics supports the following languages:
@@ -109,12 +89,6 @@ PicPics supports the following languages:
 ## 🤝 Contributing
 
 We welcome contributions! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ## 📄 License
 
