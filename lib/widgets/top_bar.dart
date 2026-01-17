@@ -130,8 +130,11 @@ class TopBar extends ConsumerWidget {
                 CupertinoButton(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   onPressed: () {
-                    unawaited(Navigator.of(context)
-                        .push<void>(MaterialPageRoute<void>(builder: (_) => const SettingsScreen())));
+                    unawaited(
+                      Navigator.of(context).push<void>(
+                        MaterialPageRoute<void>(builder: (_) => const SettingsScreen()),
+                      ),
+                    );
                   },
                   child: Image.asset('lib/images/settings.png'),
                 ),

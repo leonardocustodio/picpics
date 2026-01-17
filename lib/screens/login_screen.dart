@@ -171,15 +171,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           if (loginState.slideIndex == loginState.totalSlides - 1) {
                             await ref.read(loginProvider.notifier).completeIntroduction();
                             await ref.read(userProvider.notifier).setTutorialCompleted(value: true);
-                            if (mounted) {
-                              // ignore: use_build_context_synchronously
-                              unawaited(
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                  TabsScreen.id,
-                                  (route) => false,
-                                ),
-                              );
-                            }
+                            if (!context.mounted) return;
+                            unawaited(
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                TabsScreen.id,
+                                (route) => false,
+                              ),
+                            );
                             return;
                           }
                           AppLogger.d('next');
