@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:picpics/generated/l10n.dart' as language;
 
 class LanguageState {
-
   LanguageState({
     required this.s,
     this.languageCode = 'en',

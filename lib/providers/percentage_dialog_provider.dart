@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/legacy.dart';
 
 class PercentageDialogState {
-
   PercentageDialogState({
     this.isShowing = false,
     this.progress = 0.0,

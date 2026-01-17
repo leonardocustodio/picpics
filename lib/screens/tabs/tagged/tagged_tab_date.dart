@@ -52,163 +52,165 @@ class _TaggedTabDateState extends ConsumerState<TaggedTabDate> {
         return const StaggeredTile.count(1, 1);
       },
       itemBuilder: (_, int index) {
-        return Builder(builder: (context) {
-          if (taggedState.allTaggedPicDateWiseList[index] is DateTime) {
-            var isSelected = false;
-            if (taggedState.multiPicBar) {
-              var i = index + 1;
-              isSelected = true;
+        return Builder(
+          builder: (context) {
+            if (taggedState.allTaggedPicDateWiseList[index] is DateTime) {
+              var isSelected = false;
+              if (taggedState.multiPicBar) {
+                var i = index + 1;
+                isSelected = true;
 
-              while (i < taggedState.allTaggedPicDateWiseList.length &&
-                  taggedState.allTaggedPicDateWiseList[i] is String) {
-                if (taggedState.selectedMultiBarPics[taggedState.allTaggedPicDateWiseList[i]] == null) {
-                  isSelected = false;
-                  break;
+                while (i < taggedState.allTaggedPicDateWiseList.length &&
+                    taggedState.allTaggedPicDateWiseList[i] is String) {
+                  if (taggedState.selectedMultiBarPics[taggedState.allTaggedPicDateWiseList[i]] == null) {
+                    isSelected = false;
+                    break;
+                  }
+                  i++;
                 }
-                i++;
               }
+
+              return GestureDetector(
+                onTap: () {
+                  if (taggedState.multiPicBar) {
+                    var i = index + 1;
+                    if (isSelected) {
+                      while (i < taggedState.allTaggedPicDateWiseList.length &&
+                          taggedState.allTaggedPicDateWiseList[i] is String) {
+                        taggedNotifier.removeSelectedMultiBarPic(
+                          taggedState.allTaggedPicDateWiseList[i] as String,
+                        );
+                        i++;
+                      }
+                    } else {
+                      while (i < taggedState.allTaggedPicDateWiseList.length &&
+                          taggedState.allTaggedPicDateWiseList[i] is String) {
+                        taggedNotifier.addSelectedMultiBarPic(
+                          taggedState.allTaggedPicDateWiseList[i] as String,
+                        );
+                        i++;
+                      }
+                    }
+                  }
+                },
+                child: DateHeaderWidget(
+                  date: taggedState.allTaggedPicDateWiseList[index] as DateTime,
+                  isSelected: isSelected,
+                  isMonth: true,
+                ),
+              );
             }
 
-            return GestureDetector(
-              onTap: () {
-                if (taggedState.multiPicBar) {
-                  var i = index + 1;
-                  if (isSelected) {
-                    while (i < taggedState.allTaggedPicDateWiseList.length &&
-                        taggedState.allTaggedPicDateWiseList[i] is String) {
-                      taggedNotifier.removeSelectedMultiBarPic(
-                        taggedState.allTaggedPicDateWiseList[i] as String,
-                      );
-                      i++;
+            final picId = taggedState.allTaggedPicDateWiseList[index];
+            final blurHash = blurHashState.blurHash[taggedState.allTaggedPicDateWiseList[index]];
+            final picStore = tabsState.picStoreMap[taggedState.allTaggedPicDateWiseList[index]];
+            return Padding(
+              padding: const EdgeInsets.all(4),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () async {
+                    if (taggedState.multiPicBar) {
+                      if (taggedState.selectedMultiBarPics[picId] == null) {
+                        taggedNotifier.addSelectedMultiBarPic(picId as String);
+                      } else {
+                        taggedNotifier.removeSelectedMultiBarPic(picId as String);
+                      }
+                      return;
                     }
-                  } else {
-                    while (i < taggedState.allTaggedPicDateWiseList.length &&
-                        taggedState.allTaggedPicDateWiseList[i] is String) {
-                      taggedNotifier.addSelectedMultiBarPic(
-                        taggedState.allTaggedPicDateWiseList[i] as String,
-                      );
-                      i++;
-                    }
-                  }
-                }
-              },
-              child: DateHeaderWidget(
-                date: taggedState.allTaggedPicDateWiseList[index] as DateTime,
-                isSelected: isSelected,
-                isMonth: true,
-              ),
-            );
-          }
 
-          final picId = taggedState.allTaggedPicDateWiseList[index];
-          final blurHash = blurHashState.blurHash[taggedState.allTaggedPicDateWiseList[index]];
-          final picStore = tabsState.picStoreMap[taggedState.allTaggedPicDateWiseList[index]];
-          return Padding(
-            padding: const EdgeInsets.all(4),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: () async {
-                  if (taggedState.multiPicBar) {
-                    if (taggedState.selectedMultiBarPics[picId] == null) {
-                      taggedNotifier.addSelectedMultiBarPic(picId as String);
-                    } else {
-                      taggedNotifier.removeSelectedMultiBarPic(picId as String);
-                    }
-                    return;
-                  }
-
-                  await Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (context) => PhotoScreen(
-                        picId: picId as String,
-                        picIdList: taggedState.allTaggedPicIdList.keys.toList(),
+                    await Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (context) => PhotoScreen(
+                          picId: picId as String,
+                          picIdList: taggedState.allTaggedPicIdList.keys.toList(),
+                        ),
                       ),
-                    ),
-                  );
-                },
-                child: GestureDetector(
-                  onLongPress: () {
-                    if (!taggedState.multiPicBar) {
-                      taggedNotifier.setMultiPicBar(value: true);
-                    }
-                    taggedNotifier.addSelectedMultiBarPic(picId as String);
+                    );
                   },
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: PhotoWidget(
-                          picStore: picStore,
-                          hash: blurHash,
-                        ),
-                      ),
-                      if (picStore != null && picStore.state.isStarred)
-                        Positioned(
-                          left: 6,
-                          top: 6,
-                          child: Image.asset('lib/images/staryellowico.png'),
-                        ),
-                      if (taggedState.multiPicBar &&
-                          taggedState.selectedMultiBarPics[picId] != null &&
-                          (taggedState.selectedMultiBarPics[picId] ?? false)) ...[
-                        Container(
-                          constraints: const BoxConstraints.expand(),
-                          decoration: BoxDecoration(
-                            color: kSecondaryColor.withValues(alpha: 0.3),
-                            border: Border.all(
-                              color: kSecondaryColor,
-                              width: 2,
-                            ),
+                  child: GestureDetector(
+                    onLongPress: () {
+                      if (!taggedState.multiPicBar) {
+                        taggedNotifier.setMultiPicBar(value: true);
+                      }
+                      taggedNotifier.addSelectedMultiBarPic(picId as String);
+                    },
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: PhotoWidget(
+                            picStore: picStore,
+                            hash: blurHash,
                           ),
                         ),
-                        Positioned(
-                          left: 8,
-                          top: 6,
-                          child: Container(
-                            height: 20,
-                            width: 20,
-                            decoration: BoxDecoration(
-                              gradient: kSecondaryGradient,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Image.asset('lib/images/checkwhiteico.png'),
-                          ),
-                        ),
-                        if (picStore?.state.isPrivate ?? false)
+                        if (picStore != null && picStore.state.isStarred)
                           Positioned(
-                            right: 8,
+                            left: 6,
+                            top: 6,
+                            child: Image.asset('lib/images/staryellowico.png'),
+                          ),
+                        if (taggedState.multiPicBar &&
+                            taggedState.selectedMultiBarPics[picId] != null &&
+                            (taggedState.selectedMultiBarPics[picId] ?? false)) ...[
+                          Container(
+                            constraints: const BoxConstraints.expand(),
+                            decoration: BoxDecoration(
+                              color: kSecondaryColor.withValues(alpha: 0.3),
+                              border: Border.all(
+                                color: kSecondaryColor,
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            left: 8,
                             top: 6,
                             child: Container(
                               height: 20,
                               width: 20,
-                              padding: const EdgeInsets.only(bottom: 2),
                               decoration: BoxDecoration(
+                                gradient: kSecondaryGradient,
                                 borderRadius: BorderRadius.circular(10),
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xffffcc00),
-                                    Color(0xffffe98f),
-                                  ],
-                                  stops: [0.2291666716337204, 1],
-                                  end: Alignment(1, -0),
-                                  // angle: 0,
-                                  // scale: undefined,
-                                ),
                               ),
-                              child: Image.asset(
-                                'lib/images/smallwhitelock.png',
-                              ),
+                              child: Image.asset('lib/images/checkwhiteico.png'),
                             ),
                           ),
+                          if (picStore?.state.isPrivate ?? false)
+                            Positioned(
+                              right: 8,
+                              top: 6,
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                padding: const EdgeInsets.only(bottom: 2),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xffffcc00),
+                                      Color(0xffffe98f),
+                                    ],
+                                    stops: [0.2291666716337204, 1],
+                                    end: Alignment(1, -0),
+                                    // angle: 0,
+                                    // scale: undefined,
+                                  ),
+                                ),
+                                child: Image.asset(
+                                  'lib/images/smallwhitelock.png',
+                                ),
+                              ),
+                            ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },);
+            );
+          },
+        );
       },
     );
   }

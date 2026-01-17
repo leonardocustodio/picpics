@@ -31,10 +31,11 @@ class PercentageDialog extends ConsumerWidget {
               children: [
                 Positioned.fill(
                   child: CircularPercentIndicator(
-                      radius: 70,
-                      percent: percentage,
-                      progressColor: Colors.green,
-                      backgroundColor: Colors.grey.withValues(alpha: .4),),
+                    radius: 70,
+                    percent: percentage,
+                    progressColor: Colors.green,
+                    backgroundColor: Colors.grey.withValues(alpha: .4),
+                  ),
                 ),
                 Align(
                   child: Text(

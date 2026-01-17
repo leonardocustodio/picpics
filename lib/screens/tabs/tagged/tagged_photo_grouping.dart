@@ -72,11 +72,13 @@ class TaggedPhotosGrouping extends ConsumerWidget {
             opacity: ignore ? 0.3 : 1.0,
             child: GestureDetector(
               onTap: () {
-                unawaited(Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => TaggedTabSelectiveTagKey(tagKey),
+                unawaited(
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => TaggedTabSelectiveTagKey(tagKey),
+                    ),
                   ),
-                ),);
+                );
               },
               child: Container(
                 margin: const EdgeInsets.all(4),

@@ -4,7 +4,6 @@ import 'package:picpics/model/tag_model.dart';
 import 'package:picpics/utils/helpers.dart';
 
 class AllTagsState {
-
   AllTagsState({
     this.selectedTags = const {},
     this.searchedTags = const {},
@@ -28,7 +27,6 @@ class AllTagsState {
 }
 
 class AllTagsNotifier extends StateNotifier<AllTagsState> {
-
   AllTagsNotifier(this.ref) : super(AllTagsState());
   final Ref ref;
 

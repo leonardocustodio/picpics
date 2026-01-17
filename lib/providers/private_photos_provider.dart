@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:picpics/database/app_database.dart';
 
 class PrivatePhotosState {
-
   PrivatePhotosState({
     this.showPrivate = false,
     this.privatePhotoIds = const [],

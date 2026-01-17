@@ -71,27 +71,29 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
           const Spacer(flex: 2),
           Shake(
             preferences: const AnimationPreferences(autoPlay: AnimationPlayStates.None),
-            child: Builder(builder: (context) {
-              var filledPositions = 0;
+            child: Builder(
+              builder: (context) {
+                var filledPositions = 0;
 
-              if (pinState.isWaitingRecoveryKey) {
-                if (index == 0) {
-                  filledPositions = pinState.recoveryCode.length;
-                } else if (index == 1) {
-                  filledPositions = pinState.pinTemp.length;
+                if (pinState.isWaitingRecoveryKey) {
+                  if (index == 0) {
+                    filledPositions = pinState.recoveryCode.length;
+                  } else if (index == 1) {
+                    filledPositions = pinState.pinTemp.length;
+                  } else {
+                    filledPositions = pinState.confirmPinTemp.length;
+                  }
                 } else {
-                  filledPositions = pinState.confirmPinTemp.length;
+                  if (index == 0) {
+                    filledPositions = pinState.pinTemp.length;
+                  } else {
+                    filledPositions = pinState.confirmPinTemp.length;
+                  }
                 }
-              } else {
-                if (index == 0) {
-                  filledPositions = pinState.pinTemp.length;
-                } else {
-                  filledPositions = pinState.confirmPinTemp.length;
-                }
-              }
 
-              return PinPlaceholder(filledPositions: filledPositions);
-            },),
+                return PinPlaceholder(filledPositions: filledPositions);
+              },
+            ),
           ),
           const Spacer(),
           NumberPad(onPinTapped: pinTapped),
@@ -178,13 +180,18 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
         }
       } else {
         pinNotifier.shakeKeyConfirm.currentState?.forward();
-        unawaited(Future.delayed(const Duration(seconds: 1, milliseconds: 300), () {
-          carouselPage = 0;
-          pinNotifier
-            ..setPinTemp('')
-            ..setConfirmPinTemp('');
-          unawaited(carouselController.animateToPage(0));
-        },),);
+        unawaited(
+          Future.delayed(
+            const Duration(seconds: 1, milliseconds: 300),
+            () {
+              carouselPage = 0;
+              pinNotifier
+                ..setPinTemp('')
+                ..setConfirmPinTemp('');
+              unawaited(carouselController.animateToPage(0));
+            },
+          ),
+        );
       }
     }
   }
@@ -225,41 +232,89 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
                     ],
                   ),
                   Expanded(
-                    child: Builder(builder: (context) {
-                      if (pinState.isWaitingRecoveryKey) {
-                        return CarouselSlider.builder(
-                          carouselController: carouselController,
-                          itemCount: 3,
-                          itemBuilder: (BuildContext context, int index, int _) {
-                            return _buildPinPad(context, index);
-                          },
-                          options: CarouselOptions(
-                            enableInfiniteScroll: false,
-                            height: double.maxFinite,
-                            viewportFraction: 1,
-                            scrollPhysics: const NeverScrollableScrollPhysics(),
-                          ),
-                        );
-                      }
+                    child: Builder(
+                      builder: (context) {
+                        if (pinState.isWaitingRecoveryKey) {
+                          return CarouselSlider.builder(
+                            carouselController: carouselController,
+                            itemCount: 3,
+                            itemBuilder: (BuildContext context, int index, int _) {
+                              return _buildPinPad(context, index);
+                            },
+                            options: CarouselOptions(
+                              enableInfiniteScroll: false,
+                              height: double.maxFinite,
+                              viewportFraction: 1,
+                              scrollPhysics: const NeverScrollableScrollPhysics(),
+                            ),
+                          );
+                        }
 
-                      if (userState.isPinRegistered) {
-                        String? assetImage;
+                        if (userState.isPinRegistered) {
+                          String? assetImage;
 
-                        if (userState.isBiometricActivated) {
-                          if (userState.availableBiometrics.contains(BiometricType.face)) {
-                            assetImage = 'lib/images/faceidwhiteico.png';
-                          } else if (userState.availableBiometrics.contains(BiometricType.iris)) {
-                            assetImage = 'lib/images/irisscannerwhiteico.png';
-                          } else if (userState.availableBiometrics.contains(BiometricType.fingerprint)) {
-                            assetImage = 'lib/images/fingerprintwhiteico.png';
+                          if (userState.isBiometricActivated) {
+                            if (userState.availableBiometrics.contains(BiometricType.face)) {
+                              assetImage = 'lib/images/faceidwhiteico.png';
+                            } else if (userState.availableBiometrics.contains(BiometricType.iris)) {
+                              assetImage = 'lib/images/irisscannerwhiteico.png';
+                            } else if (userState.availableBiometrics.contains(BiometricType.fingerprint)) {
+                              assetImage = 'lib/images/fingerprintwhiteico.png';
+                            }
                           }
+
+                          return Column(
+                            children: [
+                              const Spacer(),
+                              Text(
+                                s.your_secret_key,
+                                style: const TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: kSecondaryColor,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
+                              ),
+                              const Spacer(flex: 2),
+                              Shake(
+                                key: pinNotifier.shakeKey,
+                                preferences: const AnimationPreferences(autoPlay: AnimationPlayStates.None),
+                                child: PinPlaceholder(filledPositions: pinState.pinTemp.length),
+                              ),
+                              const Spacer(),
+                              NumberPad(onPinTapped: pinTapped),
+                              const Spacer(),
+                              if (assetImage != null)
+                                CupertinoButton(
+                                  onPressed: pinNotifier.authenticate,
+                                  child: Image.asset(assetImage),
+                                ),
+                              const SizedBox(height: 16),
+                              CupertinoButton(
+                                onPressed: pinNotifier.recoverPin,
+                                child: Text(
+                                  s.forgot_secret_key,
+                                  style: const TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: kWhiteColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                  ),
+                                ),
+                              ),
+                              const Spacer(flex: 2),
+                            ],
+                          );
                         }
 
                         return Column(
                           children: [
                             const Spacer(),
                             Text(
-                              s.your_secret_key,
+                              (pinState.invalidAccessCode) ? 'Invalid Access Code' : s.access_code,
                               style: const TextStyle(
                                 fontFamily: 'Lato',
                                 color: kSecondaryColor,
@@ -269,25 +324,13 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
                                 letterSpacing: -0.4099999964237213,
                               ),
                             ),
-                            const Spacer(flex: 2),
-                            Shake(
-                              key: pinNotifier.shakeKey,
-                              preferences: const AnimationPreferences(autoPlay: AnimationPlayStates.None),
-                              child: PinPlaceholder(filledPositions: pinState.pinTemp.length),
-                            ),
-                            const Spacer(),
-                            NumberPad(onPinTapped: pinTapped),
-                            const Spacer(),
-                            if (assetImage != null)
-                              CupertinoButton(
-                                onPressed: pinNotifier.authenticate,
-                                child: Image.asset(assetImage),
-                              ),
-                            const SizedBox(height: 16),
-                            CupertinoButton(
-                              onPressed: pinNotifier.recoverPin,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16),
                               child: Text(
-                                s.forgot_secret_key,
+                                s.access_code_sent(
+                                  pinState.email.isEmpty ? 'user@email.com' : pinState.email,
+                                ),
+                                textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   fontFamily: 'Lato',
                                   color: kWhiteColor,
@@ -297,53 +340,19 @@ class _AccessCodeScreenState extends ConsumerState<AccessCodeScreen> {
                                 ),
                               ),
                             ),
-                            const Spacer(flex: 2),
+                            const Spacer(),
+                            Shake(
+                              key: pinNotifier.shakeKey,
+                              preferences: const AnimationPreferences(autoPlay: AnimationPlayStates.None),
+                              child: PinPlaceholder(filledPositions: pinState.accessCode.length),
+                            ),
+                            const Spacer(),
+                            NumberPad(onPinTapped: pinTapped),
+                            const Spacer(),
                           ],
                         );
-                      }
-
-                      return Column(
-                        children: [
-                          const Spacer(),
-                          Text(
-                            (pinState.invalidAccessCode) ? 'Invalid Access Code' : s.access_code,
-                            style: const TextStyle(
-                              fontFamily: 'Lato',
-                              color: kSecondaryColor,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
-                              letterSpacing: -0.4099999964237213,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Text(
-                              s.access_code_sent(
-                                pinState.email.isEmpty ? 'user@email.com' : pinState.email,
-                              ),
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontFamily: 'Lato',
-                                color: kWhiteColor,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                              ),
-                            ),
-                          ),
-                          const Spacer(),
-                          Shake(
-                            key: pinNotifier.shakeKey,
-                            preferences: const AnimationPreferences(autoPlay: AnimationPlayStates.None),
-                            child: PinPlaceholder(filledPositions: pinState.accessCode.length),
-                          ),
-                          const Spacer(),
-                          NumberPad(onPinTapped: pinTapped),
-                          const Spacer(),
-                        ],
-                      );
-                    },),
+                      },
+                    ),
                   ),
                 ],
               ),

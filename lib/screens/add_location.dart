@@ -52,46 +52,56 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
       String? city;
       String? country;
 
-      for (final components in selectedGeolocation!.fullJSON!['address_components'] as List<dynamic>) {
-        final types = components['types'] as List<dynamic>;
+      for (final component in selectedGeolocation!.fullJSON!['address_components'] as List<dynamic>) {
+        final componentMap = component as Map<String, dynamic>;
+        final types = componentMap['types'] as List<dynamic>;
+        final longName = componentMap['long_name'] as String?;
         if (types.contains('establishment')) {
-          AppLogger.d('find establishment: ${components["long_name"]}');
-          location = components['long_name'] as String?;
+          AppLogger.d('find establishment: $longName');
+          location = longName;
           continue;
         } else if (types.contains('locality')) {
-          AppLogger.d('locality: ${components["long_name"]}');
-          city = components['long_name'] as String?;
+          AppLogger.d('locality: $longName');
+          city = longName;
           continue;
         } else if (types.contains('administrative_area_level_2')) {
-          AppLogger.d('find administrative_area_level_2: ${components["long_name"]}');
-          city = components['long_name'] as String?;
+          AppLogger.d('find administrative_area_level_2: $longName');
+          city = longName;
           continue;
         } else if (types.contains('administrative_area_level_1')) {
-          AppLogger.d('find administrative_area_level_1: ${components["long_name"]}');
+          AppLogger.d('find administrative_area_level_1: $longName');
           continue;
         } else if (types.contains('country')) {
-          AppLogger.d('country: ${components["long_name"]}');
-          country = components['long_name'] as String?;
+          AppLogger.d('country: $longName');
+          country = longName;
           break;
         }
       }
 
       if (location != null) {
-        final latLng = selectedGeolocation!.coordinates as LatLng;
-        unawaited(picStore.saveLocation(
-          lat: latLng.latitude,
-          long: latLng.longitude,
-          specific: location,
-          general: city,
-        ));
+        final latLng = selectedGeolocation!.coordinates;
+        if (latLng is LatLng) {
+          unawaited(
+            picStore.saveLocation(
+              lat: latLng.latitude,
+              long: latLng.longitude,
+              specific: location,
+              general: city,
+            ),
+          );
+        }
       } else {
-        final latLng = selectedGeolocation!.coordinates as LatLng;
-        unawaited(picStore.saveLocation(
-          lat: latLng.latitude,
-          long: latLng.longitude,
-          specific: city,
-          general: country,
-        ));
+        final latLng = selectedGeolocation!.coordinates;
+        if (latLng is LatLng) {
+          unawaited(
+            picStore.saveLocation(
+              lat: latLng.latitude,
+              long: latLng.longitude,
+              specific: city,
+              general: country,
+            ),
+          );
+        }
       }
     }
 
@@ -297,7 +307,7 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                         const ImageConfiguration(devicePixelRatio: 2.5),
                         'lib/images/pin.png',
                       ),
-                      position: geolocation.coordinates as LatLng,
+                      position: geolocation.coordinates!,
                     );
 
                     final controller = await _mapController.future;
@@ -307,11 +317,11 @@ class _AddLocationScreenState extends ConsumerState<AddLocationScreen> {
                     });
 
                     await controller.animateCamera(
-                      CameraUpdate.newLatLng(geolocation.coordinates as LatLng),
+                      CameraUpdate.newLatLng(geolocation.coordinates!),
                     );
                     await controller.animateCamera(
                       CameraUpdate.newLatLngBounds(
-                        geolocation.bounds as LatLngBounds,
+                        geolocation.bounds!,
                         0,
                       ),
                     );

@@ -27,10 +27,10 @@ import 'package:share_plus/share_plus.dart';
 
 /// Tabs state for managing tab navigation, photo selection, and photo management
 class TabsState {
-
   const TabsState({
     // UI controllers
-    required this.expandableController, required this.expandablePaddingController, // Core tab state
+    required this.expandableController,
+    required this.expandablePaddingController, // Core tab state
     this.currentIndex = 0,
     this.isTagging = false,
     this.isMultiSelecting = false,
@@ -167,12 +167,13 @@ class TabsState {
 /// Notifier for tabs state
 /// Manages tab navigation, photo selection, and photo operations
 class TabsNotifier extends StateNotifier<TabsState> {
-
   TabsNotifier(this._ref)
-      : super(TabsState(
-          expandableController: ExpandableController(initialExpanded: false),
-          expandablePaddingController: ExpandableController(initialExpanded: false),
-        ),);
+      : super(
+          TabsState(
+            expandableController: ExpandableController(initialExpanded: false),
+            expandablePaddingController: ExpandableController(initialExpanded: false),
+          ),
+        );
   final Ref _ref;
 
   // Scroll controllers (instance variables, not state)
@@ -244,9 +245,7 @@ class TabsNotifier extends StateNotifier<TabsState> {
     try {
       final filterOptionGroup = FilterOptionGroup()
         ..addOrderOption(
-          const OrderOption(
-            
-          ),
+          const OrderOption(),
         );
 
       AppLogger.d('[TabsProvider] Fetching asset paths from PhotoManager...');

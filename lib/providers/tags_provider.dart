@@ -9,7 +9,6 @@ import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/helpers.dart';
 
 class TagsState {
-
   TagsState({
     this.allTags = const {},
     this.mostUsedTags = const {},
@@ -61,7 +60,6 @@ class TagsState {
 }
 
 class TagsNotifier extends StateNotifier<TagsState> {
-
   TagsNotifier(this.ref) : super(TagsState());
   final AppDatabase _database = AppDatabase();
   final Ref ref;

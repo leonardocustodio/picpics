@@ -2,7 +2,6 @@ import 'dart:typed_data';
 import 'package:flutter_riverpod/legacy.dart';
 
 class BlurHashState {
-
   BlurHashState({
     this.blurHashes = const {},
     this.isEnabled = true,

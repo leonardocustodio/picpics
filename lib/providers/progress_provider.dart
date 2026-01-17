@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/legacy.dart';
 
 /// Progress dialog state for showing loading/progress indicators
 class ProgressState {
-
   const ProgressState({
     this.total = 0.0,
     this.value = 0.0,

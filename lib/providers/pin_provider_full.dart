@@ -17,7 +17,8 @@ import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/cupertino_input_dialog.dart';
 import 'package:picpics/widgets/general_modal.dart';
 
-class PinFullState { // Internal pin storage
+class PinFullState {
+  // Internal pin storage
 
   PinFullState({
     this.email = '',
@@ -78,7 +79,6 @@ class PinFullState { // Internal pin storage
 }
 
 class PinFullNotifier extends StateNotifier<PinFullState> {
-
   PinFullNotifier(this.ref) : super(PinFullState());
   final Ref ref;
 

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/model/pic.dart';
 
 class AllTagsScreen extends ConsumerWidget {
-
   const AllTagsScreen({super.key, this.picStore});
   static const id = 'all_tags_screen';
   final Pic? picStore;
@@ -21,9 +20,10 @@ class AllTagsScreen extends ConsumerWidget {
 }
 
 class PhotoScreen extends ConsumerWidget {
-
   const PhotoScreen({
-    required this.picId, required this.picIdList, super.key,
+    required this.picId,
+    required this.picIdList,
+    super.key,
   });
   static const id = 'photo_screen';
   final String picId;
@@ -52,7 +52,6 @@ class SettingsScreen extends ConsumerWidget {
 }
 
 class AddLocationScreen extends ConsumerWidget {
-
   const AddLocationScreen(this.pic, {super.key});
   static const id = 'add_location_screen';
   final Pic? pic;
@@ -67,7 +66,6 @@ class AddLocationScreen extends ConsumerWidget {
 }
 
 class PinScreen extends ConsumerWidget {
-
   const PinScreen({super.key});
   static const id = 'pin_screen';
 
@@ -94,7 +92,6 @@ class EmailScreen extends ConsumerWidget {
 }
 
 class AccessCodeScreen extends ConsumerWidget {
-
   const AccessCodeScreen({super.key});
   static const id = 'access_code_screen';
 

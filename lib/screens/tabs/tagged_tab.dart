@@ -215,9 +215,7 @@ class TaggedTab extends ConsumerWidget {
                               titleLeft: s.toggle_date,
                               titleRight: s.toggle_tags,
                               activeToggle: taggedState.toggleIndexTagged,
-                              onToggle: (int index) {
-                                taggedNotifier.setToggleIndexTagged(index);
-                              },
+                              onToggle: taggedNotifier.setToggleIndexTagged,
                             ),
                           ),
                         ),

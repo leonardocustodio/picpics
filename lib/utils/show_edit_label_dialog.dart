@@ -40,10 +40,12 @@ Future<void> showEditTagModal(String tagKey, BuildContext context, WidgetRef ref
                   'Editing tag - Old name: $tagKey - New name: ${alertInputController.text}',
                 );
                 if (tagName != alertInputController.text) {
-                  unawaited(ref.read(tagsProvider.notifier).editTagName(
-                        oldTagKey: tagKey,
-                        newName: alertInputController.text,
-                      ),);
+                  unawaited(
+                    ref.read(tagsProvider.notifier).editTagName(
+                          oldTagKey: tagKey,
+                          newName: alertInputController.text,
+                        ),
+                  );
                 }
                 Navigator.of(context).pop();
               },

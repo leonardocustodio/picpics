@@ -164,7 +164,8 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
                   opacity: _listOpacity.value,
                   child: Column(
                     children: <Widget>[
-                      for (final prediction in _placePredictions) _placeOption(Place.fromJSON(prediction, geocode)),
+                      for (final prediction in _placePredictions)
+                        _placeOption(Place.fromJSON(prediction as Map<String, dynamic>, geocode)),
                     ],
                   ),
                 ),
@@ -307,7 +308,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
       _textEditingController.removeListener(_autocompletePlace);
 
       if (_currentInput.isEmpty) {
-        if (!_containerHeight.isDismissed) _closeSearch();
+        if (!_containerHeight.isDismissed) unawaited(_closeSearch());
         _textEditingController.addListener(_autocompletePlace);
         return;
       }
@@ -322,10 +323,15 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
         return;
       }
 
-      unawaited(Future.delayed(const Duration(milliseconds: 500), () {
-        _textEditingController.addListener(_autocompletePlace);
-        if (_isEditing) unawaited(_autocompletePlace());
-      },),);
+      unawaited(
+        Future.delayed(
+          const Duration(milliseconds: 500),
+          () {
+            _textEditingController.addListener(_autocompletePlace);
+            if (_isEditing) unawaited(_autocompletePlace());
+          },
+        ),
+      );
     }
   }
 

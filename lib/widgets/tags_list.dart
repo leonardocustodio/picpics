@@ -98,8 +98,7 @@ class _TagsListState extends ConsumerState<TagsList> {
 
       /// We'll have to avoid the tags whose tag name is null and
       /// also if the tags is [kSecretTagKey] and showPrivate is False
-      if (tagsState.allTags[tagKey]?.title == null ||
-          (!privatePhotosState.showPrivate && tagKey == kSecretTagKey)) {
+      if (tagsState.allTags[tagKey]?.title == null || (!privatePhotosState.showPrivate && tagKey == kSecretTagKey)) {
         continue;
       }
 

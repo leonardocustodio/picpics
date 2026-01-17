@@ -29,10 +29,12 @@ import 'package:share_plus/share_plus.dart';
 
 /// Immutable state for a single photo store
 class PicStoreState {
-
   const PicStoreState({
     required this.photoId,
-    required this.photoPath, required this.thumbPath, required this.createdAt, this.entity,
+    required this.photoPath,
+    required this.thumbPath,
+    required this.createdAt,
+    this.entity,
     this.isStarred = false,
     this.isPrivate = false,
     this.latitude,
@@ -128,7 +130,6 @@ class PicStoreState {
 
 /// State notifier for managing a single photo's state
 class PicStoreNotifier extends StateNotifier<PicStoreState> {
-
   PicStoreNotifier(
     this.ref, {
     required AssetEntity entityValue,
@@ -139,16 +140,18 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     double? originalLatitude,
     double? originalLongitude,
     bool deletedFromCameraRoll = false,
-  }) : super(PicStoreState(
-          photoId: photoId,
-          entity: entityValue,
-          photoPath: photoPath,
-          thumbPath: thumbPath,
-          createdAt: createdAt,
-          originalLatitude: originalLatitude,
-          originalLongitude: originalLongitude,
-          deletedFromCameraRoll: deletedFromCameraRoll,
-        ),) {
+  }) : super(
+          PicStoreState(
+            photoId: photoId,
+            entity: entityValue,
+            photoPath: photoPath,
+            thumbPath: thumbPath,
+            createdAt: createdAt,
+            originalLatitude: originalLatitude,
+            originalLongitude: originalLongitude,
+            deletedFromCameraRoll: deletedFromCameraRoll,
+          ),
+        ) {
     database = AppDatabase();
     unawaited(_initialize());
   }
@@ -697,8 +700,7 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
       await database.updatePhoto(getPic);
 
       // Update local tags state
-      final updatedTags = Map<String, TagModel>.from(state.tags)
-        ..removeWhere((key, _) => acceptedTags[key] != null);
+      final updatedTags = Map<String, TagModel>.from(state.tags)..removeWhere((key, _) => acceptedTags[key] != null);
       state = state.copyWith(tags: updatedTags);
 
       if (acceptedTags[kSecretTagKey] != null) {
@@ -835,7 +837,8 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
 
 // Note: PicStore instances are managed by tabs_provider in a picStoreMap
 // This provider declaration is for reference but instances are created directly
-final StateNotifierProviderFamily<PicStoreNotifier, PicStoreState, String> picStoreProvider = StateNotifierProvider.family<PicStoreNotifier, PicStoreState, String>(
+final StateNotifierProviderFamily<PicStoreNotifier, PicStoreState, String> picStoreProvider =
+    StateNotifierProvider.family<PicStoreNotifier, PicStoreState, String>(
   (ref, photoId) {
     throw UnimplementedError(
       'PicStore instances should be created via tabs_provider.explorPicStore()',

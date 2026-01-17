@@ -138,12 +138,14 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                   CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     onPressed: () {
-                      unawaited(Navigator.push<void>(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (context) => const SettingsScreen(),
+                      unawaited(
+                        Navigator.push<void>(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (context) => const SettingsScreen(),
+                          ),
                         ),
-                      ),);
+                      );
                     },
                     child: Image.asset('lib/images/settings.png'),
                   ),

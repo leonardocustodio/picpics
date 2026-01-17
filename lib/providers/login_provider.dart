@@ -16,7 +16,6 @@ enum Board {
 }
 
 class LoginState {
-
   LoginState({
     this.slideIndex = 0,
     List<Board>? boards,
@@ -97,7 +96,6 @@ class LoginState {
 }
 
 class LoginNotifier extends StateNotifier<LoginState> {
-
   LoginNotifier(this.ref) : super(LoginState());
   final Ref ref;
   final AppDatabase _database = AppDatabase();

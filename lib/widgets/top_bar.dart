@@ -24,11 +24,11 @@ class TopBar extends ConsumerWidget {
     this.onSubmitted,
     this.onChanged,
   }) : assert(
-         (searchEditingController == null
-             ? (onChanged == null && onSubmitted == null)
-             : (onChanged != null && onSubmitted != null)),
-         'searchEditingController requires both onChanged and onSubmitted callbacks',
-       );
+          (searchEditingController == null
+              ? (onChanged == null && onSubmitted == null)
+              : (onChanged != null && onSubmitted != null)),
+          'searchEditingController requires both onChanged and onSubmitted callbacks',
+        );
 
   final FocusNode? searchFocusNode;
   final bool showUntag;
@@ -113,7 +113,7 @@ class TopBar extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: SecretSwitch(
                     value: privatePhotosState.showPrivate,
-                    onChanged: (value) {
+                    onChanged: ({required bool value}) {
                       AppLogger.d('turn off');
                       ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
                     },
@@ -130,7 +130,8 @@ class TopBar extends ConsumerWidget {
                 CupertinoButton(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   onPressed: () {
-                    unawaited(Navigator.of(context).push<void>(MaterialPageRoute<void>(builder: (_) => const SettingsScreen())));
+                    unawaited(Navigator.of(context)
+                        .push<void>(MaterialPageRoute<void>(builder: (_) => const SettingsScreen())));
                   },
                   child: Image.asset('lib/images/settings.png'),
                 ),

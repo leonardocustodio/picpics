@@ -13,7 +13,6 @@ import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/languages.dart';
 
 class UserState {
-
   UserState({
     this.appVersion = '',
     this.deviceLocale = '',
@@ -129,7 +128,6 @@ class UserState {
 }
 
 class UserNotifier extends StateNotifier<UserState> {
-
   UserNotifier(this.ref) : super(UserState());
   final LocalAuthentication biometricAuth = LocalAuthentication();
   final AppDatabase database = AppDatabase();

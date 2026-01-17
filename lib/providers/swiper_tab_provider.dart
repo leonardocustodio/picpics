@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/legacy.dart';
 
 class SwiperTabState {
-
   SwiperTabState({
     this.currentIndex = 0,
     this.photoIds = const [],

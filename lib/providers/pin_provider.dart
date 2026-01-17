@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/legacy.dart';
 
 class PinState {
-
   PinState({
     this.pin = '',
     this.isPinSet = false,

@@ -3,6 +3,9 @@ import 'package:picpics/constants.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
+/// Callback type for secret switch value changes
+typedef SecretSwitchCallback = void Function({required bool value});
+
 class SecretSwitch extends StatefulWidget {
   const SecretSwitch({
     required this.value,
@@ -10,7 +13,7 @@ class SecretSwitch extends StatefulWidget {
     super.key,
   });
   final bool value;
-  final void Function(bool) onChanged;
+  final SecretSwitchCallback onChanged;
 
   @override
   SecretSwitchState createState() => SecretSwitchState();
@@ -48,7 +51,7 @@ class SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
           value: widget.value, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
           activeTrackColor: kYellowColor,
           onChanged: (value) {
-            widget.onChanged(value);
+            widget.onChanged(value: value);
           },
         ),
         CustomAnimationBuilder<double>(

@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/legacy.dart';
 
 class PhotoScreenState {
-
   PhotoScreenState({
     this.currentPhotoId = '',
     this.photoIds = const [],

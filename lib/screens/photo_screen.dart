@@ -26,7 +26,6 @@ import 'package:picpics/utils/enum.dart';
 import 'package:picpics/widgets/tags_list.dart';
 
 class PhotoScreenState {
-
   PhotoScreenState({
     this.overlay = true,
     this.showSlideshow = false,
@@ -65,7 +64,8 @@ class PhotoScreenNotifier extends StateNotifier<PhotoScreenState> {
   }
 }
 
-final StateNotifierProvider<PhotoScreenNotifier, PhotoScreenState> photoScreenProvider = StateNotifierProvider.autoDispose<PhotoScreenNotifier, PhotoScreenState>((ref) {
+final StateNotifierProvider<PhotoScreenNotifier, PhotoScreenState> photoScreenProvider =
+    StateNotifierProvider.autoDispose<PhotoScreenNotifier, PhotoScreenState>((ref) {
   return PhotoScreenNotifier();
 });
 
@@ -545,7 +545,8 @@ class BottomTabsListWidget extends ConsumerWidget {
 
                 if (picStore != null) {
                   await Navigator.of(context).push<Object?>(
-                      MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)),);
+                    MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)),
+                  );
                   await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
                   await ref.read(tabsProvider.notifier).refreshUntaggedList();
                   return;
@@ -582,7 +583,8 @@ class BottomTabsListWidget extends ConsumerWidget {
 
                 if (picStore != null) {
                   await Navigator.of(context).push<Object?>(
-                      MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)),);
+                    MaterialPageRoute<Object?>(builder: (context) => AllTagsScreen(picStore: picStore)),
+                  );
                   await ref.read(taggedProvider.notifier).refreshTaggedPhotos();
                   await ref.read(tabsProvider.notifier).refreshUntaggedList();
                   return;

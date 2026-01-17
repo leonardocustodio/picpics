@@ -8,9 +8,10 @@ import 'package:picpics/utils/app_logger.dart';
 
 /// Tagged photos state for managing tagged photo collections
 class TaggedState {
-
   const TaggedState({
-    required this.expandableController, required this.expandablePaddingController, this.bottomOptionsBar = 0,
+    required this.expandableController,
+    required this.expandablePaddingController,
+    this.bottomOptionsBar = 0,
     this.taggedPicId = const {},
     this.allTaggedPicIdList = const {},
     this.picWiseTags = const {},
@@ -83,10 +84,12 @@ class TaggedState {
 /// Manages tagged photo collections, multi-selection, and photo operations
 class TaggedNotifier extends StateNotifier<TaggedState> {
   TaggedNotifier()
-      : super(TaggedState(
-          expandableController: ExpandableController(initialExpanded: false),
-          expandablePaddingController: ExpandableController(initialExpanded: false),
-        ),);
+      : super(
+          TaggedState(
+            expandableController: ExpandableController(initialExpanded: false),
+            expandablePaddingController: ExpandableController(initialExpanded: false),
+          ),
+        );
 
   final AppDatabase _database = AppDatabase();
 
