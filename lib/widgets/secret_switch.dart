@@ -10,7 +10,7 @@ class SecretSwitch extends StatefulWidget {
     super.key,
   });
   final bool value;
-  final Function onChanged;
+  final void Function(bool) onChanged;
 
   @override
   SecretSwitchState createState() => SecretSwitchState();

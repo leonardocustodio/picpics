@@ -372,11 +372,9 @@ class _TagsListState extends ConsumerState<TagsList> {
                         CupertinoButton(
                           padding: EdgeInsets.zero,
                           onPressed: () {
-                            if (widget.onSubmitted != null) {
-                              widget.onSubmitted!(
-                                widget.textEditingController!.text,
-                              );
-                            }
+                            widget.onSubmitted?.call(
+                              widget.textEditingController!.text,
+                            );
                           },
                           minimumSize: const Size(30, 30),
                           child: const Icon(

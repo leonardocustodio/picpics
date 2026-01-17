@@ -16,7 +16,7 @@ void main() {
         name: 'Tabs Provider Initialization',
         setup: () async {},
         action: () async {
-          final container = ProviderContainer()
+          ProviderContainer()
             ..read(tabsProvider)
             ..dispose();
         },
@@ -33,7 +33,7 @@ void main() {
         name: 'Tagged Provider Initialization',
         setup: () async {},
         action: () async {
-          final container = ProviderContainer()
+          ProviderContainer()
             ..read(taggedProvider)
             ..dispose();
         },
@@ -49,7 +49,7 @@ void main() {
         name: 'Tags Provider Initialization',
         setup: () async {},
         action: () async {
-          final container = ProviderContainer()
+          ProviderContainer()
             ..read(tagsProvider)
             ..dispose();
         },
@@ -237,7 +237,7 @@ void main() {
 
       final duration = await PerformanceTestUtils.measureExecutionTime(() async {
         for (var i = 0; i < 100; i++) {
-          notifier.setMultiPicBar(value: i % 2 == 0);
+          notifier.setMultiPicBar(value: i.isEven);
         }
       });
 
@@ -255,21 +255,21 @@ void main() {
 
       // Tabs provider
       results['tabs'] = await PerformanceTestUtils.measureExecutionTime(() async {
-        final container = ProviderContainer()
+        ProviderContainer()
           ..read(tabsProvider)
           ..dispose();
       });
 
       // Tagged provider
       results['tagged'] = await PerformanceTestUtils.measureExecutionTime(() async {
-        final container = ProviderContainer()
+        ProviderContainer()
           ..read(taggedProvider)
           ..dispose();
       });
 
       // Tags provider
       results['tags'] = await PerformanceTestUtils.measureExecutionTime(() async {
-        final container = ProviderContainer()
+        ProviderContainer()
           ..read(tagsProvider)
           ..dispose();
       });

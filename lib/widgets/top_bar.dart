@@ -23,9 +23,12 @@ class TopBar extends ConsumerWidget {
     this.onUntag,
     this.onSubmitted,
     this.onChanged,
-  }) : assert((searchEditingController == null
-            ? (onChanged == null && onSubmitted == null)
-            : (onChanged != null && onSubmitted != null)),);
+  }) : assert(
+         (searchEditingController == null
+             ? (onChanged == null && onSubmitted == null)
+             : (onChanged != null && onSubmitted != null)),
+         'searchEditingController requires both onChanged and onSubmitted callbacks',
+       );
 
   final FocusNode? searchFocusNode;
   final bool showUntag;

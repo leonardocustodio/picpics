@@ -13,7 +13,7 @@ class ToggleBar extends StatefulWidget {
     super.key,
   });
   final int activeToggle;
-  final Function onToggle;
+  final void Function(int) onToggle;
 
   final String titleLeft;
   final String titleRight;

@@ -34,7 +34,7 @@ class CustomisedTagsList extends ConsumerWidget {
   int? maxLength;
   final String? title;
   final OnTap? onTap;
-  final Function? onDoubleTap;
+  final void Function()? onDoubleTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

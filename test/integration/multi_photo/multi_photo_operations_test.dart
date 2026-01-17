@@ -190,7 +190,7 @@ void main() {
 
       // Toggle multiple times rapidly
       for (var i = 0; i < 10; i++) {
-        notifier.setMultiPicBar(value: i % 2 == 0);
+        notifier.setMultiPicBar(value: i.isEven);
       }
 
       final tabsState = container.read(tabsProvider);

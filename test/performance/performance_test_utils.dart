@@ -20,7 +20,7 @@ class PerformanceTestUtils {
   }
 
   /// Counts the number of times a provider rebuilds
-  /// TODO: Fix type annotation for Riverpod 3.x - ProviderListenable not exported
+  // TODO(picpics): Fix type annotation for Riverpod 3.x - ProviderListenable not exported
   static int countProviderRebuilds<T>(
     ProviderContainer container,
     dynamic provider,
@@ -41,8 +41,9 @@ class PerformanceTestUtils {
       action();
 
       subscription.close();
-    } catch (e) {
+    } on Exception catch (e) {
       // If listen fails due to type issues, run action without counting
+      debugPrint('Provider listen failed: $e');
       action();
     }
 
@@ -179,7 +180,7 @@ class BenchmarkResult {
   Duration get median {
     final sorted = List<Duration>.from(durations)..sort();
     final middle = sorted.length ~/ 2;
-    if (sorted.length % 2 == 0) {
+    if (sorted.length.isEven) {
       final avgMicros = (sorted[middle - 1].inMicroseconds +
                         sorted[middle].inMicroseconds) ~/ 2;
       return Duration(microseconds: avgMicros);

@@ -54,7 +54,7 @@ void main() {
       // Perform many operations
       final notifier = container.read(tabsProvider.notifier);
       for (var i = 0; i < 1000; i++) {
-        notifier.setMultiPicBar(value: i % 2 == 0);
+        notifier.setMultiPicBar(value: i.isEven);
       }
 
       final memoryAfter = PerformanceTestUtils.estimateMemoryUsage(
@@ -222,7 +222,7 @@ void main() {
         await PerformanceTestUtils.runConcurrentOperations([
           () async {
             for (var i = 0; i < 50; i++) {
-              tabsNotifier.setMultiPicBar(value: i % 2 == 0);
+              tabsNotifier.setMultiPicBar(value: i.isEven);
             }
           },
           () async {
@@ -322,7 +322,7 @@ void main() {
       // Perform 100 state changes
       for (var i = 0; i < 100; i++) {
         notifier
-          ..setMultiPicBar(value: i % 2 == 0)
+          ..setMultiPicBar(value: i.isEven)
           ..setToggleIndexUntagged(i % 3);
       }
 

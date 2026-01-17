@@ -4,6 +4,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:picpics/database/app_database.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 /// Tagged photos state for managing tagged photo collections
 class TaggedState {

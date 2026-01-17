@@ -290,7 +290,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                             ),
                           ),
                         );
-                        refreshEverything(ref);
+                        unawaited(refreshEverything(ref));
                       },
                     ),
                   ],
@@ -370,7 +370,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                         acceptedTagKeys: {tagKey: ''},
                       );
 
-                      HapticFeedback.lightImpact();
+                      unawaited(HapticFeedback.lightImpact());
                       tagsEditingController.clear();
                       ref.read(tagsProvider.notifier).setSearchText('');
                       await ref.read(tagsProvider.notifier).tagsSuggestionsCalculate();
