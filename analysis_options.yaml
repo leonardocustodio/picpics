@@ -65,7 +65,6 @@ linter:
     - avoid_slow_async_io
     - avoid_type_to_string
     - avoid_types_as_parameter_names
-    - avoid_types_on_closure_parameters
     - avoid_unnecessary_containers
     - avoid_unused_constructor_parameters
     - avoid_void_async
@@ -89,7 +88,6 @@ linter:
     - deprecated_member_use_from_same_package
     - directives_ordering
     - discarded_futures
-    - document_ignores
     - empty_catches
     - empty_constructor_bodies
     - empty_statements
@@ -108,7 +106,6 @@ linter:
     - library_annotations
     - library_prefixes
     - library_private_types_in_public_api
-    - lines_longer_than_80_chars
     - literal_only_boolean_expressions
     - matching_super_parameters
     - missing_code_block_language_in_doc_comment
@@ -168,7 +165,6 @@ linter:
     - prefer_spread_collections
     - prefer_typing_uninitialized_variables
     - provide_deprecation_message
-    - public_member_api_docs
     - recursive_getters
     - remove_deprecations_in_breaking_versions
     - require_trailing_commas
