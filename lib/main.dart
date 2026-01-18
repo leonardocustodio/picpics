@@ -41,6 +41,12 @@ void main() async {
   // Initialize logger
   AppLogger.init();
 
+  // Configure image cache for better performance
+  // Increase maximum number of images to cache
+  PaintingBinding.instance.imageCache.maximumSize = 200;
+  // Increase maximum cache size in bytes (100MB)
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 100 * 1024 * 1024;
+
   // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

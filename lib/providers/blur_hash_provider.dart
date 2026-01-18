@@ -1,10 +1,32 @@
-import 'dart:typed_data';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:image/image.dart' as img;
 import 'package:picpics/database/app_database.dart';
 import 'package:picpics/third_party_lib/src/blurhash.dart';
 import 'package:picpics/utils/app_logger.dart';
+
+/// Maximum number of blur hashes to keep in memory cache
+/// to prevent excessive memory usage
+const int kMaxBlurHashCacheSize = 500;
+
+/// Compute blur hash on isolate to avoid blocking UI thread
+/// This is called via Flutter's compute() function
+String _computeBlurHash(Uint8List imageData) {
+  final image = img.decodeImage(imageData);
+  if (image == null) {
+    return '';
+  }
+
+  // Resize to small dimensions for faster encoding
+  final resizedImage = img.copyResize(
+    image,
+    width: 32,
+    height: (32 * image.height / image.width).round(),
+  );
+
+  final blurHash = BlurHash.encode(resizedImage);
+  return blurHash.hash;
+}
 
 class BlurHashState {
   BlurHashState({
@@ -41,6 +63,15 @@ class BlurHashNotifier extends StateNotifier<BlurHashState> {
 
   void addBlurHash(String imageId, String blurHash) {
     final hashes = Map<String, String>.from(state.blurHashes);
+
+    // Enforce cache size limit to prevent memory issues
+    if (hashes.length >= kMaxBlurHashCacheSize && !hashes.containsKey(imageId)) {
+      // Remove oldest entries (first 10% of cache)
+      final keysToRemove = hashes.keys.take(kMaxBlurHashCacheSize ~/ 10).toList();
+      keysToRemove.forEach(hashes.remove);
+      AppLogger.d('Blur hash cache pruned, removed ${keysToRemove.length} entries');
+    }
+
     hashes[imageId] = blurHash;
     state = state.copyWith(blurHashes: hashes);
   }
@@ -75,6 +106,7 @@ class BlurHashNotifier extends StateNotifier<BlurHashState> {
   }
 
   /// Generate and store a blur hash for an image
+  /// Uses compute() to run encoding on a separate isolate for better UI performance
   Future<String?> createBlurHash(String imageId, Uint8List imageData) async {
     // Check if already cached in memory
     if (state.blurHashes.containsKey(imageId)) {
@@ -92,30 +124,19 @@ class BlurHashNotifier extends StateNotifier<BlurHashState> {
       AppLogger.w('Error checking cached blur hash: $e');
     }
 
-    // Generate new blur hash
+    // Generate new blur hash on isolate to avoid blocking UI
     state = state.copyWith(isGenerating: true);
 
     try {
-      // Decode image data
-      final image = img.decodeImage(imageData);
-      if (image == null) {
+      // Use compute() to run blur hash encoding on a separate isolate
+      // This prevents UI jank when processing large images
+      final hashString = await compute(_computeBlurHash, imageData);
+
+      if (hashString.isEmpty) {
         AppLogger.w('Failed to decode image for blur hash generation');
         state = state.copyWith(isGenerating: false);
         return null;
       }
-
-      // Resize image to smaller dimensions for faster encoding
-      // BlurHash works best with small images
-      final resizedImage = img.copyResize(
-        image,
-        width: 32,
-        height: (32 * image.height / image.width).round(),
-      );
-
-      // Generate blur hash using the third_party_lib BlurHash encoder
-      final blurHash = BlurHash.encode(resizedImage);
-
-      final hashString = blurHash.hash;
 
       // Store in memory
       addBlurHash(imageId, hashString);
@@ -147,6 +168,7 @@ class BlurHashNotifier extends StateNotifier<BlurHashState> {
   }
 
   /// Batch generate blur hashes for multiple images
+  /// Each encoding runs on a separate isolate via compute()
   Future<void> batchCreateBlurHashes(
     Map<String, Uint8List> images,
   ) async {
@@ -162,22 +184,15 @@ class BlurHashNotifier extends StateNotifier<BlurHashState> {
       }
 
       try {
-        final image = img.decodeImage(imageData);
-        if (image == null) continue;
+        // Use compute() for isolate-based encoding
+        final hashString = await compute(_computeBlurHash, imageData);
+        if (hashString.isEmpty) continue;
 
-        final resizedImage = img.copyResize(
-          image,
-          width: 32,
-          height: (32 * image.height / image.width).round(),
-        );
-
-        final blurHash = BlurHash.encode(resizedImage);
-
-        addBlurHash(imageId, blurHash.hash);
+        addBlurHash(imageId, hashString);
         newHashes.add(
           PicBlurHash(
             photoId: imageId,
-            blurHash: blurHash.hash,
+            blurHash: hashString,
           ),
         );
       } on Exception catch (e) {
