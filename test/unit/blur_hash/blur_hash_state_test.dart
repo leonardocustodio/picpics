@@ -327,9 +327,7 @@ void main() {
       });
 
       test('check if feature enabled but no hashes', () {
-        final state = BlurHashState(
-          
-        );
+        final state = BlurHashState();
 
         expect(state.isEnabled && state.blurHashes.isEmpty, isTrue);
       });

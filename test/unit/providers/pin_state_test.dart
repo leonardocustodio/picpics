@@ -309,9 +309,7 @@ void main() {
 
     group('Edge cases', () {
       test('empty strings', () {
-        final state = PinFullState(
-          
-        );
+        final state = PinFullState();
 
         expect(state.email, isEmpty);
         expect(state.pin, isEmpty);

@@ -139,13 +139,16 @@ void main() {
 
       // Should have padding
       final paddings = tester.widgetList<Padding>(find.byType(Padding));
-      expect(paddings.any((p) {
-        if (p.padding is EdgeInsets) {
-          final ei = p.padding as EdgeInsets;
-          return ei.left == 24 && ei.right == 24;
-        }
-        return false;
-      }), isTrue,);
+      expect(
+        paddings.any((p) {
+          if (p.padding is EdgeInsets) {
+            final ei = p.padding as EdgeInsets;
+            return ei.left == 24 && ei.right == 24;
+          }
+          return false;
+        }),
+        isTrue,
+      );
     });
 
     testWidgets('compact mode retry button works', (tester) async {
@@ -245,12 +248,14 @@ void main() {
             body: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  unawaited(showDialog<void>(
-                    context: context,
-                    builder: (context) => const ErrorDialog(
-                      message: 'Test error message',
+                  unawaited(
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) => const ErrorDialog(
+                        message: 'Test error message',
+                      ),
                     ),
-                  ),);
+                  );
                 },
                 child: const Text('Show Dialog'),
               ),
@@ -280,13 +285,15 @@ void main() {
             body: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  unawaited(showDialog<void>(
-                    context: context,
-                    builder: (context) => const ErrorDialog(
-                      message: 'Error',
-                      title: 'Custom Title',
+                  unawaited(
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) => const ErrorDialog(
+                        message: 'Error',
+                        title: 'Custom Title',
+                      ),
                     ),
-                  ),);
+                  );
                 },
                 child: const Text('Show Dialog'),
               ),
@@ -316,13 +323,15 @@ void main() {
             body: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  unawaited(showDialog<void>(
-                    context: context,
-                    builder: (context) => ErrorDialog(
-                      message: 'Test error',
-                      onDismiss: () => Navigator.of(context).pop(),
+                  unawaited(
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) => ErrorDialog(
+                        message: 'Test error',
+                        onDismiss: () => Navigator.of(context).pop(),
+                      ),
                     ),
-                  ),);
+                  );
                 },
                 child: const Text('Show Dialog'),
               ),
@@ -360,13 +369,15 @@ void main() {
             body: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  unawaited(showDialog<void>(
-                    context: context,
-                    builder: (context) => ErrorDialog(
-                      message: 'Test error',
-                      onRetry: () {},
+                  unawaited(
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) => ErrorDialog(
+                        message: 'Test error',
+                        onRetry: () {},
+                      ),
                     ),
-                  ),);
+                  );
                 },
                 child: const Text('Show Dialog'),
               ),
@@ -397,15 +408,17 @@ void main() {
             body: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  unawaited(showDialog<void>(
-                    context: context,
-                    builder: (context) => ErrorDialog(
-                      message: 'Test error',
-                      dismissButtonText: 'Cancel',
-                      retryButtonText: 'Retry Now',
-                      onRetry: () {},
+                  unawaited(
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) => ErrorDialog(
+                        message: 'Test error',
+                        dismissButtonText: 'Cancel',
+                        retryButtonText: 'Retry Now',
+                        onRetry: () {},
+                      ),
                     ),
-                  ),);
+                  );
                 },
                 child: const Text('Show Dialog'),
               ),
