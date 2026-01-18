@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/generated/l10n.dart';
 import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tagged_provider.dart';
@@ -257,11 +258,11 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
         }
         final listOfBottomNavigationItems = <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            label: 'Return',
+            label: S.of(context).return_label,
             icon: Image.asset('lib/images/returntabbutton.png'),
           ),
           BottomNavigationBarItem(
-            label: 'Tag',
+            label: S.of(context).tag_label,
             icon: AnimatedOpacity(
               duration: const Duration(milliseconds: 500),
               opacity: taggedState.selectedMultiBarPics.isEmpty ? 0.2 : 1,
@@ -269,7 +270,7 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
             ),
           ),
           BottomNavigationBarItem(
-            label: 'Share',
+            label: S.of(context).share_label,
             icon: AnimatedOpacity(
               duration: const Duration(milliseconds: 500),
               opacity: taggedState.selectedMultiBarPics.isEmpty ? 0.2 : 1,
@@ -277,7 +278,7 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
             ),
           ),
           BottomNavigationBarItem(
-            label: 'Trash',
+            label: S.of(context).trash_label,
             icon: AnimatedOpacity(
               duration: const Duration(milliseconds: 500),
               opacity: taggedState.selectedMultiBarPics.isEmpty ? 0.2 : 1,

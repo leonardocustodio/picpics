@@ -5640,6 +5640,76 @@ class S {
       args: [],
     );
   }
+
+  /// `Searched`
+  String get searched {
+    return Intl.message(
+      'Searched',
+      name: 'searched',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Most used`
+  String get most_used {
+    return Intl.message(
+      'Most used',
+      name: 'most_used',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Return`
+  String get return_label {
+    return Intl.message(
+      'Return',
+      name: 'return_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tag`
+  String get tag_label {
+    return Intl.message(
+      'Tag',
+      name: 'tag_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share`
+  String get share_label {
+    return Intl.message(
+      'Share',
+      name: 'share_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Trash`
+  String get trash_label {
+    return Intl.message(
+      'Trash',
+      name: 'trash_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Untag`
+  String get untag {
+    return Intl.message(
+      'Untag',
+      name: 'untag',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

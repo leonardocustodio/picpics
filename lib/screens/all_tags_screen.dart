@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/generated/l10n.dart';
 import 'package:picpics/model/tag_model.dart';
 import 'package:picpics/providers/all_tags_provider.dart';
 import 'package:picpics/providers/language_provider.dart';
@@ -137,11 +138,11 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 8),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
                         child: Text(
-                          'Searched',
-                          style: TextStyle(
+                          S.of(context).searched,
+                          style: const TextStyle(
                             fontFamily: 'Lato',
                             color: Color(0xff979a9b),
                             fontSize: 33,
@@ -166,11 +167,11 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 8),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
                         child: Text(
-                          'Most used',
-                          style: TextStyle(
+                          S.of(context).most_used,
+                          style: const TextStyle(
                             fontFamily: 'Lato',
                             color: Color(0xff979a9b),
                             fontSize: 33,

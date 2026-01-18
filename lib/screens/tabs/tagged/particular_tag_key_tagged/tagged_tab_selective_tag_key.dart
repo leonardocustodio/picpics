@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/generated/l10n.dart';
 import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tagged_provider.dart';
@@ -50,7 +51,7 @@ class TaggedTabSelectiveTagKey extends ConsumerWidget {
                     },
                   );
                 },
-                child: const Text('Untag'),
+                child: Text(S.of(context).untag),
               ),
           ],
           leading: GestureDetector(
