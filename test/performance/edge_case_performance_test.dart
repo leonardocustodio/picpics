@@ -34,8 +34,11 @@ void main() {
       });
 
       // Allow up to 50ms for first access due to provider initialization overhead
-      expect(duration.inMilliseconds, lessThan(50),
-          reason: 'Empty state access should be fast',);
+      expect(
+        duration.inMilliseconds,
+        lessThan(50),
+        reason: 'Empty state access should be fast',
+      );
     });
 
     test('Empty gallery - operations on empty state', () {
@@ -47,8 +50,11 @@ void main() {
           ..setMultiPicBar(value: false);
       });
 
-      expect(duration.inMilliseconds, lessThan(5),
-          reason: 'Operations on empty state should be fast',);
+      expect(
+        duration.inMilliseconds,
+        lessThan(5),
+        reason: 'Operations on empty state should be fast',
+      );
     });
 
     test('Empty gallery - no memory leaks', () {
@@ -66,8 +72,11 @@ void main() {
         container.read(tabsProvider).assetMap,
       );
 
-      expect(memoryAfter, equals(memoryBefore),
-          reason: 'Operations should not leak memory in empty state',);
+      expect(
+        memoryAfter,
+        equals(memoryBefore),
+        reason: 'Operations should not leak memory in empty state',
+      );
     });
   });
 
@@ -92,8 +101,11 @@ void main() {
       });
 
       debugPrint('Selecting 1000 photos: ${duration.inMilliseconds}ms');
-      expect(duration.inMilliseconds, lessThan(1000),
-          reason: 'Selecting 1000 photos should be under 1 second',);
+      expect(
+        duration.inMilliseconds,
+        lessThan(1000),
+        reason: 'Selecting 1000 photos should be under 1 second',
+      );
 
       final state = container.read(taggedProvider);
       expect(state.selectedMultiBarPics.length, equals(1000));
@@ -113,8 +125,11 @@ void main() {
       );
 
       debugPrint('1000 selections memory: ${memoryUsage / 1024}KB');
-      expect(memoryUsage, lessThan(500000),
-          reason: '1000 selections should use less than 500KB',);
+      expect(
+        memoryUsage,
+        lessThan(500000),
+        reason: '1000 selections should use less than 500KB',
+      );
     });
 
     test('Large selection - clear performance', () {
@@ -128,8 +143,11 @@ void main() {
       final duration = PerformanceTestUtils.measureSyncExecutionTime(notifier.clearSelectedMultiBarPics);
 
       debugPrint('Clearing 1000 selections: ${duration.inMicroseconds}μs');
-      expect(duration.inMilliseconds, lessThan(10),
-          reason: 'Clearing should be under 10ms',);
+      expect(
+        duration.inMilliseconds,
+        lessThan(10),
+        reason: 'Clearing should be under 10ms',
+      );
 
       final state = container.read(taggedProvider);
       expect(state.selectedMultiBarPics.isEmpty, isTrue);
@@ -151,8 +169,11 @@ void main() {
       });
 
       debugPrint('Removing 100 from 1000: ${duration.inMilliseconds}ms');
-      expect(duration.inMilliseconds, lessThan(100),
-          reason: 'Removing 100 photos should be under 100ms',);
+      expect(
+        duration.inMilliseconds,
+        lessThan(100),
+        reason: 'Removing 100 photos should be under 100ms',
+      );
 
       final state = container.read(taggedProvider);
       expect(state.selectedMultiBarPics.length, equals(900));
@@ -181,8 +202,11 @@ void main() {
       });
 
       debugPrint('1000 rapid toggles: ${duration.inMilliseconds}ms');
-      expect(duration.inMilliseconds, lessThan(500),
-          reason: '1000 toggles should be under 500ms',);
+      expect(
+        duration.inMilliseconds,
+        lessThan(500),
+        reason: '1000 toggles should be under 500ms',
+      );
     });
 
     test('Rapid selection changes - 500 add/remove cycles', () async {
@@ -197,8 +221,11 @@ void main() {
       });
 
       debugPrint('500 add/remove cycles: ${duration.inMilliseconds}ms');
-      expect(duration.inMilliseconds, lessThan(250),
-          reason: '500 cycles should be under 250ms',);
+      expect(
+        duration.inMilliseconds,
+        lessThan(250),
+        reason: '500 cycles should be under 250ms',
+      );
 
       final state = container.read(taggedProvider);
       expect(state.selectedMultiBarPics.isEmpty, isTrue);
@@ -214,8 +241,11 @@ void main() {
       });
 
       debugPrint('100 view switches: ${duration.inMilliseconds}ms');
-      expect(duration.inMilliseconds, lessThan(100),
-          reason: '100 view switches should be under 100ms',);
+      expect(
+        duration.inMilliseconds,
+        lessThan(100),
+        reason: '100 view switches should be under 100ms',
+      );
     });
 
     test('Stress test - multiple concurrent operations', () async {
@@ -244,8 +274,11 @@ void main() {
       });
 
       debugPrint('Concurrent operations: ${duration.inMilliseconds}ms');
-      expect(duration.inMilliseconds, lessThan(200),
-          reason: 'Concurrent operations should complete quickly',);
+      expect(
+        duration.inMilliseconds,
+        lessThan(200),
+        reason: 'Concurrent operations should complete quickly',
+      );
     });
   });
 
@@ -284,8 +317,10 @@ void main() {
 
       // Verify we can still perform operations
       notifier.addSelectedMultiBarPic('final_photo');
-      expect(container.read(taggedProvider).selectedMultiBarPics.containsKey('final_photo'),
-          isTrue,);
+      expect(
+        container.read(taggedProvider).selectedMultiBarPics.containsKey('final_photo'),
+        isTrue,
+      );
     });
 
     test('No memory leaks after repeated clear operations', () {
@@ -310,8 +345,11 @@ void main() {
         container.read(taggedProvider).selectedMultiBarPics,
       );
 
-      expect(finalMemory, equals(initialMemory),
-          reason: 'Memory should return to baseline after clear operations',);
+      expect(
+        finalMemory,
+        equals(initialMemory),
+        reason: 'Memory should return to baseline after clear operations',
+      );
     });
 
     test('Provider rebuild count stays reasonable under stress', () {
@@ -334,8 +372,11 @@ void main() {
       subscription.close();
 
       debugPrint('Rebuilds for 200 operations: $rebuildCount');
-      expect(rebuildCount, equals(200),
-          reason: 'Each state change should trigger exactly one rebuild',);
+      expect(
+        rebuildCount,
+        equals(200),
+        reason: 'Each state change should trigger exactly one rebuild',
+      );
     });
   });
 
@@ -381,8 +422,11 @@ void main() {
       });
 
       debugPrint('100 zero-delay changes: ${duration.inMilliseconds}ms');
-      expect(duration.inMilliseconds, lessThan(50),
-          reason: 'Zero-delay changes should be very fast',);
+      expect(
+        duration.inMilliseconds,
+        lessThan(50),
+        reason: 'Zero-delay changes should be very fast',
+      );
     });
 
     test('Alternating provider access', () async {
@@ -399,8 +443,11 @@ void main() {
       });
 
       debugPrint('1000 alternating reads: ${duration.inMilliseconds}ms');
-      expect(duration.inMilliseconds, lessThan(100),
-          reason: 'Alternating provider reads should be fast',);
+      expect(
+        duration.inMilliseconds,
+        lessThan(100),
+        reason: 'Alternating provider reads should be fast',
+      );
     });
   });
 }
