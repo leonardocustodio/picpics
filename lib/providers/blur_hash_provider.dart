@@ -67,8 +67,7 @@ class BlurHashNotifier extends StateNotifier<BlurHashState> {
     // Enforce cache size limit to prevent memory issues
     if (hashes.length >= kMaxBlurHashCacheSize && !hashes.containsKey(imageId)) {
       // Remove oldest entries (first 10% of cache)
-      final keysToRemove = hashes.keys.take(kMaxBlurHashCacheSize ~/ 10).toList();
-      keysToRemove.forEach(hashes.remove);
+      final keysToRemove = hashes.keys.take(kMaxBlurHashCacheSize ~/ 10).toList()..forEach(hashes.remove);
       AppLogger.d('Blur hash cache pruned, removed ${keysToRemove.length} entries');
     }
 
