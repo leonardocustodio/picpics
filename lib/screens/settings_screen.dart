@@ -226,7 +226,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                       );
 
                       // Update language through providers
-                      await ref.read(userProvider.notifier).setAppLanguage(supportedLocales[temporaryLanguage].toString());
+                      await ref
+                          .read(userProvider.notifier)
+                          .setAppLanguage(supportedLocales[temporaryLanguage].toString());
 
                       if (!context.mounted) return;
                       setState(() {});

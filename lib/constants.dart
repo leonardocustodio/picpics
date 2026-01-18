@@ -11,6 +11,7 @@ final greyWidget = Padding(
     color: Colors.grey[300],
   ),
 );
+
 /// Default widget shown when photo loading fails
 const failedItem = PhotoErrorWidget();
 
