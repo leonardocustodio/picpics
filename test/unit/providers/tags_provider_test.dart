@@ -208,7 +208,7 @@ void main() {
     });
 
     test('should handle zero count', () {
-      final tag = TagModel(key: 'key1', title: 'Title', count: 0);
+      final tag = TagModel(key: 'key1', title: 'Title');
 
       expect(tag.count, equals(0));
     });

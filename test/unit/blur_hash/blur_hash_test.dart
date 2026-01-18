@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
@@ -150,11 +149,11 @@ void main() {
 
   group('Linear to sRGB conversion', () {
     test('linearTosRgb for 0.0 (black)', () {
-      expect(linearTosRgb(0.0), equals(0));
+      expect(linearTosRgb(0), equals(0));
     });
 
     test('linearTosRgb for 1.0 (white)', () {
-      expect(linearTosRgb(1.0), equals(255));
+      expect(linearTosRgb(1), equals(255));
     });
 
     test('linearTosRgb should clamp negative values', () {
@@ -176,22 +175,22 @@ void main() {
 
   group('signPow', () {
     test('signPow with positive value', () {
-      expect(signPow(2.0, 2.0), closeTo(4.0, 0.001));
-      expect(signPow(3.0, 2.0), closeTo(9.0, 0.001));
+      expect(signPow(2, 2), closeTo(4.0, 0.001));
+      expect(signPow(3, 2), closeTo(9.0, 0.001));
     });
 
     test('signPow with negative value', () {
-      expect(signPow(-2.0, 2.0), closeTo(-4.0, 0.001));
-      expect(signPow(-3.0, 2.0), closeTo(-9.0, 0.001));
+      expect(signPow(-2, 2), closeTo(-4.0, 0.001));
+      expect(signPow(-3, 2), closeTo(-9.0, 0.001));
     });
 
     test('signPow with zero', () {
-      expect(signPow(0.0, 2.0), equals(0.0));
+      expect(signPow(0, 2), equals(0.0));
     });
 
     test('signPow with fractional exponent', () {
-      expect(signPow(4.0, 0.5), closeTo(2.0, 0.001));
-      expect(signPow(-4.0, 0.5), closeTo(-2.0, 0.001));
+      expect(signPow(4, 0.5), closeTo(2.0, 0.001));
+      expect(signPow(-4, 0.5), closeTo(-2.0, 0.001));
     });
   });
 
@@ -202,7 +201,7 @@ void main() {
       expect(black, equals(0));
 
       // Pure white in linear space
-      final white = encodeDc(const ColorTriplet(1.0, 1.0, 1.0));
+      final white = encodeDc(const ColorTriplet(1, 1, 1));
       expect(white, equals(0xFFFFFF));
     });
 
@@ -234,14 +233,14 @@ void main() {
 
   group('AC Encoding/Decoding', () {
     test('encodeAc should encode color', () {
-      const color = ColorTriplet(0.0, 0.0, 0.0);
-      final encoded = encodeAc(color, 1.0);
+      const color = ColorTriplet(0, 0, 0);
+      final encoded = encodeAc(color, 1);
       expect(encoded, greaterThanOrEqualTo(0));
     });
 
     test('decodeAc should decode to color', () {
       const midValue = 9 * 19 * 19 + 9 * 19 + 9; // Middle value
-      final decoded = decodeAc(midValue, 1.0);
+      final decoded = decodeAc(midValue, 1);
 
       expect(decoded.r, closeTo(0.0, 0.1));
       expect(decoded.g, closeTo(0.0, 0.1));
@@ -293,7 +292,7 @@ void main() {
     test('decode should apply punch parameter', () {
       const validHash = 'LEHV6nWB2yk8pyo0adR*.7kCMdnj';
       final normalPunch = BlurHash.decode(validHash);
-      final highPunch = BlurHash.decode(validHash, punch: 2.0);
+      final highPunch = BlurHash.decode(validHash, punch: 2);
 
       // Both should decode successfully
       expect(normalPunch.hash, equals(validHash));
@@ -359,7 +358,7 @@ void main() {
       final image = img.Image(width: 10, height: 10);
 
       // 4x3 components: 4 + 2*4*3 = 28 characters
-      final hash4x3 = BlurHash.encode(image, numCompX: 4, numCompY: 3);
+      final hash4x3 = BlurHash.encode(image);
       expect(hash4x3.hash.length, equals(28));
 
       // 2x2 components: 4 + 2*2*2 = 12 characters
@@ -429,7 +428,7 @@ void main() {
         }
       }
 
-      final encoded = BlurHash.encode(image, numCompX: 4, numCompY: 3);
+      final encoded = BlurHash.encode(image);
       final decoded = BlurHash.decode(encoded.hash);
 
       expect(decoded.hash, equals(encoded.hash));

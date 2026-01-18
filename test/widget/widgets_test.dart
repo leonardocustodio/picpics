@@ -408,7 +408,10 @@ void main() {
       final hasCorrectDecoration = containers.any((c) {
         if (c.decoration is BoxDecoration) {
           final decoration = c.decoration! as BoxDecoration;
-          return decoration.color?.alpha == (0.8 * 255).round();
+          final color = decoration.color;
+          if (color == null) return false;
+          final alpha = (color.a * 255.0).round().clamp(0, 255);
+          return alpha == (0.8 * 255).round();
         }
         return false;
       });
@@ -421,9 +424,9 @@ void main() {
   group('AppHeader Widget Tests', () {
     testWidgets('renders with default logo', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: const AppHeader(),
+            body: AppHeader(),
           ),
         ),
       );
@@ -440,9 +443,9 @@ void main() {
 
     testWidgets('has correct height of 44', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: const AppHeader(),
+            body: AppHeader(),
           ),
         ),
       );
@@ -455,9 +458,9 @@ void main() {
 
     testWidgets('has correct padding', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: const AppHeader(),
+            body: AppHeader(),
           ),
         ),
       );
@@ -478,9 +481,9 @@ void main() {
       const customLeading = Text('Custom Leading');
 
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: const AppHeader(
+            body: AppHeader(
               leading: customLeading,
             ),
           ),
@@ -493,9 +496,9 @@ void main() {
 
     testWidgets('settings button exists and has onPressed callback', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: const AppHeader(),
+            body: AppHeader(),
           ),
         ),
       );
@@ -511,9 +514,9 @@ void main() {
 
     testWidgets('contains Expanded widget for flexible layout', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: const AppHeader(),
+            body: AppHeader(),
           ),
         ),
       );
@@ -523,9 +526,9 @@ void main() {
 
     testWidgets('uses Image.asset for logo', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: const AppHeader(),
+            body: AppHeader(),
           ),
         ),
       );
@@ -536,9 +539,9 @@ void main() {
 
     testWidgets('custom leading replaces logo image', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: const AppHeader(
+            body: AppHeader(
               leading: Icon(Icons.search),
             ),
           ),
@@ -551,9 +554,9 @@ void main() {
 
     testWidgets('settings button has zero padding', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: const AppHeader(),
+            body: AppHeader(),
           ),
         ),
       );
@@ -566,9 +569,9 @@ void main() {
   group('AppHeader Edge Cases', () {
     testWidgets('handles null leading gracefully (uses default logo)', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: const AppHeader(leading: null),
+            body: AppHeader(),
           ),
         ),
       );
@@ -581,11 +584,11 @@ void main() {
 
     testWidgets('complex leading widget renders correctly', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: AppHeader(
               leading: Row(
-                children: const [
+                children: [
                   Icon(Icons.search),
                   SizedBox(width: 8),
                   Expanded(
@@ -610,9 +613,9 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(320, 568));
 
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: const AppHeader(),
+            body: AppHeader(),
           ),
         ),
       );

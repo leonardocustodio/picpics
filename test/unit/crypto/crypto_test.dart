@@ -70,7 +70,7 @@ void main() {
     });
 
     test('should handle special characters in access code', () async {
-      const accessCode = 'ABC!@#\$%^';
+      const accessCode = r'ABC!@#$%^';
       const email = 'test@example.com';
       const randomIv = '1234';
 

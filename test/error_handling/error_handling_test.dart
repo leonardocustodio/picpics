@@ -1,12 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:picpics/generated/l10n.dart' as lang;
+import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
-import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/error_dialog.dart';
 import 'package:picpics/widgets/error_state_widget.dart';
@@ -130,9 +132,7 @@ void main() {
     testWidgets('full mode renders with padding', (tester) async {
       await tester.pumpWidget(
         wrapWithLocalization(
-          const ErrorStateWidget(
-            compact: false,
-          ),
+          const ErrorStateWidget(),
         ),
       );
       await tester.pumpAndSettle();
@@ -145,7 +145,7 @@ void main() {
           return ei.left == 24 && ei.right == 24;
         }
         return false;
-      }), isTrue);
+      }), isTrue,);
     });
 
     testWidgets('compact mode retry button works', (tester) async {
@@ -245,12 +245,12 @@ void main() {
             body: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  showDialog<void>(
+                  unawaited(showDialog<void>(
                     context: context,
                     builder: (context) => const ErrorDialog(
                       message: 'Test error message',
                     ),
-                  );
+                  ),);
                 },
                 child: const Text('Show Dialog'),
               ),
@@ -280,13 +280,13 @@ void main() {
             body: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  showDialog<void>(
+                  unawaited(showDialog<void>(
                     context: context,
                     builder: (context) => const ErrorDialog(
                       message: 'Error',
                       title: 'Custom Title',
                     ),
-                  );
+                  ),);
                 },
                 child: const Text('Show Dialog'),
               ),
@@ -316,13 +316,13 @@ void main() {
             body: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  showDialog<void>(
+                  unawaited(showDialog<void>(
                     context: context,
                     builder: (context) => ErrorDialog(
                       message: 'Test error',
                       onDismiss: () => Navigator.of(context).pop(),
                     ),
-                  );
+                  ),);
                 },
                 child: const Text('Show Dialog'),
               ),
@@ -347,8 +347,6 @@ void main() {
     });
 
     testWidgets('retry button is shown when onRetry provided', (tester) async {
-      var retryCalled = false;
-
       await tester.pumpWidget(
         MaterialApp(
           localizationsDelegates: const [
@@ -362,13 +360,13 @@ void main() {
             body: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  showDialog<void>(
+                  unawaited(showDialog<void>(
                     context: context,
                     builder: (context) => ErrorDialog(
                       message: 'Test error',
-                      onRetry: () => retryCalled = true,
+                      onRetry: () {},
                     ),
-                  );
+                  ),);
                 },
                 child: const Text('Show Dialog'),
               ),
@@ -399,7 +397,7 @@ void main() {
             body: Builder(
               builder: (context) => ElevatedButton(
                 onPressed: () {
-                  showDialog<void>(
+                  unawaited(showDialog<void>(
                     context: context,
                     builder: (context) => ErrorDialog(
                       message: 'Test error',
@@ -407,7 +405,7 @@ void main() {
                       retryButtonText: 'Retry Now',
                       onRetry: () {},
                     ),
-                  );
+                  ),);
                 },
                 child: const Text('Show Dialog'),
               ),
@@ -440,7 +438,7 @@ void main() {
       final notifier = container.read(tagsProvider.notifier);
 
       // Should not throw
-      expect(() => notifier.clear(), returnsNormally);
+      expect(notifier.clear, returnsNormally);
 
       final state = container.read(tagsProvider);
       expect(state.allTags, isEmpty);
@@ -456,7 +454,7 @@ void main() {
       expect(() => notifier.removeSelectedMultiBarPic('non_existent_id'), returnsNormally);
 
       // Clearing empty selections should not throw
-      expect(() => notifier.clearSelectedMultiBarPics(), returnsNormally);
+      expect(notifier.clearSelectedMultiBarPics, returnsNormally);
     });
 
     test('TabsProvider handles toggle with invalid index gracefully', () {
@@ -535,7 +533,7 @@ void main() {
 
     test('special characters in photo ID handling', () {
       final notifier = container.read(taggedProvider.notifier);
-      const specialId = '!@#\$%^&*()_+-=[]{}|;:,.<>?/~`';
+      const specialId = r'!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
 
       expect(() => notifier.addSelectedMultiBarPic(specialId), returnsNormally);
 
@@ -592,8 +590,9 @@ void main() {
           tabsNotifier.setToggleIndexUntagged(i % 3);
         } else {
           // Just read state
-          container.read(taggedProvider);
-          container.read(tabsProvider);
+          container
+            ..read(taggedProvider)
+            ..read(tabsProvider);
         }
       }
 
@@ -626,8 +625,7 @@ void main() {
     });
 
     test('disposed container throws appropriate error', () {
-      final tempContainer = ProviderContainer();
-      tempContainer.dispose();
+      final tempContainer = ProviderContainer()..dispose();
 
       // Should throw when accessing disposed container
       expect(

@@ -359,8 +359,9 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
       if (scrollControllerThirdTab != null) {
         scrollControllerThirdTab.dispose();
       }
-    } catch (e) {
-      // scrollControllerThirdTab was never initialized, skip disposal
+      // ignore: avoid_catching_errors
+    } on Error catch (e) {
+      // scrollControllerThirdTab was never initialized (LateInitializationError), skip disposal
       AppLogger.d('Dispose skipped: $e');
     }
     super.dispose();

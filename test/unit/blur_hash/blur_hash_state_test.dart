@@ -54,8 +54,6 @@ void main() {
       test('copyWith should update only specified fields', () {
         final original = BlurHashState(
           blurHashes: {'photo1': 'hash1'},
-          isEnabled: true,
-          isGenerating: false,
         );
 
         final updated = original.copyWith(isEnabled: false);
@@ -124,7 +122,7 @@ void main() {
       });
 
       test('simulate disabling blur hash feature', () {
-        var state = BlurHashState(isEnabled: true);
+        var state = BlurHashState();
 
         state = state.copyWith(isEnabled: false);
         expect(state.isEnabled, isFalse);
@@ -264,7 +262,6 @@ void main() {
       test('all booleans false', () {
         final state = BlurHashState(
           isEnabled: false,
-          isGenerating: false,
         );
 
         expect(state.isEnabled, isFalse);
@@ -273,7 +270,6 @@ void main() {
 
       test('all booleans true', () {
         final state = BlurHashState(
-          isEnabled: true,
           isGenerating: true,
         );
 
@@ -332,7 +328,7 @@ void main() {
 
       test('check if feature enabled but no hashes', () {
         final state = BlurHashState(
-          isEnabled: true,
+          
         );
 
         expect(state.isEnabled && state.blurHashes.isEmpty, isTrue);

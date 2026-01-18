@@ -21,8 +21,8 @@ void main() {
 
       test('constructor with all parameters', () {
         const state = ProgressState(
-          total: 100.0,
-          value: 50.0,
+          total: 100,
+          value: 50,
           show: true,
           text: 'Loading...',
         );
@@ -37,8 +37,8 @@ void main() {
     group('copyWith', () {
       test('copyWith with no arguments should preserve all values', () {
         const original = ProgressState(
-          total: 100.0,
-          value: 25.0,
+          total: 100,
+          value: 25,
           show: true,
           text: 'Processing',
         );
@@ -53,13 +53,13 @@ void main() {
 
       test('copyWith should update only specified fields', () {
         const original = ProgressState(
-          total: 100.0,
-          value: 25.0,
+          total: 100,
+          value: 25,
           show: true,
           text: 'Processing',
         );
 
-        final updated = original.copyWith(value: 75.0);
+        final updated = original.copyWith(value: 75);
 
         expect(updated.total, equals(100.0));
         expect(updated.value, equals(75.0));
@@ -71,8 +71,8 @@ void main() {
         const original = ProgressState();
 
         final updated = original.copyWith(
-          total: 200.0,
-          value: 100.0,
+          total: 200,
+          value: 100,
           show: true,
           text: 'Complete',
         );
@@ -90,8 +90,8 @@ void main() {
 
         // Start progress
         state = state.copyWith(
-          total: 100.0,
-          value: 0.0,
+          total: 100,
+          value: 0,
           show: true,
           text: 'Starting...',
         );
@@ -99,20 +99,20 @@ void main() {
         expect(state.total, equals(100.0));
 
         // Update progress
-        state = state.copyWith(value: 50.0, text: '50% complete');
+        state = state.copyWith(value: 50, text: '50% complete');
         expect(state.value, equals(50.0));
 
         // Complete
-        state = state.copyWith(value: 100.0, text: 'Done!');
+        state = state.copyWith(value: 100, text: 'Done!');
         expect(state.value, equals(100.0));
 
         // Hide
-        state = state.copyWith(show: false, value: 0.0);
+        state = state.copyWith(show: false, value: 0);
         expect(state.show, isFalse);
       });
 
       test('progress percentage calculation', () {
-        const state = ProgressState(total: 100.0, value: 75.0);
+        const state = ProgressState(total: 100, value: 75);
 
         final percentage = state.value / state.total * 100;
         expect(percentage, equals(75.0));
@@ -134,7 +134,7 @@ void main() {
     });
 
     test('start should set state correctly', () {
-      notifier.start(100.0, 'Loading');
+      notifier.start(100, 'Loading');
 
       final state = container.read(progressProvider);
       expect(state.show, isTrue);
@@ -144,8 +144,9 @@ void main() {
     });
 
     test('start should not override if already showing', () {
-      notifier.start(100.0, 'First');
-      notifier.start(200.0, 'Second');
+      notifier
+        ..start(100, 'First')
+        ..start(200, 'Second');
 
       final state = container.read(progressProvider);
       expect(state.total, equals(100.0)); // First value preserved
@@ -153,23 +154,26 @@ void main() {
     });
 
     test('increaseValue should update value', () {
-      notifier.start(100.0);
-      notifier.increaseValue(25.0);
+      notifier
+        ..start(100)
+        ..increaseValue(25);
 
       expect(container.read(progressProvider).value, equals(25.0));
     });
 
     test('increaseValue should stop when reaching total', () {
-      notifier.start(100.0);
-      notifier.increaseValue(100.0);
+      notifier
+        ..start(100)
+        ..increaseValue(100);
 
       expect(container.read(progressProvider).show, isFalse);
     });
 
     test('stop should hide and reset value', () {
-      notifier.start(100.0, 'Test');
-      notifier.increaseValue(50.0);
-      notifier.stop();
+      notifier
+        ..start(100, 'Test')
+        ..increaseValue(50)
+        ..stop();
 
       final state = container.read(progressProvider);
       expect(state.show, isFalse);
@@ -243,7 +247,7 @@ void main() {
         expect(state.progress, equals(0.5));
 
         // Complete
-        state = state.copyWith(progress: 1.0, message: 'Complete');
+        state = state.copyWith(progress: 1, message: 'Complete');
         expect(state.progress, equals(1.0));
 
         // Hide
@@ -277,23 +281,26 @@ void main() {
     });
 
     test('updateProgress should update progress', () {
-      notifier.show('Test');
-      notifier.updateProgress(0.5);
+      notifier
+        ..show('Test')
+        ..updateProgress(0.5);
 
       expect(container.read(percentageDialogProvider).progress, equals(0.5));
     });
 
     test('updateMessage should update message', () {
-      notifier.show('Original');
-      notifier.updateMessage('Updated');
+      notifier
+        ..show('Original')
+        ..updateMessage('Updated');
 
       expect(container.read(percentageDialogProvider).message, equals('Updated'));
     });
 
     test('hide should reset state', () {
-      notifier.show('Test');
-      notifier.updateProgress(0.5);
-      notifier.hide();
+      notifier
+        ..show('Test')
+        ..updateProgress(0.5)
+        ..hide();
 
       final state = container.read(percentageDialogProvider);
       expect(state.isShowing, isFalse);
@@ -347,7 +354,6 @@ void main() {
 
       test('copyWith should update only specified fields', () {
         final original = SwiperTabState(
-          currentIndex: 0,
           photoIds: ['a', 'b', 'c'],
         );
 
@@ -362,7 +368,6 @@ void main() {
       test('simulate photo browsing', () {
         var state = SwiperTabState(
           photoIds: ['photo1', 'photo2', 'photo3', 'photo4'],
-          currentIndex: 0,
         );
 
         // Move to next
@@ -406,40 +411,45 @@ void main() {
     });
 
     test('setCurrentIndex should update index', () {
-      notifier.setPhotoIds(['a', 'b', 'c']);
-      notifier.setCurrentIndex(2);
+      notifier
+        ..setPhotoIds(['a', 'b', 'c'])
+        ..setCurrentIndex(2);
 
       expect(container.read(swiperTabProvider).currentIndex, equals(2));
     });
 
     test('nextPhoto should increment index', () {
-      notifier.setPhotoIds(['a', 'b', 'c']);
-      notifier.setCurrentIndex(0);
-      notifier.nextPhoto();
+      notifier
+        ..setPhotoIds(['a', 'b', 'c'])
+        ..setCurrentIndex(0)
+        ..nextPhoto();
 
       expect(container.read(swiperTabProvider).currentIndex, equals(1));
     });
 
     test('nextPhoto should not exceed bounds', () {
-      notifier.setPhotoIds(['a', 'b', 'c']);
-      notifier.setCurrentIndex(2);
-      notifier.nextPhoto();
+      notifier
+        ..setPhotoIds(['a', 'b', 'c'])
+        ..setCurrentIndex(2)
+        ..nextPhoto();
 
       expect(container.read(swiperTabProvider).currentIndex, equals(2));
     });
 
     test('previousPhoto should decrement index', () {
-      notifier.setPhotoIds(['a', 'b', 'c']);
-      notifier.setCurrentIndex(2);
-      notifier.previousPhoto();
+      notifier
+        ..setPhotoIds(['a', 'b', 'c'])
+        ..setCurrentIndex(2)
+        ..previousPhoto();
 
       expect(container.read(swiperTabProvider).currentIndex, equals(1));
     });
 
     test('previousPhoto should not go below 0', () {
-      notifier.setPhotoIds(['a', 'b', 'c']);
-      notifier.setCurrentIndex(0);
-      notifier.previousPhoto();
+      notifier
+        ..setPhotoIds(['a', 'b', 'c'])
+        ..setCurrentIndex(0)
+        ..previousPhoto();
 
       expect(container.read(swiperTabProvider).currentIndex, equals(0));
     });
@@ -453,8 +463,9 @@ void main() {
     });
 
     test('removePhotoId should remove photo from list', () {
-      notifier.setPhotoIds(['a', 'b', 'c']);
-      notifier.removePhotoId('b');
+      notifier
+        ..setPhotoIds(['a', 'b', 'c'])
+        ..removePhotoId('b');
 
       expect(container.read(swiperTabProvider).photoIds, equals(['a', 'c']));
     });
@@ -499,7 +510,6 @@ void main() {
         final original = PhotoScreenState(
           currentPhotoId: 'photo1',
           photoIds: ['photo1', 'photo2'],
-          currentIndex: 0,
           isEditing: true,
         );
 
@@ -515,7 +525,6 @@ void main() {
         final original = PhotoScreenState(
           currentPhotoId: 'photo1',
           photoIds: ['photo1', 'photo2', 'photo3'],
-          currentIndex: 0,
         );
 
         final updated = original.copyWith(
@@ -533,7 +542,6 @@ void main() {
       test('simulate photo navigation', () {
         var state = PhotoScreenState(
           photoIds: ['a', 'b', 'c', 'd'],
-          currentIndex: 0,
           currentPhotoId: 'a',
         );
 
@@ -591,8 +599,9 @@ void main() {
     });
 
     test('setCurrentPhoto should update photo and index', () {
-      notifier.initialize('photo1', ['photo1', 'photo2', 'photo3']);
-      notifier.setCurrentPhoto('photo3');
+      notifier
+        ..initialize('photo1', ['photo1', 'photo2', 'photo3'])
+        ..setCurrentPhoto('photo3');
 
       final state = container.read(photoScreenProvider);
       expect(state.currentPhotoId, equals('photo3'));
@@ -600,8 +609,9 @@ void main() {
     });
 
     test('nextPhoto should advance to next photo', () {
-      notifier.initialize('photo1', ['photo1', 'photo2', 'photo3']);
-      notifier.nextPhoto();
+      notifier
+        ..initialize('photo1', ['photo1', 'photo2', 'photo3'])
+        ..nextPhoto();
 
       final state = container.read(photoScreenProvider);
       expect(state.currentIndex, equals(1));
@@ -609,8 +619,9 @@ void main() {
     });
 
     test('nextPhoto should not exceed bounds', () {
-      notifier.initialize('photo3', ['photo1', 'photo2', 'photo3']);
-      notifier.nextPhoto();
+      notifier
+        ..initialize('photo3', ['photo1', 'photo2', 'photo3'])
+        ..nextPhoto();
 
       final state = container.read(photoScreenProvider);
       expect(state.currentIndex, equals(2));
@@ -618,8 +629,9 @@ void main() {
     });
 
     test('previousPhoto should go to previous photo', () {
-      notifier.initialize('photo2', ['photo1', 'photo2', 'photo3']);
-      notifier.previousPhoto();
+      notifier
+        ..initialize('photo2', ['photo1', 'photo2', 'photo3'])
+        ..previousPhoto();
 
       final state = container.read(photoScreenProvider);
       expect(state.currentIndex, equals(0));
@@ -627,8 +639,9 @@ void main() {
     });
 
     test('previousPhoto should not go below 0', () {
-      notifier.initialize('photo1', ['photo1', 'photo2', 'photo3']);
-      notifier.previousPhoto();
+      notifier
+        ..initialize('photo1', ['photo1', 'photo2', 'photo3'])
+        ..previousPhoto();
 
       final state = container.read(photoScreenProvider);
       expect(state.currentIndex, equals(0));
@@ -644,8 +657,9 @@ void main() {
     });
 
     test('setSelectedIndex should update index and photo', () {
-      notifier.initialize('photo1', ['photo1', 'photo2', 'photo3']);
-      notifier.setSelectedIndex(2);
+      notifier
+        ..initialize('photo1', ['photo1', 'photo2', 'photo3'])
+        ..setSelectedIndex(2);
 
       final state = container.read(photoScreenProvider);
       expect(state.currentIndex, equals(2));
@@ -653,8 +667,9 @@ void main() {
     });
 
     test('setSelectedIndex with invalid index should not change state', () {
-      notifier.initialize('photo1', ['photo1', 'photo2', 'photo3']);
-      notifier.setSelectedIndex(10); // Out of bounds
+      notifier
+        ..initialize('photo1', ['photo1', 'photo2', 'photo3'])
+        ..setSelectedIndex(10); // Out of bounds
 
       final state = container.read(photoScreenProvider);
       expect(state.currentIndex, equals(0)); // Unchanged
@@ -662,8 +677,9 @@ void main() {
     });
 
     test('setSelectedIndex with negative index should not change state', () {
-      notifier.initialize('photo2', ['photo1', 'photo2', 'photo3']);
-      notifier.setSelectedIndex(-1);
+      notifier
+        ..initialize('photo2', ['photo1', 'photo2', 'photo3'])
+        ..setSelectedIndex(-1);
 
       final state = container.read(photoScreenProvider);
       expect(state.currentIndex, equals(1)); // Unchanged
@@ -675,8 +691,8 @@ void main() {
       final container1 = ProviderContainer();
       final container2 = ProviderContainer();
 
-      container1.read(progressProvider.notifier).start(100.0, 'Container 1');
-      container2.read(progressProvider.notifier).start(200.0, 'Container 2');
+      container1.read(progressProvider.notifier).start(100, 'Container 1');
+      container2.read(progressProvider.notifier).start(200, 'Container 2');
 
       expect(container1.read(progressProvider).total, equals(100.0));
       expect(container2.read(progressProvider).total, equals(200.0));
@@ -688,7 +704,7 @@ void main() {
     test('different providers should be independent', () {
       final container = ProviderContainer();
 
-      container.read(progressProvider.notifier).start(100.0, 'Progress');
+      container.read(progressProvider.notifier).start(100, 'Progress');
       container.read(percentageDialogProvider.notifier).show('Dialog');
       container.read(swiperTabProvider.notifier).setPhotoIds(['a', 'b']);
       container.read(photoScreenProvider.notifier).initialize('c', ['c', 'd']);
@@ -713,11 +729,10 @@ void main() {
 
     test('single photo in list', () {
       final container = ProviderContainer();
-      final notifier = container.read(photoScreenProvider.notifier);
-
-      notifier.initialize('only', ['only']);
-      notifier.nextPhoto(); // Should not fail
-      notifier.previousPhoto(); // Should not fail
+      container.read(photoScreenProvider.notifier)
+        ..initialize('only', ['only'])
+        ..nextPhoto()
+        ..previousPhoto();
 
       expect(container.read(photoScreenProvider).currentIndex, equals(0));
 
@@ -725,7 +740,7 @@ void main() {
     });
 
     test('progress with zero total', () {
-      const state = ProgressState(total: 0.0, value: 0.0);
+      const state = ProgressState();
       expect(state.total, equals(0.0));
     });
 

@@ -310,9 +310,7 @@ void main() {
     group('Edge cases', () {
       test('empty strings', () {
         final state = PinFullState(
-          email: '',
-          pin: '',
-          accessCode: '',
+          
         );
 
         expect(state.email, isEmpty);
@@ -321,8 +319,8 @@ void main() {
       });
 
       test('special characters in access code', () {
-        final state = PinFullState().copyWith(accessCode: 'ABC!@#\$%^&*()');
-        expect(state.accessCode, equals('ABC!@#\$%^&*()'));
+        final state = PinFullState().copyWith(accessCode: r'ABC!@#$%^&*()');
+        expect(state.accessCode, equals(r'ABC!@#$%^&*()'));
       });
 
       test('unicode in email', () {
