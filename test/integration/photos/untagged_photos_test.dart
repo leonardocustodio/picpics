@@ -1,11 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
 
 /// Integration tests for untagged photos functionality
 /// Tests the core flow of loading and managing untagged photos
 void main() {
+  // Initialize logger once for all tests
+  setUpAll(AppLogger.init);
+
   group('Untagged Photos Integration Tests', () {
     late ProviderContainer container;
 

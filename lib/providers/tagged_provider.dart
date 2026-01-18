@@ -355,10 +355,11 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
     searchFocusNode.dispose();
     // Only dispose scroll controller if it was initialized
     try {
-      if (scrollControllerThirdTab.hasClients) {
+      // ignore: unnecessary_null_comparison
+      if (scrollControllerThirdTab != null) {
         scrollControllerThirdTab.dispose();
       }
-    } on Exception catch (e) {
+    } catch (e) {
       // scrollControllerThirdTab was never initialized, skip disposal
       AppLogger.d('Dispose skipped: $e');
     }

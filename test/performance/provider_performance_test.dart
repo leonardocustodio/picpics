@@ -4,12 +4,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 import 'performance_test_utils.dart';
 
 /// Performance benchmarks for Riverpod providers
 /// Tests measure execution time, rebuild frequency, and memory usage
 void main() {
+  // Initialize logger once for all tests
+  setUpAll(AppLogger.init);
+
   group('Provider Performance Benchmarks', () {
     test('Tabs provider initialization performance', () async {
       final result = await PerformanceTestUtils.runBenchmark(
