@@ -93,7 +93,8 @@ class BlurHash {
       );
     }
 
-    final data = image.getBytes();
+    // Ensure we get RGBA format (4 bytes per pixel) which the algorithm expects
+    final data = image.getBytes(order: ChannelOrder.rgba);
     final components = List.generate(
       numCompY,
       (i) => List<ColorTriplet>.filled(numCompX, const ColorTriplet(0, 0, 0)),
@@ -170,7 +171,7 @@ Uint8List decodeBlurHash(
   double punch = 1.0,
 }) {
   final hash = BlurHash.decode(blurHash, punch: punch);
-  return hash.toImage(width, height).getBytes();
+  return hash.toImage(width, height).getBytes(order: ChannelOrder.rgba);
 }
 
 /// Deprecated. Please use [BlurHash.encode] instead.

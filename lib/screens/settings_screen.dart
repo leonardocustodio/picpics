@@ -25,7 +25,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
-  static const id = 'settings_Screen';
+  static const id = 'settings_screen';
 
   @override
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
@@ -202,10 +202,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                     style: kBottomSheetTitleTextStyle,
                   ),
                   CupertinoButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      // Show loading indicator
                       unawaited(
                         showDialog<void>(
                           context: context,
+                          barrierDismissible: false,
                           builder: (context) => Center(
                             child: Container(
                               width: 60,
@@ -223,12 +225,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                         ),
                       );
 
-                      // TODO(settings): Implement language change through providers
-                      ref.read(userProvider.notifier).setAppLanguage(supportedLocales[temporaryLanguage].toString());
+                      // Update language through providers
+                      await ref
+                          .read(userProvider.notifier)
+                          .setAppLanguage(supportedLocales[temporaryLanguage].toString());
 
+                      if (!context.mounted) return;
                       setState(() {});
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      Navigator.pop(context); // Close loading dialog
+                      Navigator.pop(context); // Close language picker
                     },
                     child: SizedBox(
                       width: 80,
@@ -418,7 +423,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                           ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
                                           return;
                                         }
-                                        // TODO(settings): Set popPinScreenToId properly
+                                        // PIN screen validates and auto-toggles showPrivate on success
                                         await Navigator.of(context).pushNamed(PinScreen.id);
                                       },
                                       child: Row(
@@ -436,7 +441,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                                 ref.read(privatePhotosProvider.notifier).toggleShowPrivate();
                                                 return;
                                               }
-                                              // TODO(settings): Set wantsToActivateBiometric and popPinScreenToId
+                                              // PIN screen validates and auto-toggles showPrivate on success
                                               await Navigator.of(context).pushNamed(PinScreen.id);
                                             },
                                           ),
@@ -478,7 +483,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                                       padding: EdgeInsets.zero,
                                                       onPressed: () {
                                                         if (!userState.isBiometricActivated) {
-                                                          // TODO(settings): Set wantsToActivateBiometric
+                                                          // PIN screen validates and auto-activates biometric on success
                                                           unawaited(
                                                             Navigator.of(context).push<void>(
                                                               MaterialPageRoute<void>(
@@ -505,7 +510,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> with WidgetsBin
                                                             activeTrackColor: kSecondaryColor,
                                                             onChanged: (value) async {
                                                               if (value) {
-                                                                // TODO(settings): Set wantsToActivateBiometric
+                                                                // PIN screen validates and auto-activates biometric on success
                                                                 await Navigator.of(context).push<dynamic>(
                                                                   MaterialPageRoute<dynamic>(
                                                                     builder: (_) => const PinScreen(),

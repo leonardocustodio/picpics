@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:picpics/widgets/error_state_widget.dart';
 
 const List<int> kDefaultPhotoSize = <int>[600, 600];
 const List<int> kDefaultPreviewThumbSize = <int>[100, 100];
@@ -10,13 +11,9 @@ final greyWidget = Padding(
     color: Colors.grey[300],
   ),
 );
-const failedItem = Center(
-  child: Text(
-    'Failed loading',
-    textAlign: TextAlign.center,
-    style: TextStyle(fontSize: 18),
-  ),
-);
+
+/// Default widget shown when photo loading fails
+const failedItem = PhotoErrorWidget();
 
 const kMaxNumOfSuggestions = 6;
 const kMaxNumOfRecentTags = 5;

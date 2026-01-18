@@ -1,9 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:picpics/providers/private_photos_provider.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 /// Integration tests for private photos functionality
 void main() {
+  // Initialize logger once for all tests
+  setUpAll(AppLogger.init);
+
   group('Private Photos Provider Tests', () {
     late ProviderContainer container;
 

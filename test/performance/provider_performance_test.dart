@@ -4,12 +4,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 import 'performance_test_utils.dart';
 
 /// Performance benchmarks for Riverpod providers
 /// Tests measure execution time, rebuild frequency, and memory usage
 void main() {
+  // Initialize logger once for all tests
+  setUpAll(AppLogger.init);
+
   group('Provider Performance Benchmarks', () {
     test('Tabs provider initialization performance', () async {
       final result = await PerformanceTestUtils.runBenchmark(
@@ -24,8 +28,11 @@ void main() {
       );
 
       debugPrint(result.summary);
-      expect(result.average.inMilliseconds, lessThan(10),
-          reason: 'Provider initialization should be under 10ms',);
+      expect(
+        result.average.inMilliseconds,
+        lessThan(10),
+        reason: 'Provider initialization should be under 10ms',
+      );
     });
 
     test('Tagged provider initialization performance', () async {
@@ -76,8 +83,11 @@ void main() {
       );
 
       debugPrint(result.summary);
-      expect(result.average.inMicroseconds, lessThan(1000),
-          reason: 'Toggle should be under 1ms',);
+      expect(
+        result.average.inMicroseconds,
+        lessThan(1000),
+        reason: 'Toggle should be under 1ms',
+      );
 
       container.dispose();
     });
@@ -98,8 +108,11 @@ void main() {
       );
 
       debugPrint(result.summary);
-      expect(result.average.inMicroseconds, lessThan(500),
-          reason: 'Selection should be under 0.5ms',);
+      expect(
+        result.average.inMicroseconds,
+        lessThan(500),
+        reason: 'Selection should be under 0.5ms',
+      );
 
       container.dispose();
     });
@@ -116,8 +129,11 @@ void main() {
       });
 
       debugPrint('Bulk selection (100 photos): ${duration.inMilliseconds}ms');
-      expect(duration.inMilliseconds, lessThan(100),
-          reason: 'Selecting 100 photos should be under 100ms',);
+      expect(
+        duration.inMilliseconds,
+        lessThan(100),
+        reason: 'Selecting 100 photos should be under 100ms',
+      );
 
       container.dispose();
     });
@@ -133,8 +149,11 @@ void main() {
         },
       );
 
-      expect(rebuildCount, equals(1),
-          reason: 'Single update should trigger exactly 1 rebuild',);
+      expect(
+        rebuildCount,
+        equals(1),
+        reason: 'Single update should trigger exactly 1 rebuild',
+      );
 
       container.dispose();
     });
@@ -153,8 +172,11 @@ void main() {
         },
       );
 
-      expect(rebuildCount, equals(3),
-          reason: '3 updates should trigger 3 rebuilds',);
+      expect(
+        rebuildCount,
+        equals(3),
+        reason: '3 updates should trigger 3 rebuilds',
+      );
 
       container.dispose();
     });
@@ -166,8 +188,11 @@ void main() {
       final memoryUsage = PerformanceTestUtils.estimateMemoryUsage(tabsState.assetMap);
       debugPrint('Empty state memory: $memoryUsage bytes');
 
-      expect(memoryUsage, lessThan(1000),
-          reason: 'Empty state should use minimal memory',);
+      expect(
+        memoryUsage,
+        lessThan(1000),
+        reason: 'Empty state should use minimal memory',
+      );
 
       container.dispose();
     });
@@ -187,8 +212,11 @@ void main() {
       );
 
       debugPrint('100 selections memory: $memoryUsage bytes');
-      expect(memoryUsage, lessThan(50000),
-          reason: '100 selections should use less than 50KB',);
+      expect(
+        memoryUsage,
+        lessThan(50000),
+        reason: '100 selections should use less than 50KB',
+      );
 
       container.dispose();
     });
@@ -215,8 +243,11 @@ void main() {
       final avgPerRead = duration.inMicroseconds / 1000;
       debugPrint('Average state read: ${avgPerRead.toStringAsFixed(2)}μs');
 
-      expect(avgPerRead, lessThan(1000),
-          reason: 'State read should be under 1ms average',);
+      expect(
+        avgPerRead,
+        lessThan(1000),
+        reason: 'State read should be under 1ms average',
+      );
     });
 
     test('Notifier access performance target: < 1ms', () {
@@ -244,8 +275,11 @@ void main() {
       final avgPerUpdate = duration.inMicroseconds / 100;
       debugPrint('Average state update: ${avgPerUpdate.toStringAsFixed(2)}μs');
 
-      expect(avgPerUpdate, lessThan(5000),
-          reason: 'State update should be under 5ms average',);
+      expect(
+        avgPerUpdate,
+        lessThan(5000),
+        reason: 'State update should be under 5ms average',
+      );
     });
   });
 
@@ -278,8 +312,11 @@ void main() {
       // Print timing and verify all should be under 10ms
       results.forEach((provider, duration) {
         debugPrint('$provider: ${duration.inMicroseconds}μs');
-        expect(duration.inMilliseconds, lessThan(10),
-            reason: '$provider creation should be under 10ms',);
+        expect(
+          duration.inMilliseconds,
+          lessThan(10),
+          reason: '$provider creation should be under 10ms',
+        );
       });
     });
 

@@ -1,9 +1,8 @@
-// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/generated/l10n.dart';
 import 'package:picpics/model/tag_model.dart';
 import 'package:picpics/providers/all_tags_provider.dart';
 import 'package:picpics/providers/language_provider.dart';
@@ -47,9 +46,7 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
     // Initialize selected tags from picStore on first build
     if (loadTagsFromPicStoreNotifier && widget.picStore != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        // TODO(picpics): Access picStore.tags properly without .value
-        // For now, initialize with empty map
-        ref.read(allTagsProvider.notifier).initializeSelectedTags({});
+        ref.read(allTagsProvider.notifier).initializeSelectedTags(widget.picStore!.tags);
         loadTagsFromPicStoreNotifier = false;
       });
     }
@@ -141,11 +138,11 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 8),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
                         child: Text(
-                          'Searched',
-                          style: TextStyle(
+                          S.of(context).searched,
+                          style: const TextStyle(
                             fontFamily: 'Lato',
                             color: Color(0xff979a9b),
                             fontSize: 33,
@@ -170,11 +167,11 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 8),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
                         child: Text(
-                          'Most used',
-                          style: TextStyle(
+                          S.of(context).most_used,
+                          style: const TextStyle(
                             fontFamily: 'Lato',
                             color: Color(0xff979a9b),
                             fontSize: 33,
@@ -307,7 +304,7 @@ class _AllTagsScreenState extends ConsumerState<AllTagsScreen> {
             TagModel(key: tagId, title: tagName, count: count, time: time),
           );
       await ref.read(tagsProvider.notifier).removeTagFromPic(
-            picId: widget.picStore!.state.photoId,
+            picId: widget.picStore!.photoId,
             tagKey: tagId,
           );
     } else {

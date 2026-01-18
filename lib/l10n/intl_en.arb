@@ -553,5 +553,16 @@
   "enable_fingerprint": "Enable Fingerprint",
   "enable_irisscanner": "Enable Iris Scanner",
   "finishing": "Finishing...",
-  "allTags": "All Tags"
+  "allTags": "All Tags",
+  "photo_not_available": "Photo not available",
+  "something_went_wrong": "Something went wrong",
+  "try_again": "Try Again",
+  "error": "Error",
+  "searched": "Searched",
+  "most_used": "Most used",
+  "return_label": "Return",
+  "tag_label": "Tag",
+  "share_label": "Share",
+  "trash_label": "Trash",
+  "untag": "Untag"
 }

@@ -19,6 +19,8 @@ import 'package:picpics/database/app_database.dart';
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/managers/crypto_manager.dart';
 import 'package:picpics/model/tag_model.dart';
+import 'package:picpics/providers/encryption_key_provider.dart';
+import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/providers/private_photos_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
@@ -164,15 +166,20 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
     await loadPicInfo();
   }
 
-  /// Get encryption key from pin provider or user controller.
-  // TODO(picpics): Migrate UserController to find where encryptionKey is stored
-  /// For now, returning null - encryption features will need to be connected
-  /// after UserController migration is complete
+  /// Get encryption key from encryption key provider.
+  /// The key is set after PIN validation in pin_provider_full.dart
   cryptography.SecretKey? get _encryptionKey {
-    // Original code: UserController.to.encryptionKey
-    // Need to find where this is stored after UserController migration
-    return null;
+    return ref.read(encryptionKeyProvider).encryptionKey;
   }
+
+  /// Public getters for commonly accessed state properties
+  /// These avoid direct access to the protected `state` property
+  DateTime get createdAt => state.createdAt;
+  String get photoId => state.photoId;
+  String get photoPath => state.photoPath;
+  bool get isStarred => state.isStarred;
+  Map<String, TagModel> get tags => state.tags;
+  AssetEntity? get entity => state.entity;
 
   /// Get asset origin bytes (decrypted if needed)
   Future<Uint8List?> get assetOriginBytes async {
@@ -781,16 +788,14 @@ class PicStoreNotifier extends StateNotifier<PicStoreState> {
   }
 
   /// Translate tags to user's language.
-  /// Note: This method requires BuildContext, so it should be called from widget layer.
-  // TODO(picpics): Consider refactoring to avoid BuildContext dependency
-  Future<List<String>> translateTags(
-    List<String> tagsText,
-    WidgetRef widgetRef,
-  ) async {
+  /// Uses offline translation for supported languages (pt, es, de, ja),
+  /// otherwise uses Google Cloud Translation API.
+  Future<List<String>> translateTags(List<String> tagsText) async {
     final lang = ref.read(userProvider).appLanguage.split('_')[0];
     if (lang == 'pt' || lang == 'es' || lang == 'de' || lang == 'ja') {
       AppLogger.d('Offline translating it...');
-      return tagsText.map((e) => PredefinedLabels.labelTranslation(e, widgetRef)).toList();
+      final s = ref.read(sProvider);
+      return tagsText.map((e) => PredefinedLabels.labelTranslation(e, s)).toList();
     }
 
     final credentials = ServiceAccountCredentials.fromJson(r'''

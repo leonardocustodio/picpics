@@ -17,8 +17,14 @@ import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
+import 'package:picpics/screens/access_code_screen.dart';
+import 'package:picpics/screens/add_location.dart';
+import 'package:picpics/screens/all_tags_screen.dart';
+import 'package:picpics/screens/email_screen.dart';
 import 'package:picpics/screens/login_screen.dart';
-import 'package:picpics/screens/screens_stubs.dart';
+import 'package:picpics/screens/photo_screen.dart';
+import 'package:picpics/screens/pin_screen.dart';
+import 'package:picpics/screens/settings_screen.dart';
 import 'package:picpics/screens/tabs_screen.dart';
 import 'package:picpics/services/navigation_service.dart';
 import 'package:picpics/utils/app_logger.dart';
@@ -34,6 +40,12 @@ void main() async {
 
   // Initialize logger
   AppLogger.init();
+
+  // Configure image cache for better performance
+  // Increase maximum number of images to cache
+  PaintingBinding.instance.imageCache.maximumSize = 200;
+  // Increase maximum cache size in bytes (100MB)
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 100 * 1024 * 1024;
 
   // Initialize Firebase
   await Firebase.initializeApp(

@@ -135,7 +135,6 @@ class PerformanceTestUtils {
 
 /// Result of a benchmark run
 class BenchmarkResult {
-
   BenchmarkResult({
     required this.name,
     required this.iterations,
@@ -168,12 +167,13 @@ class BenchmarkResult {
   double get standardDeviation {
     final avgMicros = average.inMicroseconds;
     final variance = durations.fold<double>(
-      0,
-      (sum, duration) {
-        final diff = duration.inMicroseconds - avgMicros;
-        return sum + (diff * diff);
-      },
-    ) / iterations;
+          0,
+          (sum, duration) {
+            final diff = duration.inMicroseconds - avgMicros;
+            return sum + (diff * diff);
+          },
+        ) /
+        iterations;
     return variance.sqrt();
   }
 
@@ -182,8 +182,7 @@ class BenchmarkResult {
     final sorted = List<Duration>.from(durations)..sort();
     final middle = sorted.length ~/ 2;
     if (sorted.length.isEven) {
-      final avgMicros = (sorted[middle - 1].inMicroseconds +
-                        sorted[middle].inMicroseconds) ~/ 2;
+      final avgMicros = (sorted[middle - 1].inMicroseconds + sorted[middle].inMicroseconds) ~/ 2;
       return Duration(microseconds: avgMicros);
     }
     return sorted[middle];

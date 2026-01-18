@@ -2,10 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tagged_provider.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 /// Integration tests for multi-photo operations
 /// Tests bulk operations like multi-select, multi-tag, and multi-delete
 void main() {
+  // Initialize logger once for all tests
+  setUpAll(AppLogger.init);
+
   group('Multi-Photo Selection Integration Tests', () {
     late ProviderContainer container;
 

@@ -203,11 +203,43 @@ class TagsNotifier extends StateNotifier<TagsState> {
   }
 
   Future<String> createTag(String title) async {
-    // TODO(picpics): Full implementation for creating a new tag
-    // For now, generate a simple key
-    final key = 'tag_${DateTime.now().millisecondsSinceEpoch}';
-    await loadAllTags(); // Reload tags after creation
-    return key;
+    try {
+      // Generate encrypted key from title
+      final tagKey = Helpers.encryptTag(title);
+
+      // Check if tag already exists
+      final existingTag = await _database.getLabelByLabelKey(tagKey);
+      if (existingTag != null) {
+        AppLogger.d('Tag already exists: $tagKey');
+        return tagKey;
+      }
+
+      // Create new label in database
+      final label = Label(
+        key: tagKey,
+        title: title,
+        counter: 0,
+        lastUsedAt: DateTime.now(),
+        photoId: {},
+      );
+
+      await _database.createLabel(label);
+
+      // Add to allTags state
+      final newAllTags = Map<String, TagModel>.from(state.allTags);
+      newAllTags[tagKey] = TagModel(
+        key: tagKey,
+        title: title,
+        time: DateTime.now(),
+      );
+      state = state.copyWith(allTags: newAllTags);
+
+      AppLogger.d('Created new tag: $title with key: $tagKey');
+      return tagKey;
+    } on Exception catch (e) {
+      AppLogger.e('Error creating tag: $e');
+      rethrow;
+    }
   }
 
   Future<void> updateTag(String key, String newTitle) async {
@@ -277,17 +309,117 @@ class TagsNotifier extends StateNotifier<TagsState> {
     required String picId,
     required String tagKey,
   }) async {
-    // TODO(picpics): Implement removing a tag from a specific picture
-    AppLogger.d('Removing tag $tagKey from pic $picId (stub implementation)');
-    await Future<void>.delayed(Duration.zero);
+    try {
+      // Get the photo from database
+      final photo = await _database.getPhotoByPhotoId(picId);
+      if (photo == null) {
+        AppLogger.w('Photo $picId not found');
+        return;
+      }
+
+      // Remove the tag from photo
+      photo.tags.remove(tagKey);
+      await _database.updatePhoto(photo);
+
+      // Update the label to remove photo reference
+      final label = await _database.getLabelByLabelKey(tagKey);
+      if (label != null) {
+        label.photoId.remove(picId);
+        final newCounter = label.counter > 0 ? label.counter - 1 : 0;
+        await _database.updateLabel(label.copyWith(counter: newCounter));
+
+        // Update allTags state
+        final newAllTags = Map<String, TagModel>.from(state.allTags);
+        if (newAllTags.containsKey(tagKey)) {
+          newAllTags[tagKey] = newAllTags[tagKey]!.copyWith(count: newCounter);
+          state = state.copyWith(allTags: newAllTags);
+        }
+      }
+
+      AppLogger.d('Removed tag $tagKey from pic $picId');
+    } on Exception catch (e) {
+      AppLogger.e('Error removing tag from pic: $e');
+    }
   }
 
-  Future<void> addTagsToSelectedPics() async {
-    // TODO(picpics): Implement adding tags to selected pictures
-    // This should take the multiPicTags and apply them to selected photos
-    // For now, this is a placeholder to prevent compilation errors
-    AppLogger.d('Adding tags to selected pictures (stub implementation)');
-    clearMultiPicTags();
+  Future<void> addTagsToSelectedPics({
+    List<String>? selectedPicIds,
+  }) async {
+    if (state.multiPicTags.isEmpty) {
+      AppLogger.d('No multi-pic tags to add');
+      clearMultiPicTags();
+      return;
+    }
+
+    // If no pics specified, just clear and return
+    if (selectedPicIds == null || selectedPicIds.isEmpty) {
+      AppLogger.d('No pics selected for tagging');
+      clearMultiPicTags();
+      return;
+    }
+
+    try {
+      for (final tagKey in state.multiPicTags.keys) {
+        // Get or create the label
+        final label = await _database.getLabelByLabelKey(tagKey);
+        if (label == null) {
+          // Tag doesn't exist, skip
+          AppLogger.w('Tag $tagKey not found, skipping');
+          continue;
+        }
+
+        for (final picId in selectedPicIds) {
+          // Get or create the photo
+          var photo = await _database.getPhotoByPhotoId(picId);
+          if (photo == null) {
+            // Create new photo entry
+            photo = Photo(
+              id: picId,
+              createdAt: DateTime.now(),
+              tags: {tagKey: ''},
+              isStarred: false,
+              isPrivate: false,
+              deletedFromCameraRoll: false,
+            );
+            await _database.createPhoto(photo);
+          } else {
+            // Add tag to existing photo
+            if (!photo.tags.containsKey(tagKey)) {
+              photo.tags[tagKey] = '';
+              await _database.updatePhoto(photo);
+            }
+          }
+
+          // Update label with photo reference
+          if (!label.photoId.containsKey(picId)) {
+            label.photoId[picId] = '';
+          }
+        }
+
+        // Update label counter (photoId is a Map, use length)
+        final updatedLabel = label.copyWith(
+          counter: label.photoId.length,
+          lastUsedAt: DateTime.now(),
+        );
+        await _database.updateLabel(updatedLabel);
+
+        // Update allTags state
+        final newAllTags = Map<String, TagModel>.from(state.allTags);
+        if (newAllTags.containsKey(tagKey)) {
+          newAllTags[tagKey] = newAllTags[tagKey]!.copyWith(
+            count: label.photoId.length,
+            time: DateTime.now(),
+          );
+          state = state.copyWith(allTags: newAllTags);
+        }
+      }
+
+      AppLogger.d('Added ${state.multiPicTags.length} tags to ${selectedPicIds.length} pics');
+    } on Exception catch (e) {
+      AppLogger.e('Error adding tags to pics: $e');
+    } finally {
+      clearMultiPicTags();
+    }
   }
 }
 

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/generated/l10n.dart';
 import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/providers/private_photos_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
@@ -124,7 +125,7 @@ class TopBar extends ConsumerWidget {
                   onTap: () {
                     onUntag?.call();
                   },
-                  child: const Text('Untag'),
+                  child: Text(S.of(context).untag),
                 )
               else
                 CupertinoButton(

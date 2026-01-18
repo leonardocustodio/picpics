@@ -18,9 +18,8 @@ typedef OnTap = void Function(
   DateTime? lastUsedAt,
 );
 
-// ignore: must_be_immutable
 class CustomisedTagsList extends ConsumerWidget {
-  CustomisedTagsList({
+  const CustomisedTagsList({
     required this.tagsKeyList,
     required this.selectedTags,
     required this.onTap,
@@ -31,7 +30,7 @@ class CustomisedTagsList extends ConsumerWidget {
   });
   final List<String> tagsKeyList;
   final Map<String, TagModel> selectedTags;
-  int? maxLength;
+  final int? maxLength;
   final String? title;
   final OnTap? onTap;
   final void Function()? onDoubleTap;
