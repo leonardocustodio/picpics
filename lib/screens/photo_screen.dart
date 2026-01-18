@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-
 import 'dart:async';
 import 'dart:ui';
 
@@ -7,8 +5,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-/* import 'package:picpics/stores/gallery_store.dart'; */
-/* import 'package:picpics/stores/tagged_controller.dart'; */
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:intl/intl.dart';
@@ -17,12 +13,14 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:picpics/asset_entity_image_provider.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/fade_image_builder.dart';
+import 'package:picpics/generated/l10n.dart' as lang;
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tagged_provider.dart';
 import 'package:picpics/screens/all_tags_screen.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
+import 'package:picpics/widgets/error_state_widget.dart';
 import 'package:picpics/widgets/tags_list.dart';
 
 class PhotoScreenState {
@@ -69,9 +67,10 @@ final StateNotifierProvider<PhotoScreenNotifier, PhotoScreenState> photoScreenPr
   return PhotoScreenNotifier();
 });
 
-// ignore_for_file: unused_field
 class PhotoScreen extends ConsumerStatefulWidget {
   const PhotoScreen({required this.picId, required this.picIdList, super.key});
+
+  static const id = 'photo_screen';
 
   final String picId;
   final List<String> picIdList;
@@ -108,8 +107,6 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
     super.dispose();
   }
 
-  static const id = 'photo_screen';
-
   /*  @override
   void initState() {
     super.initState();
@@ -136,8 +133,8 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
 
     if (!photoScreenState.overlay) {
       photoScreenNotifier.setOverlay(value: true);
-      // TODO(picpics): Removing this to compile
-      // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+      // Show system UI (status bar, navigation bar)
+      unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
     } else {
       if (!photoScreenState.showSlideshow) {
         photoScreenNotifier.setShowSlideshow(value: true);
@@ -145,8 +142,8 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
         photoScreenNotifier
           ..setShowSlideshow(value: false)
           ..setOverlay(value: false);
-        // TODO(picpics): Removing this to compile
-        // SystemChrome.setEnabledSystemUIOverlays([]);
+        // Hide system UI for immersive photo viewing
+        unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky));
       }
     }
   }
@@ -163,7 +160,10 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
 
     if (picStore == null) {
       return PhotoViewGalleryPageOptions.customChild(
-        child: const Center(child: Text('Photo not available', style: TextStyle(color: Colors.white))),
+        child: ErrorStateWidget(
+          message: lang.S.of(context).photo_not_available,
+          icon: Icons.image_not_supported_outlined,
+        ),
       );
     }
 
@@ -191,7 +191,9 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                   }(),
                 );
               case LoadState.failed:
-                loader = Container();
+                loader = PhotoErrorWidget(
+                  onRetry: () => state.reLoadImage(),
+                );
             }
             return loader;
           },
@@ -263,7 +265,9 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                   }(),
                 );
               case LoadState.failed:
-                loader = Container();
+                loader = PhotoErrorWidget(
+                  onRetry: () => state.reLoadImage(),
+                );
             }
             return loader;
           },
@@ -455,8 +459,7 @@ class _PhotoScreenState extends ConsumerState<PhotoScreen> {
                                           ref
                                                   .read(tabsProvider)
                                                   .picStoreMap[getPicIdList().toList()[photoScreenState.selectedIndex]]
-                                                  ?.state
-                                                  .createdAt ??
+                                                  ?.createdAt ??
                                               DateTime.now(),
                                         ),
                                         textScaler: TextScaler.noScaling,

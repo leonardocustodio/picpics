@@ -300,10 +300,48 @@ class TaggedNotifier extends StateNotifier<TaggedState> {
   Future<void> untagPicsFromTag({
     required Map<String, Map<String, String>> tagKeyMapToPicId,
   }) async {
-    // TODO(picpics): Implement untagPicsFromTag - requires AppDatabase API update
-    // This method should remove specified tags from photos in the database
-    // For now, just refresh to avoid compilation errors
-    await refreshTaggedPhotos();
+    try {
+      for (final entry in tagKeyMapToPicId.entries) {
+        final tagKey = entry.key;
+        final picIds = entry.value.keys.toList();
+
+        // Get the label from database
+        final label = await _database.getLabelByLabelKey(tagKey);
+        if (label == null) {
+          AppLogger.w('Tag $tagKey not found');
+          continue;
+        }
+
+        for (final picId in picIds) {
+          // Get the photo from database
+          final photo = await _database.getPhotoByPhotoId(picId);
+          if (photo == null) {
+            AppLogger.w('Photo $picId not found');
+            continue;
+          }
+
+          // Remove the tag from the photo
+          if (photo.tags.containsKey(tagKey)) {
+            photo.tags.remove(tagKey);
+            await _database.updatePhoto(photo);
+          }
+
+          // Remove the photo ID from the label
+          label.photoId.remove(picId);
+        }
+
+        // Update the label counter
+        final newCounter = label.photoId.length;
+        await _database.updateLabel(label.copyWith(counter: newCounter));
+
+        AppLogger.d('Removed tag $tagKey from ${picIds.length} photos');
+      }
+
+      // Refresh tagged photos to update state
+      await refreshTaggedPhotos();
+    } on Exception catch (e) {
+      AppLogger.e('Error untagging pics: $e');
+    }
   }
 
   void initScrollController() {

@@ -8,7 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:picpics/managers/crypto_manager.dart';
+import 'package:picpics/providers/encryption_key_provider.dart';
 import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/providers/private_photos_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
@@ -136,39 +138,62 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   Future<bool> isRecoveryCodeValid() async {
     AppLogger.d('Typed Recovery Code: ${state.recoveryCode}');
 
-    // TODO(picpics): Update Crypto.checkRecoveryKey to accept UserNotifier/UserState
-    // For now, return false as placeholder until Crypto manager is migrated
-    AppLogger.w('Recovery key validation temporarily disabled - requires Crypto manager migration');
-    return false;
+    try {
+      final decryptedKeyString = await Crypto.checkRecoveryKey(
+        state.encryptedRecoveryKey,
+        state.recoveryCode,
+        state.generatedIv,
+      );
 
-    // Original code (commented until Crypto migration):
-    // final userState = ref.read(userProvider);
-    // final valid = await Crypto.checkRecoveryKey(
-    //   state.encryptedRecoveryKey,
-    //   state.recoveryCode,
-    //   state.generatedIv,
-    //   userState, // Needs UserController
-    // );
-    // return valid;
+      if (decryptedKeyString == null) {
+        AppLogger.d('Recovery key validation failed');
+        return false;
+      }
+
+      // Store the temp encryption key string for PIN re-save
+      ref.read(encryptionKeyProvider.notifier).setTempEncryptionKey(decryptedKeyString);
+      AppLogger.d('Recovery key validated successfully');
+      return true;
+    } on Exception catch (e) {
+      AppLogger.e('Error validating recovery code: $e');
+      return false;
+    }
   }
 
   Future<void> saveNewPin() async {
-    // TODO(picpics): Update Crypto.reSaveSpKey to accept UserNotifier/UserState
-    // Temporarily skip encryption key operations until Crypto manager is migrated
-    AppLogger.w('PIN save temporarily simplified - requires Crypto manager migration');
+    final userState = ref.read(userProvider);
+    final encryptionKeyState = ref.read(encryptionKeyProvider);
 
-    // Reset state
-    setPin('');
-    setIsWaitingRecoveryKey(value: false);
-    AppLogger.d('Saved new pin (simplified)!!!');
+    final tempKeyString = encryptionKeyState.tempEncryptionKeyString;
+    if (tempKeyString == null) {
+      AppLogger.e('Cannot save new PIN - no temp encryption key available');
+      return;
+    }
 
-    // Original code (commented until Crypto migration):
-    // final userNotifier = ref.read(userProvider.notifier);
-    // await Crypto.reSaveSpKey(state.pin, ref.read(userProvider)); // Needs UserController
-    // userNotifier.setTempEncryptionKey(null); // Method doesn't exist yet
-    // setPin('');
-    // setIsWaitingRecoveryKey(false);
-    // AppLogger.d('Saved new pin!!!');
+    final encryptionKey = encryptionKeyState.encryptionKey;
+    if (encryptionKey == null) {
+      AppLogger.e('Cannot save new PIN - no encryption key available');
+      return;
+    }
+
+    try {
+      await Crypto.reSaveSpKey(
+        state.pin,
+        userState.email ?? '',
+        tempKeyString,
+        encryptionKey,
+      );
+
+      // Clear temp encryption key after saving
+      ref.read(encryptionKeyProvider.notifier).setTempEncryptionKey(null);
+
+      // Reset state
+      setPin('');
+      setIsWaitingRecoveryKey(value: false);
+      AppLogger.d('Saved new PIN successfully!');
+    } on Exception catch (e) {
+      AppLogger.e('Error saving new PIN: $e');
+    }
   }
 
   Future<Map<String, dynamic>> register() async {
@@ -225,15 +250,18 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
       // ignore: unnecessary_type_check
       if (result.data is Map && (result.data as Map).isNotEmpty) {
         await Crypto.saveSaltKey();
-        // TODO(picpics): Update Crypto.saveSpKey to accept UserNotifier/UserState
-        AppLogger.w('Access code validation simplified - requires Crypto manager migration');
-        // await Crypto.saveSpKey(
-        //   state.accessCode,
-        //   result.data as String,
-        //   state.pin,
-        //   state.email,
-        //   ref.read(userProvider), // Needs UserController
-        // );
+
+        // Save the encryption key
+        final encryptionKey = await Crypto.saveSpKey(
+          state.accessCode,
+          result.data['spkey'] as String? ?? '',
+          state.pin,
+          state.email,
+        );
+
+        // Store the encryption key in the provider
+        ref.read(encryptionKeyProvider.notifier).setEncryptionKey(encryptionKey);
+        AppLogger.d('Access code validated and encryption key stored');
         return true;
       }
 
@@ -250,20 +278,32 @@ class PinFullNotifier extends StateNotifier<PinFullState> {
   Future<bool> isPinValid() async {
     final userState = ref.read(userProvider);
     final encryptionKey = await Crypto.checkIsPinValid(state.pinTemp, userState.email ?? '');
-    return encryptionKey != null;
+
+    if (encryptionKey != null) {
+      // Store the encryption key for use in pic_store_provider
+      ref.read(encryptionKeyProvider.notifier).setEncryptionKey(encryptionKey);
+      return true;
+    }
+
+    return false;
   }
 
   Future<void> activateBiometric() async {
     final secretKey = await Crypto.saveEncryptedPin(state.pinTemp);
     if (secretKey != null) {
-      // Store the secret key if needed
-      // TODO(picpics): Store secretKey in user provider or secure storage
+      // Store the secret key in secure storage for biometric authentication
+      const storage = FlutterSecureStorage();
+      await storage.write(key: 'biometric_secret', value: secretKey);
+      AppLogger.d('Biometric secret key stored');
     }
   }
 
   Future<bool> isBiometricValidated() async {
-    // TODO(picpics): Get secretString from secure storage or user provider
-    final pin = await Crypto.getEncryptedPin(null);
+    // Get secret string from secure storage
+    const storage = FlutterSecureStorage();
+    final secretString = await storage.read(key: 'biometric_secret');
+
+    final pin = await Crypto.getEncryptedPin(secretString);
     if (pin == null) {
       return false;
     }

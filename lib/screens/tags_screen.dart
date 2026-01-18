@@ -8,11 +8,10 @@ class TagsScreen extends StatefulWidget {
   static String id = 'tags_screen';
 
   @override
-  // ignore: library_private_types_in_public_api
-  _TagsScreenState createState() => _TagsScreenState();
+  State<TagsScreen> createState() => TagsScreenState();
 }
 
-class _TagsScreenState extends State<TagsScreen> {
+class TagsScreenState extends State<TagsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,9 +1,9 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:picpics/providers/language_provider.dart';
+import 'package:picpics/generated/l10n.dart' as language;
 
 class PredefinedLabels {
-  static String labelTranslation(String label, WidgetRef ref) {
-    final s = ref.read(sProvider);
+  /// Translates predefined label to the user's language.
+  /// Pass the localization object directly instead of WidgetRef to avoid widget layer dependency.
+  static String labelTranslation(String label, language.S s) {
     switch (label) {
       case 'Team':
         return s.team_tag;

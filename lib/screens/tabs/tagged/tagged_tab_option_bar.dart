@@ -125,8 +125,7 @@ class _TaggedTabOptionBarState extends ConsumerState<TaggedTabOptionBar> {
                     controller: taggedState.expandableController,
                     expanded: Container(
                       padding: const EdgeInsets.all(24),
-
-                      // TODO(picpics): Tags List Not Showing
+                      // Tags are displayed when multiPicTags is populated via addMultiPicTag
                       color: const Color(0xFFEFEFF4).withValues(alpha: 0.94),
                       child: SafeArea(
                         child: Column(

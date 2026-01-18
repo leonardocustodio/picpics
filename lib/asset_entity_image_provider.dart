@@ -88,11 +88,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
               ThumbnailSize(thumbSize[0], thumbSize[1]),
             );
 
-      // TODO(picpics): Blur hash generation needs to be moved to a provider-aware context
-      // Cannot access Riverpod provider from ImageProvider
-      // if (data != null) {
-      //   await createBlurHash(picStore.photoId.value, data);
-      // }
+      // Note: Blur hash generation is handled in PhotoCard widget
+      // where Riverpod providers are accessible
     }
 
     // if (picStore.state.isPrivate == true) {

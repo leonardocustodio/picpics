@@ -10,6 +10,7 @@ import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:picpics/asset_entity_image_provider.dart';
 import 'package:picpics/components/circular_menu.dart';
 import 'package:picpics/components/circular_menu_item.dart';
@@ -28,6 +29,7 @@ import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
 import 'package:picpics/utils/functions.dart';
 import 'package:picpics/utils/refresh_everything.dart';
+import 'package:picpics/widgets/error_state_widget.dart';
 import 'package:picpics/widgets/tags_list.dart';
 
 class PhotoCard extends ConsumerStatefulWidget {
@@ -123,12 +125,48 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final blurHashState = ref.read(blurHashProvider);
       hash = blurHashState.blurHash[picStore.state.photoId];
+
+      // Generate blur hash if not cached
+      if (hash == null && blurHashState.isEnabled) {
+        unawaited(_generateBlurHash());
+      }
+
       if (mounted) {
         setState(() {});
       }
     });
 
     tagsFocusNode = FocusNode();
+  }
+
+  /// Generate blur hash for this photo if not already cached
+  Future<void> _generateBlurHash() async {
+    if (!mounted) return;
+
+    try {
+      // Get thumbnail data from the entity
+      final entity = picStore.state.entity;
+      if (entity == null) return;
+
+      final thumbData = await entity.thumbnailDataWithSize(
+        const ThumbnailSize(100, 100),
+      );
+      if (thumbData == null || !mounted) return;
+
+      // Generate and cache the blur hash
+      final generatedHash = await ref.read(blurHashProvider.notifier).createBlurHash(
+            picStore.state.photoId,
+            thumbData,
+          );
+
+      if (generatedHash != null && mounted) {
+        setState(() {
+          hash = generatedHash;
+        });
+      }
+    } on Exception catch (e) {
+      AppLogger.w('Error generating blur hash: $e');
+    }
   }
 
   @override
@@ -223,7 +261,12 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                               ),
                             );
                           case LoadState.failed:
-                            return Container();
+                            return PhotoErrorWidget(
+                              onRetry: () {
+                                // Clear cache and trigger rebuild
+                                state.reLoadImage();
+                              },
+                            );
                         }
                       },
                     ),

@@ -59,8 +59,7 @@ Future<void> showDeleteSecretModal(
   final privatePhotosState = ref.read(privatePhotosProvider);
 
   if (!privatePhotosState.showPrivate) {
-    // TODO(picpics): Add popPinScreenToId property to UserState if needed
-    // For now, just navigate to PIN screen
+    // PIN screen validates and auto-toggles showPrivate on success
     if (!context.mounted) return;
     await Navigator.of(context).push(
       MaterialPageRoute<dynamic>(builder: (_) => const PinScreen()),

@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -15,6 +13,26 @@ import 'package:picpics/providers/pic_store_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:uuid/uuid.dart';
 
+/// Cryptography manager for PicPics app.
+///
+/// This class handles all encryption/decryption operations for:
+/// - User access codes and recovery keys
+/// - Photo and thumbnail encryption for private photos
+///
+/// ## Encryption Flow:
+/// 1. **Access Key Encryption**: User's access code + email are encrypted using AES-CTR-256
+///    with a static key and IV derived from random number.
+/// 2. **Recovery Key**: Allows account recovery if PIN is forgotten. Encrypted with user's
+///    recovery code as part of the IV.
+/// 3. **Photo Encryption**: Private photos are encrypted using platform-specific algorithms:
+///    - Android: AES-CTR-256 with HMAC-SHA256 for authentication
+///    - iOS: AES-GCM-256 (built-in authentication)
+/// 4. **Key Storage**: Encrypted keys are stored in FlutterSecureStorage (spkey, hpkey)
+///
+/// ## Security Considerations:
+/// - All encryption uses 256-bit keys
+/// - Nonces/IVs are 12 bytes (96 bits)
+/// - MACs provide data integrity verification
 class Crypto {
   static Future<String> encryptAccessKey(
     String accessCode,
@@ -428,12 +446,12 @@ class Crypto {
   ) async {
     AppLogger.d('Going to encrypt image with encryption key');
 
-    final assetData = await picStore.state.entity?.originBytes;
-    final thumbData = await picStore.state.entity?.thumbnailDataWithSize(const ThumbnailSize.square(150), quality: 90);
+    final assetData = await picStore.entity?.originBytes;
+    final thumbData = await picStore.entity?.thumbnailDataWithSize(const ThumbnailSize.square(150), quality: 90);
 
-    final title = Platform.isAndroid ? picStore.state.entity?.title : await picStore.state.entity?.titleAsync;
+    final title = Platform.isAndroid ? picStore.entity?.title : await picStore.entity?.titleAsync;
 
-    AppLogger.d('Asset Name: ${picStore.state.entity?.id}');
+    AppLogger.d('Asset Name: ${picStore.entity?.id}');
     AppLogger.d('Origin file: $title');
 
     if (assetData == null || thumbData == null) {
@@ -456,27 +474,26 @@ class Crypto {
 
     AppLogger.d('Encrypting....');
 
-    /// Using 96 bytes nonce
+    /// Using 96 bytes nonce (12 bytes = 96 bits)
     final nonce = encrypt.Key.fromSecureRandom(12).bytes;
 
     late cryptography.SecretBox encryptedPicData;
     late cryptography.SecretBox encryptedThumbData;
-    late cryptography.StreamingCipher algorithm;
 
-    /// Select whether to using it on android or on iOS !!
+    /// Platform-specific encryption:
+    /// - Android: AES-CTR with HMAC-SHA256 (StreamingCipher)
+    /// - iOS: AES-GCM (Cipher with built-in authentication)
     if (Platform.isAndroid) {
-      algorithm = cryptography.AesCtr.with256bits(
+      final algorithm = cryptography.AesCtr.with256bits(
         macAlgorithm: cryptography.Hmac.sha256(),
       );
+      encryptedPicData = await algorithm.encrypt(assetData, secretKey: secretKey, nonce: nonce);
+      encryptedThumbData = await algorithm.encrypt(thumbData, secretKey: secretKey, nonce: nonce);
     } else {
-      // TODO(picpics): Check if this will work
-      algorithm = cryptography.AesGcm.with256bits() as cryptography.StreamingCipher;
+      final algorithm = cryptography.AesGcm.with256bits();
+      encryptedPicData = await algorithm.encrypt(assetData, secretKey: secretKey, nonce: nonce);
+      encryptedThumbData = await algorithm.encrypt(thumbData, secretKey: secretKey, nonce: nonce);
     }
-
-    /// Let's start processing the image files to start encrypting.
-    ///
-    encryptedPicData = await algorithm.encrypt(assetData, secretKey: secretKey, nonce: nonce);
-    encryptedThumbData = await algorithm.encrypt(thumbData, secretKey: secretKey, nonce: nonce);
 
     final savedPicFile = File(finalPhotoPath);
     final savedThumbFile = File(finalThumbPath);
